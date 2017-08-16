@@ -58,7 +58,7 @@ class InputObjectType extends GraphQlType implements InputType
                 if ($field instanceof Type) {
                     $field = ['type' => $field];
                 }
-                $field = new InputObjectField($field + ['name' => $name]);
+                $field = new InputObjectField(array_merge($field,['name' => $name]));
                 $this->fields[$field->name] = $field;
             }
         }
