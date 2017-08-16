@@ -6,13 +6,14 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Utils\SchemaUtils;
 use \Traversable, \InvalidArgumentException;
+use stdClass;
 
 class Utils
 {
     public static function undefined()
     {
         static $undefined;
-        return $undefined ?: $undefined = new \stdClass();
+        return $undefined ?: $undefined = new stdClass();
     }
 
     /**

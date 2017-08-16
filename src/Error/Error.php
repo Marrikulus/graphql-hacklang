@@ -87,14 +87,14 @@ class Error extends Exception implements \JsonSerializable
             $nodes = $error->nodes ?: $nodes;
             $source = $error->source;
             $positions = $error->positions;
-        } else if ($error instanceof \Exception) {
+        } else if ($error instanceof Exception) {
             $message = $error->getMessage();
             $originalError = $error;
         } else {
             $message = (string) $error;
         }
 
-        return new static(
+        return new self(
             $message ?: 'An unknown error occurred.',
             $nodes,
             $source,
@@ -122,7 +122,7 @@ class Error extends Exception implements \JsonSerializable
      * @param array|null $path
      * @param \Exception $previous
      */
-    public function __construct(@string $message, @?array $nodes = null, ?Source $source = null, $positions = null, $path = null, ?Exception $previous = null)
+    public function __construct(@string $message, mixed $nodes = null, ?Source $source = null, $positions = null, $path = null, ?Exception $previous = null)
     {
         parent::__construct($message, 0, $previous);
 

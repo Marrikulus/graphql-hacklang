@@ -55,7 +55,7 @@ class InputObjectType extends GraphQlType implements InputType
             $fields = isset($this->config['fields']) ? $this->config['fields'] : [];
             $fields = is_callable($fields) ? call_user_func($fields) : $fields;
             foreach ($fields as $name => $field) {
-                if ($field instanceof Type) {
+                if ($field instanceof GraphQlType) {
                     $field = ['type' => $field];
                 }
                 $field = new InputObjectField(array_merge($field,['name' => $name]));
