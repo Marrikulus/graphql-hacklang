@@ -82,7 +82,7 @@ class TypeInfo
      * @param array|null $typeMap
      * @return array
      */
-    public static function extractTypes($type, array $typeMap = null)
+    public static function extractTypes($type, ?array $typeMap = null)
     {
         if (!$typeMap) {
             $typeMap = [];
@@ -284,7 +284,7 @@ class TypeInfo
     /**
      * @return mixed
      */
-    function getEnumValue()
+    public function getEnumValue()
     {
         return $this->enumValue;
     }

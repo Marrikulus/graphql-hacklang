@@ -15,28 +15,28 @@ class Location
      *
      * @var int
      */
-    public int $start;
+    public ?int $start;
 
     /**
      * The character offset at which this Node ends.
      *
      * @var int
      */
-    public int $end;
+    public ?int $end;
 
     /**
      * The Token at which this Node begins.
      *
      * @var Token
      */
-    public \GraphQL\Language\Token $startToken;
+    public ?Token $startToken;
 
     /**
      * The Token at which this Node ends.
      *
      * @var Token
      */
-    public \GraphQL\Language\Token $endToken;
+    public ?Token $endToken;
 
     /**
      * The Source document the AST represents.

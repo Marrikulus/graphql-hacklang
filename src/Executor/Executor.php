@@ -95,7 +95,7 @@ class Executor
         $contextValue = null,
         $variableValues = null,
         $operationName = null,
-        callable $fieldResolver = null
+        ?callable $fieldResolver = null
     )
     {
         // TODO: deprecate (just always use SyncAdapter here) and have `promiseToExecute()` for other cases
@@ -137,7 +137,7 @@ class Executor
         $contextValue = null,
         $variableValues = null,
         $operationName = null,
-        callable $fieldResolver = null
+        ?callable $fieldResolver = null
     )
     {
         try {
@@ -174,8 +174,8 @@ class Executor
         $contextValue,
         $rawVariableValues,
         $operationName = null,
-        callable $fieldResolver = null,
-        PromiseAdapter $promiseAdapter = null
+        ?callable $fieldResolver = null,
+        ?PromiseAdapter $promiseAdapter = null
     )
     {
         if (null !== $rawVariableValues) {

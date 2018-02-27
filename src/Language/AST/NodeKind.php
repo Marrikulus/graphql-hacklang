@@ -75,7 +75,7 @@ class NodeKind
      * @todo conver to const array when moving to PHP5.6
      * @var array
      */
-    public static $classMap = [
+    public static array<string, string> $classMap = [
         NodeKind::NAME => NameNode::class,
 
         // Document

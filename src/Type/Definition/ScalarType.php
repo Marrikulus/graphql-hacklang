@@ -29,7 +29,7 @@ abstract class ScalarType extends GraphQlType implements OutputType, InputType, 
      */
     public $astNode;
 
-    function __construct(array $config = [])
+    public function __construct(array $config = [])
     {
         $this->name = isset($config['name']) ? $config['name'] : $this->tryInferName();
         $this->description = isset($config['description']) ? $config['description'] : $this->description;

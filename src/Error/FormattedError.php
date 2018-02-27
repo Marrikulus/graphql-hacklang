@@ -150,7 +150,7 @@ class FormattedError
      * @param $debug
      * @return callable|\Closure
      */
-    public static function prepareFormatter(callable $formatter = null, $debug)
+    public static function prepareFormatter(?callable $formatter = null, bool $debug = false)
     {
         $formatter = $formatter ?: function($e) {
             return FormattedError::createFromException($e);

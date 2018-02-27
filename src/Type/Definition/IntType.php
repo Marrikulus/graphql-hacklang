@@ -94,4 +94,14 @@ values. Int can represent values between -(2^31) and 2^31 - 1. ';
         }
         return null;
     }
+
+    public function isValidValue($value)
+    {
+        return null !== $this->parseValue($value);
+    }
+
+    public function isValidLiteral($valueNode)
+    {
+        return null !== $this->parseLiteral($valueNode);
+    }
 }

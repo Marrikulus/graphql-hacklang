@@ -66,4 +66,14 @@ represent free-form human-readable text.';
         }
         return null;
     }
+
+    public function isValidValue($value)
+    {
+        return null !== $this->parseValue($value);
+    }
+
+    public function isValidLiteral($valueNode)
+    {
+        return null !== $this->parseLiteral($valueNode);
+    }
 }

@@ -69,4 +69,14 @@ When expected as an input type, any string (such as `"4"`) or integer
         }
         return null;
     }
+
+    public function isValidValue($value)
+    {
+        return null !== $this->parseValue($value);
+    }
+
+    public function isValidLiteral($valueNode)
+    {
+        return null !== $this->parseLiteral($valueNode);
+    }
 }

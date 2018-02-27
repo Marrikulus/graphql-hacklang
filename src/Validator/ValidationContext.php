@@ -7,8 +7,8 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\VariableNode;
 use GraphQL\Language\Visitor;
-use \SplObjectStorage;
 use GraphQL\Error\Error;
+use \SplObjectStorage;
 use GraphQL\Type\Schema;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\FragmentDefinitionNode;
@@ -94,7 +94,7 @@ class ValidationContext
     /**
      * @param Error $error
      */
-    public function reportError(Error $error)
+    public function reportError(\GraphQL\Error\Error $error)
     {
         $this->errors[] = $error;
     }

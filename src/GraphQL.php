@@ -76,8 +76,8 @@ class GraphQL
         $context = null,
         $variableValues = null,
         $operationName = null,
-        callable $fieldResolver = null,
-        array $validationRules = null
+        ?callable $fieldResolver = null,
+        ?array $validationRules = null
     )
     {
         $promiseAdapter = new SyncPromiseAdapter();
@@ -113,8 +113,8 @@ class GraphQL
         $context = null,
         $variableValues = null,
         $operationName = null,
-        callable $fieldResolver = null,
-        array $validationRules = null
+        ?callable $fieldResolver = null,
+        ?array $validationRules = null
     )
     {
         try {
