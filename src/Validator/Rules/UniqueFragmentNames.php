@@ -9,17 +9,17 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\Visitor;
 use GraphQL\Validator\ValidationContext;
 
-class UniqueFragmentNames
+class UniqueFragmentNames extends AbstractValidationRule
 {
-    public static function duplicateFragmentNameMessage($fragName)
-   : @string {
-        return "There can only be one fragment named \"$fragName\".";
+    static function duplicateFragmentNameMessage($fragName): @string
+    {
+        return "There can be only one fragment named \"$fragName\".";
     }
 
     public $knownFragmentNames;
 
-    public function __invoke(ValidationContext $context)
-   : @array {
+    public function getVisitor(ValidationContext $context): @array
+    {
         $this->knownFragmentNames = [];
 
         return [

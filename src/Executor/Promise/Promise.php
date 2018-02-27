@@ -1,7 +1,7 @@
 <?hh //decl
 namespace GraphQL\Executor\Promise;
 
-use GraphQL\Utils;
+use GraphQL\Utils\Utils;
 
 /**
  * Convenience wrapper for promises represented by Promise Adapter

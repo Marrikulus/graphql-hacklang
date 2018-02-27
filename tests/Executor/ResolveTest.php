@@ -44,13 +44,13 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
     /**
      * @it default function calls methods
      */
-    public function testDefaultFunctionCallsMethods()
+    public function testDefaultFunctionCallsClosures()
     {
         $schema = $this->buildSchema(['type' => Type::string()]);
         $_secret = 'secretValue' . uniqid();
 
         $source = [
-            'test' => function () use ($_secret) {
+            'test' => function() use ($_secret) {
                 return $_secret;
             }
         ];

@@ -40,12 +40,8 @@ class SyncPromiseAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('GraphQL\Executor\Promise\Promise', $result);
         $this->assertInstanceOf('GraphQL\Executor\Promise\Adapter\SyncPromise', $result->adoptedPromise);
 
-        try {
-            $this->promises->convertThenable('');
-            $this->fail('Expected exception no thrown');
-        } catch (InvariantViolation $e) {
-            $this->assertEquals('Expected instance of GraphQL\Deferred, got (empty string)', $e->getMessage());
-        }
+        $this->setExpectedException(InvariantViolation::class, 'Expected instance of GraphQL\Deferred, got (empty string)');
+        $this->promises->convertThenable('');
     }
 
     public function testThen()
@@ -186,18 +182,18 @@ class SyncPromiseAdapterTest extends \PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertEquals($onFulfilledCalled, false);
-        $this->assertEquals($onRejectedCalled, false);
+        $this->assertSame($onFulfilledCalled, false);
+        $this->assertSame($onRejectedCalled, false);
 
         SyncPromise::runQueue();
 
         if ($expectedNextState !== SyncPromise::PENDING) {
-            $this->assertEquals(!$expectedNextReason, $onFulfilledCalled);
-            $this->assertEquals(!!$expectedNextReason, $onRejectedCalled);
+            $this->assertSame(!$expectedNextReason, $onFulfilledCalled);
+            $this->assertSame(!!$expectedNextReason, $onRejectedCalled);
         }
 
-        $this->assertEquals($expectedNextValue, $actualNextValue);
-        $this->assertEquals($expectedNextReason, $actualNextReason);
-        $this->assertEquals($expectedNextState, $promise->adoptedPromise->state);
+        $this->assertSame($expectedNextValue, $actualNextValue);
+        $this->assertSame($expectedNextReason, $actualNextReason);
+        $this->assertSame($expectedNextState, $promise->adoptedPromise->state);
     }
 }

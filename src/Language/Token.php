@@ -74,33 +74,33 @@ class Token
      *
      * @var int
      */
-    public $start;
+    public int $start;
 
     /**
      * The character offset at which this Node ends.
      *
      * @var int
      */
-    public $end;
+    public int $end;
 
     /**
      * The 1-indexed line number on which this Token appears.
      *
      * @var int
      */
-    public $line;
+    public int $line;
 
     /**
      * The 1-indexed column number at which this Token begins.
      *
      * @var int
      */
-    public $column;
+    public int $column;
 
     /**
      * @var string|null
      */
-    public $value;
+    public ?string $value;
 
     /**
      * Tokens exist as nodes in a double-linked-list amongst all tokens

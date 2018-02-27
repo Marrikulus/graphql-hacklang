@@ -1,27 +1,9 @@
 <?php
 namespace GraphQL\Tests\Language;
 
-use GraphQL\Language\AST\BooleanValueNode;
-use GraphQL\Language\AST\DocumentNode;
-use GraphQL\Language\AST\EnumTypeDefinitionNode;
-use GraphQL\Language\AST\EnumValueDefinitionNode;
-use GraphQL\Language\AST\FieldDefinitionNode;
-use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
-use GraphQL\Language\AST\InputValueDefinitionNode;
-use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
-use GraphQL\Language\AST\ListTypeNode;
-use GraphQL\Language\AST\Location;
-use GraphQL\Language\AST\NameNode;
-use GraphQL\Language\AST\NamedTypeNode;
-use GraphQL\Language\AST\Node;
+use GraphQL\Error\SyntaxError;
 use GraphQL\Language\AST\NodeKind;
-use GraphQL\Language\AST\NonNullTypeNode;
-use GraphQL\Language\AST\ObjectTypeDefinitionNode;
-use GraphQL\Language\AST\ScalarTypeDefinitionNode;
-use GraphQL\Language\AST\TypeExtensionDefinitionNode;
-use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Language\Parser;
-use GraphQL\Language\Source;
 
 class SchemaParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -54,7 +36,8 @@ type Hello {
                             $loc(16, 29)
                         )
                     ],
-                    'loc' => $loc(1, 31)
+                    'loc' => $loc(1, 31),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0, 31)
@@ -93,7 +76,8 @@ extend type Hello {
                                 $loc(23, 36)
                             )
                         ],
-                        'loc' => $loc(8, 38)
+                        'loc' => $loc(8, 38),
+                        'description' => null
                     ],
                     'loc' => $loc(1, 38)
                 ]
@@ -136,7 +120,8 @@ type Hello {
                             $loc(16,30)
                         )
                     ],
-                    'loc' => $loc(1,32)
+                    'loc' => $loc(1,32),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0,32)
@@ -165,7 +150,8 @@ type Hello {
                     ],
                     'directives' => [],
                     'fields' => [],
-                    'loc' => $loc(0,31)
+                    'loc' => $loc(0,31),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0,31)
@@ -195,7 +181,8 @@ type Hello {
                     ],
                     'directives' => [],
                     'fields' => [],
-                    'loc' => $loc(0, 33)
+                    'loc' => $loc(0, 33),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0, 33)
@@ -221,7 +208,8 @@ type Hello {
                     'name' => $this->nameNode('Hello', $loc(5, 10)),
                     'directives' => [],
                     'values' => [$this->enumValueNode('WORLD', $loc(13, 18))],
-                    'loc' => $loc(0, 20)
+                    'loc' => $loc(0, 20),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0, 20)
@@ -250,7 +238,8 @@ type Hello {
                         $this->enumValueNode('WO', $loc(13, 15)),
                         $this->enumValueNode('RLD', $loc(17, 20))
                     ],
-                    'loc' => $loc(0, 22)
+                    'loc' => $loc(0, 22),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0, 22)
@@ -285,7 +274,8 @@ interface Hello {
                             $loc(21, 34)
                         )
                     ],
-                    'loc' => $loc(1, 36)
+                    'loc' => $loc(1, 36),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0,36)
@@ -328,7 +318,8 @@ type Hello {
                             $loc(16, 44)
                         )
                     ],
-                    'loc' => $loc(1, 46)
+                    'loc' => $loc(1, 46),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0, 46)
@@ -372,7 +363,8 @@ type Hello {
                             $loc(16, 51)
                         )
                     ],
-                    'loc' => $loc(1, 53)
+                    'loc' => $loc(1, 53),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0, 53)
@@ -415,7 +407,8 @@ type Hello {
                             $loc(16, 47)
                         )
                     ],
-                    'loc' => $loc(1, 49)
+                    'loc' => $loc(1, 49),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0, 49)
@@ -465,7 +458,8 @@ type Hello {
                             $loc(16, 59)
                         )
                     ],
-                    'loc' => $loc(1, 61)
+                    'loc' => $loc(1, 61),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0, 61)
@@ -490,7 +484,8 @@ type Hello {
                     'name' => $this->nameNode('Hello', $loc(6, 11)),
                     'directives' => [],
                     'types' => [$this->typeNode('World', $loc(14, 19))],
-                    'loc' => $loc(0, 19)
+                    'loc' => $loc(0, 19),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0, 19)
@@ -519,12 +514,81 @@ type Hello {
                         $this->typeNode('Wo', $loc(14, 16)),
                         $this->typeNode('Rld', $loc(19, 22))
                     ],
-                    'loc' => $loc(0, 22)
+                    'loc' => $loc(0, 22),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0, 22)
         ];
         $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+    }
+
+
+    /**
+     * @it Union with two types and leading pipe
+     */
+    public function testUnionWithTwoTypesAndLeadingPipe()
+    {
+        $body = 'union Hello = | Wo | Rld';
+        $doc = Parser::parse($body);
+        $expected = [
+            'kind' => 'Document',
+            'definitions' => [
+                [
+                    'kind' => 'UnionTypeDefinition',
+                    'name' => $this->nameNode('Hello', ['start' => 6, 'end' => 11]),
+                    'directives' => [],
+                    'types' => [
+                        $this->typeNode('Wo', ['start' => 16, 'end' => 18]),
+                        $this->typeNode('Rld', ['start' => 21, 'end' => 24]),
+                    ],
+                    'loc' => ['start' => 0, 'end' => 24],
+                    'description' => null
+                ]
+            ],
+            'loc' => ['start' => 0, 'end' => 24],
+        ];
+        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+    }
+
+    /**
+     * @it Union fails with no types
+     */
+    public function testUnionFailsWithNoTypes()
+    {
+        $body = 'union Hello = |';
+        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . preg_quote('Syntax Error GraphQL (1:16) Expected Name, found <EOF>', '/') . '/');
+        Parser::parse($body);
+    }
+
+    /**
+     * @it Union fails with leading douple pipe
+     */
+    public function testUnionFailsWithLeadingDoublePipe()
+    {
+        $body = 'union Hello = || Wo | Rld';
+        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . preg_quote('Syntax Error GraphQL (1:16) Expected Name, found |', '/') . '/');
+        Parser::parse($body);
+    }
+
+    /**
+     * @it Union fails with double pipe
+     */
+    public function testUnionFailsWithDoublePipe()
+    {
+        $body = 'union Hello = Wo || Rld';
+        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . preg_quote('Syntax Error GraphQL (1:19) Expected Name, found |', '/') . '/');
+        Parser::parse($body);
+    }
+
+    /**
+     * @it Union fails with trailing pipe
+     */
+    public function testUnionFailsWithTrailingPipe()
+    {
+        $body = 'union Hello = | Wo | Rld |';
+        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . preg_quote('Syntax Error GraphQL (1:27) Expected Name, found <EOF>', '/') . '/');
+        Parser::parse($body);
     }
 
     /**
@@ -542,7 +606,8 @@ type Hello {
                     'kind' => NodeKind::SCALAR_TYPE_DEFINITION,
                     'name' => $this->nameNode('Hello', $loc(7, 12)),
                     'directives' => [],
-                    'loc' => $loc(0, 12)
+                    'loc' => $loc(0, 12),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0, 12)
@@ -577,7 +642,8 @@ input Hello {
                             $loc(17, 30)
                         )
                     ],
-                    'loc' => $loc(1, 32)
+                    'loc' => $loc(1, 32),
+                    'description' => null
                 ]
             ],
             'loc' => $loc(0, 32)
@@ -596,6 +662,47 @@ input Hello {
 }';
         $this->setExpectedException('GraphQL\Error\SyntaxError');
         Parser::parse($body);
+    }
+
+    /**
+     * @it Simple type
+     */
+    public function testSimpleTypeDescriptionInComments()
+    {
+        $body = '
+# This is a simple type description.
+# It is multiline *and includes formatting*.
+type Hello {
+  # And this is a field description
+  world: String
+}';
+        $doc = Parser::parse($body);
+        $loc = function($start, $end) {return TestUtils::locArray($start, $end);};
+
+        $fieldNode = $this->fieldNode(
+            $this->nameNode('world', $loc(134, 139)),
+            $this->typeNode('String', $loc(141, 147)),
+            $loc(134, 147)
+        );
+        $fieldNode['description'] = " And this is a field description\n";
+        $expected = [
+            'kind' => NodeKind::DOCUMENT,
+            'definitions' => [
+                [
+                    'kind' => NodeKind::OBJECT_TYPE_DEFINITION,
+                    'name' => $this->nameNode('Hello', $loc(88, 93)),
+                    'interfaces' => [],
+                    'directives' => [],
+                    'fields' => [
+                        $fieldNode
+                    ],
+                    'loc' => $loc(83, 149),
+                    'description' => " This is a simple type description.\n It is multiline *and includes formatting*.\n"
+                ]
+            ],
+            'loc' => $loc(0, 149)
+        ];
+        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
     }
 
     private function typeNode($name, $loc)
@@ -629,7 +736,8 @@ input Hello {
             'arguments' => $args,
             'type' => $type,
             'directives' => [],
-            'loc' => $loc
+            'loc' => $loc,
+            'description' => null
         ];
     }
 
@@ -639,7 +747,8 @@ input Hello {
             'kind' => NodeKind::ENUM_VALUE_DEFINITION,
             'name' => $this->nameNode($name, $loc),
             'directives' => [],
-            'loc' => $loc
+            'loc' => $loc,
+            'description' => null
         ];
     }
 
@@ -651,7 +760,8 @@ input Hello {
             'type' => $type,
             'defaultValue' => $defaultValue,
             'directives' => [],
-            'loc' => $loc
+            'loc' => $loc,
+            'description' => null
         ];
     }
 }

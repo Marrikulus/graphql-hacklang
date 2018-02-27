@@ -5,8 +5,15 @@ use GraphQL\Error\InvariantViolation;
 use GraphQL\Type\Definition\AbstractType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
-use GraphQL\Utils;
+use GraphQL\Utils\Utils;
 
+/**
+ * EXPERIMENTAL!
+ * This class can be removed or changed in future versions without a prior notice.
+ *
+ * Class LazyResolution
+ * @package GraphQL\Type
+ */
 class LazyResolution implements Resolution
 {
     /**

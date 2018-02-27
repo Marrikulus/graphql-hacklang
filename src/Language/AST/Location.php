@@ -15,14 +15,14 @@ class Location
      *
      * @var int
      */
-    public $start;
+    public int $start;
 
     /**
      * The character offset at which this Node ends.
      *
      * @var int
      */
-    public $end;
+    public int $end;
 
     /**
      * The Token at which this Node begins.
@@ -45,12 +45,28 @@ class Location
      */
     public ?\GraphQL\Language\Source $source;
 
-    public function __construct(Token $startToken, Token $endToken, ?Source $source = null)
+    /**
+     * @param $start
+     * @param $end
+     * @return static
+     */
+    public static function create(int $start, int $end):Location
+    {
+        $tmp = new Location();
+        $tmp->start = $start;
+        $tmp->end = $end;
+        return $tmp;
+    }
+
+    public function __construct(?Token $startToken = null, ?Token $endToken = null, ?Source $source = null):void
     {
         $this->startToken = $startToken;
         $this->endToken = $endToken;
-        $this->start = $startToken->start;
-        $this->end = $endToken->end;
         $this->source = $source;
+
+        if ($startToken && $endToken) {
+            $this->start = $startToken->start;
+            $this->end = $endToken->end;
+        }
     }
 }

@@ -9,10 +9,10 @@ use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\Visitor;
 use GraphQL\Type\Definition\NonNull;
-use GraphQL\Utils;
+use GraphQL\Utils\Utils;
 use GraphQL\Validator\ValidationContext;
 
-class ProvidedNonNullArguments
+class ProvidedNonNullArguments extends AbstractValidationRule
 {
     public static function missingFieldArgMessage($fieldName, $argName, $type)
    : @string {
@@ -24,8 +24,8 @@ class ProvidedNonNullArguments
         return "Directive \"@$directiveName\" argument \"$argName\" of type \"$type\" is required but not provided.";
     }
 
-    public function __invoke(ValidationContext $context)
-   : @array<string, array> {
+    public function getVisitor(ValidationContext $context): @array<string, array>
+    {
         return [
             NodeKind::FIELD => [
                 'leave' => function(FieldNode $fieldNode) use ($context) {

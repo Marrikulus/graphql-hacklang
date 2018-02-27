@@ -12,6 +12,7 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\Visitor;
+use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Validator\ValidationContext;
 
@@ -30,9 +31,9 @@ class QueryComplexity extends AbstractQuerySecurity
      */
     private $context;
 
-    public function __construct($maxQueryDepth)
+    public function __construct($maxQueryComplexity)
     {
-        $this->setMaxQueryComplexity($maxQueryDepth);
+        $this->setMaxQueryComplexity($maxQueryComplexity);
     }
 
     public static function maxQueryComplexityErrorMessage($max, $count)
@@ -67,7 +68,7 @@ class QueryComplexity extends AbstractQuerySecurity
         return $this->rawVariableValues;
     }
 
-    public function __invoke(ValidationContext $context)
+    public function getVisitor(ValidationContext $context)
     {
         $this->context = $context;
 
@@ -93,12 +94,16 @@ class QueryComplexity extends AbstractQuerySecurity
                 },
                 NodeKind::OPERATION_DEFINITION => [
                     'leave' => function (OperationDefinitionNode $operationDefinition) use ($context, &$complexity) {
-                        $complexity = $this->fieldComplexity($operationDefinition, $complexity);
+                        $errors = $context->getErrors();
 
-                        if ($complexity > $this->getMaxQueryComplexity()) {
-                            $context->reportError(
-                                new Error($this->maxQueryComplexityErrorMessage($this->getMaxQueryComplexity(), $complexity))
-                            );
+                        if (empty($errors)) {
+                            $complexity = $this->fieldComplexity($operationDefinition, $complexity);
+
+                            if ($complexity > $this->getMaxQueryComplexity()) {
+                                $context->reportError(
+                                    new Error($this->maxQueryComplexityErrorMessage($this->getMaxQueryComplexity(), $complexity))
+                                );
+                            }
                         }
                     },
                 ],
@@ -138,6 +143,10 @@ class QueryComplexity extends AbstractQuerySecurity
                 $fieldDef = $astFieldInfo[1];
 
                 if ($fieldDef instanceof FieldDefinition) {
+                    if ($this->directiveExcludesField($node)) {
+                        break;
+                    }
+
                     $args = $this->buildFieldArguments($node);
                     //get complexity fn using fieldDef complexity
                     if (method_exists($fieldDef, 'getComplexityFn')) {
@@ -203,6 +212,32 @@ class QueryComplexity extends AbstractQuerySecurity
         }
 
         return $args;
+    }
+
+    private function directiveExcludesField(FieldNode $node) {
+        foreach ($node->directives as $directiveNode) {
+            if ($directiveNode->name->value === 'deprecated') {
+                return false;
+            }
+
+            $variableValues = Values::getVariableValues(
+                $this->context->getSchema(),
+                $this->variableDefs,
+                $this->getRawVariableValues()
+            );
+
+            if ($directiveNode->name->value === 'include') {
+                $directive = Directive::includeDirective();
+                $directiveArgs = Values::getArgumentValues($directive, $directiveNode, $variableValues);
+
+                return !$directiveArgs['if'];
+            } else {
+                $directive = Directive::skipDirective();
+                $directiveArgs = Values::getArgumentValues($directive, $directiveNode, $variableValues);
+
+                return $directiveArgs['if'];
+            }
+        }
     }
 
     protected function isEnabled()

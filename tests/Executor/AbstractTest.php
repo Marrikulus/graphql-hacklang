@@ -5,11 +5,9 @@ require_once __DIR__ . '/TestClasses.php';
 
 use GraphQL\Executor\ExecutionResult;
 use GraphQL\Executor\Executor;
-use GraphQL\Error\FormattedError;
 use GraphQL\GraphQL;
 use GraphQL\Language\Parser;
-use GraphQL\Language\SourceLocation;
-use GraphQL\Schema;
+use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -89,7 +87,8 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
             ]
         ]);
 
-        $this->assertEquals($expected, Executor::execute($schema, Parser::parse($query)));
+        $result = Executor::execute($schema, Parser::parse($query));
+        $this->assertEquals($expected, $result);
     }
 
     /**
@@ -252,14 +251,14 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 ]
             ],
             'errors' => [[
-                'message' => 'Runtime Object type "Human" is not a possible type for "Pet".',
+                'debugMessage' => 'Runtime Object type "Human" is not a possible type for "Pet".',
                 'locations' => [['line' => 2, 'column' => 11]],
                 'path' => ['pets', 2]
             ]]
         ];
-        $actual = GraphQL::execute($schema, $query);
+        $actual = GraphQL::executeAndReturnResult($schema, $query)->toArray(true);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertArraySubset($expected, $actual);
     }
 
     /**
@@ -337,7 +336,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
           }
         }';
 
-        $result = GraphQL::execute($schema, $query);
+        $result = GraphQL::executeAndReturnResult($schema, $query)->toArray(true);
         $expected = [
             'data' => [
                 'pets' => [
@@ -349,12 +348,12 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 ]
             ],
             'errors' => [[
-                'message' => 'Runtime Object type "Human" is not a possible type for "Pet".',
+                'debugMessage' => 'Runtime Object type "Human" is not a possible type for "Pet".',
                 'locations' => [['line' => 2, 'column' => 11]],
                 'path' => ['pets', 2]
             ]]
         ];
-        $this->assertEquals($expected, $result);
+        $this->assertArraySubset($expected, $result);
     }
 
     /**
@@ -432,5 +431,61 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ], $result);
+    }
+
+    public function testHintsOnConflictingTypeInstancesInResolveType()
+    {
+        $createTest = function() use (&$iface) {
+            return new ObjectType([
+                'name' => 'Test',
+                'fields' => [
+                    'a' => Type::string()
+                ],
+                'interfaces' => function() use ($iface) {
+                    return [$iface];
+                }
+            ]);
+        };
+
+        $iface = new InterfaceType([
+            'name' => 'Node',
+            'fields' => [
+                'a' => Type::string()
+            ],
+            'resolveType' => function() use (&$createTest) {
+                return $createTest();
+            }
+        ]);
+
+        $query = new ObjectType([
+            'name' => 'Query',
+            'fields' => [
+                'node' => $iface,
+                'test' => $createTest()
+            ]
+        ]);
+
+        $schema = new Schema([
+            'query' => $query,
+        ]);
+        $schema->assertValid();
+
+        $query = '
+            {
+                node {
+                    a
+                }
+            }
+        ';
+
+        $result = Executor::execute($schema, Parser::parse($query), ['node' => ['a' => 'value']]);
+
+        $this->assertEquals(
+            'Schema must contain unique named types but contains multiple types named "Test". '.
+            'Make sure that `resolveType` function of abstract type "Node" returns the same type instance '.
+            'as referenced anywhere else within the schema '.
+            '(see http://webonyx.github.io/graphql-php/type-system/#type-registry).',
+            $result->errors[0]->getMessage()
+        );
     }
 }

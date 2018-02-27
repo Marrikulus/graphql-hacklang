@@ -1,7 +1,8 @@
 <?hh //decl
 namespace GraphQL\Type\Definition;
 
-use GraphQL\Utils;
+use GraphQL\Error\InvariantViolation;
+use GraphQL\Utils\Utils;
 
 /**
  * Class ListOfType
@@ -10,7 +11,7 @@ use GraphQL\Utils;
 class ListOfType extends GraphQlType implements WrappingType, OutputType, InputType
 {
     /**
-     * @var callable|GraphQlType
+     * @var ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType
      */
     public $ofType;
 
@@ -19,11 +20,12 @@ class ListOfType extends GraphQlType implements WrappingType, OutputType, InputT
      */
     public function __construct($type)
     {
-        Utils::invariant(
-            $type instanceof GraphQlType || is_callable($type),
-            'Expecting instance of GraphQL\Type\Definition\GraphQlType or callable returning instance of that class'
-        );
 
+        if (!$type instanceof GraphQlType && !is_callable($type)) {
+            throw new InvariantViolation(
+                'Can only create List of a GraphQLType but got: ' . Utils::printSafe($type)
+            );
+        }
         $this->ofType = $type;
     }
 
@@ -32,18 +34,18 @@ class ListOfType extends GraphQlType implements WrappingType, OutputType, InputT
      */
     public function toString()
     {
-        $type = GraphQlType::resolve($this->ofType);
+        $type = $this->ofType;
         $str = $type instanceof GraphQlType ? $type->toString() : (string) $type;
         return '[' . $str . ']';
     }
 
     /**
      * @param bool $recurse
-     * @return mixed
+     * @return ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType
      */
     public function getWrappedType(@bool $recurse = false)
     {
-        $type = GraphQlType::resolve($this->ofType);
+        $type = $this->ofType;
         return ($recurse && $type instanceof WrappingType) ? $type->getWrappedType($recurse) : $type;
     }
 }

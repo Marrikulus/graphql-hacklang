@@ -40,15 +40,22 @@ class ASTFromValueTest extends \PHPUnit_Framework_TestCase
     public function testConvertsIntValuesToASTs()
     {
         $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123.0, Type::int()));
-        $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123.5, Type::int()));
         $this->assertEquals(new IntValueNode(['value' => '10000']), AST::astFromValue(1e4, Type::int()));
+        $this->assertEquals(new IntValueNode(['value' => '0']), AST::astFromValue(0e4, Type::int()));
+    }
 
-        try {
-            AST::astFromValue(1e40, Type::int()); // Note: js version will produce 1e+40, both values are valid GraphQL floats
-            $this->fail('Expected exception is not thrown');
-        } catch (\Exception $e) {
-            $this->assertSame('Int cannot represent non 32-bit signed integer value: 1.0E+40', $e->getMessage());
-        }
+    public function testConvertsIntValuesToASTsCannotRepresentNonInteger()
+    {
+        // GraphQL spec does not allow coercing non-integer values to Int to avoid
+        // accidental data loss.
+        $this->setExpectedException(\Exception::class, 'Int cannot represent non-integer value: 123.5');
+        AST::astFromValue(123.5, Type::int());
+    }
+
+    public function testConvertsIntValuesToASTsCannotRepresentNon32bitsInteger()
+    {
+        $this->setExpectedException(\Exception::class, 'Int cannot represent non 32-bit signed integer value: 1.0E+40');
+        AST::astFromValue(1e40, Type::int()); // Note: js version will produce 1e+40, both values are valid GraphQL floats
     }
 
     /**
@@ -61,6 +68,7 @@ class ASTFromValueTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new FloatValueNode(['value' => '123.5']), AST::astFromValue(123.5, Type::float()));
         $this->assertEquals(new IntValueNode(['value' => '10000']), AST::astFromValue(1e4, Type::float()));
         $this->assertEquals(new FloatValueNode(['value' => '1e+40']), AST::astFromValue(1e40, Type::float()));
+        $this->assertEquals(new IntValueNode(['value' => '0']), AST::astFromValue(0e40, Type::float()));
     }
 
     /**

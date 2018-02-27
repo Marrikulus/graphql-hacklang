@@ -7,9 +7,10 @@ use GraphQL\Language\AST\InlineFragmentNode;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\GraphQlType;
+use GraphQL\Utils\TypeInfo;
 use GraphQL\Validator\ValidationContext;
 
-class FragmentsOnCompositeTypes
+class FragmentsOnCompositeTypes extends AbstractValidationRule
 {
     public static function inlineFragmentOnNonCompositeErrorMessage($type)
    : @string {
@@ -21,21 +22,22 @@ class FragmentsOnCompositeTypes
         return "Fragment \"$fragName\" cannot condition on non composite type \"$type\".";
     }
 
-    public function __invoke(ValidationContext $context)
-   : @array {
+    public function getVisitor(ValidationContext $context)
+    {
         return [
             NodeKind::INLINE_FRAGMENT => function(InlineFragmentNode $node) use ($context) {
-                $type = $context->getType();
-
-                if ($node->typeCondition && $type && !GraphQlType::isCompositeType($type)) {
-                    $context->reportError(new Error(
-                        static::inlineFragmentOnNonCompositeErrorMessage($type),
-                        [$node->typeCondition]
-                    ));
+                if ($node->typeCondition) {
+                    $type = TypeInfo::typeFromAST($context->getSchema(), $node->typeCondition);
+                    if ($type && !GraphQlType::isCompositeType($type)) {
+                        $context->reportError(new Error(
+                            static::inlineFragmentOnNonCompositeErrorMessage($type),
+                            [$node->typeCondition]
+                        ));
+                    }
                 }
             },
             NodeKind::FRAGMENT_DEFINITION => function(FragmentDefinitionNode $node) use ($context) {
-                $type = $context->getType();
+                $type = TypeInfo::typeFromAST($context->getSchema(), $node->typeCondition);
 
                 if ($type && !GraphQlType::isCompositeType($type)) {
                     $context->reportError(new Error(

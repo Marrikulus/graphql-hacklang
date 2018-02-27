@@ -2,7 +2,8 @@ site_name: graphql-php
 pages:
 - About: index.md
 - Getting Started: getting-started.md
-- Type System:
+- Complementary Tools: complementary-tools.md
+- Type Definitions:
   - Introduction: type-system/index.md
   - Object Types: type-system/object-types.md
   - Scalar Types: type-system/scalar-types.md
@@ -10,12 +11,16 @@ pages:
   - Lists and Non-Null: type-system/lists-and-nonnulls.md
   - Interfaces: type-system/interfaces.md
   - Unions: type-system/unions.md
-  - Input Types: type-system/input-types.md
+  - Mutations and Input Types: type-system/input-types.md
   - Directives: type-system/directives.md
   - Schema: type-system/schema.md
+  - Using Type Language: type-system/type-language.md
 - Executing Queries: executing-queries.md
 - Fetching Data: data-fetching.md
 - Handling Errors: error-handling.md
-# - Best Practices: best-practices.md
-- Complementary Tools: complementary-tools.md
+# - Mutations: mutations.md
+- Security: security.md
+# - Performance tips: performance.md
+- How it works: how-it-works.md
+- Class Reference: reference.md
 theme: readthedocs

@@ -6,7 +6,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Utils;
+use GraphQL\Utils\Utils;
 use GraphQL\Utils\AST;
 
 class ValueFromAstTest extends \PHPUnit_Framework_TestCase
@@ -72,6 +72,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
                 'RED' => ['value' => 1],
                 'GREEN' => ['value' => 2],
                 'BLUE' => ['value' => 3],
+                'NULL' => ['value' => null],
             ]
         ]);
 
@@ -80,6 +81,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
         $this->runTestCase($testEnum, '3', Utils::undefined());
         $this->runTestCase($testEnum, '"BLUE"', Utils::undefined());
         $this->runTestCase($testEnum, 'null', null);
+        $this->runTestCase($testEnum, 'NULL', null);
     }
 
     /**

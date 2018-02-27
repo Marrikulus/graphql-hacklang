@@ -3,12 +3,10 @@ namespace GraphQL\Tests\Executor;
 
 require_once __DIR__ . '/TestClasses.php';
 
-use GraphQL\Error\Error;
+use GraphQL\Error\InvariantViolation;
 use GraphQL\Executor\Executor;
-use GraphQL\Error\FormattedError;
 use GraphQL\Language\Parser;
-use GraphQL\Language\SourceLocation;
-use GraphQL\Schema;
+use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -155,49 +153,52 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
 
         // errors on null for nested non-null:
         $params = ['input' => ['a' => 'foo', 'b' => 'bar', 'c' => null]];
-        $expected = FormattedError::create(
-            'Variable "$input" got invalid value {"a":"foo","b":"bar","c":null}.'. "\n".
-            'In field "c": Expected "String!", found null.',
-            [new SourceLocation(2, 17)]
-        );
-
-        try {
-            Executor::execute($schema, $ast, null, null, $params);
-            $this->fail('Expected exception not thrown');
-        } catch (Error $err) {
-            $this->assertEquals($expected, Error::formatError($err));
-        }
+        $result = Executor::execute($schema, $ast, null, null, $params);
+        $expected = [
+            'errors' => [
+                [
+                    'message' =>
+                        'Variable "$input" got invalid value {"a":"foo","b":"bar","c":null}.'. "\n".
+                        'In field "c": Expected "String!", found null.',
+                    'locations' => [['line' => 2, 'column' => 17]],
+                    'category' => 'graphql'
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
 
         // errors on incorrect type:
         $params = [ 'input' => 'foo bar' ];
-
-        try {
-            Executor::execute($schema, $ast, null, null, $params);
-            $this->fail('Expected exception not thrown');
-        } catch (Error $error) {
-            $expected = FormattedError::create(
-                'Variable "$input" got invalid value "foo bar".'."\n".
-                'Expected "TestInputObject", found not an object.',
-                [new SourceLocation(2, 17)]
-            );
-            $this->assertEquals($expected, Error::formatError($error));
-        }
+        $result = Executor::execute($schema, $ast, null, null, $params);
+        $expected = [
+            'errors' => [
+                [
+                    'message' =>
+                        'Variable "$input" got invalid value "foo bar".' . "\n" .
+                        'Expected "TestInputObject", found not an object.',
+                    'locations' => [ [ 'line' => 2, 'column' => 17 ] ],
+                    'category' => 'graphql',
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
 
         // errors on omission of nested non-null:
         $params = ['input' => ['a' => 'foo', 'b' => 'bar']];
 
-        try {
-            Executor::execute($schema, $ast, null, null, $params);
-            $this->fail('Expected exception not thrown');
-        } catch (Error $e) {
-            $expected = FormattedError::create(
-                'Variable "$input" got invalid value {"a":"foo","b":"bar"}.'. "\n".
-                'In field "c": Expected "String!", found null.',
-                [new SourceLocation(2, 17)]
-            );
-
-            $this->assertEquals($expected, Error::formatError($e));
-        }
+        $result = Executor::execute($schema, $ast, null, null, $params);
+        $expected = [
+            'errors' => [
+                [
+                    'message' =>
+                        'Variable "$input" got invalid value {"a":"foo","b":"bar"}.'. "\n".
+                        'In field "c": Expected "String!", found null.',
+                    'locations' => [['line' => 2, 'column' => 17]],
+                    'category' => 'graphql',
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
 
         // errors on deep nested errors and with many errors
         $nestedDoc = '
@@ -208,33 +209,37 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $nestedAst = Parser::parse($nestedDoc);
         $params = [ 'input' => [ 'na' => [ 'a' => 'foo' ] ] ];
 
-        try {
-            Executor::execute($schema, $nestedAst, null, null, $params);
-            $this->fail('Expected exception not thrown');
-        } catch (Error $error) {
-            $expected = FormattedError::create(
-                'Variable "$input" got invalid value {"na":{"a":"foo"}}.' . "\n" .
-                'In field "na": In field "c": Expected "String!", found null.' . "\n" .
-                'In field "nb": Expected "String!", found null.',
-                [new SourceLocation(2, 19)]
-            );
-            $this->assertEquals($expected, Error::formatError($error));
-        }
+        $result = Executor::execute($schema, $nestedAst, null, null, $params);
+        $expected = [
+            'errors' => [
+                [
+                    'message' =>
+                        'Variable "$input" got invalid value {"na":{"a":"foo"}}.' . "\n" .
+                        'In field "na": In field "c": Expected "String!", found null.' . "\n" .
+                        'In field "nb": Expected "String!", found null.',
+                    'locations' => [['line' => 2, 'column' => 19]],
+                    'category' => 'graphql',
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
+
 
         // errors on addition of unknown input field
         $params = ['input' => [ 'a' => 'foo', 'b' => 'bar', 'c' => 'baz', 'd' => 'dog' ]];
-
-        try {
-            Executor::execute($schema, $ast, null, null, $params);
-            $this->fail('Expected exception not thrown');
-        } catch (Error $e) {
-            $expected = FormattedError::create(
-                'Variable "$input" got invalid value {"a":"foo","b":"bar","c":"baz","d":"dog"}.'."\n".
-                'In field "d": Expected type "ComplexScalar", found "dog".',
-                [new SourceLocation(2, 17)]
-            );
-            $this->assertEquals($expected, Error::formatError($e));
-        }
+        $result = Executor::execute($schema, $ast, null, null, $params);
+        $expected = [
+            'errors' => [
+                [
+                    'message' =>
+                        'Variable "$input" got invalid value {"a":"foo","b":"bar","c":"baz","d":"dog"}.'."\n".
+                        'In field "d": Expected type "ComplexScalar", found "dog".',
+                    'locations' => [['line' => 2, 'column' => 17]],
+                    'category' => 'graphql',
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
     }
 
     // Describe: Handles nullable scalars
@@ -366,16 +371,18 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         }
         ';
         $ast = Parser::parse($doc);
-        try {
-            Executor::execute($this->schema(), $ast);
-            $this->fail('Expected exception not thrown');
-        } catch (Error $e) {
-            $expected = FormattedError::create(
-                'Variable "$value" of required type "String!" was not provided.',
-                [new SourceLocation(2, 31)]
-            );
-            $this->assertEquals($expected, Error::formatError($e));
-        }
+        $result = Executor::execute($this->schema(), $ast);
+
+        $expected = [
+            'errors' => [
+                [
+                    'message' => 'Variable "$value" of required type "String!" was not provided.',
+                    'locations' => [['line' => 2, 'column' => 31]],
+                    'category' => 'graphql'
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
     }
 
     /**
@@ -389,19 +396,19 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         }
         ';
         $ast = Parser::parse($doc);
-
-        try {
-            Executor::execute($this->schema(), $ast, null, null, ['value' => null]);
-            $this->fail('Expected exception not thrown');
-        } catch (Error $e) {
-            $expected = [
-                'message' =>
-                    'Variable "$value" got invalid value null.' . "\n".
-                    'Expected "String!", found null.',
-                'locations' => [['line' => 2, 'column' => 31]]
-            ];
-            $this->assertEquals($expected, Error::formatError($e));
-        }
+        $result = Executor::execute($this->schema(), $ast, null, null, ['value' => null]);
+        $expected = [
+            'errors' => [
+                [
+                    'message' =>
+                        'Variable "$value" got invalid value null.' . "\n".
+                        'Expected "String!", found null.',
+                    'locations' => [['line' => 2, 'column' => 31]],
+                    'category' => 'graphql',
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
     }
 
     /**
@@ -451,10 +458,52 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
             'errors' => [[
                 'message' => 'Argument "input" of required type "String!" was not provided.',
                 'locations' => [ [ 'line' => 3, 'column' => 9 ] ],
-                'path' => [ 'fieldWithNonNullableStringInput' ]
+                'path' => [ 'fieldWithNonNullableStringInput' ],
+                'category' => 'graphql',
             ]]
         ];
         $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+    }
+
+    /**
+     * @it reports error for array passed into string input
+     */
+    public function testReportsErrorForArrayPassedIntoStringInput()
+    {
+
+        $doc = '
+        query SetsNonNullable($value: String!) {
+          fieldWithNonNullableStringInput(input: $value)
+        }
+        ';
+        $ast = Parser::parse($doc);
+        $variables = ['value' => [1, 2, 3]];
+
+        $expected = [
+            'errors' => [[
+                'message' =>
+                    'Variable "$value" got invalid value [1,2,3].' . "\n" .
+                    'Expected type "String", found array(3).',
+                'category' => 'graphql',
+                'locations' => [
+                    ['line' => 2, 'column' => 31]
+                ]
+            ]]
+        ];
+
+        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, null, $variables)->toArray());
+    }
+
+    /**
+     * @it serializing an array via GraphQLString throws TypeError
+     */
+    public function testSerializingAnArrayViaGraphQLStringThrowsTypeError()
+    {
+        $this->setExpectedException(
+            InvariantViolation::class,
+            'String cannot represent non scalar value: array(3)'
+        );
+        Type::string()->serialize([1, 2, 3]);
     }
 
     /**
@@ -481,7 +530,8 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                     'Argument "input" of required type "String!" was provided the ' .
                     'variable "$foo" which was not provided a runtime value.',
                 'locations' => [['line' => 3, 'column' => 48]],
-                'path' => ['fieldWithNonNullableStringInput']
+                'path' => ['fieldWithNonNullableStringInput'],
+                'category' => 'graphql',
             ]]
         ];
         $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
@@ -546,18 +596,19 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         }
         ';
         $ast = Parser::parse($doc);
-        $expected = FormattedError::create(
-            'Variable "$input" got invalid value null.' . "\n" .
-            'Expected "[String]!", found null.',
-            [new SourceLocation(2, 17)]
-        );
-
-        try {
-            $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, null, ['input' => null])->toArray());
-            $this->fail('Expected exception not thrown');
-        } catch (Error $e) {
-            $this->assertEquals($expected, Error::formatError($e));
-        }
+        $result = Executor::execute($this->schema(), $ast, null, null, ['input' => null]);
+        $expected = [
+            'errors' => [
+                [
+                    'message' =>
+                        'Variable "$input" got invalid value null.' . "\n" .
+                        'Expected "[String]!", found null.',
+                    'locations' => [['line' => 2, 'column' => 17]],
+                    'category' => 'graphql',
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
     }
 
     /**
@@ -633,18 +684,19 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         }
         ';
         $ast = Parser::parse($doc);
-        $expected = FormattedError::create(
-            'Variable "$input" got invalid value ["A",null,"B"].' . "\n" .
-            'In element #1: Expected "String!", found null.',
-            [new SourceLocation(2, 17)]
-        );
-
-        try {
-            Executor::execute($this->schema(), $ast, null, null, ['input' => ['A', null, 'B']]);
-            $this->fail('Expected exception not thrown');
-        } catch (Error $e) {
-            $this->assertEquals($expected, Error::formatError($e));
-        }
+        $result = Executor::execute($this->schema(), $ast, null, null, ['input' => ['A', null, 'B']]);
+        $expected = [
+            'errors' => [
+                [
+                    'message' =>
+                        'Variable "$input" got invalid value ["A",null,"B"].' . "\n" .
+                        'In element #1: Expected "String!", found null.',
+                    'locations' => [ ['line' => 2, 'column' => 17] ],
+                    'category' => 'graphql',
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
     }
 
     /**
@@ -658,17 +710,19 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         }
         ';
         $ast = Parser::parse($doc);
-        $expected = FormattedError::create(
-            'Variable "$input" got invalid value null.' . "\n" .
-            'Expected "[String!]!", found null.',
-            [new SourceLocation(2, 17)]
-        );
-        try {
-            Executor::execute($this->schema(), $ast, null, null, ['input' => null]);
-            $this->fail('Expected exception not thrown');
-        } catch (Error $e) {
-            $this->assertEquals($expected, Error::formatError($e));
-        }
+        $result = Executor::execute($this->schema(), $ast, null, null, ['input' => null]);
+        $expected = [
+            'errors' => [
+                [
+                    'message' =>
+                        'Variable "$input" got invalid value null.' . "\n" .
+                        'Expected "[String!]!", found null.',
+                    'locations' => [ ['line' => 2, 'column' => 17] ],
+                    'category' => 'graphql',
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
     }
 
     /**
@@ -697,17 +751,19 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         }
         ';
         $ast = Parser::parse($doc);
-        $expected = FormattedError::create(
-            'Variable "$input" got invalid value ["A",null,"B"].'."\n".
-            'In element #1: Expected "String!", found null.',
-            [new SourceLocation(2, 17)]
-        );
-        try {
-            Executor::execute($this->schema(), $ast, null, null, ['input' => ['A', null, 'B']]);
-            $this->fail('Expected exception not thrown');
-        } catch (Error $e) {
-            $this->assertEquals($expected, Error::formatError($e));
-        }
+        $result = Executor::execute($this->schema(), $ast, null, null, ['input' => ['A', null, 'B']]);
+        $expected = [
+            'errors' => [
+                [
+                    'message' =>
+                        'Variable "$input" got invalid value ["A",null,"B"].'."\n".
+                        'In element #1: Expected "String!", found null.',
+                    'locations' => [ ['line' => 2, 'column' => 17] ],
+                    'category' => 'graphql',
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
     }
 
     /**
@@ -722,19 +778,19 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         ';
         $ast = Parser::parse($doc);
         $vars = [ 'input' => [ 'list' => [ 'A', 'B' ] ] ];
-
-        try {
-            Executor::execute($this->schema(), $ast, null, null, $vars);
-            $this->fail('Expected exception not thrown');
-        } catch (Error $error) {
-            $expected = [
-                'message' =>
-                    'Variable "$input" expected value of type "TestType!" which cannot ' .
-                    'be used as an input type.',
-                'locations' => [['line' => 2, 'column' => 25]]
-            ];
-            $this->assertEquals($expected, Error::formatError($error));
-        }
+        $result = Executor::execute($this->schema(), $ast, null, null, $vars);
+        $expected = [
+            'errors' => [
+                [
+                    'message' =>
+                        'Variable "$input" expected value of type "TestType!" which cannot ' .
+                        'be used as an input type.',
+                    'locations' => [['line' => 2, 'column' => 25]],
+                    'category' => 'graphql',
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
     }
 
     /**
@@ -750,17 +806,19 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $ast = Parser::parse($doc);
         $vars = ['input' => 'whoknows'];
 
-        try {
-            Executor::execute($this->schema(), $ast, null, null, $vars);
-            $this->fail('Expected exception not thrown');
-        } catch (Error $error) {
-            $expected = FormattedError::create(
-                'Variable "$input" expected value of type "UnknownType!" which ' .
-                'cannot be used as an input type.',
-                [new SourceLocation(2, 25)]
-            );
-            $this->assertEquals($expected, Error::formatError($error));
-        }
+        $result = Executor::execute($this->schema(), $ast, null, null, $vars);
+        $expected = [
+            'errors' => [
+                [
+                    'message' =>
+                        'Variable "$input" expected value of type "UnknownType!" which ' .
+                        'cannot be used as an input type.',
+                    'locations' => [['line' => 2, 'column' => 25]],
+                    'category' => 'graphql',
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $result->toArray());
     }
 
     // Describe: Execute: Uses argument default values
@@ -810,7 +868,8 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                     'Argument "input" got invalid value WRONG_TYPE.' . "\n" .
                     'Expected type "String", found WRONG_TYPE.',
                 'locations' => [ [ 'line' => 2, 'column' => 50 ] ],
-                'path' => [ 'fieldWithDefaultArgumentValue' ]
+                'path' => [ 'fieldWithDefaultArgumentValue' ],
+                'category' => 'graphql',
             ]]
         ];
 

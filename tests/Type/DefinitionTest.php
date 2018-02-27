@@ -3,8 +3,8 @@ namespace GraphQL\Tests\Type;
 
 require_once __DIR__ . '/TestClasses.php';
 
-use GraphQL\Schema;
-use GraphQL\Type\Definition\Config;
+use GraphQL\Type\Definition\CustomScalarType;
+use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
@@ -13,7 +13,7 @@ use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
-use GraphQL\Utils;
+use GraphQL\Utils\Utils;
 
 class DefinitionTest extends \PHPUnit_Framework_TestCase
 {
@@ -243,14 +243,52 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 
         $value = $enumTypeWithDeprecatedValue->getValues()[0];
 
-        $this->assertEquals([
+        $this->assertArraySubset([
             'name' => 'foo',
             'description' => null,
             'deprecationReason' => 'Just because',
-            'value' => 'foo'
+            'value' => 'foo',
+            'astNode' => null
         ], (array) $value);
 
         $this->assertEquals(true, $value->isDeprecated());
+    }
+
+    /**
+     * @it defines an enum type with a value of `null` and `undefined`
+     */
+    public function testDefinesAnEnumTypeWithAValueOfNullAndUndefined()
+    {
+        $EnumTypeWithNullishValue = new EnumType([
+            'name' => 'EnumWithNullishValue',
+            'values' => [
+                'NULL' => ['value' => null],
+                'UNDEFINED' => ['value' => null],
+            ]
+        ]);
+
+        $expected = [
+            [
+                'name' => 'NULL',
+                'description' => null,
+                'deprecationReason' => null,
+                'value' => null,
+                'astNode' => null,
+            ],
+            [
+                'name' => 'UNDEFINED',
+                'description' => null,
+                'deprecationReason' => null,
+                'value' => null,
+                'astNode' => null,
+            ],
+        ];
+
+        $actual = $EnumTypeWithNullishValue->getValues();
+
+        $this->assertEquals(count($expected), count($actual));
+        $this->assertArraySubset($expected[0], (array)$actual[0]);
+        $this->assertArraySubset($expected[1], (array)$actual[1]);
     }
 
     /**
@@ -461,20 +499,18 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             $this->inputObjectType
         ];
 
-        // TODO: extract config validation to separate test
-        Config::enableValidation();
         foreach ($badUnionTypes as $type) {
             try {
-                new UnionType(['name' => 'BadUnion', 'types' => [$type]]);
+                $union = new UnionType(['name' => 'BadUnion', 'types' => [$type]]);
+                $union->assertValid();
                 $this->fail('Expected exception not thrown');
             } catch (\Exception $e) {
                 $this->assertSame(
-                    'Error in "BadUnion" type definition: expecting "ObjectType definition" at "types:0", but got "' . Utils::getVariableType($type) . '"',
+                    'BadUnion may only contain Object types, it cannot contain: ' . Utils::printSafe($type) . '.',
                     $e->getMessage()
                 );
             }
         }
-        Config::disableValidation();
     }
 
     /**
@@ -545,6 +581,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $this->assertTrue($called);
+        $schema->getType('Blog');
 
         $this->assertEquals([$node], $blog->getInterfaces());
         $this->assertEquals([$node], $user->getInterfaces());
@@ -584,8 +621,8 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'mutation' => $someMutation
         ]);
 
-        $this->assertTrue($called);
         $this->assertSame($inputObject, $schema->getType('InputObject'));
+        $this->assertTrue($called);
         $this->assertEquals(count($inputObject->getFields()), 2);
         $this->assertSame($inputObject->getField('nested')->getType(), $inputObject);
         $this->assertSame($someMutation->getField('mutateSomething')->getArg('input')->getType(), $inputObject);
@@ -616,8 +653,8 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'query' => $query
         ]);
 
-        $this->assertTrue($called);
         $this->assertSame($interface, $schema->getType('SomeInterface'));
+        $this->assertTrue($called);
         $this->assertEquals(count($interface->getFields()), 2);
         $this->assertSame($interface->getField('nested')->getType(), $interface);
         $this->assertSame($interface->getField('value')->getType(), Type::string());
@@ -677,5 +714,21 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $otherCustom = new OtherCustom();
         $this->assertEquals('OtherCustom', $otherCustom->name);
     }
-}
 
+    public function testAllowsOverridingInternalTypes()
+    {
+        $idType = new CustomScalarType([
+            'name' => 'ID',
+            'serialize' => function() {},
+            'parseValue' => function() {},
+            'parseLiteral' => function() {}
+        ]);
+
+        $schema = new Schema([
+            'query' => new ObjectType(['name' => 'Query', 'fields' => []]),
+            'types' => [$idType]
+        ]);
+
+        $this->assertSame($idType, $schema->getType('ID'));
+    }
+}

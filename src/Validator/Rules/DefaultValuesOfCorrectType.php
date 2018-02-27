@@ -12,7 +12,7 @@ use GraphQL\Type\Definition\NonNull;
 use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\ValidationContext;
 
-class DefaultValuesOfCorrectType
+class DefaultValuesOfCorrectType extends AbstractValidationRule
 {
     public static function badValueForDefaultArgMessage($varName, $type, $value, $verboseErrors = null)
    : @string {
@@ -27,8 +27,8 @@ class DefaultValuesOfCorrectType
         "Perhaps you meant to use type $guessType.";
     }
 
-    public function __invoke(ValidationContext $context)
-   : @array {
+    public function getVisitor(ValidationContext $context)
+    {
         return [
             NodeKind::VARIABLE_DEFINITION => function(VariableDefinitionNode $varDefNode) use ($context) {
                 $name = $varDefNode->variable->name->value;

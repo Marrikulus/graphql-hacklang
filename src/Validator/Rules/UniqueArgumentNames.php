@@ -8,7 +8,7 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\Visitor;
 use GraphQL\Validator\ValidationContext;
 
-class UniqueArgumentNames
+class UniqueArgumentNames extends AbstractValidationRule
 {
     public static function duplicateArgMessage($argName)
    : @string {
@@ -17,13 +17,13 @@ class UniqueArgumentNames
 
     public $knownArgNames;
 
-    public function __invoke(ValidationContext $context)
-   : @array {
+    public function getVisitor(ValidationContext $context): @array
+    {
         $this->knownArgNames = [];
 
         return [
             NodeKind::FIELD => function () {
-                $this->knownArgNames = [];;
+                $this->knownArgNames = [];
             },
             NodeKind::DIRECTIVE => function () {
                 $this->knownArgNames = [];

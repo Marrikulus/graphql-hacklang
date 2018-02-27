@@ -1,6 +1,8 @@
 <?hh //decl
 namespace GraphQL\Type\Definition;
 
+use GraphQL\Language\AST\DirectiveDefinitionNode;
+
 /**
  * Class Directive
  * @package GraphQL\Type\Definition
@@ -107,7 +109,8 @@ class Directive
                         new FieldArgument([
                             'name' => 'if',
                             'type' => GraphQlType::nonNull(GraphQlType::boolean()),
-                            'description' => 'Skipped when true'
+                            'description' => 'Skipped when true.'
+
                         ])
                     ]
                 ]),
@@ -158,6 +161,16 @@ class Directive
     public $args;
 
     /**
+     * @var DirectiveDefinitionNode|null
+     */
+    public $astNode;
+
+    /**
+     * @var array
+     */
+    public $config;
+
+    /**
      * Directive constructor.
      * @param array $config
      */
@@ -166,5 +179,6 @@ class Directive
         foreach ($config as $key => $value) {
             $this->{$key} = $value;
         }
+        $this->config = $config;
     }
 }

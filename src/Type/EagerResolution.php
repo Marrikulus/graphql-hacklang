@@ -9,8 +9,16 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
-use GraphQL\Utils;
+use GraphQL\Utils\TypeInfo;
+use GraphQL\Utils\Utils;
 
+/**
+ * EXPERIMENTAL!
+ * This class can be removed or changed in future versions without a prior notice.
+ *
+ * Class EagerResolution
+ * @package GraphQL\Type
+ */
 class EagerResolution implements Resolution
 {
     /**
@@ -29,10 +37,12 @@ class EagerResolution implements Resolution
      */
     public function __construct(array $initialTypes)
     {
+        $typeMap = [];
         foreach ($initialTypes as $type) {
-            $this->extractTypes($type);
+            $typeMap = TypeInfo::extractTypes($type, $typeMap);
         }
-        $this->typeMap += GraphQlType::getInternalTypes();
+
+        $this->typeMap = $typeMap + GraphQlType::getInternalTypes();
 
         // Keep track of all possible types for abstract types
         foreach ($this->typeMap as $typeName => $type) {
@@ -104,51 +114,5 @@ class EagerResolution implements Resolution
             'typeMap' => $typeMap,
             'possibleTypeMap' => $possibleTypesMap
         ];
-    }
-
-    /**
-     * @param $type
-     * @return array
-     */
-    private function extractTypes($type)
-    {
-        if (!$type) {
-            return $this->typeMap;
-        }
-
-        if ($type instanceof WrappingType) {
-            return $this->extractTypes($type->getWrappedType(true));
-        }
-
-        if (!empty($this->typeMap[$type->name])) {
-            Utils::invariant(
-                $this->typeMap[$type->name] === $type,
-                "Schema must contain unique named types but contains multiple types named \"$type\"."
-            );
-            return $this->typeMap;
-        }
-        $this->typeMap[$type->name] = $type;
-
-        $nestedTypes = [];
-
-        if ($type instanceof UnionType) {
-            $nestedTypes = $type->getTypes();
-        }
-        if ($type instanceof ObjectType) {
-            $nestedTypes = array_merge($nestedTypes, $type->getInterfaces());
-        }
-        if ($type instanceof ObjectType || $type instanceof InterfaceType || $type instanceof InputObjectType) {
-            foreach ((array) $type->getFields() as $fieldName => $field) {
-                if (isset($field->args)) {
-                    $fieldArgTypes = array_map(function(FieldArgument $arg) { return $arg->getType(); }, $field->args);
-                    $nestedTypes = array_merge($nestedTypes, $fieldArgTypes);
-                }
-                $nestedTypes[] = $field->getType();
-            }
-        }
-        foreach ($nestedTypes as $type) {
-            $this->extractTypes($type);
-        }
-        return $this->typeMap;
     }
 }
