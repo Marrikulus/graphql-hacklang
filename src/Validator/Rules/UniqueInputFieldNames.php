@@ -30,7 +30,7 @@ class UniqueInputFieldNames extends AbstractValidationRule
                     $this->knownNames = [];
                 },
                 'leave' => function() {
-                    $this->knownNames = array_pop($this->knownNameStack);
+                    $this->knownNames = array_pop(&$this->knownNameStack);
                 }
             ],
             NodeKind::OBJECT_FIELD => function(ObjectFieldNode $node) use ($context) {

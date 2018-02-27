@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Utils;
 
 use GraphQL\Error\InvariantViolation;
@@ -7,6 +7,10 @@ use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\WrappingType;
 use \Traversable, \InvalidArgumentException;
 use stdClass;
+
+
+type callback1arg = (function(mixed): mixed);
+type callback2arg = (function(mixed, mixed): mixed);
 
 class Utils
 {
@@ -39,7 +43,7 @@ class Utils
                     Warning::WARNING_ASSIGN
                 );
             }
-            $obj->{$key} = $value;
+            $obj->$key = $value;
         }
         return $obj;
     }
@@ -49,7 +53,7 @@ class Utils
      * @param callable $predicate
      * @return null
      */
-    public static function find($traversable, callable $predicate)
+    public static function find($traversable, callback2arg $predicate)
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
@@ -67,7 +71,7 @@ class Utils
      * @return array
      * @throws \Exception
      */
-    public static function filter($traversable, callable $predicate)
+    public static function filter($traversable, callback2arg $predicate)
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
@@ -91,7 +95,8 @@ class Utils
      * @return array
      * @throws \Exception
      */
-    public static function map($traversable, callable $fn)
+
+    public static function map<T>(array<arraykey,T> $traversable, (function(T, ?arraykey): T) $fn):array<arraykey,T>
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
@@ -108,7 +113,7 @@ class Utils
      * @return array
      * @throws \Exception
      */
-    public static function mapKeyValue($traversable, callable $fn)
+    public static function mapKeyValue($traversable, (function(mixed, mixed): (mixed, mixed)) $fn)
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
@@ -126,7 +131,7 @@ class Utils
      * @return array
      * @throws \Exception
      */
-    public static function keyMap($traversable, callable $keyFn)
+    public static function keyMap($traversable, callback2arg $keyFn)
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
@@ -144,7 +149,7 @@ class Utils
      * @param $traversable
      * @param callable $fn
      */
-    public static function each($traversable, callable $fn)
+    public static function each($traversable, callback2arg $fn)
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
@@ -169,7 +174,7 @@ class Utils
      * @param callable $keyFn function($value, $key) => $newKey(s)
      * @return array
      */
-    public static function groupBy($traversable, callable $keyFn)
+    public static function groupBy($traversable, callback2arg $keyFn)
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
@@ -190,7 +195,7 @@ class Utils
      * @param callable $valFn
      * @return array
      */
-    public static function keyValMap($traversable, callable $keyFn, callable $valFn)
+    public static function keyValMap($traversable, callback1arg $keyFn, callback1arg $valFn)
     {
         $map = [];
         foreach ($traversable as $item) {
@@ -204,7 +209,7 @@ class Utils
      * @param callable $predicate
      * @return bool
      */
-    public static function every($traversable, callable $predicate)
+    public static function every($traversable, callback2arg $predicate)
     {
         foreach ($traversable as $key => $value) {
             if (!$predicate($value, $key)) {
@@ -226,7 +231,7 @@ class Utils
         if (!$test) {
             if (func_num_args() > 2) {
                 $args = func_get_args();
-                array_shift($args);
+                array_shift(&$args);
                 $message = call_user_func_array('sprintf', $args);
             }
             throw new InvariantViolation($message);
@@ -385,7 +390,7 @@ class Utils
         if ($encoding !== 'UCS-4BE') {
             $char = mb_convert_encoding($char, 'UCS-4BE', $encoding);
         }
-        list(, $ord) = unpack('N', $char);
+        list($_, $ord) = unpack('N', $char);
         return $ord;
     }
 
@@ -457,7 +462,7 @@ class Utils
      * @param \ErrorException[] $errors
      * @return \Closure
      */
-    public static function withErrorHandling(callable $fn, array &$errors)
+    public static function withErrorHandling((function(): mixed) $fn, array &$errors)
     {
         return function() use ($fn, &$errors) {
             // Catch custom errors (to report them in query results)

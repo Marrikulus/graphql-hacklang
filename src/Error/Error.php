@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Error;
 
 use GraphQL\Language\Source;
@@ -275,7 +275,7 @@ class Error extends Exception implements \JsonSerializable, ClientAware
             'message' => $this->getMessage()
         ];
 
-        $locations = Utils::map($this->getLocations(), function(SourceLocation $loc) {
+        $locations = Utils::map($this->getLocations(), function(SourceLocation $loc, $key) {
             return $loc->toSerializableArray();
         });
 
