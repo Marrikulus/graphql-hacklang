@@ -10,7 +10,7 @@ use GraphQL\Type\Definition\AbstractType;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Utils\TypeComparators;
 use GraphQL\Utils\TypeInfo;
@@ -252,7 +252,7 @@ class Schema
         foreach ($types as $index => $type) {
             if (!$type instanceof GraphQlType) {
                 throw new InvariantViolation(
-                    'Each entry of schema types must be instance of GraphQL\Type\Definition\Type but entry at %s is %s',
+                    'Each entry of schema types must be instance of GraphQL\Type\Definition\GraphQlType but entry at %s is %s',
                     $index,
                     Utils::printSafe($type)
                 );
