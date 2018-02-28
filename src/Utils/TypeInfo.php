@@ -94,7 +94,7 @@ class TypeInfo
         if ($type instanceof WrappingType) {
             return self::extractTypes($type->getWrappedType(true), $typeMap);
         }
-        if (!$type instanceof Type) {
+        if (!$type instanceof GraphQlType) {
             Warning::warnOnce(
                 'One of the schema types is not a valid type definition instance. '.
                 'Try running $schema->assertValid() to find out the cause of this warning.',
@@ -222,7 +222,7 @@ class TypeInfo
     }
 
     /**
-     * @return Type
+     * @return GraphQlType
      */
     public function getType()
     {
@@ -233,7 +233,7 @@ class TypeInfo
     }
 
     /**
-     * @return Type
+     * @return GraphQlType
      */
     public function getParentType()
     {

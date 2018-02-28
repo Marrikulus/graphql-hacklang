@@ -7,18 +7,18 @@ use GraphQL\Type\Definition\CompositeType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class TypeComparators
 {
     /**
      * Provided two types, return true if the types are equal (invariant).
      *
-     * @param Type $typeA
-     * @param Type $typeB
+     * @param GraphQlType $typeA
+     * @param GraphQlType $typeB
      * @return bool
      */
-    public static function isEqualType(Type $typeA, Type $typeB)
+    public static function isEqualType(GraphQlType $typeA, GraphQlType $typeB)
     {
         // Equivalent types are equal.
         if ($typeA === $typeB) {
@@ -44,11 +44,11 @@ class TypeComparators
      * equal or a subset of the second super type (covariant).
      *
      * @param Schema $schema
-     * @param Type $maybeSubType
-     * @param Type $superType
+     * @param GraphQlType $maybeSubType
+     * @param GraphQlType $superType
      * @return bool
      */
-    static function isTypeSubTypeOf(Schema $schema, Type $maybeSubType, Type $superType)
+    static function isTypeSubTypeOf(Schema $schema, GraphQlType $maybeSubType, GraphQlType $superType)
     {
         // Equivalent type is a valid subtype
         if ($maybeSubType === $superType) {
@@ -79,7 +79,7 @@ class TypeComparators
 
         // If superType type is an abstract type, maybeSubType type may be a currently
         // possible object type.
-        if (Type::isAbstractType($superType) && $maybeSubType instanceof ObjectType && $schema->isPossibleType($superType, $maybeSubType)) {
+        if (GraphQlType::isAbstractType($superType) && $maybeSubType instanceof ObjectType && $schema->isPossibleType($superType, $maybeSubType)) {
             return true;
         }
 

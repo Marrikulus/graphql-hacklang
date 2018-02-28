@@ -72,7 +72,7 @@ class Schema
      */
     public function __construct($config)
     {
-        if (func_num_args() > 1 || $config instanceof Type) {
+        if (func_num_args() > 1 || $config instanceof GraphQlType) {
             trigger_error(
                 'GraphQL\Schema constructor expects config object now instead of types passed as arguments. '.
                 'See https://github.com/webonyx/graphql-php/issues/36',
@@ -130,7 +130,7 @@ class Schema
                 $this->resolvedTypes[$type->name] = $type;
             }
         }
-        $this->resolvedTypes += Type::getInternalTypes() + Introspection::getTypes();
+        $this->resolvedTypes += GraphQlType::getInternalTypes() + Introspection::getTypes();
 
         if (!$this->config->typeLoader) {
             // Perform full scan of the schema
@@ -250,7 +250,7 @@ class Schema
         }
 
         foreach ($types as $index => $type) {
-            if (!$type instanceof Type) {
+            if (!$type instanceof GraphQlType) {
                 throw new InvariantViolation(
                     'Each entry of schema types must be instance of GraphQL\Type\Definition\Type but entry at %s is %s',
                     $index,
@@ -313,7 +313,7 @@ class Schema
 
         $type = $typeLoader($typeName);
 
-        if (!$type instanceof Type) {
+        if (!$type instanceof GraphQlType) {
             throw new InvariantViolation(
                 "Type loader is expected to return valid type \"$typeName\", but it returned " . Utils::printSafe($type)
             );
@@ -413,7 +413,7 @@ class Schema
             );
         }
 
-        $internalTypes = Type::getInternalTypes() + Introspection::getTypes();
+        $internalTypes = GraphQlType::getInternalTypes() + Introspection::getTypes();
 
         foreach ($this->getTypeMap() as $name => $type) {
             if (isset($internalTypes[$name])) {

@@ -9,7 +9,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\Directive;
 
@@ -62,11 +62,11 @@ class SchemaPrinter
     private static function isBuiltInScalar($typename)
     {
         return (
-            $typename === Type::STRING ||
-            $typename === Type::BOOLEAN ||
-            $typename === Type::INT ||
-            $typename === Type::FLOAT ||
-            $typename === Type::ID
+            $typename === GraphQlType::STRING ||
+            $typename === GraphQlType::BOOLEAN ||
+            $typename === GraphQlType::INT ||
+            $typename === GraphQlType::FLOAT ||
+            $typename === GraphQlType::ID
         );
     }
 
@@ -145,7 +145,7 @@ class SchemaPrinter
         return true;
     }
 
-    public static function printType(Type $type)
+    public static function printType(GraphQlType $type)
     {
         if ($type instanceof ScalarType) {
             return self::printScalar($type);
@@ -274,7 +274,7 @@ class SchemaPrinter
             return ' @deprecated';
         }
         return ' @deprecated(reason: ' .
-            Printer::doPrint(AST::astFromValue($reason, Type::string())) . ')';
+            Printer::doPrint(AST::astFromValue($reason, GraphQlType::string())) . ')';
     }
 
     private static function printDescription($def, $indentation = '', $firstInBlock = true)

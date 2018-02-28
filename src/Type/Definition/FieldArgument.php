@@ -110,7 +110,7 @@ class FieldArgument
         return $this->defaultValueExists;
     }
 
-    public function assertValid(FieldDefinition $parentField, Type $parentType)
+    public function assertValid(FieldDefinition $parentField, GraphQlType $parentType)
     {
         try {
             Utils::assertValidName($this->name);

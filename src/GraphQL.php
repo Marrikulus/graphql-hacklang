@@ -11,7 +11,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Language\Source;
 use GraphQL\Executor\Promise\PromiseAdapter;
 use GraphQL\Type\Definition\Directive;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\Rules\AbstractValidationRule;
 use GraphQL\Validator\Rules\QueryComplexity;
@@ -257,7 +257,7 @@ class GraphQL
      */
     public static function getStandardTypes()
     {
-        return array_values(Type::getInternalTypes());
+        return array_values(GraphQlType::getInternalTypes());
     }
 
     /**

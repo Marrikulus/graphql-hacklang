@@ -28,7 +28,7 @@ use GraphQL\Type\Definition\FieldArgument;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\CustomScalarType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Introspection;
 
@@ -43,15 +43,15 @@ class BuildSchema
      * @param TypeNode $inputTypeNode
      * @return Type 
      */
-    private function buildWrappedType(Type $innerType, TypeNode $inputTypeNode)
+    private function buildWrappedType(GraphQlType $innerType, TypeNode $inputTypeNode)
     {
         if ($inputTypeNode->kind == NodeKind::LIST_TYPE) {
-            return Type::listOf($this->buildWrappedType($innerType, $inputTypeNode->type));
+            return GraphQlType::listOf($this->buildWrappedType($innerType, $inputTypeNode->type));
         }
         if ($inputTypeNode->kind == NodeKind::NON_NULL_TYPE) {
             $wrappedType = $this->buildWrappedType($innerType, $inputTypeNode->type);
             Utils::invariant(!($wrappedType instanceof NonNull), 'No nesting nonnull.');
-            return Type::nonNull($wrappedType);
+            return GraphQlType::nonNull($wrappedType);
         }
         return $innerType;
     }
@@ -190,11 +190,11 @@ class BuildSchema
         }
 
         $this->innerTypeMap = [
-            'String' => Type::string(),
-            'Int' => Type::int(),
-            'Float' => Type::float(),
-            'Boolean' => Type::boolean(),
-            'ID' => Type::id(),
+            'String' => GraphQlType::string(),
+            'Int' => GraphQlType::int(),
+            'Float' => GraphQlType::float(),
+            'Boolean' => GraphQlType::boolean(),
+            'ID' => GraphQlType::id(),
             '__Schema' => Introspection::_schema(),
             '__Directive' => Introspection::_directive(),
             '__DirectiveLocation' => Introspection::_directiveLocation(),
@@ -289,14 +289,14 @@ class BuildSchema
     private function produceInputType(TypeNode $typeNode)
     {
         $type = $this->produceType($typeNode);
-        Utils::invariant(Type::isInputType($type), 'Expected Input type.');
+        Utils::invariant(GraphQlType::isInputType($type), 'Expected Input type.');
         return $type;
     }
 
     private function produceOutputType(TypeNode $typeNode)
     {
         $type = $this->produceType($typeNode);
-        Utils::invariant(Type::isOutputType($type), 'Expected Input type.');
+        Utils::invariant(GraphQlType::isOutputType($type), 'Expected Input type.');
         return $type;
     }
 

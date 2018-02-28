@@ -12,7 +12,7 @@ use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 
@@ -217,7 +217,7 @@ class FindBreakingChanges
      *
      * @throws \TypeError
      */
-    private static function typeKindName(Type $type)
+    private static function typeKindName(GraphQlType $type)
     {
         if ($type instanceof ScalarType) {
             return 'a Scalar type';
@@ -339,7 +339,7 @@ class FindBreakingChanges
     }
 
     private static function isChangeSafeForObjectOrInterfaceField(
-        Type $oldType, Type $newType
+        GraphQlType $oldType, GraphQlType $newType
     )
     {
         if (self::isNamedType($oldType)) {
@@ -373,7 +373,7 @@ class FindBreakingChanges
      * @return bool
      */
     private static function isChangeSafeForInputObjectFieldOrFieldArg(
-        Type $oldType, Type $newType
+        GraphQlType $oldType, GraphQlType $newType
     )
     {
         if (self::isNamedType($oldType)) {
@@ -569,7 +569,7 @@ class FindBreakingChanges
      *
      * @return bool
      */
-    private static function isNamedType(Type $type)
+    private static function isNamedType(GraphQlType $type)
     {
         return (
             $type instanceof ScalarType ||
