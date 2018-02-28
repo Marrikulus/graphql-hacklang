@@ -91,7 +91,7 @@ class FieldDefinition
         ]);
     }
 
-    public static function defineFieldMap(Type $type, $fields)
+    public static function defineFieldMap(GraphQlType $type, $fields)
     {
         if (is_callable($fields)) {
             $fields = $fields();
@@ -215,7 +215,7 @@ class FieldDefinition
     }
 
     /**
-     * @return Type
+     * @return GraphQlType
      */
     public function getType()
     {
@@ -239,10 +239,10 @@ class FieldDefinition
     }
 
     /**
-     * @param Type $parentType
+     * @param GraphQlType $parentType
      * @throws InvariantViolation
      */
-    public function assertValid(Type $parentType)
+    public function assertValid(GraphQlType $parentType)
     {
         try {
             Utils::assertValidName($this->name);

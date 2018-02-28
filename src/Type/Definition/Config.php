@@ -197,7 +197,7 @@ class Config
 
                 foreach ($value as $arrKey => $arrValue) {
                     if (is_array($def->definition)) {
-                        if ($def->flags & self::MAYBE_TYPE && $arrValue instanceof Type) {
+                        if ($def->flags & self::MAYBE_TYPE && $arrValue instanceof GraphQlType) {
                             $arrValue = ['type' => $arrValue];
                         }
                         if ($def->flags & self::MAYBE_NAME && is_string($arrValue)) {
