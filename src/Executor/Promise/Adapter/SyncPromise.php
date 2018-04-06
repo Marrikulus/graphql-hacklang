@@ -135,8 +135,6 @@ class SyncPromise
                         $promise->resolve($onFulfilled ? $onFulfilled($this->result) : $this->result);
                     } catch (\Exception $e) {
                         $promise->reject($e);
-                    } catch (\Throwable $e) {
-                        $promise->reject($e);
                     }
                 } else if ($this->state === self::REJECTED) {
                     try {
@@ -146,8 +144,6 @@ class SyncPromise
                             $promise->reject($this->result);
                         }
                     } catch (\Exception $e) {
-                        $promise->reject($e);
-                    } catch (\Throwable $e) {
                         $promise->reject($e);
                     }
                 }

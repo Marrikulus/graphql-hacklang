@@ -291,11 +291,6 @@ class Values
                     "Expected type \"{$type->name}\", found " . Utils::printSafeJson($value) . ': ' .
                     $e->getMessage()
                 ];
-            } catch (\Throwable $e) {
-                return [
-                    "Expected type \"{$type->name}\", found " . Utils::printSafeJson($value) . ': ' .
-                    $e->getMessage()
-                ];
             }
         }
 

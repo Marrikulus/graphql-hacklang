@@ -750,8 +750,6 @@ class Executor
             return $resolveFn($source, $args, $context, $info);
         } catch (\Exception $error) {
             return $error;
-        } catch (\Throwable $error) {
-            return $error;
         }
     }
 
@@ -852,8 +850,6 @@ class Executor
             }
             return $completed;
         } catch (\Exception $error) {
-            throw Error::createLocatedError($error, $fieldNodes, $path);
-        } catch (\Throwable $error) {
             throw Error::createLocatedError($error, $fieldNodes, $path);
         }
     }

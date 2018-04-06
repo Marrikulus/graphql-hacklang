@@ -342,16 +342,6 @@ class BuildSchema
                     null,
                     $e
                 );
-            } catch (\Throwable $e) {
-                throw new Error(
-                    "Type config decorator passed to " . (static::class) . " threw an error ".
-                    "when building $typeName type: {$e->getMessage()}",
-                    null,
-                    null,
-                    null,
-                    null,
-                    $e
-                );
             }
             if (!is_array($config) || isset($config[0])) {
                 throw new Error(
