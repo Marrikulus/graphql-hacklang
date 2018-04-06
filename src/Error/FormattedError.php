@@ -95,7 +95,7 @@ class FormattedError
      * @return array
      * @throws \Throwable
      */
-    public static function addDebugEntries(array $formattedError, $e, $debug)
+    public static function addDebugEntries(array $formattedError, $e, int $debug)
     {
         if (!$debug) {
             return $formattedError;
@@ -150,7 +150,7 @@ class FormattedError
      * @param $debug
      * @return callable|\Closure
      */
-    public static function prepareFormatter(?callable $formatter = null, bool $debug = false)
+    public static function prepareFormatter(?callable $formatter = null, int $debug = 0)
     {
         $formatter = $formatter ?: function($e) {
             return FormattedError::createFromException($e);

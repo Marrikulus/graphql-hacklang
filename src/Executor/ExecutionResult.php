@@ -121,7 +121,7 @@ class ExecutionResult implements \JsonSerializable
      * @param bool|int $debug
      * @return array
      */
-    public function toArray($debug = false)
+    public function toArray(int $debug = 0)
     {
         $result = [];
 

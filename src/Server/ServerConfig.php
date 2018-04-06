@@ -1,4 +1,4 @@
-<?php
+<?hh //partial
 namespace GraphQL\Server;
 
 use GraphQL\Error\InvariantViolation;
@@ -31,7 +31,7 @@ class ServerConfig
      */
     public static function create(array $config = [])
     {
-        $instance = new static();
+        $instance = new ServerConfig();
         foreach ($config as $key => $value) {
             $method = 'set' . ucfirst($key);
             if (!method_exists($instance, $method)) {
@@ -70,7 +70,7 @@ class ServerConfig
     /**
      * @var bool
      */
-    private $debug = false;
+    private int $debug = 0;
 
     /**
      * @var bool
@@ -102,7 +102,7 @@ class ServerConfig
      * @param Schema $schema
      * @return $this
      */
-    public function setSchema(Schema $schema)
+    public function setSchema(Schema $schema):this
     {
         $this->schema = $schema;
         return $this;
@@ -113,7 +113,7 @@ class ServerConfig
      * @param mixed|\Closure $context
      * @return $this
      */
-    public function setContext($context)
+    public function setContext($context):this
     {
         $this->context = $context;
         return $this;
@@ -124,7 +124,7 @@ class ServerConfig
      * @param mixed|\Closure $rootValue
      * @return $this
      */
-    public function setRootValue($rootValue)
+    public function setRootValue($rootValue):this
     {
         $this->rootValue = $rootValue;
         return $this;
@@ -137,7 +137,7 @@ class ServerConfig
      * @param callable $errorFormatter
      * @return $this
      */
-    public function setErrorFormatter(callable $errorFormatter)
+    public function setErrorFormatter(callable $errorFormatter):this
     {
         $this->errorFormatter = $errorFormatter;
         return $this;
@@ -150,7 +150,7 @@ class ServerConfig
      * @param callable $handler
      * @return $this
      */
-    public function setErrorsHandler(callable $handler)
+    public function setErrorsHandler(callable $handler):this
     {
         $this->errorsHandler = $handler;
         return $this;
@@ -163,7 +163,7 @@ class ServerConfig
      * @param array|callable
      * @return $this
      */
-    public function setValidationRules($validationRules)
+    public function setValidationRules($validationRules):this
     {
         if (!is_callable($validationRules) && !is_array($validationRules) && $validationRules !== null) {
             throw new InvariantViolation(
@@ -181,7 +181,7 @@ class ServerConfig
      * @param callable $fieldResolver
      * @return $this
      */
-    public function setFieldResolver(callable $fieldResolver)
+    public function setFieldResolver(callable $fieldResolver):this
     {
         $this->fieldResolver = $fieldResolver;
         return $this;
@@ -196,7 +196,7 @@ class ServerConfig
      * @param callable $persistentQueryLoader
      * @return $this
      */
-    public function setPersistentQueryLoader(callable $persistentQueryLoader)
+    public function setPersistentQueryLoader(callable $persistentQueryLoader):this
     {
         $this->persistentQueryLoader = $persistentQueryLoader;
         return $this;
@@ -209,7 +209,7 @@ class ServerConfig
      * @param bool|int $set
      * @return $this
      */
-    public function setDebug($set = true)
+    public function setDebug(int $set = 1):this
     {
         $this->debug = $set;
         return $this;
@@ -222,7 +222,7 @@ class ServerConfig
      * @param bool $enableBatching
      * @return $this
      */
-    public function setQueryBatching($enableBatching)
+    public function setQueryBatching($enableBatching):this
     {
         $this->queryBatching = (bool) $enableBatching;
         return $this;
@@ -233,7 +233,7 @@ class ServerConfig
      * @param PromiseAdapter $promiseAdapter
      * @return $this
      */
-    public function setPromiseAdapter(PromiseAdapter $promiseAdapter)
+    public function setPromiseAdapter(PromiseAdapter $promiseAdapter):this
     {
         $this->promiseAdapter = $promiseAdapter;
         return $this;
@@ -258,7 +258,7 @@ class ServerConfig
     /**
      * @return Schema
      */
-    public function getSchema()
+    public function getSchema():Schema
     {
         return $this->schema;
     }
@@ -314,7 +314,7 @@ class ServerConfig
     /**
      * @return bool
      */
-    public function getDebug()
+    public function getDebug():int
     {
         return $this->debug;
     }
@@ -322,7 +322,7 @@ class ServerConfig
     /**
      * @return bool
      */
-    public function getQueryBatching()
+    public function getQueryBatching():bool
     {
         return $this->queryBatching;
     }
