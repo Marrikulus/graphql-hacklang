@@ -1,4 +1,4 @@
-<?php
+<?hh //partial
 namespace GraphQL\Server;
 
 /**
@@ -45,7 +45,7 @@ class OperationParams
     /**
      * @var bool
      */
-    private $readOnly;
+    private bool $readOnly = false;
 
     /**
      * Creates an instance from given array
@@ -55,9 +55,9 @@ class OperationParams
      * @param bool $readonly
      * @return OperationParams
      */
-    public static function create(array $params, $readonly = false)
+    public static function create(array $params, $readonly = false):OperationParams
     {
-        $instance = new static();
+        $instance = new OperationParams();
 
         $params = array_change_key_case($params, CASE_LOWER);
         $instance->originalInput = $params;
@@ -108,7 +108,7 @@ class OperationParams
      * @api
      * @return bool
      */
-    public function isReadOnly()
+    public function isReadOnly():bool
     {
         return $this->readOnly;
     }

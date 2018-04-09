@@ -1,4 +1,4 @@
-<?hh // decl
+<?hh // partial
 namespace GraphQL\Utils;
 
 use GraphQL\Error\InvariantViolation;
@@ -64,7 +64,7 @@ class AST
      * @param array $node
      * @return Node
      */
-    public static function fromArray(array $node)
+    public static function fromArray(array $node):Node
     {
         if (!isset($node['kind']) || !isset(NodeKind::$classMap[$node['kind']])) {
             throw new InvariantViolation("Unexpected node structure: " . Utils::printSafeJson($node));
@@ -87,7 +87,7 @@ class AST
                 if (isset($value[0]) || empty($value)) {
                     $value = new NodeList($value);
                 } else {
-                    $value = self::fromArray($value);
+                    $value = AST::fromArray($value);
                 }
             }
             $instance->{$key} = $value;
@@ -130,10 +130,10 @@ class AST
      * @param InputType $type
      * @return ObjectValueNode|ListValueNode|BooleanValueNode|IntValueNode|FloatValueNode|EnumValueNode|StringValueNode|NullValueNode
      */
-    public static function astFromValue($value, InputType $type)
+    public static function astFromValue(mixed $value, InputType $type):?Node
     {
         if ($type instanceof NonNull) {
-            $astValue = self::astFromValue($value, $type->getWrappedType());
+            $astValue = AST::astFromValue($value, $type->getWrappedType());
             if ($astValue instanceof NullValueNode) {
                 return null;
             }
@@ -151,14 +151,14 @@ class AST
             if (is_array($value) || ($value instanceof \Traversable)) {
                 $valuesNodes = [];
                 foreach ($value as $item) {
-                    $itemNode = self::astFromValue($item, $itemType);
+                    $itemNode = AST::astFromValue($item, $itemType);
                     if ($itemNode) {
                         $valuesNodes[] = $itemNode;
                     }
                 }
                 return new ListValueNode(['values' => $valuesNodes]);
             }
-            return self::astFromValue($value, $itemType);
+            return AST::astFromValue($value, $itemType);
         }
 
         // Populate the fields of the input object by creating ASTs from each value
@@ -192,7 +192,7 @@ class AST
                 }
 
                 if ($fieldExists) {
-                    $fieldNode = self::astFromValue($fieldValue, $field->getType());
+                    $fieldNode = AST::astFromValue($fieldValue, $field->getType());
 
                     if ($fieldNode) {
                         $fieldNodes[] = new ObjectFieldNode([
@@ -278,7 +278,7 @@ class AST
      * @return array|null|\stdClass
      * @throws \Exception
      */
-    public static function valueFromAST($valueNode, InputType $type, $variables = null)
+    public static function valueFromAST(Node $valueNode, InputType $type, $variables = null):mixed
     {
         $undefined = Utils::undefined();
 
@@ -293,7 +293,7 @@ class AST
                 // Invalid: intentionally return no value.
                 return $undefined;
             }
-            return self::valueFromAST($valueNode, $type->getWrappedType(), $variables);
+            return AST::valueFromAST($valueNode, $type->getWrappedType(), $variables);
         }
 
         if ($valueNode instanceof NullValueNode) {
@@ -321,7 +321,7 @@ class AST
                 $coercedValues = [];
                 $itemNodes = $valueNode->values;
                 foreach ($itemNodes as $itemNode) {
-                    if (self::isMissingVariable($itemNode, $variables)) {
+                    if (AST::isMissingVariable($itemNode, $variables)) {
                         // If an array contains a missing variable, it is either coerced to
                         // null or if the item type is non-null, it considered invalid.
                         if ($itemType instanceof NonNull) {
@@ -330,7 +330,7 @@ class AST
                         }
                         $coercedValues[] = null;
                     } else {
-                        $itemValue = self::valueFromAST($itemNode, $itemType, $variables);
+                        $itemValue = AST::valueFromAST($itemNode, $itemType, $variables);
                         if ($undefined === $itemValue) {
                             // Invalid: intentionally return no value.
                             return $undefined;
@@ -340,7 +340,7 @@ class AST
                 }
                 return $coercedValues;
             }
-            $coercedValue = self::valueFromAST($valueNode, $itemType, $variables);
+            $coercedValue = AST::valueFromAST($valueNode, $itemType, $variables);
             if ($undefined === $coercedValue) {
                 // Invalid: intentionally return no value.
                 return $undefined;
@@ -362,7 +362,7 @@ class AST
                 $fieldName = $field->name;
                 $fieldNode = isset($fieldNodes[$fieldName]) ? $fieldNodes[$fieldName] : null;
 
-                if (!$fieldNode || self::isMissingVariable($fieldNode->value, $variables)) {
+                if (!$fieldNode || AST::isMissingVariable($fieldNode->value, $variables)) {
                     if ($field->defaultValueExists()) {
                         $coercedObj[$fieldName] = $field->defaultValue;
                     } else if ($field->getType() instanceof NonNull) {
@@ -372,7 +372,7 @@ class AST
                     continue ;
                 }
 
-                $fieldValue = self::valueFromAST($fieldNode ? $fieldNode->value : null, $field->getType(), $variables);
+                $fieldValue = AST::valueFromAST($fieldNode ? $fieldNode->value : null, $field->getType(), $variables);
 
                 if ($undefined === $fieldValue) {
                     // Invalid: intentionally return no value.
@@ -407,14 +407,14 @@ class AST
      * @return Type
      * @throws InvariantViolation
      */
-    public static function typeFromAST(Schema $schema, $inputTypeNode)
+    public static function typeFromAST(Schema $schema, Node $inputTypeNode)
     {
         if ($inputTypeNode instanceof ListTypeNode) {
-            $innerType = self::typeFromAST($schema, $inputTypeNode->type);
+            $innerType = AST::typeFromAST($schema, $inputTypeNode->type);
             return $innerType ? new ListOfType($innerType) : null;
         }
         if ($inputTypeNode instanceof NonNullTypeNode) {
-            $innerType = self::typeFromAST($schema, $inputTypeNode->type);
+            $innerType = AST::typeFromAST($schema, $inputTypeNode->type);
             return $innerType ? new NonNull($innerType) : null;
         }
 
@@ -429,7 +429,7 @@ class AST
      * @param $variables
      * @return bool
      */
-    private static function isMissingVariable($valueNode, $variables)
+    private static function isMissingVariable($valueNode, $variables):bool
     {
         return $valueNode instanceof VariableNode &&
         (!$variables || !array_key_exists($valueNode->name->value, $variables));
@@ -443,7 +443,7 @@ class AST
      * @param string $operationName
      * @return bool
      */
-    public static function getOperation(DocumentNode $document, $operationName = null)
+    public static function getOperation(DocumentNode $document, ?string $operationName = null)
     {
         if ($document->definitions) {
             foreach ($document->definitions as $def) {

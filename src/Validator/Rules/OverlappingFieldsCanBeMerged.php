@@ -1,4 +1,4 @@
-<?hh // decl
+<?hh
 namespace GraphQL\Validator\Rules;
 
 
@@ -266,7 +266,7 @@ class OverlappingFieldsCanBeMerged extends AbstractValidationRule
      * @param OutputType $type2
      * @return bool
      */
-    private function doTypesConflict(OutputType $type1, OutputType $type2)
+    private function doTypesConflict(OutputType $type1, OutputType $type2):bool
     {
         if ($type1 instanceof ListOfType) {
             return $type2 instanceof ListOfType ?
@@ -329,10 +329,12 @@ class OverlappingFieldsCanBeMerged extends AbstractValidationRule
                     }
                     $responseName = $selection->alias ? $selection->alias->value : $fieldName;
 
-                    if (!isset($_astAndDefs[$responseName])) {
-                        $_astAndDefs[$responseName] = new \ArrayObject();
+                    if (!$_astAndDefs->offsetExists($responseName))
+                    {
+                        $_astAndDefs->offsetSet($responseName, new \ArrayObject())
                     }
-                    $_astAndDefs[$responseName][] = [$parentType, $selection, $fieldDef];
+                    $_astAndDefs->offsetGet($responseName)->append([$parentType, $selection, $fieldDef]);
+                    //$_astAndDefs[$responseName][] = [$parentType, $selection, $fieldDef];
                     break;
                 case NodeKind::INLINE_FRAGMENT:
                     $typeCondition = $selection->typeCondition;
@@ -351,10 +353,12 @@ class OverlappingFieldsCanBeMerged extends AbstractValidationRule
                 case NodeKind::FRAGMENT_SPREAD:
                     /** @var FragmentSpreadNode $selection */
                     $fragName = $selection->name->value;
-                    if (!empty($_visitedFragmentNames[$fragName])) {
+                    // !empty($_visitedFragmentNames[$fragName])
+                    if ($_visitedFragmentNames->offsetExists($fragName) && $_visitedFragmentNames->offsetGet($fragName) !== null)
+                    {
                         continue;
                     }
-                    $_visitedFragmentNames[$fragName] = true;
+                    $_visitedFragmentNames->offsetSet($fragName, true);
                     $fragment = $context->getFragment($fragName);
                     if (!$fragment) {
                         continue;

@@ -1,4 +1,4 @@
-<?php
+<?hh //partial
 namespace GraphQL\Validator\Rules;
 
 use GraphQL\Validator\ValidationContext;
@@ -24,5 +24,5 @@ abstract class AbstractValidationRule
      * @param ValidationContext $context
      * @return array
      */
-    abstract public function getVisitor(ValidationContext $context);
+    abstract public function getVisitor(ValidationContext $context): array;
 }

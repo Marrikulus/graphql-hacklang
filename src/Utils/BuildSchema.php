@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Utils;
 
 use GraphQL\Error\Error;
@@ -81,7 +81,7 @@ class BuildSchema
      * @return Schema
      * @throws Error
      */
-    public static function buildAST(DocumentNode $ast, callable $typeConfigDecorator = null)
+    public static function buildAST(DocumentNode $ast, ?callable $typeConfigDecorator = null):Schema
     {
         $builder = new self($ast, $typeConfigDecorator);
         return $builder->buildSchema();
@@ -93,14 +93,14 @@ class BuildSchema
     private $typeConfigDecorator;
     private $loadedTypeDefs;
 
-    public function __construct(DocumentNode $ast, callable $typeConfigDecorator = null)
+    public function __construct(DocumentNode $ast, ?callable $typeConfigDecorator = null)
     {
         $this->ast = $ast;
         $this->typeConfigDecorator = $typeConfigDecorator;
         $this->loadedTypeDefs = [];
     }
-    
-    public function buildSchema()
+
+    public function buildSchema():Schema
     {
         $schemaDef = null;
         $typeDefs = [];
@@ -256,7 +256,7 @@ class BuildSchema
         return $schema;
     }
 
-    private function getDirective(DirectiveDefinitionNode $directiveNode)
+    private function getDirective(DirectiveDefinitionNode $directiveNode):Directive
     {
         return new Directive([
             'name' => $directiveNode->name->value,
@@ -383,7 +383,7 @@ class BuildSchema
         }
     }
 
-    private function makeSchemaDef($def, array $config = null)
+    private function makeSchemaDef($def, ?array $config = null)
     {
         if (!$def) {
             throw new Error('def must be defined.');
@@ -567,10 +567,10 @@ class BuildSchema
      * @param EnumValueDefinitionNode | FieldDefinitionNode $node
      * @return string
      */
-    private function getDeprecationReason($node)
+    private function getDeprecationReason($node):?string
     {
         $deprecated = Values::getDirectiveValues(Directive::deprecatedDirective(), $node);
-        return isset($deprecated['reason']) ? $deprecated['reason'] : null;
+        return array_key_exists('reason', $deprecated) ? $deprecated['reason'] : null;
     }
 
     /**
@@ -615,19 +615,19 @@ class BuildSchema
      * @param callable $typeConfigDecorator
      * @return Schema
      */
-    public static function build($source, callable $typeConfigDecorator = null)
+    public static function build($source, ?callable $typeConfigDecorator = null)
     {
         $doc = $source instanceof DocumentNode ? $source : Parser::parse($source);
         return self::buildAST($doc, $typeConfigDecorator);
     }
 
     // Count the number of spaces on the starting side of a string.
-    private function leadingSpaces($str)
+    private function leadingSpaces(string $str):int
     {
         return strlen($str) - strlen(ltrim($str));
     }
 
-    public function cannotExecuteSchema()
+    public function cannotExecuteSchema():void
     {
         throw new Error(
             'Generated Schema cannot use Interface or Union types for execution.'

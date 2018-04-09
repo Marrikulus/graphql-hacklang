@@ -92,7 +92,7 @@ abstract class Node
      * @param bool $recursive
      * @return array
      */
-    public function toArray($recursive = false)
+    public function toArray(bool $recursive = false)
     {
         if ($recursive) {
             return $this->recursiveToArray($this);

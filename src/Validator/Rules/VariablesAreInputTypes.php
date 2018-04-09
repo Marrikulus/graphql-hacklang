@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Validator\Rules;
 
 
@@ -19,7 +19,7 @@ class VariablesAreInputTypes extends AbstractValidationRule
         return "Variable \"\$$variableName\" cannot be non-input type \"$typeName\".";
     }
 
-    public function getVisitor(ValidationContext $context)
+    public function getVisitor(ValidationContext $context): array
     {
         return [
             NodeKind::VARIABLE_DEFINITION => function(VariableDefinitionNode $node) use ($context) {

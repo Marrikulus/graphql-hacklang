@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL;
 
 use GraphQL\Error\Error;
@@ -193,7 +193,7 @@ class Server
      * @param int $debug
      * @return Server
      */
-    public function setDebug($debug = self::DEBUG_ALL)
+    public function setDebug(int $debug = self::DEBUG_ALL)
     {
         $this->debug = (int) $debug;
         return $this;
@@ -241,7 +241,7 @@ class Server
      * @param Schema $schema
      * @return $this
      */
-    public function setSchema(Schema $schema)
+    public function setSchema(Schema $schema):this
     {
         if ($this->queryType) {
             $err = 'Query Type is already set';
@@ -290,7 +290,7 @@ class Server
     /**
      * @return Schema
      */
-    public function getSchema()
+    public function getSchema():Schema
     {
         if (null === $this->schema) {
             $this->schema = new Schema([
@@ -388,7 +388,7 @@ class Server
      * @return Language\AST\DocumentNode
      * @throws \GraphQL\Error\SyntaxError
      */
-    public function parse($query)
+    public function parse(string $query)
     {
         return Parser::parse($query);
     }
@@ -487,7 +487,7 @@ class Server
      * @param string|null $operationName
      * @return ExecutionResult
      */
-    public function executeQuery($query, array $variables = null, $operationName = null)
+    public function executeQuery($query, ?array $variables = null, ?string $operationName = null)
     {
         $this->phpErrors = [];
         if ($this->debug & static::DEBUG_PHP_ERRORS) {
@@ -535,7 +535,7 @@ class Server
     /**
      * GraphQL HTTP endpoint compatible with express-graphql
      */
-    public function handleRequest()
+    public function handleRequest():void
     {
         try {
             $httpStatus = 200;
@@ -595,7 +595,7 @@ class Server
         return  file_get_contents('php://input') ?: '';
     }
 
-    protected function produceOutput(array $result, $httpStatus)
+    protected function produceOutput(array $result, $httpStatus):void
     {
         header('Content-Type: application/json', true, $httpStatus);
         echo json_encode($result);

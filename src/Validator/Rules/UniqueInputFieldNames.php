@@ -18,7 +18,7 @@ class UniqueInputFieldNames extends AbstractValidationRule
     public $knownNames;
     public $knownNameStack;
 
-    public function getVisitor(ValidationContext $context): @array
+    public function getVisitor(ValidationContext $context): array
     {
         $this->knownNames = [];
         $this->knownNameStack = [];

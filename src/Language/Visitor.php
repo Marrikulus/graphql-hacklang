@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //strict
 namespace GraphQL\Language;
 
 use GraphQL\Language\AST\Node;
@@ -6,14 +6,6 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\NodeList;
 use GraphQL\Utils\TypeInfo;
 
-class VisitorOperation
-{
-    public $doBreak;
-
-    public $doContinue;
-
-    public $removeNode;
-}
 
 /**
  * Utility for efficient AST traversal and modification.
@@ -104,7 +96,7 @@ class VisitorOperation
  */
 class Visitor
 {
-    public static array $visitorKeys = [
+    public static array<string, array<string>> $visitorKeys = [
         NodeKind::NAME => [],
         NodeKind::DOCUMENT => ['definitions'],
         NodeKind::OPERATION_DEFINITION => ['name', 'variableDefinitions', 'directives', 'selectionSet'],
@@ -150,15 +142,15 @@ class Visitor
      * Visit the AST (see class description for details)
      *
      * @api
-     * @param Node $root
+     * @param NodeList | Node $root
      * @param array $visitor
      * @param array $keyMap
      * @return Node|mixed
      * @throws \Exception
      */
-    public static function visit($root, $visitor, $keyMap = null)
+    public static function visit($root, $visitor, $keyMap = null):mixed
     {
-        $visitorKeys = $keyMap ?: self::$visitorKeys;
+        $visitorKeys = $keyMap ?: Visitor::$visitorKeys;
 
         $stack = null;
         $inArray = $root instanceof NodeList || is_array($root);
@@ -239,7 +231,7 @@ class Visitor
                     throw new \Exception('Invalid AST Node: ' . json_encode($node));
                 }
 
-                $visitFn = self::getVisitFn($visitor, $node->kind, $isLeaving);
+                $visitFn = Visitor::getVisitFn($visitor, $node->kind, $isLeaving);
 
                 if ($visitFn) {
                     $result = call_user_func($visitFn, $node, $key, $parent, $path, $ancestors);
@@ -311,7 +303,7 @@ class Visitor
      * @api
      * @return VisitorOperation
      */
-    public static function stop()
+    public static function stop():VisitorOperation
     {
         $r = new VisitorOperation();
         $r->doBreak = true;
@@ -324,7 +316,7 @@ class Visitor
      * @api
      * @return VisitorOperation
      */
-    public static function skipNode()
+    public static function skipNode():VisitorOperation
     {
         $r = new VisitorOperation();
         $r->doContinue = true;
@@ -337,7 +329,7 @@ class Visitor
      * @api
      * @return VisitorOperation
      */
-    public static function removeNode()
+    public static function removeNode():VisitorOperation
     {
         $r = new VisitorOperation();
         $r->removeNode = true;
@@ -348,7 +340,7 @@ class Visitor
      * @param $visitors
      * @return array
      */
-    static function visitInParallel($visitors)
+    public static function visitInParallel($visitors):array
     {
         $visitorsCount = count($visitors);
         $skipping = new \SplFixedArray($visitorsCount);
@@ -357,7 +349,7 @@ class Visitor
             'enter' => function ($node) use ($visitors, $skipping, $visitorsCount) {
                 for ($i = 0; $i < $visitorsCount; $i++) {
                     if (empty($skipping[$i])) {
-                        $fn = self::getVisitFn($visitors[$i], $node->kind, /* isLeaving */ false);
+                        $fn = Visitor::getVisitFn($visitors[$i], $node->kind, /* isLeaving */ false);
 
                         if ($fn) {
                             $result = call_user_func_array($fn, func_get_args());
@@ -380,7 +372,7 @@ class Visitor
             'leave' => function ($node) use ($visitors, $skipping, $visitorsCount) {
                 for ($i = 0; $i < $visitorsCount; $i++) {
                     if (empty($skipping[$i])) {
-                        $fn = self::getVisitFn($visitors[$i], $node->kind, /* isLeaving */ true);
+                        $fn = Visitor::getVisitFn($visitors[$i], $node->kind, /* isLeaving */ true);
 
                         if ($fn) {
                             $result = call_user_func_array($fn, func_get_args());
@@ -406,12 +398,12 @@ class Visitor
      * Creates a new visitor instance which maintains a provided TypeInfo instance
      * along with visiting visitor.
      */
-    static function visitWithTypeInfo(TypeInfo $typeInfo, $visitor)
+    public static function visitWithTypeInfo(TypeInfo $typeInfo, $visitor):array
     {
         return [
             'enter' => function ($node) use ($typeInfo, $visitor) {
                 $typeInfo->enter($node);
-                $fn = self::getVisitFn($visitor, $node->kind, false);
+                $fn = Visitor::getVisitFn($visitor, $node->kind, false);
 
                 if ($fn) {
                     $result = call_user_func_array($fn, func_get_args());
@@ -426,7 +418,7 @@ class Visitor
                 return null;
             },
             'leave' => function ($node) use ($typeInfo, $visitor) {
-                $fn = self::getVisitFn($visitor, $node->kind, true);
+                $fn = Visitor::getVisitFn($visitor, $node->kind, true);
                 $result = $fn ? call_user_func_array($fn, func_get_args()) : null;
                 $typeInfo->leave($node);
                 return $result;
@@ -440,12 +432,12 @@ class Visitor
      * @param $isLeaving
      * @return null
      */
-    public static function getVisitFn($visitor, $kind, $isLeaving)
+    public static function getVisitFn($visitor, $kind, $isLeaving):?callable
     {
         if (!$visitor) {
             return null;
         }
-        $kindVisitor = isset($visitor[$kind]) ? $visitor[$kind] : null;
+        $kindVisitor = array_key_exists($kind, $visitor) ? $visitor[$kind] : null;
 
         if (!$isLeaving && is_callable($kindVisitor)) {
             // { Kind() {} }
@@ -454,9 +446,9 @@ class Visitor
 
         if (is_array($kindVisitor)) {
             if ($isLeaving) {
-                $kindSpecificVisitor = isset($kindVisitor['leave']) ? $kindVisitor['leave'] : null;
+                $kindSpecificVisitor = array_key_exists('leave', $kindVisitor) ? $kindVisitor['leave'] : null;
             } else {
-                $kindSpecificVisitor = isset($kindVisitor['enter']) ? $kindVisitor['enter'] : null;
+                $kindSpecificVisitor = array_key_exists('enter', $kindVisitor) ? $kindVisitor['enter'] : null;
             }
 
             if ($kindSpecificVisitor && is_callable($kindSpecificVisitor)) {
@@ -474,7 +466,7 @@ class Visitor
                 // { enter() {}, leave() {} }
                 return $specificVisitor;
             }
-            $specificKindVisitor = isset($specificVisitor[$kind]) ? $specificVisitor[$kind] : null;
+            $specificKindVisitor = array_key_exists($kind, $specificVisitor) ? $specificVisitor[$kind] : null;
 
             if (is_callable($specificKindVisitor)) {
                 // { enter: { Kind() {} }, leave: { Kind() {} } }
@@ -484,3 +476,4 @@ class Visitor
         return null;
     }
 }
+

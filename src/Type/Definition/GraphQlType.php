@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;

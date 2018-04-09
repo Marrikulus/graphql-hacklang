@@ -22,7 +22,7 @@ class FragmentsOnCompositeTypes extends AbstractValidationRule
         return "Fragment \"$fragName\" cannot condition on non composite type \"$type\".";
     }
 
-    public function getVisitor(ValidationContext $context)
+    public function getVisitor(ValidationContext $context):array
     {
         return [
             NodeKind::INLINE_FRAGMENT => function(InlineFragmentNode $node) use ($context) {

@@ -16,15 +16,17 @@ class UniqueVariableNames extends AbstractValidationRule
 
     public $knownVariableNames;
 
-    public function getVisitor(ValidationContext $context): @array
+    public function getVisitor(ValidationContext $context): array
     {
         $this->knownVariableNames = [];
 
         return [
-            NodeKind::OPERATION_DEFINITION => function() {
+            NodeKind::OPERATION_DEFINITION => function(?Node $_ = null) {
                 $this->knownVariableNames = [];
             },
-            NodeKind::VARIABLE_DEFINITION => function(VariableDefinitionNode $node) use ($context) {
+            NodeKind::VARIABLE_DEFINITION => function(?VariableDefinitionNode $node) use ($context) {
+                if ($node === null) throw new \Exception("UniqueVariableNames -> VARIABLE_DEFINITION. node is null!");
+
                 $variableName = $node->variable->name->value;
                 if (!empty($this->knownVariableNames[$variableName])) {
                     $context->reportError(new Error(

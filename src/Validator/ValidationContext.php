@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Validator;
 
 use GraphQL\Language\AST\FragmentSpreadNode;
@@ -30,7 +30,7 @@ class ValidationContext
     /**
      * @var Schema
      */
-    private $schema;
+    private Schema $schema;
 
     /**
      * @var DocumentNode
@@ -153,7 +153,7 @@ class ValidationContext
             $spreads = [];
             $setsToVisit = [$node->selectionSet];
             while (!empty($setsToVisit)) {
-                $set = array_pop($setsToVisit);
+                $set = array_pop(&$setsToVisit);
 
                 for ($i = 0; $i < count($set->selections); $i++) {
                     $selection = $set->selections[$i];
@@ -182,7 +182,7 @@ class ValidationContext
             $collectedNames = [];
             $nodesToVisit = [$operation];
             while (!empty($nodesToVisit)) {
-                $node = array_pop($nodesToVisit);
+                $node = array_pop(&$nodesToVisit);
                 $spreads = $this->getFragmentSpreads($node);
                 for ($i = 0; $i < count($spreads); $i++) {
                     $fragName = $spreads[$i]->name->value;

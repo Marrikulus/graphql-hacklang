@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Type;
 
 use GraphQL\Error\InvariantViolation;

@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Error;
 
 /**
@@ -17,11 +17,11 @@ final class Warning
     const WARNING_NOT_A_TYPE = 32;
     const ALL = 63;
 
-    static $enableWarnings = self::ALL;
+    static int $enableWarnings = self::ALL;
 
-    static $warned = [];
+    static array $warned = [];
 
-    static private $warningHandler;
+    static private ?callable $warningHandler;
 
     /**
      * Sets warning handler which can intercept all system warnings.
@@ -30,7 +30,7 @@ final class Warning
      * @api
      * @param callable|null $warningHandler
      */
-    public static function setWarningHandler(callable $warningHandler = null)
+    public static function setWarningHandler(?callable $warningHandler = null):void
     {
         self::$warningHandler = $warningHandler;
     }
@@ -44,13 +44,13 @@ final class Warning
      * When passing true - suppresses all warnings.
      *
      * @api
-     * @param bool|int $suppress
+     * @param int $suppress
      */
-    static function suppress($suppress = true)
+    static function suppress(int $suppress = 1):void
     {
-        if (true === $suppress) {
+        if (1 === $suppress) {
             self::$enableWarnings = 0;
-        } else if (false === $suppress) {
+        } else if (0 === $suppress) {
             self::$enableWarnings = self::ALL;
         } else {
             $suppress = (int) $suppress;
@@ -67,13 +67,13 @@ final class Warning
      * When passing true - re-enables all warnings.
      *
      * @api
-     * @param bool|int $enable
+     * @param int $enable
      */
-    public static function enable($enable = true)
+    public static function enable(int $enable = 1):void
     {
-        if (true === $enable) {
+        if (1 === $enable) {
             self::$enableWarnings = self::ALL;
-        } else if (false === $enable) {
+        } else if (0 === $enable) {
             self::$enableWarnings = 0;
         } else {
             $enable = (int) $enable;
@@ -81,7 +81,7 @@ final class Warning
         }
     }
 
-    static function warnOnce($errorMessage, $warningId, $messageLevel = null)
+    static function warnOnce($errorMessage, $warningId, $messageLevel = null):void
     {
         if (self::$warningHandler) {
             $fn = self::$warningHandler;
@@ -92,7 +92,7 @@ final class Warning
         }
     }
 
-    static function warn($errorMessage, $warningId, $messageLevel = null)
+    static function warn($errorMessage, $warningId, $messageLevel = null):void
     {
         if (self::$warningHandler) {
             $fn = self::$warningHandler;

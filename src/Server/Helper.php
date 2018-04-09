@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Server;
 
 use GraphQL\Error\Error;
@@ -44,7 +44,7 @@ class Helper
      * @return OperationParams|OperationParams[]
      * @throws RequestError
      */
-    public function parseHttpRequest(callable $readRawBodyFn = null)
+    public function parseHttpRequest(?callable $readRawBodyFn = null)
     {
         $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
         $bodyParams = [];
@@ -94,7 +94,7 @@ class Helper
      * @return OperationParams|OperationParams[]
      * @throws RequestError
      */
-    public function parseRequestParams($method, array $bodyParams, array $queryParams)
+    public function parseRequestParams(string $method, array $bodyParams, array $queryParams)
     {
         if ($method === 'GET') {
             $result = OperationParams::create($queryParams, true);

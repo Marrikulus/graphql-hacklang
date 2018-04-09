@@ -143,7 +143,7 @@ class Parser
      * @param Token $startToken
      * @return Location|null
      */
-    public function loc(Token $startToken)
+    public function loc(Token $startToken):?Location
     {
         if (empty($this->lexer->options['noLocation'])) {
             return new Location($startToken, $this->lexer->lastToken, $this->lexer->source);
@@ -157,7 +157,7 @@ class Parser
      * @param $kind
      * @return bool
      */
-    public function peek($kind)
+    public function peek(Token $kind):bool
     {
         return $this->lexer->token->kind === $kind;
     }
@@ -169,7 +169,7 @@ class Parser
      * @param $kind
      * @return bool
      */
-    public function skip($kind)
+    public function skip(Token $kind):bool
     {
         $match = $this->lexer->token->kind === $kind;
 
@@ -186,7 +186,7 @@ class Parser
      * @return Token
      * @throws SyntaxError
      */
-    public function expect($kind)
+    public function expect(string $kind):Token
     {
         $token = $this->lexer->token;
 
@@ -211,7 +211,7 @@ class Parser
      * @return Token
      * @throws SyntaxError
      */
-    public function expectKeyword($value)
+    public function expectKeyword(string $value):Token
     {
         $token = $this->lexer->token;
 
@@ -230,7 +230,7 @@ class Parser
      * @param Token|null $atToken
      * @return SyntaxError
      */
-    public function unexpected(?Token $atToken = null)
+    public function unexpected(?Token $atToken = null):SyntaxError
     {
         $token = $atToken ?: $this->lexer->token;
         return new SyntaxError($this->lexer->source, $token->start, "Unexpected " . $token->getDescription());
@@ -248,7 +248,7 @@ class Parser
      * @return NodeList
      * @throws SyntaxError
      */
-    public function any($openKind, $parseFn, $closeKind)
+    public function any(string $openKind, $parseFn, string $closeKind):NodeList
     {
         $this->expect($openKind);
 
@@ -271,7 +271,7 @@ class Parser
      * @return NodeList
      * @throws SyntaxError
      */
-    public function many($openKind, $parseFn, $closeKind)
+    public function many(string $openKind, $parseFn, string $closeKind):NodeList
     {
         $this->expect($openKind);
 

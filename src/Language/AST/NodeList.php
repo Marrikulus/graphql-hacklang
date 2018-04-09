@@ -1,4 +1,4 @@
-<?php
+<?hh //partial
 namespace GraphQL\Language\AST;
 
 use GraphQL\Utils\AST;
@@ -8,27 +8,27 @@ use GraphQL\Utils\AST;
  *
  * @package GraphQL\Utils
  */
-class NodeList implements \ArrayAccess, \IteratorAggregate, \Countable
+class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Countable
 {
     /**
      * @var array
      */
-    private $nodes;
+    private array<Node> $nodes;
 
     /**
      * @param array $nodes
      * @return static
      */
-    public static function create(array $nodes)
+    public static function create(array<Node> $nodes)
     {
-        return new static($nodes);
+        return new NodeList($nodes);
     }
 
     /**
      * NodeList constructor.
      * @param array $nodes
      */
-    public function __construct(array $nodes)
+    public function __construct(array<Node> $nodes)
     {
         $this->nodes = $nodes;
     }
@@ -46,7 +46,7 @@ class NodeList implements \ArrayAccess, \IteratorAggregate, \Countable
      * @param mixed $offset
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet(int $offset):Node
     {
         $item = $this->nodes[$offset];
 
@@ -72,7 +72,7 @@ class NodeList implements \ArrayAccess, \IteratorAggregate, \Countable
     /**
      * @param mixed $offset
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(int $offset):void
     {
         unset($this->nodes[$offset]);
     }
@@ -83,16 +83,16 @@ class NodeList implements \ArrayAccess, \IteratorAggregate, \Countable
      * @param mixed $replacement
      * @return NodeList
      */
-    public function splice($offset, $length, $replacement = null)
+    public function splice(int $offset,int $length, $replacement = null):NodeList
     {
-        return new NodeList(array_splice($this->nodes, $offset, $length, $replacement));
+        return new NodeList(array_splice(&$this->nodes, $offset, $length, $replacement));
     }
 
     /**
      * @param $list
      * @return NodeList
      */
-    public function merge($list)
+    public function merge($list):NodeList
     {
         if ($list instanceof NodeList) {
             $list = $list->nodes;
@@ -114,7 +114,7 @@ class NodeList implements \ArrayAccess, \IteratorAggregate, \Countable
     /**
      * @return int
      */
-    public function count()
+    public function count():int
     {
         return count($this->nodes);
     }

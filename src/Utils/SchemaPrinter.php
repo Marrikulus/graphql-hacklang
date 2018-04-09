@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Utils;
 
 use GraphQL\Language\Printer;

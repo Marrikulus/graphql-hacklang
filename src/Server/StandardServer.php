@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Server;
 
 use GraphQL\Error\FormattedError;

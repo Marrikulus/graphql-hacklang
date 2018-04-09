@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Utils;
 
 use GraphQL\Error\InvariantViolation;
@@ -363,7 +363,7 @@ class TypeInfo
                 $fieldType = null;
                 if ($objectType instanceof InputObjectType) {
                     $tmp = $objectType->getFields();
-                    $inputField = isset($tmp[$node->name->value]) ? $tmp[$node->name->value] : null;
+                    $inputField = array_key_exists($node->name->value, $tmp) ? $tmp[$node->name->value] : null;
                     $fieldType = $inputField ? $inputField->getType() : null;
                 }
                 $this->inputTypeStack[] = $fieldType;
@@ -387,12 +387,12 @@ class TypeInfo
     {
         switch ($node->kind) {
             case NodeKind::SELECTION_SET:
-                array_pop($this->parentTypeStack);
+                array_pop(&$this->parentTypeStack);
                 break;
 
             case NodeKind::FIELD:
-                array_pop($this->fieldDefStack);
-                array_pop($this->typeStack);
+                array_pop(&$this->fieldDefStack);
+                array_pop(&$this->typeStack);
                 break;
 
             case NodeKind::DIRECTIVE:
@@ -402,18 +402,18 @@ class TypeInfo
             case NodeKind::OPERATION_DEFINITION:
             case NodeKind::INLINE_FRAGMENT:
             case NodeKind::FRAGMENT_DEFINITION:
-                array_pop($this->typeStack);
+                array_pop(&$this->typeStack);
                 break;
             case NodeKind::VARIABLE_DEFINITION:
-                array_pop($this->inputTypeStack);
+                array_pop(&$this->inputTypeStack);
                 break;
             case NodeKind::ARGUMENT:
                 $this->argument = null;
-                array_pop($this->inputTypeStack);
+                array_pop(&$this->inputTypeStack);
                 break;
             case NodeKind::LST:
             case NodeKind::OBJECT_FIELD:
-                array_pop($this->inputTypeStack);
+                array_pop(&$this->inputTypeStack);
                 break;
             case NodeKind::ENUM:
                 $this->enumValue = null;

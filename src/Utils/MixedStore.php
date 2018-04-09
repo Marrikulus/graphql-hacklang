@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Utils;
 
 /**
@@ -10,7 +10,7 @@ namespace GraphQL\Utils;
  * Class MixedStore
  * @package GraphQL\Utils
  */
-class MixedStore implements \ArrayAccess
+class MixedStore implements \ArrayAccess<mixed,mixed>
 {
     /**
      * @var array

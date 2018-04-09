@@ -10,14 +10,14 @@ use GraphQL\Validator\ValidationContext;
 
 class UniqueOperationNames extends AbstractValidationRule
 {
-    public static function duplicateOperationNameMessage($operationName): @string
+    public static function duplicateOperationNameMessage(@string $operationName): @string
     {
       return "There can be only one operation named \"$operationName\".";
     }
 
     public $knownOperationNames;
 
-    public function getVisitor(ValidationContext $context): @array
+    public function getVisitor(ValidationContext $context)
     {
         $this->knownOperationNames = [];
 

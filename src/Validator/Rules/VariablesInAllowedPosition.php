@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Validator\Rules;
 
 use GraphQL\Error\Error;
@@ -21,7 +21,7 @@ class VariablesInAllowedPosition extends AbstractValidationRule
 
     public $varDefMap;
 
-    public function getVisitor(ValidationContext $context)
+    public function getVisitor(ValidationContext $context): @array
     {
         return [
             NodeKind::OPERATION_DEFINITION => [

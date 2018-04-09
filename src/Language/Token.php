@@ -33,7 +33,7 @@ class Token
      * @param $kind
      * @return mixed
      */
-    public static function getKindDescription($kind)
+    public static function getKindDescription($kind):array<string,string>
     {
         trigger_error('Deprecated as of 16.10.2016 ($kind itself contains description string now)', E_USER_DEPRECATED);
 
@@ -67,7 +67,7 @@ class Token
      *
      * @var string
      */
-    public $kind;
+    public string $kind;
 
     /**
      * The character offset at which this Node begins.
@@ -126,7 +126,7 @@ class Token
      * @param Token $previous
      * @param null $value
      */
-    public function __construct($kind, $start, $end, $line, $column, ?Token $previous = null, $value = null)
+    public function __construct(string $kind, int $start, int $end, int $line, int $column, ?Token $previous = null, ?string $value = null)
     {
         $this->kind = $kind;
         $this->start = (int) $start;

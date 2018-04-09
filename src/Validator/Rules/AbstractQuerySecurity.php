@@ -1,4 +1,4 @@
-<?hh // decl
+<?hh
 
 namespace GraphQL\Validator\Rules;
 
@@ -121,11 +121,14 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
                         }
                     }
                     $responseName = $this->getFieldName($selection);
-                    if (!isset($_astAndDefs[$responseName])) {
-                        $_astAndDefs[$responseName] = new \ArrayObject();
+                    if (!$_astAndDefs->offsetExists($responseName))
+                    {
+                        //$_astAndDefs[$responseName] = new \ArrayObject();
+                        $_astAndDefs->offsetSet($responseName, new \ArrayObject());
                     }
                     // create field context
-                    $_astAndDefs[$responseName][] = [$selection, $fieldDef];
+                    //$_astAndDefs[$responseName][] = [$selection, $fieldDef];
+                    $_astAndDefs->offsetGet($responseName)->append([$selection, $fieldDef]);
                     break;
                 case NodeKind::INLINE_FRAGMENT:
                     /* @var InlineFragmentNode $selection */
@@ -141,8 +144,10 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
                     /* @var FragmentSpreadNode $selection */
                     $fragName = $selection->name->value;
 
-                    if (empty($_visitedFragmentNames[$fragName])) {
-                        $_visitedFragmentNames[$fragName] = true;
+                    if ($_visitedFragmentNames->offsetExists($fragName) &&  $_visitedFragmentNames->offsetGet($fragName) === null)
+                    {
+                        //$_visitedFragmentNames[$fragName] = true;
+                        $_visitedFragmentNames->offsetSet($fragName, true);
                         $fragment = $context->getFragment($fragName);
 
                         if ($fragment) {
