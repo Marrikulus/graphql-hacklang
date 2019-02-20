@@ -28,13 +28,6 @@ class Error extends Exception implements \JsonSerializable, ClientAware
     const CATEGORY_INTERNAL = 'internal';
 
     /**
-     * A message describing the Error for debugging purposes.
-     *
-     * @var string
-     */
-    public $message;
-
-    /**
      * @var SourceLocation[]
      */
     private $locations;
