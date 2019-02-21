@@ -1,4 +1,4 @@
-<?hh //strict
+<?hh //decl
 namespace GraphQL\Language;
 
 use GraphQL\Language\AST\ArgumentNode;
@@ -65,9 +65,15 @@ class Parser
      * @param array $options
      * @return DocumentNode
      */
-    public static function parse(Source $source, array<string,mixed> $options = []):DocumentNode
+    public static function parseSource(Source $source, array<string,mixed> $options = []):DocumentNode
     {
         $parser = new Parser($source, $options);
+        return $parser->parseDocument();
+    }
+
+    public static function parse(string $source, array<string,mixed> $options = []):DocumentNode
+    {
+        $parser = new Parser(new Source($source), $options);
         return $parser->parseDocument();
     }
 
