@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 /**
  * @author: Ivo Meißner
  * Date: 03.05.16

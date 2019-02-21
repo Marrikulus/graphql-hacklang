@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Type;
 
 use GraphQL\Error\Error;

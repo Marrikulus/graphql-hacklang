@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Utils;
 
 use GraphQL\Language\AST\NullValueNode;

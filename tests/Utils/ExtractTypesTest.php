@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace Utils;
 
 use GraphQL\Type\Definition\InputObjectType;

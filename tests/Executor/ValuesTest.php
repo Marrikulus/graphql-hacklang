@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Executor;
 
 use GraphQL\Executor\Values;

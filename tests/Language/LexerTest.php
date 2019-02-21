@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Language;
 
 use GraphQL\Language\Lexer;

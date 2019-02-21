@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Server;
 
 use GraphQL\Error\InvariantViolation;

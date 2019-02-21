@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests;
 
 use GraphQL\Utils\Utils;

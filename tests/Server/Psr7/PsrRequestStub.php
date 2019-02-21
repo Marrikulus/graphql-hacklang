@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Server\Psr7;
 
 use Psr\Http\Message\ServerRequestInterface;

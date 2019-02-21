@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Type;
 
 require_once __DIR__ . '/TestClasses.php';
