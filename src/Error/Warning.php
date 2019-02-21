@@ -1,6 +1,7 @@
-<?hh //decl
+<?hh //strict
 namespace GraphQL\Error;
 
+type warnFuncType = (function(string, int): void);
 /**
  * Encapsulates warnings produced by the library.
  *
@@ -19,9 +20,9 @@ final class Warning
 
     static int $enableWarnings = self::ALL;
 
-    static array $warned = [];
+    static array<bool> $warned = [];
 
-    static private ?callable $warningHandler;
+    static private ?warnFuncType  $warningHandler;
 
     /**
      * Sets warning handler which can intercept all system warnings.
@@ -30,7 +31,7 @@ final class Warning
      * @api
      * @param callable|null $warningHandler
      */
-    public static function setWarningHandler(?callable $warningHandler = null):void
+    public static function setWarningHandler(?warnFuncType $warningHandler = null):void
     {
         self::$warningHandler = $warningHandler;
     }
@@ -81,24 +82,25 @@ final class Warning
         }
     }
 
-    public static function warnOnce($errorMessage, $warningId, $messageLevel = null):void
+    public static function warnOnce(string $errorMessage, int $warningId, ?int $messageLevel = null):void
     {
         if (self::$warningHandler) {
             $fn = self::$warningHandler;
             $fn($errorMessage, $warningId);
-        } else if ((self::$enableWarnings & $warningId) > 0 && !isset(self::$warned[$warningId])) {
+            /* HH_FIXME[4016]*/
+        } else if ((self::$enableWarnings & $warningId) > 0 && !\isset(self::$warned[$warningId])) {
             self::$warned[$warningId] = true;
-            trigger_error($errorMessage, $messageLevel ?: E_USER_WARNING);
+            \trigger_error($errorMessage, $messageLevel ?? \E_USER_WARNING);
         }
     }
 
-    public static function warn($errorMessage, $warningId, $messageLevel = null):void
+    public static function warn(string $errorMessage, int $warningId, ?int $messageLevel = null):void
     {
         if (self::$warningHandler) {
             $fn = self::$warningHandler;
             $fn($errorMessage, $warningId);
         } else if ((self::$enableWarnings & $warningId) > 0) {
-            trigger_error($errorMessage, $messageLevel ?: E_USER_WARNING);
+            \trigger_error($errorMessage, $messageLevel ?? \E_USER_WARNING);
         }
     }
 }
