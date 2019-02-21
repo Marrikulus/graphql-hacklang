@@ -18,7 +18,7 @@ class Lexer
     /**
      * @var Source
      */
-    public $source;
+    public Source $source;
 
     /**
      * @var array
