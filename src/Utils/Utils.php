@@ -96,7 +96,7 @@ class Utils
      * @throws \Exception
      */
 
-    public static function map<T>(array<arraykey,T> $traversable, (function(T, ?arraykey): T) $fn):array<arraykey,T>
+    public static function map<T,TU>(array<T> $traversable, (function(T, arraykey): TU) $fn):array<arraykey, TU>
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
