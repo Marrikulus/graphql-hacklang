@@ -20,7 +20,7 @@ class QueryComplexityTest extends AbstractQuerySecurityTest
      *
      * @return string
      */
-    protected function getErrorMessage($max, $count)
+    protected function getErrorMessage(int $max, int $count):string
     {
         return QueryComplexity::maxQueryComplexityErrorMessage($max, $count);
     }

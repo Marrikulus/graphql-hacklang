@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Validator;
 
 use GraphQL\Error\FormattedError;
@@ -22,7 +22,7 @@ abstract class AbstractQuerySecurityTest extends \PHPUnit_Framework_TestCase
      *
      * @return string
      */
-    abstract protected function getErrorMessage($max, $count);
+    abstract protected function getErrorMessage(int $max, int $count):string;
 
     /**
      * @expectedException \InvalidArgumentException

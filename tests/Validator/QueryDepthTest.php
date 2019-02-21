@@ -1,4 +1,4 @@
-<?php
+<?hh //partial
 namespace GraphQL\Tests\Validator;
 
 use GraphQL\Validator\Rules\QueryDepth;
@@ -11,7 +11,7 @@ class QueryDepthTest extends AbstractQuerySecurityTest
      *
      * @return string
      */
-    protected function getErrorMessage($max, $count)
+    protected function getErrorMessage(int $max, int $count):string
     {
         return QueryDepth::maxQueryDepthErrorMessage($max, $count);
     }
@@ -32,7 +32,7 @@ class QueryDepthTest extends AbstractQuerySecurityTest
      * @param array $expectedErrors
      * @dataProvider queryDataProvider
      */
-    public function testSimpleQueries($queryDepth, $maxQueryDepth = 7, $expectedErrors = [])
+    public function testSimpleQueries(int $queryDepth, int $maxQueryDepth = 7, $expectedErrors = []):void
     {
         $this->assertDocumentValidator($this->buildRecursiveQuery($queryDepth), $maxQueryDepth, $expectedErrors);
     }
@@ -43,7 +43,7 @@ class QueryDepthTest extends AbstractQuerySecurityTest
      * @param array $expectedErrors
      * @dataProvider queryDataProvider
      */
-    public function testFragmentQueries($queryDepth, $maxQueryDepth = 7, $expectedErrors = [])
+    public function testFragmentQueries(int $queryDepth, int $maxQueryDepth = 7, $expectedErrors = []):void
     {
         $this->assertDocumentValidator($this->buildRecursiveUsingFragmentQuery($queryDepth), $maxQueryDepth, $expectedErrors);
     }
@@ -54,22 +54,22 @@ class QueryDepthTest extends AbstractQuerySecurityTest
      * @param array $expectedErrors
      * @dataProvider queryDataProvider
      */
-    public function testInlineFragmentQueries($queryDepth, $maxQueryDepth = 7, $expectedErrors = [])
+    public function testInlineFragmentQueries(int $queryDepth, int $maxQueryDepth = 7, $expectedErrors = []):void
     {
         $this->assertDocumentValidator($this->buildRecursiveUsingInlineFragmentQuery($queryDepth), $maxQueryDepth, $expectedErrors);
     }
 
-    public function testComplexityIntrospectionQuery()
+    public function testComplexityIntrospectionQuery():void
     {
         $this->assertIntrospectionQuery(11);
     }
 
-    public function testIntrospectionTypeMetaFieldQuery()
+    public function testIntrospectionTypeMetaFieldQuery():void
     {
         $this->assertIntrospectionTypeMetaFieldQuery(1);
     }
 
-    public function testTypeNameMetaFieldQuery()
+    public function testTypeNameMetaFieldQuery():void
     {
         $this->assertTypeNameMetaFieldQuery(1);
     }
@@ -99,16 +99,16 @@ class QueryDepthTest extends AbstractQuerySecurityTest
         ];
     }
 
-    private function buildRecursiveQuery($depth)
+    private function buildRecursiveQuery(int $depth):string
     {
-        $query = sprintf('query MyQuery { human%s }', $this->buildRecursiveQueryPart($depth));
+        $query = \sprintf('query MyQuery { human%s }', $this->buildRecursiveQueryPart($depth));
 
         return $query;
     }
 
-    private function buildRecursiveUsingFragmentQuery($depth)
+    private function buildRecursiveUsingFragmentQuery(int $depth):string
     {
-        $query = sprintf(
+        $query = \sprintf(
             'query MyQuery { human { ...F1 } } fragment F1 on Human %s',
             $this->buildRecursiveQueryPart($depth)
         );
@@ -116,9 +116,9 @@ class QueryDepthTest extends AbstractQuerySecurityTest
         return $query;
     }
 
-    private function buildRecursiveUsingInlineFragmentQuery($depth)
+    private function buildRecursiveUsingInlineFragmentQuery(int $depth):string
     {
-        $query = sprintf(
+        $query = \sprintf(
             'query MyQuery { human { ...on Human %s } }',
             $this->buildRecursiveQueryPart($depth)
         );
@@ -126,7 +126,7 @@ class QueryDepthTest extends AbstractQuerySecurityTest
         return $query;
     }
 
-    private function buildRecursiveQueryPart($depth)
+    private function buildRecursiveQueryPart(int $depth):string
     {
         $templates = [
             'human' => ' { firstName%s } ',
@@ -139,9 +139,10 @@ class QueryDepthTest extends AbstractQuerySecurityTest
             $key = ($i % 2 == 1) ? 'human' : 'dog';
             $template = $templates[$key];
 
-            $part = sprintf($part, ('human' == $key ? ' owner ' : '').$template);
+            /* HH_FIXME[4110]*/
+            $part = \sprintf($part, ('human' == $key ? ' owner ' : '').$template);
         }
-        $part = str_replace('%s', '', $part);
+        $part = \str_replace('%s', '', $part);
 
         return $part;
     }
