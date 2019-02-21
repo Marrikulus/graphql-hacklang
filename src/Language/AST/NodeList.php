@@ -76,6 +76,7 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
      * @param mixed $replacement
      * @return NodeList
      */
+    /* HH_FIXME[4032]*/
     public function splice(int $offset,int $length, $replacement = null):NodeList
     {
         return new NodeList(\array_splice(&$this->nodes, $offset, $length, $replacement));
@@ -85,12 +86,9 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
      * @param $list
      * @return NodeList
      */
-    public function merge($list):NodeList
+    public function merge(NodeList $list):NodeList
     {
-        if ($list instanceof NodeList) {
-            $list = $list->nodes;
-        }
-        return new NodeList(\array_merge($this->nodes, $list));
+        return new NodeList(\array_merge($this->nodes, $list->nodes));
     }
 
     /**

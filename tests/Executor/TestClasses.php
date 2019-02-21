@@ -1,11 +1,14 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Executor;
 
 use GraphQL\Type\Definition\ScalarType;
+use GraphQL\Language\AST\Node;
 
 class Dog
 {
-    function __construct($name, $woofs)
+    public $name;
+    public $woofs;
+    public function __construct($name, $woofs)
     {
         $this->name = $name;
         $this->woofs = $woofs;
@@ -14,7 +17,9 @@ class Dog
 
 class Cat
 {
-    function __construct($name, $meows)
+    public $name;
+    public $meows;
+    public function __construct($name, $meows)
     {
         $this->name = $name;
         $this->meows = $meows;
@@ -23,7 +28,8 @@ class Cat
 
 class Human
 {
-    function __construct($name)
+    public $name;
+    public function __construct($name)
     {
         $this->name = $name;
     }
@@ -35,7 +41,7 @@ class Person
     public $pets;
     public $friends;
 
-    function __construct($name, $pets = null, $friends = null)
+    public function __construct($name, $pets = null, $friends = null)
     {
         $this->name = $name;
         $this->pets = $pets;
@@ -43,9 +49,10 @@ class Person
     }
 }
 
+/* HH_FIXME[4236]*/
 class ComplexScalar extends ScalarType
 {
-    public static function create()
+    public static function create():ComplexScalar
     {
         return new self();
     }
@@ -60,7 +67,7 @@ class ComplexScalar extends ScalarType
         return null;
     }
 
-    public function parseValue($value)
+    public function parseValue($value):mixed
     {
         if ($value === 'SerializedValue') {
             return 'DeserializedValue';
@@ -68,7 +75,7 @@ class ComplexScalar extends ScalarType
         return null;
     }
 
-    public function parseLiteral($valueNode)
+    public function parseLiteral(Node $valueNode):mixed
     {
         if ($valueNode->value === 'SerializedValue') {
             return 'DeserializedValue';

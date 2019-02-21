@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Language;
 
 use GraphQL\Error\InvariantViolation;
@@ -18,23 +18,6 @@ use GraphQL\Utils\Utils;
 
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAssertsThatASourceToParseIsNotNull()
-    {
-        $this->setExpectedException(InvariantViolation::class, 'GraphQL query body is expected to be string, but got NULL');
-        Parser::parse(null);
-    }
-
-    public function testAssertsThatASourceToParseIsNotArray()
-    {
-        $this->setExpectedException(InvariantViolation::class, 'GraphQL query body is expected to be string, but got array');
-        Parser::parse(['a' => 'b']);
-    }
-
-    public function testAssertsThatASourceToParseIsNotObject()
-    {
-        $this->setExpectedException(InvariantViolation::class, 'GraphQL query body is expected to be string, but got stdClass');
-        Parser::parse(new \stdClass());
-    }
 
     public function parseProvidesUsefulErrors()
     {
@@ -131,22 +114,25 @@ HEREDOC;
 
         $result = Parser::parse($query, ['noLocation' => true]);
 
-        $expected = new SelectionSetNode([
-            'selections' => new NodeList([
-                new FieldNode([
-                    'name' => new NameNode(['value' => 'field']),
-                    'arguments' => new NodeList([
-                        new ArgumentNode([
-                            'name' => new NameNode(['value' => 'arg']),
-                            'value' => new StringValueNode([
-                                'value' => "Has a $char multi-byte character."
-                            ])
-                        ])
+        $expected = new SelectionSetNode(
+            new NodeList([
+                0 => new FieldNode(
+                    new NameNode('field', null),
+                    null,
+                    new NodeList([
+                        0 => new ArgumentNode(
+                            new NameNode('arg', null),
+                            new StringValueNode("Has a $char multi-byte character.", null),
+                            null
+                        )
                     ]),
-                    'directives' => new NodeList([])
-                ])
-            ])
-        ]);
+                    new NodeList([]),
+                    null,
+                    null
+                )
+            ]),
+            null
+        );
 
         $this->assertEquals($expected, $result->definitions[0]->selectionSet);
     }
@@ -304,7 +290,7 @@ fragment $fragmentName on Type {
                                             'loc' => $loc(13, 14),
                                             'value' => '4'
                                         ],
-                                        'loc' => $loc(9, 14, $source)
+                                        'loc' => $loc(9, 14)
                                     ]
                                 ],
                                 'directives' => [],
