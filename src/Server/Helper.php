@@ -277,7 +277,7 @@ class Helper
             if ($config->getErrorFormatter() || $config->getDebug()) {
                 $result->setErrorFormatter(
                     FormattedError::prepareFormatter($config->getErrorFormatter(),
-                    $config->getDebug())
+                    (bool)$config->getDebug())
                 );
             }
             return $result;
