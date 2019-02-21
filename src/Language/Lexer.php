@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Language;
 
 use GraphQL\Error\SyntaxError;
@@ -30,42 +30,42 @@ class Lexer
      *
      * @var Token
      */
-    public $lastToken;
+    public Token $lastToken;
 
     /**
      * The currently focused non-ignored token.
      *
      * @var Token
      */
-    public $token;
+    public Token $token;
 
     /**
      * The (1-indexed) line containing the current token.
      *
      * @var int
      */
-    public $line;
+    public int $line;
 
     /**
      * The character offset at which the current line begins.
      *
      * @var int
      */
-    public $lineStart;
+    public int $lineStart;
 
     /**
      * Current cursor position for UTF8 encoding of the source
      *
      * @var int
      */
-    private $position;
+    private int $position;
 
     /**
      * Current cursor position for ASCII representation of the source
      *
      * @var int
      */
-    private $byteStreamPosition;
+    private int $byteStreamPosition;
 
     /**
      * Lexer constructor.
