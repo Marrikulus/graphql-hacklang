@@ -1,4 +1,4 @@
-<?hh
+<?hh //decl
 
 namespace GraphQL\Validator\Rules;
 
