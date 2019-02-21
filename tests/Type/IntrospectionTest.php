@@ -19,7 +19,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it executes an introspection query
      */
-    function testExecutesAnIntrospectionQuery()
+    public function testExecutesAnIntrospectionQuery()
     {
         $emptySchema = new Schema([
             'query' => new ObjectType([
@@ -1071,7 +1071,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it introspects on input object
      */
-    function testIntrospectsOnInputObject()
+    public function testIntrospectsOnInputObject()
     {
         $TestInputObject = new InputObjectType([
             'name' => 'TestInputObject',

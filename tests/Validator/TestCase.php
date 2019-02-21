@@ -308,7 +308,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         return $defaultSchema;
     }
 
-    function expectValid($schema, $rules, $queryString)
+    public function expectValid($schema, $rules, $queryString)
     {
         $this->assertEquals(
             [],
@@ -317,7 +317,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         );
     }
 
-    function expectInvalid($schema, $rules, $queryString, $expectedErrors)
+    public function expectInvalid($schema, $rules, $queryString, $expectedErrors)
     {
         $errors = DocumentValidator::validate($schema, Parser::parse($queryString), $rules);
 
@@ -327,32 +327,32 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         return $errors;
     }
 
-    function expectPassesRule($rule, $queryString)
+    public function expectPassesRule($rule, $queryString)
     {
         $this->expectValid($this->getDefaultSchema(), [$rule], $queryString);
     }
 
-    function expectFailsRule($rule, $queryString, $errors)
+    public function expectFailsRule($rule, $queryString, $errors)
     {
         return $this->expectInvalid($this->getDefaultSchema(), [$rule], $queryString, $errors);
     }
 
-    function expectPassesRuleWithSchema($schema, $rule, $queryString)
+    public function expectPassesRuleWithSchema($schema, $rule, $queryString)
     {
         $this->expectValid($schema, [$rule], $queryString);
     }
 
-    function expectFailsRuleWithSchema($schema, $rule, $queryString, $errors)
+    public function expectFailsRuleWithSchema($schema, $rule, $queryString, $errors)
     {
         $this->expectInvalid($schema, [$rule], $queryString, $errors);
     }
 
-    function expectPassesCompleteValidation($queryString)
+    public function expectPassesCompleteValidation($queryString)
     {
         $this->expectValid($this->getDefaultSchema(), DocumentValidator::allRules(), $queryString);
     }
 
-    function expectFailsCompleteValidation($queryString, $errors)
+    public function expectFailsCompleteValidation($queryString, $errors)
     {
         $this->expectInvalid($this->getDefaultSchema(), DocumentValidator::allRules(), $queryString, $errors);
     }
