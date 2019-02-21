@@ -1,4 +1,4 @@
-<?hh //partial
+<?hh //decl
 namespace GraphQL\Validator;
 
 use GraphQL\Language\AST\FragmentSpreadNode;

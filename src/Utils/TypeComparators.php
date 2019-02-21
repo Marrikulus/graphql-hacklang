@@ -1,4 +1,4 @@
-<?hh //partial
+<?hh //decl
 namespace GraphQL\Utils;
 
 use GraphQL\Type\Schema;
