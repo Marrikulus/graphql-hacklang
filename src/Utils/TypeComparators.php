@@ -48,7 +48,7 @@ class TypeComparators
      * @param GraphQlType $superType
      * @return bool
      */
-    static function isTypeSubTypeOf(Schema $schema, GraphQlType $maybeSubType, GraphQlType $superType)
+    public static function isTypeSubTypeOf(Schema $schema, GraphQlType $maybeSubType, GraphQlType $superType)
     {
         // Equivalent type is a valid subtype
         if ($maybeSubType === $superType) {
@@ -101,7 +101,7 @@ class TypeComparators
      * @param CompositeType $typeB
      * @return bool
      */
-    static function doTypesOverlap(Schema $schema, CompositeType $typeA, CompositeType $typeB)
+    public static function doTypesOverlap(Schema $schema, CompositeType $typeA, CompositeType $typeB)
     {
         // Equivalent types overlap
         if ($typeA === $typeB) {

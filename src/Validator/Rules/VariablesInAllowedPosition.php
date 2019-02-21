@@ -13,7 +13,7 @@ use GraphQL\Validator\ValidationContext;
 
 class VariablesInAllowedPosition extends AbstractValidationRule
 {
-    static function badVarPosMessage($varName, $varType, $expectedType)
+    public static function badVarPosMessage($varName, $varType, $expectedType)
     {
         return "Variable \"\$$varName\" of type \"$varType\" used in position expecting ".
         "type \"$expectedType\".";

@@ -14,7 +14,7 @@ use GraphQL\Validator\ValidationContext;
 
 class VariablesAreInputTypes extends AbstractValidationRule
 {
-    static function nonInputTypeOnVarMessage($variableName, $typeName)
+    public static function nonInputTypeOnVarMessage($variableName, $typeName)
     {
         return "Variable \"\$$variableName\" cannot be non-input type \"$typeName\".";
     }
