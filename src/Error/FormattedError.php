@@ -82,6 +82,7 @@ class FormattedError
         }
 
         if ($debug) {
+            /* HH_FIXME[4110]*/
             $formattedError = self::addDebugEntries($formattedError, $e, $debug);
         }
 
