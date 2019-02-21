@@ -43,7 +43,7 @@ class TypeInfo
     /**
      * @deprecated moved to GraphQL\Utils\TypeComparators
      */
-    static function isTypeSubTypeOf(Schema $schema, GraphQlType $maybeSubType, GraphQlType $superType)
+    public static function isTypeSubTypeOf(Schema $schema, GraphQlType $maybeSubType, GraphQlType $superType)
     {
         return TypeComparators::isTypeSubTypeOf($schema, $maybeSubType, $superType);
     }
@@ -51,7 +51,7 @@ class TypeInfo
     /**
      * @deprecated moved to GraphQL\Utils\TypeComparators
      */
-    static function doTypesOverlap(Schema $schema, CompositeType $typeA, CompositeType $typeB)
+    public static function doTypesOverlap(Schema $schema, CompositeType $typeA, CompositeType $typeB)
     {
         return TypeComparators::doTypesOverlap($schema, $typeA, $typeB);
     }

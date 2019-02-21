@@ -46,7 +46,7 @@ final class Warning
      * @api
      * @param int $suppress
      */
-    static function suppress(int $suppress = 1):void
+    public static function suppress(int $suppress = 1):void
     {
         if (1 === $suppress) {
             self::$enableWarnings = 0;
@@ -81,7 +81,7 @@ final class Warning
         }
     }
 
-    static function warnOnce($errorMessage, $warningId, $messageLevel = null):void
+    public static function warnOnce($errorMessage, $warningId, $messageLevel = null):void
     {
         if (self::$warningHandler) {
             $fn = self::$warningHandler;
@@ -92,7 +92,7 @@ final class Warning
         }
     }
 
-    static function warn($errorMessage, $warningId, $messageLevel = null):void
+    public static function warn($errorMessage, $warningId, $messageLevel = null):void
     {
         if (self::$warningHandler) {
             $fn = self::$warningHandler;
