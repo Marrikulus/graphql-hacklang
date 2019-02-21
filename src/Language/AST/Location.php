@@ -43,7 +43,7 @@ class Location
      *
      * @var Source|null
      */
-    public ?\GraphQL\Language\Source $source;
+    public ?Source $source;
 
     /**
      * @param $start

@@ -1,4 +1,4 @@
-<?hh // strict
+<?hh // partial
 namespace GraphQL\Language\AST;
 
 use GraphQL\Error\InvariantViolation;
@@ -59,6 +59,7 @@ abstract class Node
             }
         } else if ($value instanceof Node) {
             $cloned = clone $value;
+            /* HH_FIXME[4110]*/
             foreach (\get_object_vars($cloned) as $prop => $propValue) {
                 $cloned->{$prop} = $this->cloneValue($propValue);
             }
@@ -116,7 +117,7 @@ abstract class Node
                 'end' => $node->loc->end
             ];
         }
-
+        /* HH_FIXME[4110]*/
         foreach (\get_object_vars($node) as $prop => $propValue)
         {
             if (isset($result[$prop]))

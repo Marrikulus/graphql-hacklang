@@ -1,4 +1,4 @@
-<?hh
+<?hh //strict
 namespace GraphQL\Language\AST;
 
 class FloatValueNode extends Node implements ValueNode

@@ -5,11 +5,6 @@ class TypeExtensionDefinitionNode extends Node implements TypeSystemDefinitionNo
 {
     public string $kind = NodeKind::TYPE_EXTENSION_DEFINITION;
 
-    /**
-     * @var ObjectTypeDefinitionNode
-     */
-    public $definition;
-
     public function __construct(
         public ObjectTypeDefinitionNode $definition,
         ?Location $loc)

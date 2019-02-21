@@ -1,4 +1,4 @@
-<?hh //partial
+<?hh //strict
 namespace GraphQL\Language\AST;
 
 

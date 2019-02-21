@@ -1,4 +1,4 @@
-<?hh //partial
+<?hh //strict
 namespace GraphQL\Language\AST;
 
 use GraphQL\Utils\AST;
@@ -13,13 +13,13 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
     /**
      * @var array
      */
-    private array<Node> $nodes;
+    private array<int, Node> $nodes;
 
     /**
      * @param array $nodes
      * @return static
      */
-    public static function create(array<Node> $nodes):NodeList
+    public static function create(array<int, Node> $nodes):NodeList
     {
         return new NodeList($nodes);
     }
@@ -28,7 +28,7 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
      * NodeList constructor.
      * @param array $nodes
      */
-    public function __construct(array<Node> $nodes)
+    public function __construct(array<int, Node> $nodes)
     {
         $this->nodes = $nodes;
     }
@@ -39,7 +39,7 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
      */
     public function offsetExists(int $offset):bool
     {
-        return array_key_exists($offset, $this->nodes);
+        return \array_key_exists($offset, $this->nodes);
     }
 
     /**
@@ -50,10 +50,6 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
     {
         $item = $this->nodes[$offset];
 
-        if (is_array($item) && isset($item['kind'])) {
-            $this->nodes[$offset] = $item = AST::fromArray($item);
-        }
-
         return $item;
     }
 
@@ -61,11 +57,8 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
      * @param mixed $offset
      * @param mixed $value
      */
-    public function offsetSet(int $offset, $value)
+    public function offsetSet(int $offset, Node $value):void
     {
-        if (is_array($value) && isset($value['kind'])) {
-            $value = AST::fromArray($value);
-        }
         $this->nodes[$offset] = $value;
     }
 
@@ -85,7 +78,7 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
      */
     public function splice(int $offset,int $length, $replacement = null):NodeList
     {
-        return new NodeList(array_splice(&$this->nodes, $offset, $length, $replacement));
+        return new NodeList(\array_splice(&$this->nodes, $offset, $length, $replacement));
     }
 
     /**
@@ -97,15 +90,15 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
         if ($list instanceof NodeList) {
             $list = $list->nodes;
         }
-        return new NodeList(array_merge($this->nodes, $list));
+        return new NodeList(\array_merge($this->nodes, $list));
     }
 
     /**
      * @return \Generator
      */
-    public function getIterator()
+    public function getIterator():Iterator<Node>
     {
-        $count = count($this->nodes);
+        $count = \count($this->nodes);
         for ($i = 0; $i < $count; $i++) {
             yield $this->offsetGet($i);
         }
@@ -116,6 +109,6 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
      */
     public function count():int
     {
-        return count($this->nodes);
+        return \count($this->nodes);
     }
 }

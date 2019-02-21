@@ -1,4 +1,4 @@
-<?hh
+<?hh //strict
 namespace GraphQL\Language\AST;
 
 class FragmentSpreadNode extends Node implements SelectionNode
