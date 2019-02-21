@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //strict
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Language\AST\BooleanValueNode;
@@ -8,6 +8,7 @@ use GraphQL\Language\AST\Node;
  * Class BooleanType
  * @package GraphQL\Type\Definition
  */
+/* HH_FIXME[4110]*/
 class BooleanType extends ScalarType
 {
     /**

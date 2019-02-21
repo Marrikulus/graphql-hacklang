@@ -61,6 +61,7 @@ class InputObjectField
                 case 'defaultValueExists':
                     break;
                 default:
+                    /* HH_FIXME[1002]*/
                     $this->{$k} = $v;
             }
         }

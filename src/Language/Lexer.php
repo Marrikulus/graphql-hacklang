@@ -131,7 +131,7 @@ class Lexer
         }
 
         // Read next char and advance string cursor:
-        list (, $code, $bytes) = $this->readChar(true);
+        list ($char, $code, $bytes) = $this->readChar(true);
 
         // SourceCharacter
         if ($code < 0x0020 && $code !== 0x0009 && $code !== 0x000A && $code !== 0x000D) {
@@ -155,8 +155,8 @@ class Lexer
             case 41: // )
                 return new Token(Token::PAREN_R, $position, $position + 1, $line, $col, $prev);
             case 46: // .
-                list (, $charCode1) = $this->readChar(true);
-                list (, $charCode2) = $this->readChar(true);
+                list ($char1, $charCode1) = $this->readChar(true);
+                list ($char2, $charCode2) = $this->readChar(true);
 
                 if ($charCode1 === 46 && $charCode2 === 46) {
                     return new Token(Token::SPREAD, $position, $position + 3, $line, $col, $prev);
@@ -381,7 +381,7 @@ class Lexer
 
             if ($code === 92) { // \
                 $value .= $chunk;
-                list (, $code) = $this->readChar(true);
+                list ($char, $code) = $this->readChar(true);
 
                 switch ($code) {
                     case 34: $value .= '"'; break;
@@ -464,7 +464,7 @@ class Lexer
     private function positionAfterWhitespace()
     {
         while ($this->position < $this->source->length) {
-            list(, $code, $bytes) = $this->readChar();
+            list($char, $code, $bytes) = $this->readChar();
 
             // Skip whitespace
             // tab | space | comma | BOM
@@ -475,7 +475,7 @@ class Lexer
                 $this->line++;
                 $this->lineStart = $this->position;
             } else if ($code === 13) { // carriage return
-                list(, $nextCode, $nextBytes) = $this->moveStringCursor(1, $bytes)->readChar();
+                list($char, $nextCode, $nextBytes) = $this->moveStringCursor(1, $bytes)->readChar();
 
                 if ($nextCode === 10) { // lf after cr
                     $this->moveStringCursor(1, $nextBytes);

@@ -23,6 +23,7 @@ use GraphQL\Language\AST\Node;
  *     }
  * }
  */
+/* HH_FIXME[4110]*/
 abstract class ScalarType extends GraphQlType implements OutputType, InputType, LeafType
 {
     /**

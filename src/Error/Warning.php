@@ -87,8 +87,10 @@ final class Warning
         if (self::$warningHandler) {
             $fn = self::$warningHandler;
             $fn($errorMessage, $warningId);
-            /* HH_FIXME[4016]*/
-        } else if ((self::$enableWarnings & $warningId) > 0 && !\isset(self::$warned[$warningId])) {
+        }
+        else if ((self::$enableWarnings & $warningId) > 0 &&
+            !\array_key_exists($warningId, self::$warned))
+        {
             self::$warned[$warningId] = true;
             \trigger_error($errorMessage, $messageLevel ?? \E_USER_WARNING);
         }

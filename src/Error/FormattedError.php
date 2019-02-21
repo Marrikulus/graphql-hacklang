@@ -121,6 +121,7 @@ class FormattedError
             }
             else if (($prev = $e->getPrevious()) !== null)
             {
+                /* HH_FIXME[4110]*/
                 throw $prev;
             }
         }

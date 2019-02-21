@@ -50,18 +50,26 @@ abstract class Node
      */
     private function cloneValue(mixed $value):mixed
     {
-        if (is_array($value)) {
+        if (is_array($value))
+        {
             $cloned = [];
-            foreach ($value as $key => $arrValue) {
+            foreach ($value as $key => $arrValue)
+            {
                 $cloned[$key] = $this->cloneValue($arrValue);
             }
-        } else if ($value instanceof Node) {
+        }
+        else if ($value instanceof Node)
+        {
             $cloned = clone $value;
             /* HH_FIXME[4110]*/
-            foreach (\get_object_vars($cloned) as $prop => $propValue) {
+            foreach (\get_object_vars($cloned) as $prop => $propValue)
+            {
+                /* HH_FIXME[1002]*/
                 $cloned->{$prop} = $this->cloneValue($propValue);
             }
-        } else {
+        }
+        else
+        {
             $cloned = $value;
         }
 

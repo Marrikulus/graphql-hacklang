@@ -92,17 +92,19 @@ class Error extends Exception implements \JsonSerializable, ClientAware
             }
         }
 
-        $source = $positions = $originalError = null;
+        $source = null;
+        $positions = null;
+        $originalError = null;
 
-        if ($error instanceof self) {
+        if ($error instanceof Error) {
             $message = $error->getMessage();
             $originalError = $error;
             $nodes = $error->nodes ?? $nodes;
-            $source = $error->source;
-            $positions = $error->positions;
+            $source = $error->getSource();
+            $positions = $error->getPositions();
 
         }
-        else if ($error instanceof \Exception || $error instanceof Throwable)
+        else if ($error instanceof \Exception)
         {
             $message = $error->getMessage();
             $originalError = $error;
@@ -110,8 +112,8 @@ class Error extends Exception implements \JsonSerializable, ClientAware
             $message = (string) $error;
         }
 
-        return new self(
-            $message ?: 'An unknown error occurred.',
+        return new Error(
+            $message ?? 'An unknown error occurred.',
             $nodes,
             $source,
             $positions,
