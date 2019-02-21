@@ -1,12 +1,12 @@
-<?hh //decl
+<?hh //strict
 namespace GraphQL\Language;
 
 class SourceLocation implements \JsonSerializable
 {
-    public $line;
-    public $column;
+    public int $line;
+    public int $column;
 
-    public function __construct(@int $line, @int $col)
+    public function __construct(int $line, int $col)
     {
         $this->line = $line;
         $this->column = $col;
@@ -15,7 +15,7 @@ class SourceLocation implements \JsonSerializable
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray():array<string, int>
     {
         return [
             'line' => $this->line,
@@ -26,7 +26,7 @@ class SourceLocation implements \JsonSerializable
     /**
      * @return array
      */
-    public function toSerializableArray()
+    public function toSerializableArray():array<string, int>
     {
         return $this->toArray();
     }
@@ -38,7 +38,7 @@ class SourceLocation implements \JsonSerializable
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize():array<string, int>
     {
         return $this->toSerializableArray();
     }
