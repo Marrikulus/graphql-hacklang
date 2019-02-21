@@ -6,6 +6,7 @@ use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\EnumValueNode;
 use GraphQL\Utils\MixedStore;
 use GraphQL\Utils\Utils;
+use GraphQL\Language\AST\Node;
 
 /**
  * Class EnumType
@@ -16,7 +17,7 @@ class EnumType extends GraphQlType implements InputType, OutputType, LeafType
     /**
      * @var EnumTypeDefinitionNode|null
      */
-    public $astNode;
+    public ?Node $astNode;
 
     /**
      * @var EnumValueDefinition[]

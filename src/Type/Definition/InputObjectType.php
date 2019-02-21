@@ -4,6 +4,7 @@ namespace GraphQL\Type\Definition;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Utils\Utils;
+use GraphQL\Language\AST\Node;
 
 /**
  * Class InputObjectType
@@ -19,7 +20,7 @@ class InputObjectType extends GraphQlType implements InputType
     /**
      * @var InputObjectTypeDefinitionNode|null
      */
-    public $astNode;
+    public ?Node $astNode;
 
     /**
      * InputObjectType constructor.

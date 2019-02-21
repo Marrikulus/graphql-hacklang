@@ -1,6 +1,7 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Type\Definition;
 use GraphQL\Language\AST\InputValueDefinitionNode;
+use GraphQL\Language\AST\Node;
 
 /**
  * Class InputObjectField
@@ -21,7 +22,7 @@ class InputObjectField
     /**
      * @var string|null
      */
-    public $description;
+    public ?string $description;
 
     /**
      * @var callback|InputType
@@ -31,7 +32,7 @@ class InputObjectField
     /**
      * @var InputValueDefinitionNode|null
      */
-    public $astNode;
+    public ?Node $astNode;
 
     /**
      * @var array

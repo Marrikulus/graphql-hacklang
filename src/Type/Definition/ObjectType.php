@@ -5,6 +5,7 @@ use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
 use GraphQL\Language\AST\TypeExtensionDefinitionNode;
 use GraphQL\Utils\Utils;
+use GraphQL\Language\AST\Node;
 
 
 /**
@@ -67,7 +68,7 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
     /**
      * @var ObjectTypeDefinitionNode|null
      */
-    public $astNode;
+    public ?Node $astNode;
 
     /**
      * @var TypeExtensionDefinitionNode[]

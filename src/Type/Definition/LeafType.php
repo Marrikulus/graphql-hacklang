@@ -1,6 +1,7 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
+use GraphQL\Language\AST\Node;
 /*
 export type GraphQLLeafType =
 GraphQLScalarType |
@@ -30,17 +31,17 @@ interface LeafType
      * @param \GraphQL\Language\AST\Node $valueNode
      * @return mixed
      */
-    public function parseLiteral($valueNode);
+    public function parseLiteral(Node $valueNode):mixed;
 
     /**
      * @param string $value
      * @return bool
      */
-    public function isValidValue($value);
+    public function isValidValue(mixed $value):bool;
 
     /**
      * @param \GraphQL\Language\AST\Node $valueNode
      * @return mixed
      */
-    public function isValidLiteral($valueNode);
+    public function isValidLiteral(Node $valueNode):bool;
 }

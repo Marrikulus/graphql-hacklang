@@ -4,6 +4,7 @@ namespace GraphQL\Type\Definition;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Utils\Utils;
+use GraphQL\Language\AST\Node;
 
 /**
  * Class InterfaceType
@@ -19,7 +20,7 @@ class InterfaceType extends GraphQlType implements AbstractType, OutputType, Com
     /**
      * @var InterfaceTypeDefinitionNode|null
      */
-    public $astNode;
+    public ?Node $astNode;
 
     /**
      * InterfaceType constructor.

@@ -1,8 +1,9 @@
-<?hh
+<?hh //decl
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\TypeDefinitionNode;
+use GraphQL\Language\AST\Node;
 
 /**
  * Registry of standard GraphQL types
@@ -22,6 +23,26 @@ abstract class GraphQlType implements \JsonSerializable
      * @var array
      */
     private static $internalTypes;
+
+    /**
+     * @var string
+     */
+    public string $name;
+
+    /**
+     * @var string|null
+     */
+    public string $description;
+
+    /**
+     * @var TypeDefinitionNode|null
+     */
+    public ?Node $astNode;
+
+    /**
+     * @var array
+     */
+    public array<mixed, mixed> $config;
 
     /**
      * @api
@@ -194,29 +215,9 @@ abstract class GraphQlType implements \JsonSerializable
     }
 
     /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var string|null
-     */
-    public $description;
-
-    /**
-     * @var TypeDefinitionNode|null
-     */
-    public $astNode;
-
-    /**
-     * @var array
-     */
-    public $config;
-
-    /**
      * @return null|string
      */
-    protected function tryInferName()
+    protected function tryInferName():?string
     {
         if ($this->name) {
             return $this->name;

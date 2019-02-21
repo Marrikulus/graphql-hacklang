@@ -4,6 +4,7 @@ namespace GraphQL\Type\Definition;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\UnionTypeDefinitionNode;
 use GraphQL\Utils\Utils;
+use GraphQL\Language\AST\Node;
 
 /**
  * Class UnionType
@@ -14,7 +15,7 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
     /**
      * @var UnionTypeDefinitionNode
      */
-    public $astNode;
+    public ?Node $astNode;
 
     /**
      * @var ObjectType[]

@@ -2,6 +2,7 @@
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Language\AST\BooleanValueNode;
+use GraphQL\Language\AST\Node;
 
 /**
  * Class BooleanType
@@ -23,25 +24,29 @@ class BooleanType extends ScalarType
      * @param mixed $value
      * @return bool
      */
-    public function serialize($value)
+    public function serialize(mixed $value):bool
     {
-        return !!$value;
+        return (bool)$value;
     }
 
     /**
      * @param mixed $value
      * @return bool
      */
-    public function parseValue($value)
+    public function parseValue(mixed $value):?bool
     {
-        return is_bool($value) ? $value : null;
+        if (\is_bool($value))
+        {
+            return (bool)$value;
+        }
+        return null;
     }
 
     /**
      * @param $ast
      * @return bool|null
      */
-    public function parseLiteral($ast)
+    public function parseLiteral(Node $ast):?bool
     {
         if ($ast instanceof BooleanValueNode) {
             return (bool) $ast->value;
@@ -49,12 +54,12 @@ class BooleanType extends ScalarType
         return null;
     }
 
-    public function isValidValue($value)
+    public function isValidValue(mixed $value):bool
     {
         return null !== $this->parseValue($value);
     }
 
-    public function isValidLiteral($valueNode)
+    public function isValidLiteral(Node $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }

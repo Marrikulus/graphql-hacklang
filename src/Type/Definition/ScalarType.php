@@ -1,8 +1,9 @@
-<?hh //decl
+<?hh //strict
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Utils\Utils;
+use GraphQL\Language\AST\Node;
 
 /**
  * Scalar Type Definition
@@ -27,13 +28,23 @@ abstract class ScalarType extends GraphQlType implements OutputType, InputType, 
     /**
      * @var ScalarTypeDefinitionNode|null
      */
-    public $astNode;
+    public ?Node $astNode;
 
-    public function __construct(array $config = [])
+    public function __construct(array<string, mixed> $config = [])
     {
-        $this->name = isset($config['name']) ? $config['name'] : $this->tryInferName();
-        $this->description = isset($config['description']) ? $config['description'] : $this->description;
-        $this->astNode = isset($config['astNode']) ? $config['astNode'] : null;
+        $this->name = (string)idx($config, 'name', $this->tryInferName());
+        if (\array_key_exists('description', $config) && is_string($config['description']))
+        {
+            $this->description = (string)$config['description'];
+        }
+        if(\array_key_exists('astNode', $config))
+        {
+            $node = $config['astNode'];
+            if($node !== null && $node instanceof Node)
+            {
+                $this->astNode = $node;
+            }
+        }
         $this->config = $config;
 
         Utils::assertValidName($this->name);
@@ -46,7 +57,7 @@ abstract class ScalarType extends GraphQlType implements OutputType, InputType, 
      * @param $value
      * @return bool
      */
-    public function isValidValue($value)
+    public function isValidValue(mixed $value):bool
     {
         return null !== $this->parseValue($value);
     }
@@ -58,7 +69,7 @@ abstract class ScalarType extends GraphQlType implements OutputType, InputType, 
      * @param $valueNode
      * @return bool
      */
-    public function isValidLiteral($valueNode)
+    public function isValidLiteral(Node $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }
