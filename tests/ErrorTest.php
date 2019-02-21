@@ -27,7 +27,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
         $source = new Source('{
       field
     }');
-        $ast = Parser::parse($source);
+        $ast = Parser::parseSource($source);
         $fieldNode = $ast->definitions[0]->selectionSet->selections[0];
         $e = new Error('msg', [ $fieldNode ]);
 
@@ -45,7 +45,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
         $source = new Source('{
       field
     }');
-        $ast = Parser::parse($source);
+        $ast = Parser::parseSource($source);
         $operationNode = $ast->definitions[0];
         $e = new Error('msg', [ $operationNode ]);
 

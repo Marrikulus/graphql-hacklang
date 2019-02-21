@@ -77,7 +77,7 @@ fragment MissingOn Type
     public function testParseProvidesUsefulErrorWhenUsingSource()
     {
         $this->setExpectedException(SyntaxError::class, "Syntax Error MyQuery.graphql (1:6) Expected {, found <EOF>\n\n1: query\n        ^\n");
-        Parser::parse(new Source('query', 'MyQuery.graphql'));
+        Parser::parseSource(new Source('query', 'MyQuery.graphql'));
     }
 
     /**
@@ -86,7 +86,7 @@ fragment MissingOn Type
     public function testParsesVariableInlineValues()
     {
         // Following line should not throw:
-        Parser::parse('{ field(complex: { a: { b: [ $var ] } }) }');
+        Parser::parseSource(new Source('{ field(complex: { a: { b: [ $var ] } }) }'));
     }
 
     /**
@@ -258,7 +258,7 @@ fragment $fragmentName on Type {
   }
 }
 ');
-        $result = Parser::parse($source);
+        $result = Parser::parseSource($source);
 
         $loc = function($start, $end) use ($source) {
             return [
@@ -356,7 +356,7 @@ fragment $fragmentName on Type {
     public function testAllowsParsingWithoutSourceLocationInformation()
     {
         $source = new Source('{ id }');
-        $result = Parser::parse($source, ['noLocation' => true]);
+        $result = Parser::parseSource($source, ['noLocation' => true]);
 
         $this->assertEquals(null, $result->loc);
     }
@@ -367,7 +367,7 @@ fragment $fragmentName on Type {
     public function testConvertToArray()
     {
         $source = new Source('{ id }');
-        $result = Parser::parse($source);
+        $result = Parser::parseSource($source);
         $this->assertEquals(['start' => 0, 'end' => '6'], TestUtils::locationToArray($result->loc));
     }
 
@@ -377,7 +377,7 @@ fragment $fragmentName on Type {
     public function testContainsReferencesToSource()
     {
         $source = new Source('{ id }');
-        $result = Parser::parse($source);
+        $result = Parser::parseSource($source);
         $this->assertEquals($source, $result->loc->source);
     }
 
@@ -387,7 +387,7 @@ fragment $fragmentName on Type {
     public function testContainsReferencesToStartAndEndTokens()
     {
         $source = new Source('{ id }');
-        $result = Parser::parse($source);
+        $result = Parser::parseSource($source);
         $this->assertEquals('<SOF>', $result->loc->startToken->kind);
         $this->assertEquals('<EOF>', $result->loc->endToken->kind);
     }
@@ -402,7 +402,7 @@ fragment $fragmentName on Type {
         $this->assertEquals([
             'kind' => NodeKind::NULL,
             'loc' => ['start' => 0, 'end' => 4]
-        ], $this->nodeToArray(Parser::parseValue('null')));
+        ], $this->nodeToArray(Parser::parseValue(new Source('null'))));
     }
 
     /**
@@ -425,7 +425,7 @@ fragment $fragmentName on Type {
                     'value' => 'abc'
                 ]
             ]
-        ], $this->nodeToArray(Parser::parseValue('[123 "abc"]')));
+        ], $this->nodeToArray(Parser::parseValue(new Source('[123 "abc"]'))));
     }
 
     // Describe: parseType
@@ -443,7 +443,7 @@ fragment $fragmentName on Type {
                 'loc' => ['start' => 0, 'end' => 6],
                 'value' => 'String'
             ]
-        ], $this->nodeToArray(Parser::parseType('String')));
+        ], $this->nodeToArray(Parser::parseType(new Source('String'))));
     }
 
     /**
@@ -459,7 +459,7 @@ fragment $fragmentName on Type {
                 'loc' => ['start' => 0, 'end' => 6],
                 'value' => 'MyType'
             ]
-        ], $this->nodeToArray(Parser::parseType('MyType')));
+        ], $this->nodeToArray(Parser::parseType(new Source('MyType'))));
     }
 
     /**
@@ -479,7 +479,7 @@ fragment $fragmentName on Type {
                     'value' => 'MyType'
                 ]
             ]
-        ], $this->nodeToArray(Parser::parseType('[MyType]')));
+        ], $this->nodeToArray(Parser::parseType(new Source('[MyType]'))));
     }
 
     /**
@@ -499,7 +499,7 @@ fragment $fragmentName on Type {
                     'value' => 'MyType'
                 ]
             ]
-        ], $this->nodeToArray(Parser::parseType('MyType!')));
+        ], $this->nodeToArray(Parser::parseType(new Source('MyType!'))));
     }
 
     /**
@@ -523,14 +523,14 @@ fragment $fragmentName on Type {
                     ]
                 ]
             ]
-        ], $this->nodeToArray(Parser::parseType('[MyType!]')));
+        ], $this->nodeToArray(Parser::parseType(new Source('[MyType!]'))));
     }
 
     /**
      * @param Node $node
      * @return array
      */
-    public static function nodeToArray(Node $node)
+    public function nodeToArray(Node $node):array<string, mixed>
     {
         return TestUtils::nodeToArray($node);
     }

@@ -617,7 +617,22 @@ class BuildSchema
      */
     public static function build($source, ?callable $typeConfigDecorator = null)
     {
-        $doc = $source instanceof DocumentNode ? $source : Parser::parse($source);
+        if($source instanceof DocumentNode)
+        {
+            $doc = $source;
+        }
+        elseif($source instanceof Source)
+        {
+            $doc = Parser::parseSource($source);
+        }
+        elseif(is_string($source))
+        {
+            $doc = Parser::parse($source);
+        }
+        else
+        {
+            throw new Error("Type of source not supported.");
+        }
         return self::buildAST($doc, $typeConfigDecorator);
     }
 
