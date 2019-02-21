@@ -5,8 +5,10 @@ class SelectionSetNode extends Node
 {
     public string $kind = NodeKind::SELECTION_SET;
 
-    /**
-     * @var SelectionNode[]
-     */
-    public $selections;
+    public function __construct(
+        public NodeList $selections,
+        ?Location $loc)
+    {
+        parent::__construct($loc);
+    }
 }

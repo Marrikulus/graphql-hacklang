@@ -5,13 +5,11 @@ class FragmentSpreadNode extends Node implements SelectionNode
 {
     public string $kind = NodeKind::FRAGMENT_SPREAD;
 
-    /**
-     * @var NameNode
-     */
-    public $name;
-
-    /**
-     * @var DirectiveNode[]
-     */
-    public $directives;
+    public function __construct(
+        public NameNode $name,
+        public NodeList $directives,
+        ?Location $loc)
+    {
+        parent::__construct($loc);
+    }
 }

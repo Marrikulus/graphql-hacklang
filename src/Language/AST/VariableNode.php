@@ -5,8 +5,10 @@ class VariableNode extends Node
 {
     public string $kind = NodeKind::VARIABLE;
 
-    /**
-     * @var NameNode
-     */
-    public $name;
+    public function __construct(
+        public NameNode $name,
+        ?Location $loc)
+    {
+        parent::__construct($loc);
+    }
 }

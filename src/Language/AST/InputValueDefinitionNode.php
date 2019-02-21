@@ -3,33 +3,16 @@ namespace GraphQL\Language\AST;
 
 class InputValueDefinitionNode extends Node
 {
-    /**
-     * @var string
-     */
     public string $kind = NodeKind::INPUT_VALUE_DEFINITION;
 
-    /**
-     * @var NameNode
-     */
-    public $name;
-
-    /**
-     * @var TypeNode
-     */
-    public $type;
-
-    /**
-     * @var ValueNode
-     */
-    public $defaultValue;
-
-    /**
-     * @var DirectiveNode[]
-     */
-    public $directives;
-
-    /**
-     * @var string
-     */
-    public $description;
+    public function __construct(
+        public NameNode $name,
+        public Node $type,
+        public ?Node $defaultValue,
+        public NodeList $directives,
+        public ?string $description,
+        ?Location $loc)
+    {
+        parent::__construct($loc);
+    }
 }

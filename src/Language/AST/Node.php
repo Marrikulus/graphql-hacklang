@@ -1,4 +1,4 @@
-<?hh // decl
+<?hh // strict
 namespace GraphQL\Language\AST;
 
 use GraphQL\Error\InvariantViolation;
@@ -31,27 +31,17 @@ abstract class Node
     | NonNullTypeNode
      */
 
-    public $kind;
+    public string $kind;
 
-    /**
-     * @var Location
-     */
-    public $loc;
-
-    /**
-     * @param array $vars
-     */
-    public function __construct(array $vars)
-    {
-        if (!empty($vars)) {
-            Utils::assign($this, $vars);
-        }
-    }
+    public function __construct(
+        public ?Location $loc
+    )
+    {}
 
     /**
      * @return $this
      */
-    public function cloneDeep()
+    public function cloneDeep():mixed
     {
         return $this->cloneValue($this);
     }
@@ -60,7 +50,7 @@ abstract class Node
      * @param $value
      * @return array|Node
      */
-    private function cloneValue($value)
+    private function cloneValue(mixed $value):mixed
     {
         if (is_array($value)) {
             $cloned = [];
@@ -69,7 +59,7 @@ abstract class Node
             }
         } else if ($value instanceof Node) {
             $cloned = clone $value;
-            foreach (get_object_vars($cloned) as $prop => $propValue) {
+            foreach (\get_object_vars($cloned) as $prop => $propValue) {
                 $cloned->{$prop} = $this->cloneValue($propValue);
             }
         } else {
@@ -85,7 +75,7 @@ abstract class Node
     public function __toString()
     {
         $tmp = $this->toArray(true);
-        return json_encode($tmp);
+        return \json_encode($tmp);
     }
 
     /**
@@ -127,7 +117,8 @@ abstract class Node
             ];
         }
 
-        foreach (get_object_vars($node) as $prop => $propValue) {
+        foreach (\get_object_vars($node) as $prop => $propValue)
+        {
             if (isset($result[$prop]))
                 continue;
 
@@ -141,7 +132,7 @@ abstract class Node
                 }
             } else if ($propValue instanceof Node) {
                 $tmp = $this->recursiveToArray($propValue);
-            } else if (is_scalar($propValue) || null === $propValue) {
+            } else if (\is_scalar($propValue) || null === $propValue) {
                 $tmp = $propValue;
             } else {
                 $tmp = null;

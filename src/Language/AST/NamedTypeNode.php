@@ -1,12 +1,14 @@
-<?hh
+<?hh //strict
 namespace GraphQL\Language\AST;
 
 class NamedTypeNode extends Node implements TypeNode
 {
     public string $kind = NodeKind::NAMED_TYPE;
 
-    /**
-     * @var NameNode
-     */
-    public $name;
+    public function __construct(
+        public NameNode $name,
+        ?Location $loc)
+    {
+        parent::__construct($loc);
+    }
 }

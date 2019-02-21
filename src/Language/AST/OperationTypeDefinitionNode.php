@@ -3,20 +3,13 @@ namespace GraphQL\Language\AST;
 
 class OperationTypeDefinitionNode extends Node
 {
-    /**
-     * @var string
-     */
     public string $kind = NodeKind::OPERATION_TYPE_DEFINITION;
 
-    /**
-     * One of 'query' | 'mutation' | 'subscription'
-     *
-     * @var string
-     */
-    public $operation;
-
-    /**
-     * @var NamedTypeNode
-     */
-    public $type;
+    public function __construct(
+        public string $operation,
+        public NamedTypeNode $type,
+        ?Location $loc)
+    {
+        parent::__construct($loc);
+    }
 }

@@ -5,23 +5,13 @@ class FragmentDefinitionNode extends Node implements DefinitionNode, HasSelectio
 {
     public string $kind = NodeKind::FRAGMENT_DEFINITION;
 
-    /**
-     * @var NameNode
-     */
-    public $name;
-
-    /**
-     * @var NamedTypeNode
-     */
-    public $typeCondition;
-
-    /**
-     * @var DirectiveNode[]
-     */
-    public $directives;
-
-    /**
-     * @var SelectionSetNode
-     */
-    public $selectionSet;
+    public function __construct(
+        public NameNode $name,
+        public NamedTypeNode $typeCondition,
+        public NodeList $directives,
+        public SelectionSetNode $selectionSet,
+        ?Location $loc)
+    {
+        parent::__construct($loc);
+    }
 }

@@ -1,12 +1,14 @@
-<?hh
+<?hh //strict
 namespace GraphQL\Language\AST;
 
 class DocumentNode extends Node
 {
     public string $kind = NodeKind::DOCUMENT;
 
-    /**
-     * @var DefinitionNode[]
-     */
-    public $definitions;
+    public function __construct(
+        public NodeList $definitions,
+        ?Location $loc)
+    {
+        parent::__construct($loc);
+    }
 }

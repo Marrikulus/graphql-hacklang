@@ -5,8 +5,10 @@ class NameNode extends Node implements TypeNode
 {
     public string $kind = NodeKind::NAME;
 
-    /**
-     * @var string
-     */
-    public $value;
+    public function __construct(
+        public ?string $value,
+        ?Location $loc)
+    {
+        parent::__construct($loc);
+    }
 }

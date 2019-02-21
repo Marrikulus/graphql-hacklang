@@ -5,8 +5,10 @@ class ListTypeNode extends Node implements TypeNode
 {
     public string $kind = NodeKind::LIST_TYPE;
 
-    /**
-     * @var Node
-     */
-    public $type;
+    public function __construct(
+        public Node $type,
+        ?Location $loc)
+    {
+        parent::__construct($loc);
+    }
 }

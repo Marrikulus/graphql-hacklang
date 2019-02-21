@@ -5,8 +5,10 @@ class NonNullTypeNode extends Node implements TypeNode
 {
     public string $kind = NodeKind::NON_NULL_TYPE;
 
-    /**
-     * @var NameNode | ListTypeNode
-     */
-    public $type;
+    public function __construct(
+        public Node $type,
+        ?Location $loc)
+    {
+        parent::__construct($loc);
+    }
 }

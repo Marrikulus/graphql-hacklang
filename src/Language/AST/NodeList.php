@@ -19,7 +19,7 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
      * @param array $nodes
      * @return static
      */
-    public static function create(array<Node> $nodes)
+    public static function create(array<Node> $nodes):NodeList
     {
         return new NodeList($nodes);
     }
@@ -37,9 +37,9 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
      * @param mixed $offset
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists(int $offset):bool
     {
-        return isset($this->nodes[$offset]);
+        return array_key_exists($offset, $this->nodes);
     }
 
     /**
@@ -61,7 +61,7 @@ class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Co
      * @param mixed $offset
      * @param mixed $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(int $offset, $value)
     {
         if (is_array($value) && isset($value['kind'])) {
             $value = AST::fromArray($value);

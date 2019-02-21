@@ -5,18 +5,12 @@ class VariableDefinitionNode extends Node implements DefinitionNode
 {
     public string $kind = NodeKind::VARIABLE_DEFINITION;
 
-    /**
-     * @var VariableNode
-     */
-    public $variable;
-
-    /**
-     * @var TypeNode
-     */
-    public $type;
-
-    /**
-     * @var ValueNode|null
-     */
-    public $defaultValue;
+    public function __construct(
+        public VariableNode $variable,
+        public Node $type,
+        public ?Node $defaultValue,
+        ?Location $loc)
+    {
+        parent::__construct($loc);
+    }
 }
