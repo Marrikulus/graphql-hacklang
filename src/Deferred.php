@@ -35,7 +35,7 @@ class Deferred
         }
     }
 
-    public function __construct(callable $callback)
+    public function __construct((function():mixed) $callback)
     {
         $this->callback = $callback;
         $this->promise = new SyncPromise();
