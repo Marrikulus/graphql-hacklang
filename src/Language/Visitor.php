@@ -1,4 +1,4 @@
-<?hh //strict
+<?hh //decl
 namespace GraphQL\Language;
 
 use GraphQL\Language\AST\Node;
@@ -152,7 +152,7 @@ class Visitor
     {
         $visitorKeys = $keyMap ?: Visitor::$visitorKeys;
 
-        $stack = null;
+        $stack = [];
         $inArray = $root instanceof NodeList || is_array($root);
         $keys = [$root];
         $index = -1;
@@ -164,46 +164,71 @@ class Visitor
 
         $UNDEFINED = null;
 
-        do {
+        do
+        {
             $index++;
-            $isLeaving = $index === count($keys);
+            $isLeaving = $index === \count($keys);
             $key = null;
             $node = null;
-            $isEdited = $isLeaving && count($edits) !== 0;
+            $isEdited = $isLeaving && \count($edits) !== 0;
 
-            if ($isLeaving) {
-                $key = count($ancestors) === 0 ? $UNDEFINED : array_pop($path);
+            if ($isLeaving)
+            {
+                $key = \count($ancestors) === 0 ? $UNDEFINED : \array_pop(&$path);
                 $node = $parent;
-                $parent = array_pop($ancestors);
+                $parent = \array_pop(&$ancestors);
 
-                if ($isEdited) {
-                    if ($inArray) {
+                if ($isEdited)
+                {
+                    if ($inArray)
+                    {
                         // $node = $node; // arrays are value types in PHP
-                        if ($node instanceof NodeList) {
+                        if ($node instanceof NodeList)
+                        {
                             $node = clone $node;
                         }
-                    } else {
-                        $node = clone $node;
+                    }
+                    else
+                    {
+                        if ($node instanceof Node)
+                        {
+                            $node = clone $node;
+                        }
                     }
                     $editOffset = 0;
-                    for ($ii = 0; $ii < count($edits); $ii++) {
-                        $editKey = $edits[$ii][0];
+                    for ($ii = 0; $ii < \count($edits); $ii++)
+                    {
+                        $editKey = (int)$edits[$ii][0];
                         $editValue = $edits[$ii][1];
 
-                        if ($inArray) {
+                        if ($inArray)
+                        {
                             $editKey -= $editOffset;
                         }
-                        if ($inArray && $editValue === null) {
-                            if ($node instanceof NodeList) {
+                        if ($inArray && $editValue === null)
+                        {
+                            if ($node instanceof NodeList)
+                            {
                                 $node->splice($editKey, 1);
-                            } else {
-                                array_splice($node, $editKey, 1);
+                            }
+                            else
+                            {
+                                \array_splice(&$node, $editKey, 1);
                             }
                             $editOffset++;
-                        } else {
-                            if ($node instanceof NodeList || is_array($node)) {
+                        }
+                        else
+                        {
+                            if ($node instanceof NodeList)
+                            {
+                                $node->offsetSet($editKey, $editValue);
+                            }
+                            elseif(is_array($node))
+                            {
                                 $node[$editKey] = $editValue;
-                            } else {
+                            }
+                            else
+                            {
                                 $node->{$editKey} = $editValue;
                             }
                         }
@@ -214,26 +239,63 @@ class Visitor
                 $edits = $stack['edits'];
                 $inArray = $stack['inArray'];
                 $stack = $stack['prev'];
-            } else {
-                $key = $parent ? ($inArray ? $index : $keys[$index]) : $UNDEFINED;
-                $node = $parent ? (($parent instanceof NodeList || is_array($parent)) ? $parent[$key] : $parent->{$key}) : $newRoot;
-                if ($node === null || $node === $UNDEFINED) {
+            }
+            else
+            {
+                $key = $UNDEFINED;
+                $node = $newRoot;
+                if ($parent && $key)
+                {
+                    if ($keys instanceof NodeList)
+                    {
+                        $key = $keys->offsetGet($index);
+                    }
+                    elseif(is_array($keys))
+                    {
+                        $key = $keys[$index];
+                    }
+                    if ($inArray)
+                    {
+                        $key = $index;
+                    }
+
+                    if ($parent instanceof NodeList)
+                    {
+                        $node = $parent->offsetGet($key);
+                    }
+                    elseif (is_array($parent))
+                    {
+                        $node = $parent[$key];
+                    }
+                    else
+                    {
+                        $node = $parent->{$key};
+                    }
+                }
+
+                if ($node === null || $node === $UNDEFINED)
+                {
                     continue;
                 }
-                if ($parent) {
+
+                if ($parent)
+                {
                     $path[] = $key;
                 }
             }
 
             $result = null;
-            if (!$node instanceof NodeList && !is_array($node)) {
+            if (!$node instanceof NodeList && !is_array($node))
+            {
                 if (!($node instanceof Node)) {
-                    throw new \Exception('Invalid AST Node: ' . json_encode($node));
+                    throw new \Exception('Invalid AST Node: ' . \json_encode($node));
                 }
 
                 $visitFn = Visitor::getVisitFn($visitor, $node->kind, $isLeaving);
 
-                if ($visitFn) {
+                if ($visitFn)
+                {
+                    /* HH_FIXME[4009]*/
                     $result = call_user_func($visitFn, $node, $key, $parent, $path, $ancestors);
 
                     if ($result !== null) {
@@ -242,7 +304,7 @@ class Visitor
                                 break;
                             }
                             if (!$isLeaving && $result->doContinue) {
-                                array_pop($path);
+                                \array_pop(&$path);
                                 continue;
                             }
                             if ($result->removeNode) {
@@ -257,7 +319,7 @@ class Visitor
                             if ($editValue instanceof Node) {
                                 $node = $editValue;
                             } else {
-                                array_pop($path);
+                                \array_pop(&$path);
                                 continue;
                             }
                         }
@@ -265,11 +327,13 @@ class Visitor
                 }
             }
 
-            if ($result === null && $isEdited) {
+            if ($result === null && $isEdited)
+            {
                 $edits[] = [$key, $node];
             }
 
-            if (!$isLeaving) {
+            if (!$isLeaving)
+            {
                 $stack = [
                     'inArray' => $inArray,
                     'index' => $index,
@@ -279,7 +343,24 @@ class Visitor
                 ];
                 $inArray = $node instanceof NodeList || is_array($node);
 
-                $keys = ($inArray ? $node : $visitorKeys[$node->kind]) ?: [];
+                if ($node instanceof NodeList)
+                {
+                    $keys = $node;
+                }
+                if (is_array($node))
+                {
+                    $keys = $node;
+                }
+                elseif($node !== null && $node instanceof Node)
+                {
+                    $kind = $node->kind;
+                    $keys = $visitorKeys[$kind] ?? [];
+                }
+                else
+                {
+                    $keys = [];
+                }
+
                 $index = -1;
                 $edits = [];
                 if ($parent) {
@@ -290,7 +371,8 @@ class Visitor
 
         } while ($stack);
 
-        if (count($edits) !== 0) {
+        if (\count($edits) !== 0)
+        {
             $newRoot = $edits[0][1];
         }
 
@@ -342,27 +424,39 @@ class Visitor
      */
     public static function visitInParallel($visitors):array
     {
-        $visitorsCount = count($visitors);
+        $visitorsCount = \count($visitors);
         $skipping = new \SplFixedArray($visitorsCount);
 
         return [
-            'enter' => function ($node) use ($visitors, $skipping, $visitorsCount) {
-                for ($i = 0; $i < $visitorsCount; $i++) {
-                    if (empty($skipping[$i])) {
+            'enter' => function ($node) use ($visitors, $skipping, $visitorsCount)
+            {
+                for ($i = 0; $i < $visitorsCount; $i++)
+                {
+                    if (!$skipping->offsetExists($i))
+                    {
                         $fn = Visitor::getVisitFn($visitors[$i], $node->kind, /* isLeaving */ false);
 
-                        if ($fn) {
-                            $result = call_user_func_array($fn, func_get_args());
+                        if ($fn)
+                        {
+                            $result = \call_user_func_array($fn, \func_get_args());
 
-                            if ($result instanceof VisitorOperation) {
-                                if ($result->doContinue) {
-                                    $skipping[$i] = $node;
-                                } else if ($result->doBreak) {
-                                    $skipping[$i] = $result;
-                                } else if ($result->removeNode) {
+                            if ($result instanceof VisitorOperation)
+                            {
+                                if ($result->doContinue)
+                                {
+                                    $skipping->offsetSet($i, $node);
+                                }
+                                else if ($result->doBreak)
+                                {
+                                    $skipping->offsetSet($i, $result);
+                                }
+                                else if ($result->removeNode)
+                                {
                                     return $result;
                                 }
-                            } else if ($result !== null) {
+                            }
+                            else if ($result !== null)
+                            {
                                 return $result;
                             }
                         }
@@ -370,24 +464,35 @@ class Visitor
                 }
             },
             'leave' => function ($node) use ($visitors, $skipping, $visitorsCount) {
-                for ($i = 0; $i < $visitorsCount; $i++) {
-                    if (empty($skipping[$i])) {
+                for ($i = 0; $i < $visitorsCount; $i++)
+                {
+                    if (!$skipping->offsetExists($i))
+                    {
                         $fn = Visitor::getVisitFn($visitors[$i], $node->kind, /* isLeaving */ true);
 
-                        if ($fn) {
-                            $result = call_user_func_array($fn, func_get_args());
-                            if ($result instanceof VisitorOperation) {
-                                if ($result->doBreak) {
-                                    $skipping[$i] = $result;
-                                } else if ($result->removeNode) {
+                        if ($fn)
+                        {
+                            $result = \call_user_func_array($fn, \func_get_args());
+                            if ($result instanceof VisitorOperation)
+                            {
+                                if ($result->doBreak)
+                                {
+                                    $skipping->offsetSet($i, $result);
+                                }
+                                else if ($result->removeNode)
+                                {
                                     return $result;
                                 }
-                            } else if ($result !== null) {
+                            }
+                            else if ($result !== null)
+                            {
                                 return $result;
                             }
                         }
-                    } else if ($skipping[$i] === $node) {
-                        $skipping[$i] = null;
+                    }
+                    else if ($skipping->offsetGet($i) === $node)
+                    {
+                        $skipping->offsetSet($i, null);
                     }
                 }
             }
@@ -406,7 +511,7 @@ class Visitor
                 $fn = Visitor::getVisitFn($visitor, $node->kind, false);
 
                 if ($fn) {
-                    $result = call_user_func_array($fn, func_get_args());
+                    $result = \call_user_func_array($fn, \func_get_args());
                     if ($result) {
                         $typeInfo->leave($node);
                         if ($result instanceof Node) {
@@ -419,7 +524,7 @@ class Visitor
             },
             'leave' => function ($node) use ($typeInfo, $visitor) {
                 $fn = Visitor::getVisitFn($visitor, $node->kind, true);
-                $result = $fn ? call_user_func_array($fn, func_get_args()) : null;
+                $result = $fn ? \call_user_func_array($fn, \func_get_args()) : null;
                 $typeInfo->leave($node);
                 return $result;
             }
@@ -437,21 +542,21 @@ class Visitor
         if (!$visitor) {
             return null;
         }
-        $kindVisitor = array_key_exists($kind, $visitor) ? $visitor[$kind] : null;
+        $kindVisitor = \array_key_exists($kind, $visitor) ? $visitor[$kind] : null;
 
-        if (!$isLeaving && is_callable($kindVisitor)) {
+        if (!$isLeaving && \is_callable($kindVisitor)) {
             // { Kind() {} }
             return $kindVisitor;
         }
 
         if (is_array($kindVisitor)) {
             if ($isLeaving) {
-                $kindSpecificVisitor = array_key_exists('leave', $kindVisitor) ? $kindVisitor['leave'] : null;
+                $kindSpecificVisitor = \array_key_exists('leave', $kindVisitor) ? $kindVisitor['leave'] : null;
             } else {
-                $kindSpecificVisitor = array_key_exists('enter', $kindVisitor) ? $kindVisitor['enter'] : null;
+                $kindSpecificVisitor = \array_key_exists('enter', $kindVisitor) ? $kindVisitor['enter'] : null;
             }
 
-            if ($kindSpecificVisitor && is_callable($kindSpecificVisitor)) {
+            if ($kindSpecificVisitor && \is_callable($kindSpecificVisitor)) {
                 // { Kind: { enter() {}, leave() {} } }
                 return $kindSpecificVisitor;
             }
@@ -462,13 +567,13 @@ class Visitor
         $specificVisitor = $isLeaving ? $visitor['leave'] : $visitor['enter'];
 
         if ($specificVisitor) {
-            if (is_callable($specificVisitor)) {
+            if (\is_callable($specificVisitor)) {
                 // { enter() {}, leave() {} }
                 return $specificVisitor;
             }
-            $specificKindVisitor = array_key_exists($kind, $specificVisitor) ? $specificVisitor[$kind] : null;
+            $specificKindVisitor = \array_key_exists($kind, $specificVisitor) ? $specificVisitor[$kind] : null;
 
-            if (is_callable($specificKindVisitor)) {
+            if (\is_callable($specificKindVisitor)) {
                 // { enter: { Kind() {} }, leave: { Kind() {} } }
                 return $specificKindVisitor;
             }
