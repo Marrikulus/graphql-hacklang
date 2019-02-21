@@ -1,4 +1,4 @@
-<?hh // partial
+<?hh // decl
 namespace GraphQL\Utils;
 
 use GraphQL\Error\InvariantViolation;
@@ -64,17 +64,26 @@ class AST
      * @param array $node
      * @return Node
      */
-    public static function fromArray(array $node):Node
+    public static function fromArray(array<string, mixed> $node):Node
     {
-        if (!isset($node['kind']) || !isset(NodeKind::$classMap[$node['kind']])) {
+        if (!array_key_exists('kind', $node))
+        {
+            throw new InvariantViolation("Unexpected node structure: " . Utils::printSafeJson($node));
+        }
+        if (!array_key_exists($node['kind'], NodeKind::$classMap))
+        {
             throw new InvariantViolation("Unexpected node structure: " . Utils::printSafeJson($node));
         }
 
-        $kind = isset($node['kind']) ? $node['kind'] : null;
+        $kind = (string)$node['kind'];
         $class = NodeKind::$classMap[$kind];
         $instance = new $class([]);
 
-        if (isset($node['loc'], $node['loc']['start'], $node['loc']['end'])) {
+        if (array_key_exists('loc', $node) &&
+            $node['loc'] !== null &&
+            array_key_exists('start', $node['loc']) &&
+            array_key_exists('end', $node['loc']))
+        {
             $instance->loc = Location::create($node['loc']['start'], $node['loc']['end']);
         }
 
@@ -83,10 +92,14 @@ class AST
             if ('loc' === $key || 'kind' === $key) {
                 continue ;
             }
-            if (is_array($value)) {
-                if (isset($value[0]) || empty($value)) {
+            if (\is_array($value))
+            {
+                if (array_key_exists(0, $value) || empty($value))
+                {
                     $value = new NodeList($value);
-                } else {
+                }
+                else
+                {
                     $value = AST::fromArray($value);
                 }
             }
@@ -102,7 +115,7 @@ class AST
      * @param Node $node
      * @return array
      */
-    public static function toArray(Node $node)
+    public static function toArray(Node $node):array<string, mixed>
     {
         return $node->toArray(true);
     }
@@ -443,7 +456,7 @@ class AST
      * @param string $operationName
      * @return bool
      */
-    public static function getOperation(DocumentNode $document, ?string $operationName = null)
+    public static function getOperation(DocumentNode $document, ?string $operationName = null):bool
     {
         if ($document->definitions) {
             foreach ($document->definitions as $def) {
