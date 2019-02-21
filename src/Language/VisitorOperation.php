@@ -1,12 +1,12 @@
-<?hh
+<?hh //strict
 
 namespace GraphQL\Language;
 
 class VisitorOperation
 {
-    public $doBreak;
+    public bool $doBreak = false;
 
-    public $doContinue;
+    public bool $doContinue = false;
 
-    public $removeNode;
+    public bool $removeNode = false;
 }
