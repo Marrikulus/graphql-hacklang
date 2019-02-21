@@ -1,11 +1,11 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Executor;
 
 use GraphQL\Executor\Executor;
 use GraphQL\Language\Parser;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class DirectivesTest extends \PHPUnit_Framework_TestCase
 {
@@ -230,8 +230,8 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
                 'query' => new ObjectType([
                     'name' => 'TestType',
                     'fields' => [
-                        'a' => ['type' => Type::string()],
-                        'b' => ['type' => Type::string()]
+                        'a' => ['type' => GraphQlType::string()],
+                        'b' => ['type' => GraphQlType::string()]
                     ]
                 ])
             ]);
@@ -247,7 +247,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function executeTestQuery($doc)
+    private function executeTestQuery(string $doc)
     {
         return Executor::execute(self::getSchema(), Parser::parse($doc), self::getData())->toArray();
     }

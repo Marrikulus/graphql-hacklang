@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Executor;
 
 require_once __DIR__ . '/TestClasses.php';
@@ -10,7 +10,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 
 class AbstractTest extends \PHPUnit_Framework_TestCase
@@ -26,7 +26,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
         $petType = new InterfaceType([
             'name' => 'Pet',
             'fields' => [
-                'name' => ['type' => Type::string()]
+                'name' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -36,8 +36,8 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
             'interfaces' => [$petType],
             'isTypeOf' => function($obj) { return $obj instanceof Dog; },
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'woofs' => ['type' => Type::boolean()]
+                'name' => ['type' => GraphQlType::string()],
+                'woofs' => ['type' => GraphQlType::boolean()]
             ]
         ]);
 
@@ -48,8 +48,8 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 return $obj instanceof Cat;
             },
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'meows' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'meows' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -58,7 +58,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($petType),
+                        'type' => GraphQlType::listOf($petType),
                         'resolve' => function () {
                             return [new Dog('Odie', true), new Cat('Garfield', false)];
                         }
@@ -100,8 +100,8 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
             'name' => 'Dog',
             'isTypeOf' => function($obj) { return $obj instanceof Dog; },
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'woofs' => ['type' => Type::boolean()]
+                'name' => ['type' => GraphQlType::string()],
+                'woofs' => ['type' => GraphQlType::boolean()]
             ]
         ]);
 
@@ -111,8 +111,8 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 return $obj instanceof Cat;
             },
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'meows' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'meows' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -126,7 +126,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($petType),
+                        'type' => GraphQlType::listOf($petType),
                         'resolve' => function() {
                             return [ new Dog('Odie', true), new Cat('Garfield', false) ];
                         }
@@ -160,7 +160,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * @it resolveType on Interface yields useful error
      */
-    function testResolveTypeOnInterfaceYieldsUsefulError()
+    public function testResolveTypeOnInterfaceYieldsUsefulError()
     {
         $DogType = null;
         $CatType = null;
@@ -181,14 +181,14 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 return null;
             },
             'fields' => [
-                'name' => ['type' => Type::string()]
+                'name' => ['type' => GraphQlType::string()]
             ]
         ]);
 
         $HumanType = new ObjectType([
             'name' => 'Human',
             'fields' => [
-                'name' => ['type' => Type::string()],
+                'name' => ['type' => GraphQlType::string()],
             ]
         ]);
 
@@ -196,8 +196,8 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
             'name' => 'Dog',
             'interfaces' => [$PetType],
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'woofs' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'woofs' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -205,8 +205,8 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
             'name' => 'Cat',
             'interfaces' => [$PetType],
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'meows' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'meows' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -215,7 +215,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($PetType),
+                        'type' => GraphQlType::listOf($PetType),
                         'resolve' => function () {
                             return [
                                 new Dog('Odie', true),
@@ -269,23 +269,23 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
         $HumanType = new ObjectType([
             'name' => 'Human',
             'fields' => [
-                'name' => ['type' => Type::string()],
+                'name' => ['type' => GraphQlType::string()],
             ]
         ]);
 
         $DogType = new ObjectType([
             'name' => 'Dog',
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'woofs' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'woofs' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
         $CatType = new ObjectType([
             'name' => 'Cat',
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'meows' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'meows' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -310,7 +310,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($PetType),
+                        'type' => GraphQlType::listOf($PetType),
                         'resolve' => function () {
                             return [
                                 new Dog('Odie', true),
@@ -369,7 +369,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 return null;
             },
             'fields' => [
-                'name' => [ 'type' => Type::string() ]
+                'name' => [ 'type' => GraphQlType::string() ]
             ]
         ]);
 
@@ -377,8 +377,8 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
             'name' => 'Dog',
             'interfaces' => [ $PetType ],
             'fields' => [
-                'name' => [ 'type' => Type::string() ],
-                'woofs' => [ 'type' => Type::boolean() ],
+                'name' => [ 'type' => GraphQlType::string() ],
+                'woofs' => [ 'type' => GraphQlType::boolean() ],
             ]
         ]);
 
@@ -386,8 +386,8 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
             'name' => 'Cat',
             'interfaces' => [ $PetType ],
             'fields' => [
-                'name' => [ 'type' => Type::string() ],
-                'meows' => [ 'type' => Type::boolean() ],
+                'name' => [ 'type' => GraphQlType::string() ],
+                'meows' => [ 'type' => GraphQlType::boolean() ],
             ]
         ]);
 
@@ -396,7 +396,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($PetType),
+                        'type' => GraphQlType::listOf($PetType),
                         'resolve' => function() {
                             return [
                                 new Dog('Odie', true),
@@ -439,7 +439,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
             return new ObjectType([
                 'name' => 'Test',
                 'fields' => [
-                    'a' => Type::string()
+                    'a' => GraphQlType::string()
                 ],
                 'interfaces' => function() use ($iface) {
                     return [$iface];
@@ -450,7 +450,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
         $iface = new InterfaceType([
             'name' => 'Node',
             'fields' => [
-                'a' => Type::string()
+                'a' => GraphQlType::string()
             ],
             'resolveType' => function() use (&$createTest) {
                 return $createTest();

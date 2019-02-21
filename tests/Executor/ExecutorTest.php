@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Executor;
 
 require_once __DIR__ . '/TestClasses.php';
@@ -13,7 +13,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class ExecutorTest extends \PHPUnit_Framework_TestCase
 {
@@ -129,15 +129,15 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'name' => 'DataType',
             'fields' => function() use (&$dataType, &$deepDataType) {
                 return [
-                    'a' => [ 'type' => Type::string() ],
-                    'b' => [ 'type' => Type::string() ],
-                    'c' => [ 'type' => Type::string() ],
-                    'd' => [ 'type' => Type::string() ],
-                    'e' => [ 'type' => Type::string() ],
-                    'f' => [ 'type' => Type::string() ],
+                    'a' => [ 'type' => GraphQlType::string() ],
+                    'b' => [ 'type' => GraphQlType::string() ],
+                    'c' => [ 'type' => GraphQlType::string() ],
+                    'd' => [ 'type' => GraphQlType::string() ],
+                    'e' => [ 'type' => GraphQlType::string() ],
+                    'f' => [ 'type' => GraphQlType::string() ],
                     'pic' => [
-                        'args' => [ 'size' => ['type' => Type::int() ] ],
-                        'type' => Type::string(),
+                        'args' => [ 'size' => ['type' => GraphQlType::int() ] ],
+                        'type' => GraphQlType::string(),
                         'resolve' => function($obj, $args) {
                             return $obj['pic']($args['size']);
                         }
@@ -151,10 +151,10 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         $deepDataType = new ObjectType([
             'name' => 'DeepDataType',
             'fields' => [
-                'a' => [ 'type' => Type::string() ],
-                'b' => [ 'type' => Type::string() ],
-                'c' => [ 'type' => Type::listOf(Type::string()) ],
-                'deeper' => [ 'type' => Type::listOf($dataType) ]
+                'a' => [ 'type' => GraphQlType::string() ],
+                'b' => [ 'type' => GraphQlType::string() ],
+                'c' => [ 'type' => GraphQlType::listOf(GraphQlType::string()) ],
+                'deeper' => [ 'type' => GraphQlType::listOf($dataType) ]
             ]
         ]);
         $schema = new Schema(['query' => $dataType]);
@@ -185,13 +185,13 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type',
             'fields' => function() use (&$Type) {
                 return [
-                    'a' => ['type' => Type::string(), 'resolve' => function () {
+                    'a' => ['type' => GraphQlType::string(), 'resolve' => function () {
                         return 'Apple';
                     }],
-                    'b' => ['type' => Type::string(), 'resolve' => function () {
+                    'b' => ['type' => GraphQlType::string(), 'resolve' => function () {
                         return 'Banana';
                     }],
-                    'c' => ['type' => Type::string(), 'resolve' => function () {
+                    'c' => ['type' => GraphQlType::string(), 'resolve' => function () {
                         return 'Cherry';
                     }],
                     'deep' => [
@@ -237,7 +237,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Test',
                 'fields' => [
                     'test' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function($val, $args, $ctx, $_info) use (&$info) {
                             $info = $_info;
                         }
@@ -267,7 +267,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test', $info->fieldName);
         $this->assertEquals(1, count($info->fieldNodes));
         $this->assertSame($ast->definitions[0]->selectionSet->selections[0], $info->fieldNodes[0]);
-        $this->assertSame(Type::string(), $info->returnType);
+        $this->assertSame(GraphQlType::string(), $info->returnType);
         $this->assertSame($schema->getQueryType(), $info->parentType);
         $this->assertEquals(['result'], $info->path);
         $this->assertSame($schema, $info->schema);
@@ -296,7 +296,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Type',
                 'fields' => [
                     'a' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function ($context) use ($doc, &$gotHere) {
                             $this->assertEquals('thing', $context['contextThing']);
                             $gotHere = true;
@@ -330,10 +330,10 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                 'fields' => [
                     'b' => [
                         'args' => [
-                            'numArg' => ['type' => Type::int()],
-                            'stringArg' => ['type' => Type::string()]
+                            'numArg' => ['type' => GraphQlType::int()],
+                            'stringArg' => ['type' => GraphQlType::string()]
                         ],
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function ($_, $args) use (&$gotHere) {
                             $this->assertEquals(123, $args['numArg']);
                             $this->assertEquals('foo', $args['stringArg']);
@@ -430,18 +430,18 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Type',
                 'fields' => [
-                    'sync' => ['type' => Type::string()],
-                    'syncError' => ['type' => Type::string()],
-                    'syncRawError' => ['type' => Type::string()],
-                    'syncReturnError' => ['type' => Type::string()],
-                    'syncReturnErrorList' => ['type' => Type::listOf(Type::string())],
-                    'async' => ['type' => Type::string()],
-                    'asyncReject' => ['type' => Type::string() ],
-                    'asyncRawReject' => ['type' => Type::string() ],
-                    'asyncEmptyReject' => ['type' => Type::string() ],
-                    'asyncError' => ['type' => Type::string()],
-                    'asyncRawError' => ['type' => Type::string()],
-                    'asyncReturnError' => ['type' => Type::string()],
+                    'sync' => ['type' => GraphQlType::string()],
+                    'syncError' => ['type' => GraphQlType::string()],
+                    'syncRawError' => ['type' => GraphQlType::string()],
+                    'syncReturnError' => ['type' => GraphQlType::string()],
+                    'syncReturnErrorList' => ['type' => GraphQlType::listOf(GraphQlType::string())],
+                    'async' => ['type' => GraphQlType::string()],
+                    'asyncReject' => ['type' => GraphQlType::string() ],
+                    'asyncRawReject' => ['type' => GraphQlType::string() ],
+                    'asyncEmptyReject' => ['type' => GraphQlType::string() ],
+                    'asyncError' => ['type' => GraphQlType::string()],
+                    'asyncRawError' => ['type' => GraphQlType::string()],
+                    'asyncReturnError' => ['type' => GraphQlType::string()],
                 ]
             ])
         ]);
@@ -537,7 +537,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Type',
                 'fields' => [
-                    'a' => ['type' => Type::string()],
+                    'a' => ['type' => GraphQlType::string()],
                 ]
             ])
         ]);
@@ -559,7 +559,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Type',
                 'fields' => [
-                    'a' => [ 'type' => Type::string() ],
+                    'a' => [ 'type' => GraphQlType::string() ],
                 ]
             ])
         ]);
@@ -580,7 +580,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Type',
                 'fields' => [
-                    'a' => [ 'type' => Type::string() ],
+                    'a' => [ 'type' => GraphQlType::string() ],
                 ]
             ])
         ]);
@@ -601,7 +601,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Type',
                 'fields' => [
-                    'a' => [ 'type' => Type::string() ],
+                    'a' => [ 'type' => GraphQlType::string() ],
                 ]
             ])
         ]);
@@ -630,7 +630,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Type',
                 'fields' => [
-                    'a' => ['type' => Type::string()],
+                    'a' => ['type' => GraphQlType::string()],
                 ]
             ])
         ]);
@@ -659,7 +659,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Type',
                 'fields' => [
-                    'a' => ['type' => Type::string()],
+                    'a' => ['type' => GraphQlType::string()],
                 ]
             ])
         ]);
@@ -698,13 +698,13 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Q',
                 'fields' => [
-                    'a' => ['type' => Type::string()],
+                    'a' => ['type' => GraphQlType::string()],
                 ]
             ]),
             'mutation' => new ObjectType([
                 'name' => 'M',
                 'fields' => [
-                    'c' => ['type' => Type::string()],
+                    'c' => ['type' => GraphQlType::string()],
                 ]
             ])
         ]);
@@ -725,13 +725,13 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Q',
                 'fields' => [
-                    'a' => ['type' => Type::string()],
+                    'a' => ['type' => GraphQlType::string()],
                 ]
             ]),
             'mutation' => new ObjectType([
                 'name' => 'M',
                 'fields' => [
-                    'c' => [ 'type' => Type::string() ],
+                    'c' => [ 'type' => GraphQlType::string() ],
                 ]
             ])
         ]);
@@ -751,13 +751,13 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Q',
                 'fields' => [
-                    'a' => [ 'type' => Type::string() ],
+                    'a' => [ 'type' => GraphQlType::string() ],
                 ]
             ]),
             'subscription' => new ObjectType([
                 'name' => 'S',
                 'fields' => [
-                    'a' => [ 'type' => Type::string() ],
+                    'a' => [ 'type' => GraphQlType::string() ],
                 ]
             ])
         ]);
@@ -798,11 +798,11 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         $queryType = new ObjectType([
             'name' => 'DeepDataType',
             'fields' => [
-                'a' => [ 'type' => Type::string() ],
-                'b' => [ 'type' => Type::string() ],
-                'c' => [ 'type' => Type::string() ],
-                'd' => [ 'type' => Type::string() ],
-                'e' => [ 'type' => Type::string() ],
+                'a' => [ 'type' => GraphQlType::string() ],
+                'b' => [ 'type' => GraphQlType::string() ],
+                'c' => [ 'type' => GraphQlType::string() ],
+                'd' => [ 'type' => GraphQlType::string() ],
+                'e' => [ 'type' => GraphQlType::string() ],
             ]
         ]);
         $schema = new Schema(['query' => $queryType]);
@@ -843,7 +843,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Type',
                 'fields' => [
-                    'a' => ['type' => Type::string()],
+                    'a' => ['type' => GraphQlType::string()],
                 ]
             ])
         ]);
@@ -865,13 +865,13 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Q',
                 'fields' => [
-                    'a' => ['type' => Type::string()],
+                    'a' => ['type' => GraphQlType::string()],
                 ]
             ]),
             'mutation' => new ObjectType([
                 'name' => 'M',
                 'fields' => [
-                    'c' => ['type' => Type::string()],
+                    'c' => ['type' => GraphQlType::string()],
                 ]
             ])
         ]);
@@ -889,14 +889,14 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Type',
                 'fields' => [
                     'field' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function($data, $args) {return $args ? json_encode($args) : '';},
                         'args' => [
-                            'a' => ['type' => Type::boolean()],
-                            'b' => ['type' => Type::boolean()],
-                            'c' => ['type' => Type::boolean()],
-                            'd' => ['type' => Type::int()],
-                            'e' => ['type' => Type::int()]
+                            'a' => ['type' => GraphQlType::boolean()],
+                            'b' => ['type' => GraphQlType::boolean()],
+                            'c' => ['type' => GraphQlType::boolean()],
+                            'd' => ['type' => GraphQlType::int()],
+                            'e' => ['type' => GraphQlType::int()]
                         ]
                     ]
                 ]
@@ -925,7 +925,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                 return $obj instanceof Special;
             },
             'fields' => [
-                'value' => ['type' => Type::string()]
+                'value' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -934,7 +934,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'specials' => [
-                        'type' => Type::listOf($SpecialType),
+                        'type' => GraphQlType::listOf($SpecialType),
                         'resolve' => function($rootValue) {
                             return $rootValue['specials'];
                         }
@@ -979,7 +979,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Query',
                 'fields' => [
-                    'foo' => ['type' => Type::string()]
+                    'foo' => ['type' => GraphQlType::string()]
                 ]
             ])
         ]);
@@ -1010,7 +1010,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Query',
                 'fields' => [
-                    'foo' => ['type' => Type::string()]
+                    'foo' => ['type' => GraphQlType::string()]
                 ]
             ])
         ]);
@@ -1044,21 +1044,21 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Type',
                 'fields' => [
                     'field' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function($data, $args) {return $args ? json_encode($args) : '';},
                         'args' => [
-                            'a' => ['type' => Type::boolean(), 'defaultValue' => 1],
-                            'b' => ['type' => Type::boolean(), 'defaultValue' => null],
-                            'c' => ['type' => Type::boolean(), 'defaultValue' => 0],
-                            'd' => ['type' => Type::int(), 'defaultValue' => false],
-                            'e' => ['type' => Type::int(), 'defaultValue' => '0'],
-                            'f' => ['type' => Type::int(), 'defaultValue' => 'some-string'],
-                            'g' => ['type' => Type::boolean()],
+                            'a' => ['type' => GraphQlType::boolean(), 'defaultValue' => 1],
+                            'b' => ['type' => GraphQlType::boolean(), 'defaultValue' => null],
+                            'c' => ['type' => GraphQlType::boolean(), 'defaultValue' => 0],
+                            'd' => ['type' => GraphQlType::int(), 'defaultValue' => false],
+                            'e' => ['type' => GraphQlType::int(), 'defaultValue' => '0'],
+                            'f' => ['type' => GraphQlType::int(), 'defaultValue' => 'some-string'],
+                            'g' => ['type' => GraphQlType::boolean()],
                             'h' => ['type' => new InputObjectType([
                                 'name' => 'ComplexType',
                                 'fields' => [
-                                    'a' => ['type' => Type::int()],
-                                    'b' => ['type' => Type::string()]
+                                    'a' => ['type' => GraphQlType::int()],
+                                    'b' => ['type' => GraphQlType::string()]
                                 ]
                             ]), 'defaultValue' => ['a' => 1, 'b' => 'test']]
                         ]
@@ -1088,7 +1088,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         $a = new ObjectType([
             'name' => 'A',
             'fields' => [
-                'id' => Type::id()
+                'id' => GraphQlType::id()
             ],
             'interfaces' => function() use (&$iface) {
                 return [$iface];
@@ -1098,7 +1098,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         $b = new ObjectType([
             'name' => 'B',
             'fields' => [
-                'id' => Type::id()
+                'id' => GraphQlType::id()
             ],
             'interfaces' => function() use (&$iface) {
                 return [$iface];
@@ -1108,7 +1108,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         $iface = new InterfaceType([
             'name' => 'Iface',
             'fields' => [
-                'id' => Type::id()
+                'id' => GraphQlType::id()
             ],
             'resolveType' => function($v) use ($a, $b) {
                 return $v['type'] === 'A' ? $a : $b;
@@ -1119,7 +1119,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'query' => new ObjectType([
                 'name' => 'Query',
                 'fields' => [
-                    'ab' => Type::listOf($iface)
+                    'ab' => GraphQlType::listOf($iface)
                 ]
             ]),
             'types' => [$a, $b]

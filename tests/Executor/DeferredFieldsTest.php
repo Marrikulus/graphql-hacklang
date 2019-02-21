@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Executor;
 
 
@@ -8,7 +8,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Utils\Utils;
 
 class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
@@ -62,7 +62,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
             'fields' => function() {
                 return [
                     'name' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function ($user, $args, $context, ResolveInfo $info) {
                             $this->path[] = $info->path;
                             return $user['name'];
@@ -89,7 +89,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
             'name' => 'Story',
             'fields' => [
                 'title' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'resolve' => function($entry, $args, $context, ResolveInfo $info) {
                         $this->path[] = $info->path;
                         return $entry['title'];
@@ -115,7 +115,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
             'name' => 'Category',
             'fields' => [
                 'name' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'resolve' => function($category, $args, $context, ResolveInfo $info) {
                         $this->path[] = $info->path;
                         return $category['name'];
@@ -123,7 +123,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
                 ],
 
                 'stories' => [
-                    'type' => Type::listOf($this->storyType),
+                    'type' => GraphQlType::listOf($this->storyType),
                     'resolve' => function($category, $args, $context, ResolveInfo $info) {
                         $this->path[] = $info->path;
                         return Utils::filter($this->storyDataSource, function($story) use ($category) {
@@ -151,7 +151,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
             'name' => 'Query',
             'fields' => [
                 'topStories' => [
-                    'type' => Type::listOf($this->storyType),
+                    'type' => GraphQlType::listOf($this->storyType),
                     'resolve' => function($val, $args, $context, ResolveInfo $info) {
                         $this->path[] = $info->path;
                         return Utils::filter($this->storyDataSource, function($story) {
@@ -167,7 +167,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
                     }
                 ],
                 'categories' => [
-                    'type' => Type::listOf($this->categoryType),
+                    'type' => GraphQlType::listOf($this->categoryType),
                     'resolve' => function($val, $args, $context, ResolveInfo $info) {
                         $this->path[] = $info->path;
                         return $this->categoryDataSource;
@@ -355,14 +355,14 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
             'fields' => function() use (&$complexType) {
                 return [
                     'sync' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function($v, $a, $c, ResolveInfo $info) {
                             $this->path[] = $info->path;
                             return 'sync';
                         }
                     ],
                     'deferred' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function($v, $a, $c, ResolveInfo $info) {
                             $this->path[] = $info->path;
 

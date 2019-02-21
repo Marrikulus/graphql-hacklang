@@ -1,4 +1,4 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Executor;
 
 require_once __DIR__ . '/TestClasses.php';
@@ -11,7 +11,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 
@@ -46,7 +46,7 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
             'name' => 'Pet',
             'fields' => function() {
                 return [
-                    'name' => ['type' => Type::string()]
+                    'name' => ['type' => GraphQlType::string()]
                 ];
             }
         ]);
@@ -58,8 +58,8 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
             'isTypeOf' => function($obj) { return $obj instanceof Dog; },
             'fields' => function() {
                 return [
-                    'name' => ['type' => Type::string()],
-                    'woofs' => ['type' => Type::boolean()]
+                    'name' => ['type' => GraphQlType::string()],
+                    'woofs' => ['type' => GraphQlType::boolean()]
                 ];
             }
         ]);
@@ -72,8 +72,8 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
             },
             'fields' => function() {
                 return [
-                    'name' => ['type' => Type::string()],
-                    'meows' => ['type' => Type::boolean()],
+                    'name' => ['type' => GraphQlType::string()],
+                    'meows' => ['type' => GraphQlType::boolean()],
                 ];
             }
         ]);
@@ -83,7 +83,7 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($petType),
+                        'type' => GraphQlType::listOf($petType),
                         'resolve' => function () {
                             return [new Dog('Odie', true), new Cat('Garfield', false)];
                         }
@@ -150,7 +150,7 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
                         'name' => 'Test',
                         'fields' => function() {
                             return [
-                                'test' => Type::string(),
+                                'test' => GraphQlType::string(),
                             ];
                         }
                     ]);
@@ -337,7 +337,7 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
                     'fields' => function() {
                         $this->calls[] = 'SomeObject.fields';
                         return [
-                            'string' => ['type' => Type::string()],
+                            'string' => ['type' => GraphQlType::string()],
                             'object' => ['type' => $this->SomeObjectType]
                         ];
                     },
@@ -355,7 +355,7 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
                         $this->calls[] = 'OtherObject.fields';
                         return [
                             'union' => ['type' => $this->loadType('SomeUnion')],
-                            'iface' => ['type' => Type::nonNull($this->loadType('SomeInterface'))],
+                            'iface' => ['type' => GraphQlType::nonNull($this->loadType('SomeInterface'))],
                         ];
                     }
                 ]);
@@ -397,7 +397,7 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
                     'fields' => function() {
                         $this->calls[] = 'SomeInterface.fields';
                         return  [
-                            'string' => ['type' => Type::string() ]
+                            'string' => ['type' => GraphQlType::string() ]
                         ];
                     }
                 ]);

@@ -8,7 +8,7 @@ use GraphQL\GraphQL;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 
 require_once __DIR__ . '/TestClasses.php';
@@ -25,7 +25,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
         $PetType = new InterfaceType([
             'name' => 'Pet',
             'fields' => [
-                'name' => [ 'type' => Type::string() ]
+                'name' => [ 'type' => GraphQlType::string() ]
             ]
         ]);
 
@@ -38,8 +38,8 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 });
             },
             'fields' => [
-                'name' => [ 'type' => Type::string() ],
-                'woofs' => [ 'type' => Type::boolean() ],
+                'name' => [ 'type' => GraphQlType::string() ],
+                'woofs' => [ 'type' => GraphQlType::boolean() ],
             ]
         ]);
 
@@ -52,8 +52,8 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 });
             },
             'fields' => [
-                'name' => [ 'type' => Type::string() ],
-                'meows' => [ 'type' => Type::boolean() ],
+                'name' => [ 'type' => GraphQlType::string() ],
+                'meows' => [ 'type' => GraphQlType::boolean() ],
             ]
         ]);
 
@@ -62,7 +62,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($PetType),
+                        'type' => GraphQlType::listOf($PetType),
                         'resolve' => function() {
                             return [
                                 new Dog('Odie', true),
@@ -112,7 +112,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
         $PetType = new InterfaceType([
             'name' => 'Pet',
             'fields' => [
-                'name' => ['type' => Type::string()]
+                'name' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -125,8 +125,8 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 });
             },
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'woofs' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'woofs' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -139,8 +139,8 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 });
             },
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'meows' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'meows' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -149,7 +149,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($PetType),
+                        'type' => GraphQlType::listOf($PetType),
                         'resolve' => function () {
                             return [
                                 new Dog('Odie', true),
@@ -213,8 +213,8 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 });
             },
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'woofs' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'woofs' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -226,8 +226,8 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 });
             },
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'meows' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'meows' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -241,7 +241,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($PetType),
+                        'type' => GraphQlType::listOf($PetType),
                         'resolve' => function () {
                             return [new Dog('Odie', true), new Cat('Garfield', false)];
                         }
@@ -299,14 +299,14 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 });
             },
             'fields' => [
-                'name' => ['type' => Type::string()]
+                'name' => ['type' => GraphQlType::string()]
             ]
         ]);
 
         $HumanType = new ObjectType([
             'name' => 'Human',
             'fields' => [
-                'name' => ['type' => Type::string()],
+                'name' => ['type' => GraphQlType::string()],
             ]
         ]);
 
@@ -314,8 +314,8 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
             'name' => 'Dog',
             'interfaces' => [$PetType],
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'woofs' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'woofs' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -323,8 +323,8 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
             'name' => 'Cat',
             'interfaces' => [$PetType],
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'meows' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'meows' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -333,7 +333,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($PetType),
+                        'type' => GraphQlType::listOf($PetType),
                         'resolve' => function () {
                             return new Deferred(function () {
                                 return [
@@ -392,23 +392,23 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
         $HumanType = new ObjectType([
             'name' => 'Human',
             'fields' => [
-                'name' => ['type' => Type::string()],
+                'name' => ['type' => GraphQlType::string()],
             ]
         ]);
 
         $DogType = new ObjectType([
             'name' => 'Dog',
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'woofs' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'woofs' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
         $CatType = new ObjectType([
             'name' => 'Cat',
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'meows' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'meows' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -436,7 +436,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($PetType),
+                        'type' => GraphQlType::listOf($PetType),
                         'resolve' => function () {
                             return [
                                 new Dog('Odie', true),
@@ -503,7 +503,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 });
             },
             'fields' => [
-                'name' => ['type' => Type::string()]
+                'name' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -512,8 +512,8 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
             'name' => 'Dog',
             'interfaces' => [$PetType],
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'woofs' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'woofs' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -521,8 +521,8 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
             'name' => 'Cat',
             'interfaces' => [$PetType],
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'meows' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'meows' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -531,7 +531,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($PetType),
+                        'type' => GraphQlType::listOf($PetType),
                         'resolve' => function () {
                             return [
                                 new Dog('Odie', true),
@@ -583,7 +583,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 });
             },
             'fields' => [
-                'name' => ['type' => Type::string()]
+                'name' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -591,8 +591,8 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
             'name' => 'Dog',
             'interfaces' => [$PetType],
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'woofs' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'woofs' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -600,8 +600,8 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
             'name' => 'Cat',
             'interfaces' => [$PetType],
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'meows' => ['type' => Type::boolean()],
+                'name' => ['type' => GraphQlType::string()],
+                'meows' => ['type' => GraphQlType::boolean()],
             ]
         ]);
 
@@ -610,7 +610,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'pets' => [
-                        'type' => Type::listOf($PetType),
+                        'type' => GraphQlType::listOf($PetType),
                         'resolve' => function () {
                             return [
                                 new Dog('Odie', true),

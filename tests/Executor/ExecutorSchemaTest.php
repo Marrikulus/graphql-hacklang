@@ -1,11 +1,11 @@
-<?php
+<?hh //decl
 namespace GraphQL\Tests\Executor;
 
 use GraphQL\Executor\Executor;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class ExecutorSchemaTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,9 +20,9 @@ class ExecutorSchemaTest extends \PHPUnit_Framework_TestCase
         $BlogImage = new ObjectType([
             'name' => 'Image',
             'fields' => [
-                'url' => ['type' => Type::string()],
-                'width' => ['type' => Type::int()],
-                'height' => ['type' => Type::int()],
+                'url' => ['type' => GraphQlType::string()],
+                'width' => ['type' => GraphQlType::int()],
+                'height' => ['type' => GraphQlType::int()],
             ]
         ]);
 
@@ -30,10 +30,10 @@ class ExecutorSchemaTest extends \PHPUnit_Framework_TestCase
             'name' => 'Author',
             'fields' => function() use (&$BlogArticle, &$BlogImage) {
                 return [
-                    'id' => ['type' => Type::string()],
-                    'name' => ['type' => Type::string()],
+                    'id' => ['type' => GraphQlType::string()],
+                    'name' => ['type' => GraphQlType::string()],
                     'pic' => [
-                        'args' => ['width' => ['type' => Type::int()], 'height' => ['type' => Type::int()]],
+                        'args' => ['width' => ['type' => GraphQlType::int()], 'height' => ['type' => GraphQlType::int()]],
                         'type' => $BlogImage,
                         'resolve' => function ($obj, $args) {
                             return $obj['pic']($args['width'], $args['height']);
@@ -47,12 +47,12 @@ class ExecutorSchemaTest extends \PHPUnit_Framework_TestCase
         $BlogArticle = new ObjectType([
             'name' => 'Article',
             'fields' => [
-                'id' => ['type' => Type::nonNull(Type::string())],
-                'isPublished' => ['type' => Type::boolean()],
+                'id' => ['type' => GraphQlType::nonNull(GraphQlType::string())],
+                'isPublished' => ['type' => GraphQlType::boolean()],
                 'author' => ['type' => $BlogAuthor],
-                'title' => ['type' => Type::string()],
-                'body' => ['type' => Type::string()],
-                'keywords' => ['type' => Type::listOf(Type::string())]
+                'title' => ['type' => GraphQlType::string()],
+                'body' => ['type' => GraphQlType::string()],
+                'keywords' => ['type' => GraphQlType::listOf(GraphQlType::string())]
             ]
         ]);
 
@@ -61,13 +61,13 @@ class ExecutorSchemaTest extends \PHPUnit_Framework_TestCase
             'fields' => [
                 'article' => [
                     'type' => $BlogArticle,
-                    'args' => ['id' => ['type' => Type::id()]],
+                    'args' => ['id' => ['type' => GraphQlType::id()]],
                     'resolve' => function ($_, $args) {
                         return $this->article($args['id']);
                     }
                 ],
                 'feed' => [
-                    'type' => Type::listOf($BlogArticle),
+                    'type' => GraphQlType::listOf($BlogArticle),
                     'resolve' => function () {
                         return [
                             $this->article(1),

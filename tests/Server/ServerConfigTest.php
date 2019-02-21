@@ -6,7 +6,7 @@ use GraphQL\Executor\Promise\Adapter\SyncPromiseAdapter;
 use GraphQL\Type\Schema;
 use GraphQL\Server\ServerConfig;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class ServerConfigTest extends \PHPUnit_Framework_TestCase
 {
@@ -162,7 +162,7 @@ class ServerConfigTest extends \PHPUnit_Framework_TestCase
     {
         $arr = [
             'schema' => new \GraphQL\Type\Schema([
-                'query' => new ObjectType(['name' => 't', 'fields' => ['a' => Type::string()]])
+                'query' => new ObjectType(['name' => 't', 'fields' => ['a' => GraphQlType::string()]])
             ]),
             'context' => new \stdClass(),
             'rootValue' => new \stdClass(),
