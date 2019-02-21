@@ -31,12 +31,10 @@ abstract class Node
     | NonNullTypeNode
      */
 
-    public string $kind;
-
     public function __construct(
-        public ?Location $loc
-    )
-    {}
+        public ?Location $loc,
+        public string $kind = "",
+    ){ }
 
     /**
      * @return $this
