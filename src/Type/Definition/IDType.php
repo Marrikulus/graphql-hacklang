@@ -5,6 +5,7 @@ use GraphQL\Error\Error;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\IntValueNode;
 use GraphQL\Language\AST\StringValueNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Utils\Utils;
 
 /**
