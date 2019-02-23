@@ -3,6 +3,7 @@ namespace GraphQL\Tests\Executor;
 
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\ValueNode;
 
 class Dog
 {
@@ -50,7 +51,7 @@ class Person
 }
 
 /* HH_FIXME[4236]*/
-class ComplexScalar extends ScalarType
+class ComplexScalar extends ScalarType<?string>
 {
     public static function create():ComplexScalar
     {
@@ -75,7 +76,7 @@ class ComplexScalar extends ScalarType
         return null;
     }
 
-    public function parseLiteral(Node $valueNode):mixed
+    public function parseLiteral(ValueNode<?string> $valueNode):mixed
     {
         if ($valueNode->value === 'SerializedValue') {
             return 'DeserializedValue';

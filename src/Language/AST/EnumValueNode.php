@@ -1,7 +1,7 @@
 <?hh //strict
 namespace GraphQL\Language\AST;
 
-class EnumValueNode extends Node implements ValueNode
+class EnumValueNode extends Node implements ValueNode<?string>
 {
     public string $kind = NodeKind::ENUM;
 
@@ -11,4 +11,9 @@ class EnumValueNode extends Node implements ValueNode
     {
         parent::__construct($loc);
     }
+
+    public function getValue():?string
+	{
+		return $this->value;
+	}
 }

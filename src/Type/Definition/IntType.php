@@ -1,17 +1,18 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\Error;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\IntValueNode;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\ValueNode;
 use GraphQL\Utils\Utils;
 
 /**
  * Class IntType
  * @package GraphQL\Type\Definition
  */
-class IntType extends ScalarType
+class IntType extends ScalarType<?string>
 {
     // As per the GraphQL Spec, Integers are only treated as valid when a valid
     // 32-bit signed integer, providing the broadest support across platforms.
@@ -29,7 +30,7 @@ class IntType extends ScalarType
     /**
      * @var string
      */
-    public string $description =
+    public ?string $description =
 'The `Int` scalar type represents non-fractional signed whole numeric
 values. Int can represent values between -(2^31) and 2^31 - 1. ';
 
@@ -85,7 +86,7 @@ values. Int can represent values between -(2^31) and 2^31 - 1. ';
      * @param $ast
      * @return int|null
      */
-    public function parseLiteral(Node $ast):mixed
+    public function parseLiteral(ValueNode<?string> $ast):mixed
     {
         if ($ast instanceof IntValueNode) {
             $val = (int) $ast->value;
@@ -101,7 +102,7 @@ values. Int can represent values between -(2^31) and 2^31 - 1. ';
         return null !== $this->parseValue($value);
     }
 
-    public function isValidLiteral(Node $valueNode):bool
+    public function isValidLiteral(ValueNode<?string> $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }

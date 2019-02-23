@@ -4,6 +4,7 @@ namespace GraphQL\Type\Definition;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Utils\Utils;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\ValueNode;
 
 /**
  * Scalar Type Definition
@@ -24,7 +25,7 @@ use GraphQL\Language\AST\Node;
  * }
  */
 /* HH_FIXME[4110]*/
-abstract class ScalarType extends GraphQlType implements OutputType, InputType, LeafType
+abstract class ScalarType<T> extends GraphQlType implements OutputType, InputType, LeafType<T>
 {
     /**
      * @var ScalarTypeDefinitionNode|null
@@ -70,7 +71,7 @@ abstract class ScalarType extends GraphQlType implements OutputType, InputType, 
      * @param $valueNode
      * @return bool
      */
-    public function isValidLiteral(Node $valueNode):bool
+    public function isValidLiteral(ValueNode<T> $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }

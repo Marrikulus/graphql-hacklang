@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
@@ -32,7 +32,7 @@ abstract class GraphQlType implements \JsonSerializable
     /**
      * @var string|null
      */
-    public string $description;
+    public ?string $description;
 
     /**
      * @var TypeDefinitionNode|null

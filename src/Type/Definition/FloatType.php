@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\Error;
@@ -6,13 +6,14 @@ use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\FloatValueNode;
 use GraphQL\Language\AST\IntValueNode;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\ValueNode;
 use GraphQL\Utils\Utils;
 
 /**
  * Class FloatType
  * @package GraphQL\Type\Definition
  */
-class FloatType extends ScalarType
+class FloatType extends ScalarType<?string>
 {
     /**
      * @var string
@@ -22,7 +23,7 @@ class FloatType extends ScalarType
     /**
      * @var string
      */
-    public string $description =
+    public ?string $description =
 'The `Float` scalar type represents signed double-precision fractional
 values as specified by
 [IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point). ';
@@ -58,10 +59,10 @@ values as specified by
      * @param $ast
      * @return float|null
      */
-    public function parseLiteral(Node $ast):mixed
+    public function parseLiteral(ValueNode<?string> $ast):mixed
     {
         if ($ast instanceof FloatValueNode || $ast instanceof IntValueNode) {
-            return (float) $ast->value;
+            return (float) $ast->getValue();
         }
         return null;
     }
@@ -71,7 +72,7 @@ values as specified by
         return null !== $this->parseValue($value);
     }
 
-    public function isValidLiteral(Node $valueNode):bool
+    public function isValidLiteral(ValueNode<?string> $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }

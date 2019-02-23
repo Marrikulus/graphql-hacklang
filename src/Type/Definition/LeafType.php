@@ -2,12 +2,13 @@
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\ValueNode;
 /*
 export type GraphQLLeafType =
 GraphQLScalarType |
 GraphQLEnumType;
 */
-interface LeafType
+interface LeafType<T>
 {
     /**
      * Serializes an internal value to include in a response.
@@ -31,7 +32,7 @@ interface LeafType
      * @param \GraphQL\Language\AST\Node $valueNode
      * @return mixed
      */
-    public function parseLiteral(Node $valueNode):mixed;
+    public function parseLiteral(ValueNode<T> $valueNode):mixed;
 
     /**
      * @param string $value
@@ -43,5 +44,5 @@ interface LeafType
      * @param \GraphQL\Language\AST\Node $valueNode
      * @return mixed
      */
-    public function isValidLiteral(Node $valueNode):bool;
+    public function isValidLiteral(ValueNode<T> $valueNode):bool;
 }

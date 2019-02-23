@@ -7,12 +7,13 @@ use GraphQL\Language\AST\EnumValueNode;
 use GraphQL\Utils\MixedStore;
 use GraphQL\Utils\Utils;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\ValueNode;
 
 /**
  * Class EnumType
  * @package GraphQL\Type\Definition
  */
-class EnumType extends GraphQlType implements InputType, OutputType, LeafType
+class EnumType extends GraphQlType implements InputType, OutputType, LeafType<?string>
 {
     /**
      * @var EnumTypeDefinitionNode|null
@@ -125,7 +126,7 @@ class EnumType extends GraphQlType implements InputType, OutputType, LeafType
      * @param $valueNode
      * @return bool
      */
-    public function isValidLiteral(Node $valueNode):bool
+    public function isValidLiteral(ValueNode<?string> $valueNode):bool
     {
         return $valueNode instanceof EnumValueNode && $this->getNameLookup()->offsetExists($valueNode->value);
     }
@@ -144,7 +145,7 @@ class EnumType extends GraphQlType implements InputType, OutputType, LeafType
      * @param $value
      * @return null
      */
-    public function parseLiteral(Node $value):mixed
+    public function parseLiteral(ValueNode<?string> $value):mixed
     {
         if ($value instanceof EnumValueNode) {
             $lookup = $this->getNameLookup();

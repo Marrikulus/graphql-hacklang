@@ -12,7 +12,7 @@ export type ValueNode = VariableNode
 | ListValueNode
 | ObjectValueNode
  */
-interface ValueNode
+interface ValueNode<T>
 {
-
+	public function getValue():T;
 }

@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 /*

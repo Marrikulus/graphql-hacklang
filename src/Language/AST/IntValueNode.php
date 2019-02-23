@@ -1,7 +1,7 @@
 <?hh
 namespace GraphQL\Language\AST;
 
-class IntValueNode extends Node implements ValueNode
+class IntValueNode extends Node implements ValueNode<?string>
 {
     public string $kind = NodeKind::INT;
 
@@ -10,5 +10,10 @@ class IntValueNode extends Node implements ValueNode
 		?Location $loc
 	) {
 		parent::__construct($loc);
+	}
+
+	public function getValue():?string
+	{
+		return $this->value;
 	}
 }

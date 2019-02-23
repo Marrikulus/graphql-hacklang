@@ -2,7 +2,7 @@
 namespace GraphQL\Language\AST;
 
 
-class BooleanValueNode extends Node implements ValueNode
+class BooleanValueNode extends Node implements ValueNode<bool>
 {
 	public string $kind = NodeKind::BOOLEAN;
 
@@ -11,5 +11,10 @@ class BooleanValueNode extends Node implements ValueNode
 		?Location $loc
 	) {
 		parent::__construct($loc);
+	}
+
+	public function getValue():bool
+	{
+		return $this->value;
 	}
 }

@@ -3,13 +3,14 @@ namespace GraphQL\Type\Definition;
 
 use GraphQL\Language\AST\BooleanValueNode;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\ValueNode;
 
 /**
  * Class BooleanType
  * @package GraphQL\Type\Definition
  */
 /* HH_FIXME[4110]*/
-class BooleanType extends ScalarType
+class BooleanType extends ScalarType<bool>
 {
     /**
      * @var string
@@ -47,10 +48,10 @@ class BooleanType extends ScalarType
      * @param $ast
      * @return bool|null
      */
-    public function parseLiteral(Node $ast):?bool
+    public function parseLiteral(ValueNode<bool> $ast):?bool
     {
         if ($ast instanceof BooleanValueNode) {
-            return (bool) $ast->value;
+            return (bool) $ast->getValue();
         }
         return null;
     }
@@ -60,7 +61,7 @@ class BooleanType extends ScalarType
         return null !== $this->parseValue($value);
     }
 
-    public function isValidLiteral(Node $valueNode):bool
+    public function isValidLiteral(ValueNode<bool> $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }

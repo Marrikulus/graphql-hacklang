@@ -1,7 +1,7 @@
 <?hh
 namespace GraphQL\Language\AST;
 
-class NullValueNode extends Node implements ValueNode
+class NullValueNode extends Node implements ValueNode<?string>
 {
     public string $kind = NodeKind::NULL;
 
@@ -10,4 +10,9 @@ class NullValueNode extends Node implements ValueNode
     ) {
 		parent::__construct($loc);
     }
+
+    public function getValue():?string
+	{
+		return null;
+	}
 }

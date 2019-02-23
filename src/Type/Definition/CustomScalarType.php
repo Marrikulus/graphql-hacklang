@@ -3,12 +3,13 @@ namespace GraphQL\Type\Definition;
 
 use GraphQL\Utils\Utils;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\ValueNode;
 
 /**
  * Class CustomScalarType
  * @package GraphQL\Type\Definition
  */
-class CustomScalarType extends ScalarType
+class CustomScalarType extends ScalarType<?string>
 {
     /**
      * @param mixed $value
@@ -36,7 +37,7 @@ class CustomScalarType extends ScalarType
      * @param $valueNode
      * @return mixed
      */
-    public function parseLiteral(Node $valueNode):mixed
+    public function parseLiteral(ValueNode<?string> $valueNode):mixed
     {
         if (isset($this->config['parseLiteral'])) {
             return call_user_func($this->config['parseLiteral'], $valueNode);
@@ -69,7 +70,7 @@ class CustomScalarType extends ScalarType
         return null !== $this->parseValue($value);
     }
 
-    public function isValidLiteral(Node $valueNode):bool
+    public function isValidLiteral(ValueNode<?string> $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }
