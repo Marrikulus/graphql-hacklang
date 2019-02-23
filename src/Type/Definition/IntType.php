@@ -84,7 +84,7 @@ values. Int can represent values between -(2^31) and 2^31 - 1. ';
      * @param $ast
      * @return int|null
      */
-    public function parseLiteral($ast)
+    public function parseLiteral(Node $ast):mixed
     {
         if ($ast instanceof IntValueNode) {
             $val = (int) $ast->value;
@@ -95,12 +95,12 @@ values. Int can represent values between -(2^31) and 2^31 - 1. ';
         return null;
     }
 
-    public function isValidValue($value)
+    public function isValidValue(mixed $value):bool
     {
         return null !== $this->parseValue($value);
     }
 
-    public function isValidLiteral($valueNode)
+    public function isValidLiteral(Node $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }

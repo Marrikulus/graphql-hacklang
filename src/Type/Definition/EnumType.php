@@ -116,7 +116,7 @@ class EnumType extends GraphQlType implements InputType, OutputType, LeafType
      * @param string $value
      * @return bool
      */
-    public function isValidValue($value)
+    public function isValidValue(mixed $value):bool
     {
         return is_string($value) && $this->getNameLookup()->offsetExists($value);
     }
@@ -125,7 +125,7 @@ class EnumType extends GraphQlType implements InputType, OutputType, LeafType
      * @param $valueNode
      * @return bool
      */
-    public function isValidLiteral($valueNode)
+    public function isValidLiteral(Node $valueNode):bool
     {
         return $valueNode instanceof EnumValueNode && $this->getNameLookup()->offsetExists($valueNode->value);
     }
@@ -144,7 +144,7 @@ class EnumType extends GraphQlType implements InputType, OutputType, LeafType
      * @param $value
      * @return null
      */
-    public function parseLiteral($value)
+    public function parseLiteral(Node $value):mixed
     {
         if ($value instanceof EnumValueNode) {
             $lookup = $this->getNameLookup();

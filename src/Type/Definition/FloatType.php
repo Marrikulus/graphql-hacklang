@@ -57,7 +57,7 @@ values as specified by
      * @param $ast
      * @return float|null
      */
-    public function parseLiteral($ast)
+    public function parseLiteral(Node $ast):mixed
     {
         if ($ast instanceof FloatValueNode || $ast instanceof IntValueNode) {
             return (float) $ast->value;
@@ -65,12 +65,12 @@ values as specified by
         return null;
     }
 
-    public function isValidValue($value)
+    public function isValidValue(mixed $value):bool
     {
         return null !== $this->parseValue($value);
     }
 
-    public function isValidLiteral($valueNode)
+    public function isValidLiteral(Node $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }

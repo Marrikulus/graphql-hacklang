@@ -59,7 +59,7 @@ represent free-form human-readable text.';
      * @param $ast
      * @return null|string
      */
-    public function parseLiteral($ast)
+    public function parseLiteral(Node $ast):mixed
     {
         if ($ast instanceof StringValueNode) {
             return $ast->value;
@@ -67,12 +67,12 @@ represent free-form human-readable text.';
         return null;
     }
 
-    public function isValidValue($value)
+    public function isValidValue(mixed $value):bool
     {
         return null !== $this->parseValue($value);
     }
 
-    public function isValidLiteral($valueNode)
+    public function isValidLiteral(Node $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }

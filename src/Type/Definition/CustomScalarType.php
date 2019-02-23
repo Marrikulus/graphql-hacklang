@@ -35,7 +35,7 @@ class CustomScalarType extends ScalarType
      * @param $valueNode
      * @return mixed
      */
-    public function parseLiteral(/* GraphQL\Language\AST\ValueNode */ $valueNode)
+    public function parseLiteral(Node $valueNode):mixed
     {
         if (isset($this->config['parseLiteral'])) {
             return call_user_func($this->config['parseLiteral'], $valueNode);
@@ -63,12 +63,12 @@ class CustomScalarType extends ScalarType
         }
     }
 
-    public function isValidValue($value)
+    public function isValidValue(mixed $value):bool
     {
         return null !== $this->parseValue($value);
     }
 
-    public function isValidLiteral($valueNode)
+    public function isValidLiteral(Node $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }

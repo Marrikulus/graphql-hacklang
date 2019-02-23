@@ -62,7 +62,7 @@ When expected as an input type, any string (such as `"4"`) or integer
      * @param $ast
      * @return null|string
      */
-    public function parseLiteral($ast)
+    public function parseLiteral(Node $ast):mixed
     {
         if ($ast instanceof StringValueNode || $ast instanceof IntValueNode) {
             return $ast->value;
@@ -70,12 +70,12 @@ When expected as an input type, any string (such as `"4"`) or integer
         return null;
     }
 
-    public function isValidValue($value)
+    public function isValidValue(mixed $value):bool
     {
         return null !== $this->parseValue($value);
     }
 
-    public function isValidLiteral($valueNode)
+    public function isValidLiteral(Node $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }
