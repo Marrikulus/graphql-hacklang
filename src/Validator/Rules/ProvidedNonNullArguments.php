@@ -8,7 +8,7 @@ use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\Visitor;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Utils\Utils;
 use GraphQL\Validator\ValidationContext;
 
@@ -42,7 +42,7 @@ class ProvidedNonNullArguments extends AbstractValidationRule
                     }
                     foreach ($fieldDef->args as $argDef) {
                         $argNode = isset($argNodeMap[$argDef->name]) ? $argNodeMap[$argDef->name] : null;
-                        if (!$argNode && $argDef->getType() instanceof NonNull) {
+                        if (!$argNode && $argDef->getType() instanceof NoNull) {
                             $context->reportError(new Error(
                                 self::missingFieldArgMessage($fieldNode->name->value, $argDef->name, $argDef->getType()),
                                 [$fieldNode]
@@ -65,7 +65,7 @@ class ProvidedNonNullArguments extends AbstractValidationRule
 
                     foreach ($directiveDef->args as $argDef) {
                         $argNode = isset($argNodeMap[$argDef->name]) ? $argNodeMap[$argDef->name] : null;
-                        if (!$argNode && $argDef->getType() instanceof NonNull) {
+                        if (!$argNode && $argDef->getType() instanceof NoNull) {
                             $context->reportError(new Error(
                                 self::missingDirectiveArgMessage($directiveNode->name->value, $argDef->name, $argDef->getType()),
                                 [$directiveNode]

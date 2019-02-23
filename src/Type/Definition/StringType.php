@@ -1,17 +1,18 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\Error;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\ValueNode;
 use GraphQL\Utils\Utils;
 
 /**
  * Class StringType
  * @package GraphQL\Type\Definition
  */
-class StringType extends ScalarType
+class StringType extends ScalarType<?string>
 {
     /**
      * @var string
@@ -21,7 +22,7 @@ class StringType extends ScalarType
     /**
      * @var string
      */
-    public string $description =
+    public ?string $description =
 'The `String` scalar type represents textual data, represented as UTF-8
 character sequences. The String type is most often used by GraphQL to
 represent free-form human-readable text.';
@@ -60,10 +61,10 @@ represent free-form human-readable text.';
      * @param $ast
      * @return null|string
      */
-    public function parseLiteral(Node $ast):mixed
+    public function parseLiteral(ValueNode<?string> $ast):mixed
     {
         if ($ast instanceof StringValueNode) {
-            return $ast->value;
+            return $ast->getValue();
         }
         return null;
     }
@@ -73,7 +74,7 @@ represent free-form human-readable text.';
         return null !== $this->parseValue($value);
     }
 
-    public function isValidLiteral(Node $valueNode):bool
+    public function isValidLiteral(ValueNode<?string> $valueNode):bool
     {
         return null !== $this->parseLiteral($valueNode);
     }

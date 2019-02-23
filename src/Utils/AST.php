@@ -29,7 +29,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\LeafType;
 use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\Utils;
@@ -145,7 +145,7 @@ class AST
      */
     public static function astFromValue(mixed $value, InputType $type):?Node
     {
-        if ($type instanceof NonNull) {
+        if ($type instanceof NoNull) {
             $astValue = AST::astFromValue($value, $type->getWrappedType());
             if ($astValue instanceof NullValueNode) {
                 return null;
@@ -301,7 +301,7 @@ class AST
             return $undefined;
         }
 
-        if ($type instanceof NonNull) {
+        if ($type instanceof NoNull) {
             if ($valueNode instanceof NullValueNode) {
                 // Invalid: intentionally return no value.
                 return $undefined;
@@ -337,7 +337,7 @@ class AST
                     if (AST::isMissingVariable($itemNode, $variables)) {
                         // If an array contains a missing variable, it is either coerced to
                         // null or if the item type is non-null, it considered invalid.
-                        if ($itemType instanceof NonNull) {
+                        if ($itemType instanceof NoNull) {
                             // Invalid: intentionally return no value.
                             return $undefined;
                         }
@@ -378,7 +378,7 @@ class AST
                 if (!$fieldNode || AST::isMissingVariable($fieldNode->value, $variables)) {
                     if ($field->defaultValueExists()) {
                         $coercedObj[$fieldName] = $field->defaultValue;
-                    } else if ($field->getType() instanceof NonNull) {
+                    } else if ($field->getType() instanceof NoNull) {
                         // Invalid: intentionally return no value.
                         return $undefined;
                     }
@@ -428,7 +428,7 @@ class AST
         }
         if ($inputTypeNode instanceof NonNullTypeNode) {
             $innerType = AST::typeFromAST($schema, $inputTypeNode->type);
-            return $innerType ? new NonNull($innerType) : null;
+            return $innerType ? new NoNull($innerType) : null;
         }
 
         Utils::invariant($inputTypeNode && $inputTypeNode instanceof NamedTypeNode, 'Must be a named type');

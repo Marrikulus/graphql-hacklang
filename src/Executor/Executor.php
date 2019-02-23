@@ -22,7 +22,7 @@ use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\LeafType;
 use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\GraphQlType;
@@ -288,7 +288,7 @@ class Executor
         });
         return $result
             ->then(null, function ($error) {
-                // Errors from sub-fields of a NonNull type may propagate to the top level,
+                // Errors from sub-fields of a NoNull type may propagate to the top level,
                 // at which point we still log the error and null the parent field, which
                 // in this case is the entire response.
                 $this->exeContext->addError($error);
@@ -313,7 +313,7 @@ class Executor
 
         $path = [];
 
-        // Errors from sub-fields of a NonNull type may propagate to the top level,
+        // Errors from sub-fields of a NoNull type may propagate to the top level,
         // at which point we still log the error and null the parent field, which
         // in this case is the entire response.
         //
@@ -776,7 +776,7 @@ class Executor
 
         // If the field type is non-nullable, then it is resolved without any
         // protection from errors.
-        if ($returnType instanceof NonNull) {
+        if ($returnType instanceof NoNull) {
             return $this->completeValueWithLocatedError(
                 $returnType,
                 $fieldNodes,
@@ -905,9 +905,9 @@ class Executor
             throw $result;
         }
 
-        // If field type is NonNull, complete for inner type, and throw field error
+        // If field type is NoNull, complete for inner type, and throw field error
         // if result is null.
-        if ($returnType instanceof NonNull) {
+        if ($returnType instanceof NoNull) {
             $completed = $this->completeValue(
                 $returnType->getWrappedType(),
                 $fieldNodes,

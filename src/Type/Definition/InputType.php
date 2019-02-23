@@ -7,7 +7,7 @@ export type GraphQLInputType =
   GraphQLEnumType |
   GraphQLInputObjectType |
   GraphQLList |
-  GraphQLNonNull;
+  GraphQLNoNull;
  */
 interface InputType
 {

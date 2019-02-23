@@ -8,7 +8,7 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\ValidationContext;
 
@@ -35,7 +35,7 @@ class DefaultValuesOfCorrectType extends AbstractValidationRule
                 $defaultValue = $varDefNode->defaultValue;
                 $type = $context->getInputType();
 
-                if ($type instanceof NonNull && $defaultValue) {
+                if ($type instanceof NoNull && $defaultValue) {
                     $context->reportError(new Error(
                         static::defaultForNonNullArgMessage($name, $type, $type->getWrappedType()),
                         [$defaultValue]

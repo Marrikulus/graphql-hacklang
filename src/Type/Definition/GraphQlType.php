@@ -91,7 +91,7 @@ abstract class GraphQlType implements \JsonSerializable
 
     /**
      * @api
-     * @param ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType|ListOfType|NonNull $wrappedType
+     * @param ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType|ListOfType|NoNull $wrappedType
      * @return ListOfType
      */
     public static function listOf($wrappedType)
@@ -102,11 +102,11 @@ abstract class GraphQlType implements \JsonSerializable
     /**
      * @api
      * @param ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType|ListOfType $wrappedType
-     * @return NonNull
+     * @return NoNull
      */
     public static function nonNull($wrappedType)
     {
-        return new NonNull($wrappedType);
+        return new NoNull($wrappedType);
     }
 
     /**
@@ -194,7 +194,7 @@ abstract class GraphQlType implements \JsonSerializable
      */
     public static function getNullableType($type)
     {
-        return $type instanceof NonNull ? $type->getWrappedType() : $type;
+        return $type instanceof NoNull ? $type->getWrappedType() : $type;
     }
 
     /**

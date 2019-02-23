@@ -25,7 +25,7 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\FieldArgument;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\GraphQlType;
@@ -50,7 +50,7 @@ class BuildSchema
         }
         if ($inputTypeNode->kind == NodeKind::NON_NULL_TYPE) {
             $wrappedType = $this->buildWrappedType($innerType, $inputTypeNode->type);
-            Utils::invariant(!($wrappedType instanceof NonNull), 'No nesting nonnull.');
+            Utils::invariant(!($wrappedType instanceof NoNull), 'No nesting nonnull.');
             return GraphQlType::nonNull($wrappedType);
         }
         return $innerType;

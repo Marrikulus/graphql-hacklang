@@ -5,7 +5,7 @@ use GraphQL\Error\InvariantViolation;
 use GraphQL\GraphQL;
 use GraphQL\Language\AST\SchemaDefinitionNode;
 use GraphQL\Type\Definition\FieldArgument;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Type\Definition\AbstractType;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\InterfaceType;
@@ -508,7 +508,7 @@ class Schema
                     });
                     if (!$ifaceArg) {
                         Utils::invariant(
-                            !($objectArg->getType() instanceof NonNull),
+                            !($objectArg->getType() instanceof NoNull),
                             "{$object->name}.{$fieldName}({$argName}:) is of required type " .
                             "\"{$objectArg->getType()}\" but is not also provided by the " .
                             "interface {$iface->name}.{$fieldName}."

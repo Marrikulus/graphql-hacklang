@@ -6,7 +6,7 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Utils\TypeComparators;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Validator\ValidationContext;
@@ -68,13 +68,13 @@ class VariablesInAllowedPosition extends AbstractValidationRule
     // be more strict than the expected item type.
     private function varTypeAllowedForType($varType, $expectedType)
     {
-        if ($expectedType instanceof NonNull) {
-            if ($varType instanceof NonNull) {
+        if ($expectedType instanceof NoNull) {
+            if ($varType instanceof NoNull) {
                 return $this->varTypeAllowedForType($varType->getWrappedType(), $expectedType->getWrappedType());
             }
             return false;
         }
-        if ($varType instanceof NonNull) {
+        if ($varType instanceof NoNull) {
             return $this->varTypeAllowedForType($varType->getWrappedType(), $expectedType);
         }
         if ($varType instanceof ListOfType && $expectedType instanceof ListOfType) {
@@ -86,7 +86,7 @@ class VariablesInAllowedPosition extends AbstractValidationRule
     // If a variable definition has a default value, it's effectively non-null.
     private function effectiveType($varType, $varDef)
     {
-        return (!$varDef->defaultValue || $varType instanceof NonNull) ? $varType : new NonNull($varType);
+        return (!$varDef->defaultValue || $varType instanceof NoNull) ? $varType : new NoNull($varType);
     }
 
 }

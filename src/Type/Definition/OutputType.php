@@ -9,7 +9,7 @@ GraphQLInterfaceType |
 GraphQLUnionType |
 GraphQLEnumType |
 GraphQLList |
-GraphQLNonNull;
+GraphQLNoNull;
 */
 interface OutputType
 {

@@ -9,7 +9,7 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\GraphQlType;
@@ -195,7 +195,7 @@ class FindBreakingChanges
                         }
                         );
 
-                        if (!$oldArgDef && $newArgDef->getType() instanceof NonNull) {
+                        if (!$oldArgDef && $newArgDef->getType() instanceof NoNull) {
                             $newTypeName = $newTypeDefinition->name;
                             $newArgName = $newArgDef->name;
                             $breakingChanges[] = [
@@ -328,7 +328,7 @@ class FindBreakingChanges
                 }
             }
             foreach ($newTypeFieldsDef as $fieldName => $fieldDef) {
-                if (!isset($oldTypeFieldsDef[$fieldName]) && $fieldDef->getType() instanceof NonNull) {
+                if (!isset($oldTypeFieldsDef[$fieldName]) && $fieldDef->getType() instanceof NoNull) {
                     $newTypeName = $newType->name;
                     $breakingFieldChanges[] = ['type' => self::BREAKING_CHANGE_NON_NULL_INPUT_FIELD_ADDED, 'description' => "A non-null field ${fieldName} on input type ${newTypeName} was added."];
                 }
@@ -346,7 +346,7 @@ class FindBreakingChanges
             // if they're both named types, see if their names are equivalent
             return (self::isNamedType($newType) && $oldType->name === $newType->name)
                 // moving from nullable to non-null of the same underlying type is safe
-                || ($newType instanceof NonNull
+                || ($newType instanceof NoNull
                     && self::isChangeSafeForObjectOrInterfaceField(
                         $oldType, $newType->getWrappedType()
                     ));
@@ -355,11 +355,11 @@ class FindBreakingChanges
             return ($newType instanceof ListOfType &&
                     self::isChangeSafeForObjectOrInterfaceField($oldType->getWrappedType(), $newType->getWrappedType())) ||
                 // moving from nullable to non-null of the same underlying type is safe
-                ($newType instanceof NonNull &&
+                ($newType instanceof NoNull &&
                     self::isChangeSafeForObjectOrInterfaceField($oldType, $newType->getWrappedType()));
-        } elseif ($oldType instanceof NonNull) {
+        } elseif ($oldType instanceof NoNull) {
             // if they're both non-null, make sure the underlying types are compatible
-            return $newType instanceof NonNull &&
+            return $newType instanceof NoNull &&
                 self::isChangeSafeForObjectOrInterfaceField($oldType->getWrappedType(), $newType->getWrappedType());
         }
 
@@ -380,11 +380,11 @@ class FindBreakingChanges
             return self::isNamedType($newType) && $oldType->name === $newType->name;
         } elseif ($oldType instanceof ListOfType) {
             return $newType instanceof ListOfType && self::isChangeSafeForInputObjectFieldOrFieldArg($oldType->getWrappedType(), $newType->getWrappedType());
-        } elseif ($oldType instanceof NonNull) {
+        } elseif ($oldType instanceof NoNull) {
             return (
-                    $newType instanceof NonNull && self::isChangeSafeForInputObjectFieldOrFieldArg($oldType->getWrappedType(), $newType->getWrappedType())
+                    $newType instanceof NoNull && self::isChangeSafeForInputObjectFieldOrFieldArg($oldType->getWrappedType(), $newType->getWrappedType())
                 ) || (
-                    !($newType instanceof NonNull) && self::isChangeSafeForInputObjectFieldOrFieldArg($oldType->getWrappedType(), $newType)
+                    !($newType instanceof NoNull) && self::isChangeSafeForInputObjectFieldOrFieldArg($oldType->getWrappedType(), $newType)
                 );
         }
         return false;

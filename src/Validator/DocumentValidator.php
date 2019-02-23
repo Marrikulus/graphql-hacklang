@@ -14,7 +14,7 @@ use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\LeafType;
 use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Utils\Utils;
 use GraphQL\Utils\TypeInfo;
@@ -234,7 +234,7 @@ class DocumentValidator
     public static function isValidLiteralValue(GraphQlType $type, $valueNode)
     {
         // A value must be provided if the type is non-null.
-        if ($type instanceof NonNull) {
+        if ($type instanceof NoNull) {
             if (!$valueNode || $valueNode instanceof NullValueNode) {
                 return [ 'Expected "' . Utils::printSafe($type) . '", found null.' ];
             }

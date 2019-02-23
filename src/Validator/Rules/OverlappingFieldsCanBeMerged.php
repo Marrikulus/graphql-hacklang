@@ -14,7 +14,7 @@ use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\Printer;
 use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\GraphQlType;
@@ -278,13 +278,13 @@ class OverlappingFieldsCanBeMerged extends AbstractValidationRule
                 $this->doTypesConflict($type1->getWrappedType(), $type2->getWrappedType()) :
                 true;
         }
-        if ($type1 instanceof NonNull) {
-            return $type2 instanceof NonNull ?
+        if ($type1 instanceof NoNull) {
+            return $type2 instanceof NoNull ?
                 $this->doTypesConflict($type1->getWrappedType(), $type2->getWrappedType()) :
                 true;
         }
-        if ($type2 instanceof NonNull) {
-            return $type1 instanceof NonNull ?
+        if ($type2 instanceof NoNull) {
+            return $type1 instanceof NoNull ?
                 $this->doTypesConflict($type1->getWrappedType(), $type2->getWrappedType()) :
                 true;
         }

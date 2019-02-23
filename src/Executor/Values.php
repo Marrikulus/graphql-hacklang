@@ -22,7 +22,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\LeafType;
 use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Utils\AST;
 use GraphQL\Utils\TypeInfo;
@@ -62,7 +62,7 @@ class Values
                 if ($defaultValue) {
                     $coercedValues[$varName] = AST::valueFromAST($defaultValue, $varType);
                 }
-                if ($varType instanceof NonNull) {
+                if ($varType instanceof NoNull) {
                     throw new Error(
                         'Variable "$'.$varName .'" of required type ' .
                         '"'. Utils::printSafe($varType) . '" was not provided.',
@@ -124,7 +124,7 @@ class Values
             if (!$argumentNode) {
                 if ($argDef->defaultValueExists()) {
                     $coercedValues[$name] = $argDef->defaultValue;
-                } else if ($argType instanceof NonNull) {
+                } else if ($argType instanceof NoNull) {
                     throw new Error(
                         'Argument "' . $name . '" of required type ' .
                         '"' . Utils::printSafe($argType) . '" was not provided.',
@@ -141,7 +141,7 @@ class Values
                     $coercedValues[$name] = $variableValues[$variableName];
                 } else if ($argDef->defaultValueExists()) {
                     $coercedValues[$name] = $argDef->defaultValue;
-                } else if ($argType instanceof NonNull) {
+                } else if ($argType instanceof NoNull) {
                     throw new Error(
                         'Argument "' . $name . '" of required type "' . Utils::printSafe($argType) . '" was ' .
                         'provided the variable "$' . $variableName . '" which was not provided ' .
@@ -218,7 +218,7 @@ class Values
     public static function isValidPHPValue($value, InputType $type)
     {
         // A value must be provided if the type is non-null.
-        if ($type instanceof NonNull) {
+        if ($type instanceof NoNull) {
             if (null === $value) {
                 return ['Expected "' . Utils::printSafe($type) . '", found null.'];
             }
@@ -307,7 +307,7 @@ class Values
             return $undefined;
         }
 
-        if ($type instanceof NonNull) {
+        if ($type instanceof NoNull) {
             if ($value === null) {
                 // Intentionally return no value.
                 return $undefined;
@@ -349,7 +349,7 @@ class Values
                 if (!array_key_exists($fieldName, $value)) {
                     if ($field->defaultValueExists()) {
                         $coercedObj[$fieldName] = $field->defaultValue;
-                    } else if ($field->getType() instanceof NonNull) {
+                    } else if ($field->getType() instanceof NoNull) {
                         // Intentionally return no value.
                         return $undefined;
                     }

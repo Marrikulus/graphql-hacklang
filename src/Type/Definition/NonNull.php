@@ -1,14 +1,14 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Utils\Utils;
 
 /**
- * Class NonNull
+ * Class NoNull
  * @package GraphQL\Type\Definition
  */
-class NonNull extends GraphQlType implements WrappingType, OutputType, InputType
+class NoNull extends GraphQlType implements WrappingType, OutputType, InputType
 {
     /**
      * @var ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType
@@ -23,18 +23,18 @@ class NonNull extends GraphQlType implements WrappingType, OutputType, InputType
     {
         if (!$type instanceof GraphQlType && !is_callable($type)) {
             throw new InvariantViolation(
-                'Can only create NonNull of a Nullable GraphQLType but got: ' . Utils::printSafe($type)
+                'Can only create NoNull of a Nullable GraphQLType but got: ' . Utils::printSafe($type)
             );
         }
-        if ($type instanceof NonNull) {
+        if ($type instanceof NoNull) {
             throw new InvariantViolation(
-                'Can only create NonNull of a Nullable GraphQLType but got: ' . Utils::printSafe($type)
+                'Can only create NoNull of a Nullable GraphQLType but got: ' . Utils::printSafe($type)
             );
         }
 
         Utils::invariant(
-            !($type instanceof NonNull),
-            'Cannot nest NonNull inside NonNull'
+            !($type instanceof NoNull),
+            'Cannot nest NoNull inside NoNull'
         );
         $this->ofType = $type;
     }
@@ -49,8 +49,8 @@ class NonNull extends GraphQlType implements WrappingType, OutputType, InputType
         $type = $this->ofType;
 
         Utils::invariant(
-            !($type instanceof NonNull),
-            'Cannot nest NonNull inside NonNull'
+            !($type instanceof NoNull),
+            'Cannot nest NoNull inside NoNull'
         );
 
         return ($recurse && $type instanceof WrappingType) ? $type->getWrappedType($recurse) : $type;

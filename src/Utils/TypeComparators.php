@@ -5,7 +5,7 @@ use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\AbstractType;
 use GraphQL\Type\Definition\CompositeType;
 use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 
@@ -26,7 +26,7 @@ class TypeComparators
         }
 
         // If either type is non-null, the other must also be non-null.
-        if ($typeA instanceof NonNull && $typeB instanceof NonNull) {
+        if ($typeA instanceof NoNull && $typeB instanceof NoNull) {
             return self::isEqualType($typeA->getWrappedType(), $typeB->getWrappedType());
         }
 
@@ -56,12 +56,12 @@ class TypeComparators
         }
 
         // If superType is non-null, maybeSubType must also be nullable.
-        if ($superType instanceof NonNull) {
-            if ($maybeSubType instanceof NonNull) {
+        if ($superType instanceof NoNull) {
+            if ($maybeSubType instanceof NoNull) {
                 return self::isTypeSubTypeOf($schema, $maybeSubType->getWrappedType(), $superType->getWrappedType());
             }
             return false;
-        } else if ($maybeSubType instanceof NonNull) {
+        } else if ($maybeSubType instanceof NoNull) {
             // If superType is nullable, maybeSubType may be non-null.
             return self::isTypeSubTypeOf($schema, $maybeSubType->getWrappedType(), $superType);
         }

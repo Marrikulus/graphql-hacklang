@@ -12,7 +12,7 @@ use GraphQL\Type\Definition\InputObjectField;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\ScalarType;
@@ -254,14 +254,14 @@ EOD;
                 'fields' => [
                     'types' => [
                         'description' => 'A list of all types supported by this server.',
-                        'type' => new NonNull(new ListOfType(new NonNull(self::_type()))),
+                        'type' => new NoNull(new ListOfType(new NoNull(self::_type()))),
                         'resolve' => function (Schema $schema) {
                             return array_values($schema->getTypeMap());
                         }
                     ],
                     'queryType' => [
                         'description' => 'The type that query operations will be rooted at.',
-                        'type' => new NonNull(self::_type()),
+                        'type' => new NoNull(self::_type()),
                         'resolve' => function (Schema $schema) {
                             return $schema->getQueryType();
                         }
@@ -459,7 +459,7 @@ EOD;
                     'beyond a name and description, while Enum types provide their values. ' .
                     'Object and Interface types provide the fields they describe. Abstract ' .
                     'types, Union and Interface, provide the Object types possible ' .
-                    'at runtime. List and NonNull types compose other types.',
+                    'at runtime. List and NoNull types compose other types.',
                 'fields' => function() {
                     return [
                         'kind' => [
@@ -468,7 +468,7 @@ EOD;
                                 switch (true) {
                                     case $type instanceof ListOfType:
                                         return TypeKind::LIST_KIND;
-                                    case $type instanceof NonNull:
+                                    case $type instanceof NoNull:
                                         return TypeKind::NON_NULL;
                                     case $type instanceof ScalarType:
                                         return TypeKind::SCALAR;
