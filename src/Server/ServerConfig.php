@@ -33,8 +33,8 @@ class ServerConfig
     {
         $instance = new ServerConfig();
         foreach ($config as $key => $value) {
-            $method = 'set' . ucfirst($key);
-            if (!method_exists($instance, $method)) {
+            $method = 'set' . \ucfirst($key);
+            if (!\method_exists($instance, $method)) {
                 throw new InvariantViolation("Unknown server config option \"$key\"");
             }
             $instance->$method($value);
@@ -165,7 +165,7 @@ class ServerConfig
      */
     public function setValidationRules($validationRules):this
     {
-        if (!is_callable($validationRules) && !is_array($validationRules) && $validationRules !== null) {
+        if (!\is_callable($validationRules) && !is_array($validationRules) && $validationRules !== null) {
             throw new InvariantViolation(
                 'Server config expects array of validation rules or callable returning such array, but got ' .
                 Utils::printSafe($validationRules)

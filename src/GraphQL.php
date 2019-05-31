@@ -246,7 +246,7 @@ class GraphQL
      */
     public static function getStandardDirectives()
     {
-        return array_values(Directive::getInternalDirectives());
+        return \array_values(Directive::getInternalDirectives());
     }
 
     /**
@@ -257,7 +257,7 @@ class GraphQL
      */
     public static function getStandardTypes()
     {
-        return array_values(GraphQlType::getInternalTypes());
+        return \array_values(GraphQlType::getInternalTypes());
     }
 
     /**
@@ -268,7 +268,7 @@ class GraphQL
      */
     public static function getStandardValidationRules()
     {
-        return array_values(DocumentValidator::defaultRules());
+        return \array_values(DocumentValidator::defaultRules());
     }
 
     /**

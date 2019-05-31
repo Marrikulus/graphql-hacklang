@@ -16,7 +16,7 @@ class DefaultValuesOfCorrectType extends AbstractValidationRule
 {
     public static function badValueForDefaultArgMessage($varName, $type, $value, $verboseErrors = null)
    : @string {
-        $message = $verboseErrors ? ("\n" . implode("\n", $verboseErrors)) : '';
+        $message = $verboseErrors ? ("\n" . \implode("\n", $verboseErrors)) : '';
         return "Variable \$$varName has invalid default value: $value.$message";
     }
 

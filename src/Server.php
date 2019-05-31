@@ -145,7 +145,7 @@ class Server
     {
         if (!empty($types)) {
             $this->assertSchemaNotSet('Types', __METHOD__);
-            $this->types = array_merge($this->types, $types);
+            $this->types = \array_merge($this->types, $types);
         }
         return $this;
     }
@@ -492,7 +492,7 @@ class Server
         $this->phpErrors = [];
         if ($this->debug & static::DEBUG_PHP_ERRORS) {
             // Catch custom errors (to report them in query results)
-            set_error_handler(function($severity, $message, $file, $line) {
+            \set_error_handler(function($severity, $message, $file, $line) {
                 $this->phpErrors[] = new \ErrorException($message, 0, $severity, $file, $line);
             });
         }
@@ -523,11 +523,11 @@ class Server
 
         // Add reported PHP errors to result (if any)
         if (!empty($this->phpErrors) && ($this->debug & static::DEBUG_PHP_ERRORS)) {
-            $result->extensions['phpErrors'] = array_map($this->phpErrorFormatter, $this->phpErrors);
+            $result->extensions['phpErrors'] = \array_map($this->phpErrorFormatter, $this->phpErrors);
         }
 
         if ($this->debug & static::DEBUG_PHP_ERRORS) {
-            restore_error_handler();
+            \restore_error_handler();
         }
         return $result;
     }
@@ -539,9 +539,9 @@ class Server
     {
         try {
             $httpStatus = 200;
-            if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+            if (isset($_SERVER['CONTENT_TYPE']) && \strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
                 $raw = $this->readInput();
-                $data = json_decode($raw, true);
+                $data = \json_decode($raw, true);
 
                 Utils::invariant(
                     is_array($data),
@@ -592,12 +592,12 @@ class Server
 
     protected function readInput()
     {
-        return  file_get_contents('php://input') ?: '';
+        return  \file_get_contents('php://input') ?: '';
     }
 
     protected function produceOutput(array $result, $httpStatus):void
     {
-        header('Content-Type: application/json', true, $httpStatus);
-        echo json_encode($result);
+        \header('Content-Type: application/json', true, $httpStatus);
+        echo \json_encode($result);
     }
 }

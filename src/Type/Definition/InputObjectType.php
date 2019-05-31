@@ -59,7 +59,7 @@ class InputObjectType extends GraphQlType implements InputType
         if (null === $this->fields) {
             $this->fields = [];
             $fields = isset($this->config['fields']) ? $this->config['fields'] : [];
-            $fields = is_callable($fields) ? call_user_func($fields) : $fields;
+            $fields = \is_callable($fields) ? call_user_func($fields) : $fields;
 
             if (!is_array($fields)) {
                 throw new InvariantViolation(
@@ -71,7 +71,7 @@ class InputObjectType extends GraphQlType implements InputType
                 if ($field instanceof GraphQlType) {
                     $field = ['type' => $field];
                 }
-                $field = new InputObjectField(array_merge($field,['name' => $name]));
+                $field = new InputObjectField(\array_merge($field,['name' => $name]));
                 $this->fields[$field->name] = $field;
             }
         }

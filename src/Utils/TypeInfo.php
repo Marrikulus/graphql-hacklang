@@ -119,13 +119,13 @@ class TypeInfo
             $nestedTypes = $type->getTypes();
         }
         if ($type instanceof ObjectType) {
-            $nestedTypes = array_merge($nestedTypes, $type->getInterfaces());
+            $nestedTypes = \array_merge($nestedTypes, $type->getInterfaces());
         }
         if ($type instanceof ObjectType || $type instanceof InterfaceType || $type instanceof InputObjectType) {
             foreach ((array) $type->getFields() as $fieldName => $field) {
                 if (!empty($field->args)) {
-                    $fieldArgTypes = array_map(function(FieldArgument $arg) { return $arg->getType(); }, $field->args);
-                    $nestedTypes = array_merge($nestedTypes, $fieldArgTypes);
+                    $fieldArgTypes = \array_map(function(FieldArgument $arg) { return $arg->getType(); }, $field->args);
+                    $nestedTypes = \array_merge($nestedTypes, $fieldArgTypes);
                 }
                 $nestedTypes[] = $field->getType();
             }
@@ -227,7 +227,7 @@ class TypeInfo
     public function getType()
     {
         if (!empty($this->typeStack)) {
-            return $this->typeStack[count($this->typeStack) - 1];
+            return $this->typeStack[\count($this->typeStack) - 1];
         }
         return null;
     }
@@ -238,7 +238,7 @@ class TypeInfo
     public function getParentType()
     {
         if (!empty($this->parentTypeStack)) {
-            return $this->parentTypeStack[count($this->parentTypeStack) - 1];
+            return $this->parentTypeStack[\count($this->parentTypeStack) - 1];
         }
         return null;
     }
@@ -249,7 +249,7 @@ class TypeInfo
     public function getInputType()
     {
         if (!empty($this->inputTypeStack)) {
-            return $this->inputTypeStack[count($this->inputTypeStack) - 1];
+            return $this->inputTypeStack[\count($this->inputTypeStack) - 1];
         }
         return null;
     }
@@ -260,7 +260,7 @@ class TypeInfo
     public function getFieldDef()
     {
         if (!empty($this->fieldDefStack)) {
-            return $this->fieldDefStack[count($this->fieldDefStack) - 1];
+            return $this->fieldDefStack[\count($this->fieldDefStack) - 1];
         }
         return null;
     }
@@ -363,7 +363,7 @@ class TypeInfo
                 $fieldType = null;
                 if ($objectType instanceof InputObjectType) {
                     $tmp = $objectType->getFields();
-                    $inputField = array_key_exists($node->name->value, $tmp) ? $tmp[$node->name->value] : null;
+                    $inputField = \array_key_exists($node->name->value, $tmp) ? $tmp[$node->name->value] : null;
                     $fieldType = $inputField ? $inputField->getType() : null;
                 }
                 $this->inputTypeStack[] = $fieldType;
@@ -387,12 +387,12 @@ class TypeInfo
     {
         switch ($node->kind) {
             case NodeKind::SELECTION_SET:
-                array_pop(&$this->parentTypeStack);
+                \array_pop(&$this->parentTypeStack);
                 break;
 
             case NodeKind::FIELD:
-                array_pop(&$this->fieldDefStack);
-                array_pop(&$this->typeStack);
+                \array_pop(&$this->fieldDefStack);
+                \array_pop(&$this->typeStack);
                 break;
 
             case NodeKind::DIRECTIVE:
@@ -402,18 +402,18 @@ class TypeInfo
             case NodeKind::OPERATION_DEFINITION:
             case NodeKind::INLINE_FRAGMENT:
             case NodeKind::FRAGMENT_DEFINITION:
-                array_pop(&$this->typeStack);
+                \array_pop(&$this->typeStack);
                 break;
             case NodeKind::VARIABLE_DEFINITION:
-                array_pop(&$this->inputTypeStack);
+                \array_pop(&$this->inputTypeStack);
                 break;
             case NodeKind::ARGUMENT:
                 $this->argument = null;
-                array_pop(&$this->inputTypeStack);
+                \array_pop(&$this->inputTypeStack);
                 break;
             case NodeKind::LST:
             case NodeKind::OBJECT_FIELD:
-                array_pop(&$this->inputTypeStack);
+                \array_pop(&$this->inputTypeStack);
                 break;
             case NodeKind::ENUM:
                 $this->enumValue = null;

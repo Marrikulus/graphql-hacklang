@@ -151,7 +151,7 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
     {
         if (null === $this->interfaces) {
             $interfaces = isset($this->config['interfaces']) ? $this->config['interfaces'] : [];
-            $interfaces = is_callable($interfaces) ? call_user_func($interfaces) : $interfaces;
+            $interfaces = \is_callable($interfaces) ? call_user_func($interfaces) : $interfaces;
 
             if (!is_array($interfaces)) {
                 throw new InvariantViolation(
@@ -212,7 +212,7 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
         );
 
         Utils::invariant(
-            !isset($this->config['isTypeOf']) || is_callable($this->config['isTypeOf']),
+            !isset($this->config['isTypeOf']) || \is_callable($this->config['isTypeOf']),
             "{$this->name} must provide 'isTypeOf' as a function"
         );
 

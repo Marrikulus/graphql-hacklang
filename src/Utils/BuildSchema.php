@@ -205,24 +205,24 @@ class BuildSchema
             '__TypeKind' => Introspection::_typeKind(),
         ];
 
-        $directives = array_map([$this, 'getDirective'], $directiveDefs);
+        $directives = \array_map([$this, 'getDirective'], $directiveDefs);
 
         // If specified directives were not explicitly declared, add them.
-        $skip = array_reduce($directives, function($hasSkip, $directive) {
+        $skip = \array_reduce($directives, function($hasSkip, $directive) {
             return $hasSkip || $directive->name == 'skip';
         });
         if (!$skip) {
             $directives[] = Directive::skipDirective();
         }
 
-        $include = array_reduce($directives, function($hasInclude, $directive) {
+        $include = \array_reduce($directives, function($hasInclude, $directive) {
             return $hasInclude || $directive->name == 'include';
         });
         if (!$include) {
             $directives[] = Directive::includeDirective();
         }
 
-        $deprecated = array_reduce($directives, function($hasDeprecated, $directive) {
+        $deprecated = \array_reduce($directives, function($hasDeprecated, $directive) {
             return $hasDeprecated || $directive->name == 'deprecated';
         });
         if (!$deprecated) {
@@ -570,7 +570,7 @@ class BuildSchema
     private function getDeprecationReason($node):?string
     {
         $deprecated = Values::getDirectiveValues(Directive::deprecatedDirective(), $node);
-        return array_key_exists('reason', $deprecated) ? $deprecated['reason'] : null;
+        return \array_key_exists('reason', $deprecated) ? $deprecated['reason'] : null;
     }
 
     /**
@@ -601,9 +601,9 @@ class BuildSchema
             $comments[] = $value;
             $token = $token->prev;
         }
-        return implode("\n", array_map(function($comment) use ($minSpaces) {
-            return mb_substr(str_replace("\n", '', $comment), $minSpaces);
-        }, array_reverse($comments)));
+        return \implode("\n", \array_map(function($comment) use ($minSpaces) {
+            return \mb_substr(\str_replace("\n", '', $comment), $minSpaces);
+        }, \array_reverse($comments)));
     }
 
     /**
@@ -639,7 +639,7 @@ class BuildSchema
     // Count the number of spaces on the starting side of a string.
     private function leadingSpaces(string $str):int
     {
-        return strlen($str) - strlen(ltrim($str));
+        return \strlen($str) - \strlen(\ltrim($str));
     }
 
     public function cannotExecuteSchema():void

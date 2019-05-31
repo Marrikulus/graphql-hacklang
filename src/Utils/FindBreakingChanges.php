@@ -43,7 +43,7 @@ class FindBreakingChanges
      */
     public static function findDangerousChanges(Schema $oldSchema, Schema $newSchema)
     {
-        return array_merge(self::findArgChanges($oldSchema, $newSchema)['dangerousChanges'],
+        return \array_merge(self::findArgChanges($oldSchema, $newSchema)['dangerousChanges'],
             self::findValuesAddedToEnums($oldSchema, $newSchema),
             self::findTypesAddedToUnions($oldSchema, $newSchema)
         );
@@ -57,7 +57,7 @@ class FindBreakingChanges
      */
     public static function findBreakingChanges(Schema $oldSchema, Schema $newSchema)
     {
-        return array_merge(
+        return \array_merge(
             self::findRemovedTypes($oldSchema, $newSchema),
             self::findTypesThatChangedKind($oldSchema, $newSchema),
             self::findFieldsThatChangedType($oldSchema, $newSchema),
@@ -248,7 +248,7 @@ class FindBreakingChanges
         Schema $oldSchema, Schema $newSchema
     )
     {
-        return array_merge(
+        return \array_merge(
             self::findFieldsThatChangedTypeOnObjectOrInterfaceTypes($oldSchema, $newSchema),
             self::findFieldsThatChangedTypeOnInputObjectTypes($oldSchema, $newSchema)
         );

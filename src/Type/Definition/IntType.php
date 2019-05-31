@@ -47,7 +47,7 @@ values. Int can represent values between -(2^31) and 2^31 - 1. ';
             return (int) $value;
         }
         if (!is_numeric($value) || $value > self::MAX_INT || $value < self::MIN_INT) {
-            throw new InvariantViolation(sprintf(
+            throw new InvariantViolation(\sprintf(
                 'Int cannot represent non 32-bit signed integer value: %s',
                 Utils::printSafe($value)
             ));
@@ -59,9 +59,9 @@ values. Int can represent values between -(2^31) and 2^31 - 1. ';
         // Examples: 1.0 == 1; 1.1 != 1, etc
         if ($num != (int) $value) {
             // Additionally account for scientific notation (i.e. 1e3), because (float)'1e3' is 1000, but (int)'1e3' is 1
-            $trimmed = floor($num);
+            $trimmed = \floor($num);
             if ($trimmed !== $num) {
-                throw new InvariantViolation(sprintf(
+                throw new InvariantViolation(\sprintf(
                     'Int cannot represent non-integer value: %s',
                     Utils::printSafe($value)
                 ));

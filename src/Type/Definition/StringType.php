@@ -42,7 +42,7 @@ represent free-form human-readable text.';
         if ($value === null) {
             return 'null';
         }
-        if (!is_scalar($value)) {
+        if (!\is_scalar($value)) {
             throw new InvariantViolation("String cannot represent non scalar value: " . Utils::printSafe($value));
         }
         return (string) $value;

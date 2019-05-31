@@ -34,12 +34,12 @@ class OverlappingFieldsCanBeMerged extends AbstractValidationRule
     public static function reasonMessage($reason)
     {
         if (is_array($reason)) {
-            $tmp = array_map(function ($tmp) {
+            $tmp = \array_map(function ($tmp) {
                 list($responseName, $subReason) = $tmp;
                 $reasonMessage = self::reasonMessage($subReason);
                 return "subfields \"$responseName\" conflict because $reasonMessage";
             }, $reason);
-            return implode(' and ', $tmp);
+            return \implode(' and ', $tmp);
         }
         return $reason;
     }
@@ -74,7 +74,7 @@ class OverlappingFieldsCanBeMerged extends AbstractValidationRule
 
                         $context->reportError(new Error(
                             self::fieldsConflictMessage($responseName, $reason),
-                            array_merge($fields1, $fields2)
+                            \array_merge($fields1, $fields2)
                         ));
                     }
                 }
@@ -86,7 +86,7 @@ class OverlappingFieldsCanBeMerged extends AbstractValidationRule
     {
         $conflicts = [];
         foreach ($fieldMap as $responseName => $fields) {
-            $count = count($fields);
+            $count = \count($fields);
             if ($count > 1) {
                 for ($i = 0; $i < $count; $i++) {
                     for ($j = $i; $j < $count; $j++) {
@@ -247,14 +247,14 @@ class OverlappingFieldsCanBeMerged extends AbstractValidationRule
                     $responseName,
                     Utils::map($conflicts, function($conflict) {return $conflict[0];})
                 ],
-                array_reduce(
+                \array_reduce(
                     $conflicts,
-                    function($allFields, $conflict) { return array_merge($allFields, $conflict[1]);},
+                    function($allFields, $conflict) { return \array_merge($allFields, $conflict[1]);},
                     [ $ast1 ]
                 ),
-                array_reduce(
+                \array_reduce(
                     $conflicts,
-                    function($allFields, $conflict) {return array_merge($allFields, $conflict[2]);},
+                    function($allFields, $conflict) {return \array_merge($allFields, $conflict[2]);},
                     [ $ast2 ]
                 )
             ];
@@ -314,14 +314,14 @@ class OverlappingFieldsCanBeMerged extends AbstractValidationRule
         $_visitedFragmentNames = $visitedFragmentNames ?: new \ArrayObject();
         $_astAndDefs = $astAndDefs ?: new \ArrayObject();
 
-        for ($i = 0; $i < count($selectionSet->selections); $i++) {
+        for ($i = 0; $i < \count($selectionSet->selections); $i++) {
             $selection = $selectionSet->selections[$i];
 
             switch ($selection->kind) {
                 case NodeKind::FIELD:
                     $fieldName = $selection->name->value;
                     $fieldDef = null;
-                    if ($parentType && method_exists($parentType, 'getFields')) {
+                    if ($parentType && \method_exists($parentType, 'getFields')) {
                         $tmp = $parentType->getFields();
                         if (isset($tmp[$fieldName])) {
                             $fieldDef = $tmp[$fieldName];
@@ -385,7 +385,7 @@ class OverlappingFieldsCanBeMerged extends AbstractValidationRule
      */
     private function sameArguments($arguments1, $arguments2)
     {
-        if (count($arguments1) !== count($arguments2)) {
+        if (\count($arguments1) !== \count($arguments2)) {
             return false;
         }
         foreach ($arguments1 as $arg1) {

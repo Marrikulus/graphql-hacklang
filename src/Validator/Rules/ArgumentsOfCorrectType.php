@@ -13,7 +13,7 @@ class ArgumentsOfCorrectType extends AbstractValidationRule
 {
     public static function badValueMessage($argName, $type, $value, $verboseErrors = []): @string
     {
-        $message = $verboseErrors ? ("\n" . implode("\n", $verboseErrors)) : '';
+        $message = $verboseErrors ? ("\n" . \implode("\n", $verboseErrors)) : '';
         return "Argument \"$argName\" has invalid value $value.$message";
     }
 

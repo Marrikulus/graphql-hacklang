@@ -41,17 +41,17 @@ class SyntaxError extends Error
         $prevLineNum = (string) ($contextLine - 1);
         $lineNum = (string) $contextLine;
         $nextLineNum = (string) ($contextLine + 1);
-        $padLen = mb_strlen($nextLineNum, 'UTF-8');
+        $padLen = \mb_strlen($nextLineNum, 'UTF-8');
 
-        $unicodeChars = json_decode('"\u2028\u2029"'); // Quick hack to get js-compatible representation of these chars
-        $lines = preg_split('/\r\n|[\n\r' . $unicodeChars . ']/su', $source->body);
+        $unicodeChars = \json_decode('"\u2028\u2029"'); // Quick hack to get js-compatible representation of these chars
+        $lines = \preg_split('/\r\n|[\n\r' . $unicodeChars . ']/su', $source->body);
 
         $whitespace = function ($len) {
-            return str_repeat(' ', $len);
+            return \str_repeat(' ', $len);
         };
 
         $lpad = function ($len, $str) {
-            return str_pad($str, $len - mb_strlen($str, 'UTF-8') + 1, ' ', STR_PAD_LEFT);
+            return \str_pad($str, $len - \mb_strlen($str, 'UTF-8') + 1, ' ', \STR_PAD_LEFT);
         };
 
         $lines[0] = $whitespace($source->locationOffset->column - 1) . $lines[0];
@@ -60,7 +60,7 @@ class SyntaxError extends Error
             ($line >= 2 ? $lpad($padLen, $prevLineNum) . ': ' . $lines[$line - 2] . "\n" : '') .
             ($lpad($padLen, $lineNum) . ': ' . $lines[$line - 1] . "\n") .
             ($whitespace(2 + $padLen + $location->column - 1 + $columnOffset) . "^\n") .
-            ($line < count($lines) ? $lpad($padLen, $nextLineNum) . ': ' . $lines[$line] . "\n" : '');
+            ($line < \count($lines) ? $lpad($padLen, $nextLineNum) . ': ' . $lines[$line] . "\n" : '');
     }
 
     public static function getColumnOffset(Source $source, SourceLocation $location)

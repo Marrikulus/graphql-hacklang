@@ -39,7 +39,7 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
     protected function checkIfGreaterOrEqualToZero($name, $value)
     {
         if ($value < 0) {
-            throw new \InvalidArgumentException(sprintf('$%s argument must be greater or equal to 0.', $name));
+            throw new \InvalidArgumentException(\sprintf('$%s argument must be greater or equal to 0.', $name));
         }
     }
 
@@ -104,7 +104,7 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
                     /* @var FieldNode $selection */
                     $fieldName = $selection->name->value;
                     $fieldDef = null;
-                    if ($parentType && method_exists($parentType, 'getFields')) {
+                    if ($parentType && \method_exists($parentType, 'getFields')) {
                         $tmp = $parentType->getFields();
                         $schemaMetaFieldDef = Introspection::schemaMetaFieldDef();
                         $typeMetaFieldDef = Introspection::typeMetaFieldDef();

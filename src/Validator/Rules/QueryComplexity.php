@@ -38,7 +38,7 @@ class QueryComplexity extends AbstractQuerySecurity
 
     public static function maxQueryComplexityErrorMessage($max, $count)
     {
-        return sprintf('Max query complexity should be %d but got %d.', $max, $count);
+        return \sprintf('Max query complexity should be %d but got %d.', $max, $count);
     }
 
     /**
@@ -149,12 +149,12 @@ class QueryComplexity extends AbstractQuerySecurity
 
                     $args = $this->buildFieldArguments($node);
                     //get complexity fn using fieldDef complexity
-                    if (method_exists($fieldDef, 'getComplexityFn')) {
+                    if (\method_exists($fieldDef, 'getComplexityFn')) {
                         $complexityFn = $fieldDef->getComplexityFn();
                     }
                 }
 
-                $complexity += call_user_func_array($complexityFn, [$childrenComplexity, $args]);
+                $complexity += \call_user_func_array($complexityFn, [$childrenComplexity, $args]);
                 break;
 
             case NodeKind::INLINE_FRAGMENT:

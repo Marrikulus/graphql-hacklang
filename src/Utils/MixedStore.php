@@ -113,10 +113,10 @@ class MixedStore implements \ArrayAccess<mixed,mixed>
             return $this->trueValueIsSet;
         }
         if (is_int($offset) || is_string($offset)) {
-            return array_key_exists($offset, $this->standardStore);
+            return \array_key_exists($offset, $this->standardStore);
         }
         if (is_float($offset)) {
-            return array_key_exists((string) $offset, $this->floatStore);
+            return \array_key_exists((string) $offset, $this->floatStore);
         }
         if (is_object($offset)) {
             return $this->objectStore->offsetExists($offset);
@@ -240,11 +240,11 @@ class MixedStore implements \ArrayAccess<mixed,mixed>
         } else if (is_object($offset)) {
             $this->objectStore->offsetUnset($offset);
         } else if (is_array($offset)) {
-            $index = array_search($offset, $this->arrayKeys, true);
+            $index = \array_search($offset, $this->arrayKeys, true);
 
             if (false !== $index) {
-                array_splice($this->arrayKeys, $index, 1);
-                array_splice($this->arrayValues, $index, 1);
+                \array_splice($this->arrayKeys, $index, 1);
+                \array_splice($this->arrayValues, $index, 1);
             }
         } else if (null === $offset) {
             $this->nullValue = null;

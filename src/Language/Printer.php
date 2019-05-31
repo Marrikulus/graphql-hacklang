@@ -139,7 +139,7 @@ class Printer
                     return $node->value;
                 },
                 NodeKind::STRING => function(StringValueNode $node) {
-                    return json_encode($node->value);
+                    return \json_encode($node->value);
                 },
                 NodeKind::BOOLEAN => function(BooleanValueNode $node) {
                     return $node->value ? 'true' : 'false';
@@ -282,7 +282,7 @@ class Printer
 
     public function indent($maybeString)
     {
-        return $maybeString ? str_replace("\n", "\n  ", $maybeString) : '';
+        return $maybeString ? \str_replace("\n", "\n  ", $maybeString) : '';
     }
 
     public function manyList($start, $list, $separator, $end)
@@ -292,13 +292,13 @@ class Printer
 
     public function length($maybeArray)
     {
-        return $maybeArray ? count($maybeArray) : 0;
+        return $maybeArray ? \count($maybeArray) : 0;
     }
 
     public function join($maybeArray, @string $separator = '')
     {
         return $maybeArray
-            ? implode(
+            ? \implode(
                 $separator,
                 Utils::filter(
                     $maybeArray,

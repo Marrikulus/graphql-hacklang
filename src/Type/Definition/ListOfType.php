@@ -21,7 +21,7 @@ class ListOfType extends GraphQlType implements WrappingType, OutputType, InputT
     public function __construct($type)
     {
 
-        if (!$type instanceof GraphQlType && !is_callable($type)) {
+        if (!$type instanceof GraphQlType && !\is_callable($type)) {
             throw new InvariantViolation(
                 'Can only create List of a GraphQLType but got: ' . Utils::printSafe($type)
             );

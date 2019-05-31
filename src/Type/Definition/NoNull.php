@@ -21,7 +21,7 @@ class NoNull extends GraphQlType implements WrappingType, OutputType, InputType
      */
     public function __construct($type)
     {
-        if (!$type instanceof GraphQlType && !is_callable($type)) {
+        if (!$type instanceof GraphQlType && !\is_callable($type)) {
             throw new InvariantViolation(
                 'Can only create NoNull of a Nullable GraphQLType but got: ' . Utils::printSafe($type)
             );

@@ -111,7 +111,7 @@ class DocumentValidator
     public static function allRules()
     {
         if (!self::$initRules) {
-            static::$rules = array_merge(static::defaultRules(), self::securityRules(), self::$rules);
+            static::$rules = \array_merge(static::defaultRules(), self::securityRules(), self::$rules);
             static::$initRules = true;
         }
 
@@ -208,14 +208,14 @@ class DocumentValidator
     public static function isError($value)
     {
         return is_array($value)
-            ? count(array_filter($value, function($item) { return $item instanceof \Exception || $item instanceof \Throwable;})) === count($value)
+            ? \count(\array_filter($value, function($item) { return $item instanceof \Exception || $item instanceof \Throwable;})) === \count($value)
             : ($value instanceof \Exception || $value instanceof \Throwable);
     }
 
     public static function append(&$arr, $items)
     {
         if (is_array($items)) {
-            $arr = array_merge($arr, $items);
+            $arr = \array_merge($arr, $items);
         } else {
             $arr[] = $items;
         }
@@ -260,7 +260,7 @@ class DocumentValidator
                     $tmp = static::isValidLiteralValue($itemType, $itemNode);
 
                     if ($tmp) {
-                        $errors = array_merge($errors, Utils::map($tmp, function($error) use ($index) {
+                        $errors = \array_merge($errors, Utils::map($tmp, function($error) use ($index) {
                             return "In element #$index: $error";
                         }));
                     }
@@ -297,7 +297,7 @@ class DocumentValidator
                     isset($fieldNodeMap[$fieldName]) ? $fieldNodeMap[$fieldName]->value : null
                 );
                 if ($result) {
-                    $errors = array_merge($errors, Utils::map($result, function($error) use ($fieldName) {
+                    $errors = \array_merge($errors, Utils::map($result, function($error) use ($fieldName) {
                         return "In field \"$fieldName\": $error";
                     }));
                 }

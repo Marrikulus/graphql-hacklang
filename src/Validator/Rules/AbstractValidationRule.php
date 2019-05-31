@@ -9,7 +9,7 @@ abstract class AbstractValidationRule
 
     public function getName()
     {
-        return $this->name ?: get_class($this);
+        return $this->name ?: \get_class($this);
     }
 
     public function __invoke(ValidationContext $context)

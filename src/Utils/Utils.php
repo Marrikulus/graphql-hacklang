@@ -36,8 +36,8 @@ class Utils
         }
 
         foreach ($vars as $key => $value) {
-            if (!property_exists($obj, $key)) {
-                $cls = get_class($obj);
+            if (!\property_exists($obj, $key)) {
+                $cls = \get_class($obj);
                 Warning::warn(
                     "Trying to set non-existing property '$key' on class '$cls'",
                     Warning::WARNING_ASSIGN
@@ -86,7 +86,7 @@ class Utils
             }
         }
 
-        return $assoc ? $result : array_values($result);
+        return $assoc ? $result : \array_values($result);
     }
 
     /**
@@ -138,7 +138,7 @@ class Utils
         $map = [];
         foreach ($traversable as $key => $value) {
             $newKey = $keyFn($value, $key);
-            if (is_scalar($newKey)) {
+            if (\is_scalar($newKey)) {
                 $map[$newKey] = $value;
             }
         }
@@ -229,10 +229,10 @@ class Utils
     public static function invariant($test, string $message = '')
     {
         if (!$test) {
-            if (func_num_args() > 2) {
-                $args = func_get_args();
-                array_shift(&$args);
-                $message = call_user_func_array('sprintf', $args);
+            if (\func_num_args() > 2) {
+                $args = \func_get_args();
+                \array_shift(&$args);
+                $message = \call_user_func_array('sprintf', $args);
             }
             throw new InvariantViolation($message);
         }
@@ -251,7 +251,7 @@ class Utils
             }
             return $var->name;
         }
-        return is_object($var) ? get_class($var) : gettype($var);
+        return is_object($var) ? \get_class($var) : \gettype($var);
     }
 
     /**
@@ -264,7 +264,7 @@ class Utils
             $var = (array) $var;
         }
         if (is_array($var)) {
-            $count = count($var);
+            $count = \count($var);
             if (!isset($var[0]) && $count > 0) {
                 $keys = [];
                 $keyCount = 0;
@@ -275,7 +275,7 @@ class Utils
                     }
                 }
                 $keysLabel = $keyCount === 1 ? 'key' : 'keys';
-                $msg = "object with first $keysLabel: " . implode(', ', $keys);
+                $msg = "object with first $keysLabel: " . \implode(', ', $keys);
             } else {
                 $msg = "array($count)";
             }
@@ -296,10 +296,10 @@ class Utils
         if (is_string($var)) {
             return "\"$var\"";
         }
-        if (is_scalar($var)) {
+        if (\is_scalar($var)) {
             return (string) $var;
         }
-        return gettype($var);
+        return \gettype($var);
     }
 
     /**
@@ -312,10 +312,10 @@ class Utils
             return $var->toString();
         }
         if (is_object($var)) {
-            return 'instance of ' . get_class($var);
+            return 'instance of ' . \get_class($var);
         }
         if (is_array($var)) {
-            $count = count($var);
+            $count = \count($var);
             if (!isset($var[0]) && $count > 0) {
                 $keys = [];
                 $keyCount = 0;
@@ -326,7 +326,7 @@ class Utils
                     }
                 }
                 $keysLabel = $keyCount === 1 ? 'key' : 'keys';
-                $msg = "associative array($count) with first $keysLabel: " . implode(', ', $keys);
+                $msg = "associative array($count) with first $keysLabel: " . \implode(', ', $keys);
             } else {
                 $msg = "array($count)";
             }
@@ -347,10 +347,10 @@ class Utils
         if (is_string($var)) {
             return "\"$var\"";
         }
-        if (is_scalar($var)) {
+        if (\is_scalar($var)) {
             return (string) $var;
         }
-        return gettype($var);
+        return \gettype($var);
     }
 
     /**
@@ -363,12 +363,12 @@ class Utils
     public static function chr($ord, $encoding = 'UTF-8')
     {
         if ($ord <= 255) {
-            return chr($ord);
+            return \chr($ord);
         }
         if ($encoding === 'UCS-4BE') {
-            return pack("N", $ord);
+            return \pack("N", $ord);
         } else {
-            return mb_convert_encoding(self::chr($ord, 'UCS-4BE'), $encoding, 'UCS-4BE');
+            return \mb_convert_encoding(self::chr($ord, 'UCS-4BE'), $encoding, 'UCS-4BE');
         }
     }
 
@@ -385,12 +385,12 @@ class Utils
             return 0;
         }
         if (!isset($char[1])) {
-            return ord($char);
+            return \ord($char);
         }
         if ($encoding !== 'UCS-4BE') {
-            $char = mb_convert_encoding($char, 'UCS-4BE', $encoding);
+            $char = \mb_convert_encoding($char, 'UCS-4BE', $encoding);
         }
-        list($_, $ord) = unpack('N', $char);
+        list($_, $ord) = \unpack('N', $char);
         return $ord;
     }
 
@@ -403,7 +403,7 @@ class Utils
      */
     public static function charCodeAt($string, $position)
     {
-        $char = mb_substr($string, $position, 1, 'UTF-8');
+        $char = \mb_substr($string, $position, 1, 'UTF-8');
         return self::ord($char);
     }
 
@@ -418,9 +418,9 @@ class Utils
         }
         return $code < 0x007F
             // Trust JSON for ASCII.
-            ? json_encode(Utils::chr($code))
+            ? \json_encode(Utils::chr($code))
             // Otherwise print the escaped form.
-            : '"\\u' . dechex($code) . '"';
+            : '"\\u' . \dechex($code) . '"';
     }
 
     /**
@@ -447,7 +447,7 @@ class Utils
             );
         }
 
-        if (!preg_match($regex, $name)) {
+        if (!\preg_match($regex, $name)) {
             throw new InvariantViolation(
                 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "'.$name.'" does not.'
             );
@@ -466,14 +466,14 @@ class Utils
     {
         return function() use ($fn, &$errors) {
             // Catch custom errors (to report them in query results)
-            set_error_handler(function ($severity, $message, $file, $line) use (&$errors) {
+            \set_error_handler(function ($severity, $message, $file, $line) use (&$errors) {
                 $errors[] = new \ErrorException($message, 0, $severity, $file, $line);
             });
 
             try {
                 return $fn();
             } finally {
-                restore_error_handler();
+                \restore_error_handler();
             }
         };
     }

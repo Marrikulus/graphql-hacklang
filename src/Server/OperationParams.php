@@ -59,7 +59,7 @@ class OperationParams
     {
         $instance = new OperationParams();
 
-        $params = array_change_key_case($params, CASE_LOWER);
+        $params = \array_change_key_case($params, \CASE_LOWER);
         $instance->originalInput = $params;
 
         $params += [
@@ -76,8 +76,8 @@ class OperationParams
         }
 
         if (is_string($params['variables'])) {
-            $tmp = json_decode($params['variables'], true);
-            if (!json_last_error()) {
+            $tmp = \json_decode($params['variables'], true);
+            if (!\json_last_error()) {
                 $params['variables'] = $tmp;
             }
         }

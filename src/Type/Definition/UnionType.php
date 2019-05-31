@@ -62,7 +62,7 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
      */
     public function getPossibleTypes()
     {
-        trigger_error(__METHOD__ . ' is deprecated in favor of ' . __CLASS__ . '::getTypes()', E_USER_DEPRECATED);
+        \trigger_error(__METHOD__ . ' is deprecated in favor of ' . __CLASS__ . '::getTypes()', \E_USER_DEPRECATED);
         return $this->getTypes();
     }
 
@@ -74,7 +74,7 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
         if (null === $this->types) {
             if (!isset($this->config['types'])) {
                 $types = null;
-            } else if (is_callable($this->config['types'])) {
+            } else if (\is_callable($this->config['types'])) {
                 $types = call_user_func($this->config['types']);
             } else {
                 $types = $this->config['types'];
@@ -142,7 +142,7 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
 
         if (isset($this->config['resolveType'])) {
             Utils::invariant(
-                is_callable($this->config['resolveType']),
+                \is_callable($this->config['resolveType']),
                 "{$this->name} must provide \"resolveType\" as a function."
             );
         }
@@ -161,7 +161,7 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
             $includedTypeNames[$objType->name] = true;
             if (!isset($this->config['resolveType'])) {
                 Utils::invariant(
-                    isset($objType->config['isTypeOf']) && is_callable($objType->config['isTypeOf']),
+                    isset($objType->config['isTypeOf']) && \is_callable($objType->config['isTypeOf']),
                     "Union type \"{$this->name}\" does not provide a \"resolveType\" " .
                     "function and possible type \"{$objType->name}\" does not provide an " .
                     '"isTypeOf" function. There is no way to resolve this possible type ' .

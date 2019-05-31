@@ -93,7 +93,7 @@ class FieldDefinition
 
     public static function defineFieldMap(GraphQlType $type, $fields)
     {
-        if (is_callable($fields)) {
+        if (\is_callable($fields)) {
             $fields = $fields();
         }
         if (!is_array($fields)) {
@@ -137,9 +137,9 @@ class FieldDefinition
      */
     public static function createMap(array $fields, $parentTypeName = null)
     {
-        trigger_error(
+        \trigger_error(
             __METHOD__ . ' is deprecated, use ' . __CLASS__ . '::defineFieldMap() instead',
-            E_USER_DEPRECATED
+            \E_USER_DEPRECATED
         );
 
         $map = [];
@@ -263,7 +263,7 @@ class FieldDefinition
             "{$parentType->name}.{$this->name} field type must be Output Type but got: " . Utils::printSafe($this->type)
         );
         Utils::invariant(
-            $this->resolveFn === null || is_callable($this->resolveFn),
+            $this->resolveFn === null || \is_callable($this->resolveFn),
             "{$parentType->name}.{$this->name} field resolver must be a function if provided, but got: %s",
             Utils::printSafe($this->resolveFn)
         );

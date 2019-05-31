@@ -40,7 +40,7 @@ class KnownDirectives extends AbstractValidationRule
                     ));
                     return ;
                 }
-                $appliedTo = $ancestors[count($ancestors) - 1];
+                $appliedTo = $ancestors[\count($ancestors) - 1];
                 $candidateLocation = $this->getLocationForAppliedNode($appliedTo);
 
                 if (!$candidateLocation) {
@@ -48,7 +48,7 @@ class KnownDirectives extends AbstractValidationRule
                         self::misplacedDirectiveMessage($node->name->value, $node->type),
                         [$node]
                     ));
-                } else if (!in_array($candidateLocation, $directiveDef->locations)) {
+                } else if (!\in_array($candidateLocation, $directiveDef->locations)) {
                     $context->reportError(new Error(
                         self::misplacedDirectiveMessage($node->name->value, $candidateLocation),
                         [ $node ]

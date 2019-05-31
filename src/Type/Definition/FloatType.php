@@ -41,7 +41,7 @@ values as specified by
         if ($value === '') {
             $err = 'Float cannot represent non numeric value: (empty string)';
         } else {
-            $err = sprintf('Float cannot represent non numeric value: %s', Utils::printSafe($value));
+            $err = \sprintf('Float cannot represent non numeric value: %s', Utils::printSafe($value));
         }
         throw new InvariantViolation($err);
     }

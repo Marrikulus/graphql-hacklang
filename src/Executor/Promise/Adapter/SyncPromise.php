@@ -76,7 +76,7 @@ class SyncPromise
                 if ($value === $this) {
                     throw new \Exception("Cannot resolve promise with self");
                 }
-                if (is_object($value) && method_exists($value, 'then')) {
+                if (is_object($value) && \method_exists($value, 'then')) {
                     $value->then(
                         function($resolvedValue) {
                             $this->resolve($resolvedValue);

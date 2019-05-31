@@ -16,7 +16,7 @@ class NoFragmentCycles extends AbstractValidationRule
 {
     public static function cycleErrorMessage($fragName, array $spreadNames = [])
     {
-        $via = !empty($spreadNames) ? ' via ' . implode(', ', $spreadNames) : '';
+        $via = !empty($spreadNames) ? ' via ' . \implode(', ', $spreadNames) : '';
         return "Cannot spread fragment \"$fragName\" within itself$via.";
     }
 
@@ -62,9 +62,9 @@ class NoFragmentCycles extends AbstractValidationRule
             return;
         }
 
-        $this->spreadPathIndexByName[$fragmentName] = count($this->spreadPath);
+        $this->spreadPathIndexByName[$fragmentName] = \count($this->spreadPath);
 
-        for ($i = 0; $i < count($spreadNodes); $i++) {
+        for ($i = 0; $i < \count($spreadNodes); $i++) {
             $spreadNode = $spreadNodes[$i];
             $spreadName = $spreadNode->name->value;
             $cycleIndex = isset($this->spreadPathIndexByName[$spreadName]) ? $this->spreadPathIndexByName[$spreadName] : null;
@@ -77,13 +77,13 @@ class NoFragmentCycles extends AbstractValidationRule
                         $this->detectCycleRecursive($spreadFragment, $context);
                     }
                 }
-                array_pop($this->spreadPath);
+                \array_pop($this->spreadPath);
             } else {
-                $cyclePath = array_slice($this->spreadPath, $cycleIndex);
+                $cyclePath = \array_slice($this->spreadPath, $cycleIndex);
                 $nodes = $cyclePath;
 
                 if (is_array($spreadNode)) {
-                    $nodes = array_merge($nodes, $spreadNode);
+                    $nodes = \array_merge($nodes, $spreadNode);
                 } else {
                     $nodes[] = $spreadNode;
                 }

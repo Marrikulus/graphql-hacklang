@@ -107,7 +107,7 @@ class Lexer
      */
     public function nextToken()
     {
-        trigger_error(__METHOD__ . ' is deprecated in favor of advance()', E_USER_DEPRECATED);
+        \trigger_error(__METHOD__ . ' is deprecated in favor of advance()', \E_USER_DEPRECATED);
         return $this->advance();
     }
 
@@ -387,7 +387,7 @@ class Lexer
                     case 34: $value .= '"'; break;
                     case 47: $value .= '/'; break;
                     case 92: $value .= '\\'; break;
-                    case 98: $value .= chr(8); break; // \b (backspace)
+                    case 98: $value .= \chr(8); break; // \b (backspace)
                     case 102: $value .= "\f"; break;
                     case 110: $value .= "\n"; break;
                     case 114: $value .= "\r"; break;
@@ -395,14 +395,14 @@ class Lexer
                     case 117:
                         $position = $this->position;
                         list ($hex) = $this->readChars(4, true);
-                        if (!preg_match('/[0-9a-fA-F]{4}/', $hex)) {
+                        if (!\preg_match('/[0-9a-fA-F]{4}/', $hex)) {
                             throw new SyntaxError(
                                 $this->source,
                                 $position - 1,
                                 'Invalid character escape sequence: \\u' . $hex
                             );
                         }
-                        $code = hexdec($hex);
+                        $code = \hexdec($hex);
                         $this->assertValidStringCharacterCode($code, $position - 2);
                         $value .= Utils::chr($code);
                         break;
@@ -543,7 +543,7 @@ class Lexer
         $positionOffset = 0;
 
         if (isset($this->source->body[$byteStreamPosition])) {
-            $ord = ord($this->source->body[$byteStreamPosition]);
+            $ord = \ord($this->source->body[$byteStreamPosition]);
 
             if ($ord < 128) {
                 $bytes = 1;

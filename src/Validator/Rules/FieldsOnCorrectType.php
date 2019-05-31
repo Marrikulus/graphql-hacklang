@@ -14,11 +14,11 @@ class FieldsOnCorrectType extends AbstractValidationRule
         $message = 'Cannot query field "' . $field . '" on type "' . $type.'".';
 
         $maxLength = 5;
-        $count = count($suggestedTypes);
+        $count = \count($suggestedTypes);
         if ($count > 0) {
-            $suggestions = array_slice($suggestedTypes, 0, $maxLength);
+            $suggestions = \array_slice($suggestedTypes, 0, $maxLength);
             $suggestions = Utils::map($suggestions, function($t) { return "\"$t\""; });
-            $suggestions = implode(', ', $suggestions);
+            $suggestions = \implode(', ', $suggestions);
 
             if ($count > $maxLength) {
                 $suggestions .= ', and ' . ($count - $maxLength) . ' other types';

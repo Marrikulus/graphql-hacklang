@@ -51,7 +51,7 @@ class CustomScalarType extends ScalarType<?string>
         parent::assertValid();
 
         Utils::invariant(
-            isset($this->config['serialize']) && is_callable($this->config['serialize']),
+            isset($this->config['serialize']) && \is_callable($this->config['serialize']),
             "{$this->name} must provide \"serialize\" function. If this custom Scalar " .
             'is also used as an input type, ensure "parseValue" and "parseLiteral" ' .
             'functions are also provided.'
@@ -59,7 +59,7 @@ class CustomScalarType extends ScalarType<?string>
         if (isset($this->config['parseValue']) || isset($this->config['parseLiteral'])) {
             Utils::invariant(
                 isset($this->config['parseValue']) && isset($this->config['parseLiteral']) &&
-                is_callable($this->config['parseValue']) && is_callable($this->config['parseLiteral']),
+                \is_callable($this->config['parseValue']) && \is_callable($this->config['parseLiteral']),
                 "{$this->name} must provide both \"parseValue\" and \"parseLiteral\" functions."
             );
         }

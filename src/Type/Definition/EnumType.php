@@ -100,7 +100,7 @@ class EnumType extends GraphQlType implements InputType, OutputType, LeafType<?s
     public function getValue($name)
     {
         $lookup = $this->getNameLookup();
-        return is_scalar($name) && isset($lookup[$name]) ? $lookup[$name] : null;
+        return \is_scalar($name) && isset($lookup[$name]) ? $lookup[$name] : null;
     }
 
     /**
@@ -218,7 +218,7 @@ class EnumType extends GraphQlType implements InputType, OutputType, LeafType<?s
                 );
             }
             Utils::invariant(
-                !in_array($value->name, ['true', 'false', 'null']),
+                !\in_array($value->name, ['true', 'false', 'null']),
                 "{$this->name}: \"{$value->name}\" can not be used as an Enum value."
             );
             Utils::invariant(

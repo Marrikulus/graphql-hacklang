@@ -100,7 +100,7 @@ class SchemaConfig
 
             if (isset($options['types'])) {
                 Utils::invariant(
-                    is_array($options['types']) || is_callable($options['types']),
+                    is_array($options['types']) || \is_callable($options['types']),
                     'Schema types must be array or callable if provided but got: %s',
                     Utils::printSafe($options['types'])
                 );
@@ -117,10 +117,10 @@ class SchemaConfig
             }
 
             if (isset($options['typeResolution'])) {
-                trigger_error(
+                \trigger_error(
                     'Type resolution strategies are deprecated. Just pass single option `typeLoader` '.
                     'to schema constructor instead.',
-                    E_USER_DEPRECATED
+                    \E_USER_DEPRECATED
                 );
                 if ($options['typeResolution'] instanceof Resolution && !isset($options['typeLoader'])) {
                     $strategy = $options['typeResolution'];
@@ -132,7 +132,7 @@ class SchemaConfig
 
             if (isset($options['typeLoader'])) {
                 Utils::invariant(
-                    is_callable($options['typeLoader']),
+                    \is_callable($options['typeLoader']),
                     'Schema type loader must be callable if provided but got: %s',
                     Utils::printSafe($options['typeLoader'])
                 );

@@ -72,13 +72,13 @@ class Schema
      */
     public function __construct($config)
     {
-        if (func_num_args() > 1 || $config instanceof GraphQlType) {
-            trigger_error(
+        if (\func_num_args() > 1 || $config instanceof GraphQlType) {
+            \trigger_error(
                 'GraphQL\Schema constructor expects config object now instead of types passed as arguments. '.
                 'See https://github.com/webonyx/graphql-php/issues/36',
-                E_USER_DEPRECATED
+                \E_USER_DEPRECATED
             );
-            list($queryType, $mutationType, $subscriptionType) = func_get_args() + [null, null, null];
+            list($queryType, $mutationType, $subscriptionType) = \func_get_args() + [null, null, null];
 
             $config = [
                 'query' => $queryType,
@@ -93,7 +93,7 @@ class Schema
         Utils::invariant(
             $config instanceof SchemaConfig,
             'Schema constructor expects instance of GraphQL\Type\SchemaConfig or an array with keys: %s; but got: %s',
-            implode(', ', [
+            \implode(', ', [
                 'query',
                 'mutation',
                 'subscription',
@@ -223,7 +223,7 @@ class Schema
             $typeMap = TypeInfo::extractTypes($type, $typeMap);
         }
         // When types are set as array they are resolved in constructor
-        if (is_callable($this->config->types)) {
+        if (\is_callable($this->config->types)) {
             foreach ($this->resolveAdditionalTypes() as $type) {
                 $typeMap = TypeInfo::extractTypes($type, $typeMap);
             }
@@ -238,12 +238,12 @@ class Schema
     {
         $types = $this->config->types ?: [];
 
-        if (is_callable($types)) {
+        if (\is_callable($types)) {
             $types = $types();
         }
 
         if (!is_array($types) && !$types instanceof \Traversable) {
-            throw new InvariantViolation(sprintf(
+            throw new InvariantViolation(\sprintf(
                 'Schema types callable must return array or instance of Traversable but got: %s',
                 Utils::getVariableType($types)
             ));
@@ -274,7 +274,7 @@ class Schema
     public function getPossibleTypes(AbstractType $abstractType)
     {
         $possibleTypeMap = $this->getPossibleTypeMap();
-        return isset($possibleTypeMap[$abstractType->name]) ? array_values($possibleTypeMap[$abstractType->name]) : [];
+        return isset($possibleTypeMap[$abstractType->name]) ? \array_values($possibleTypeMap[$abstractType->name]) : [];
     }
 
     /**

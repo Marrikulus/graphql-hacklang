@@ -127,7 +127,7 @@ class ExecutionResult implements \JsonSerializable
 
         if (!empty($this->errors)) {
             $errorsHandler = $this->errorsHandler ?? function(array $errors, callable $formatter) {
-                return array_map($formatter, $errors);
+                return \array_map($formatter, $errors);
             };
             $result['errors'] = $errorsHandler(
                 $this->errors,

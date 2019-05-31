@@ -473,8 +473,8 @@ class Executor
      */
     private function promiseForAssocArray(array $assoc)
     {
-        $keys = array_keys($assoc);
-        $valuesAndPromises = array_values($assoc);
+        $keys = \array_keys($assoc);
+        $valuesAndPromises = \array_values($assoc);
 
         $promise = $this->exeContext->promises->all($valuesAndPromises);
 
@@ -1360,9 +1360,9 @@ class Executor
         if ($this->exeContext->promises->isThenable($value)) {
             $promise = $this->exeContext->promises->convertThenable($value);
             if (!$promise instanceof Promise) {
-                throw new InvariantViolation(sprintf(
+                throw new InvariantViolation(\sprintf(
                     '%s::convertThenable is expected to return instance of GraphQL\Executor\Promise\Promise, got: %s',
-                    get_class($this->exeContext->promises),
+                    \get_class($this->exeContext->promises),
                     Utils::printSafe($promise)
                 ));
             }
@@ -1382,7 +1382,7 @@ class Executor
      */
     public static function defaultResolveFn($source, $args, $context, ResolveInfo $info)
     {
-        trigger_error(__METHOD__ . ' is renamed to ' . __CLASS__ . '::defaultFieldResolver', E_USER_DEPRECATED);
+        \trigger_error(__METHOD__ . ' is renamed to ' . __CLASS__ . '::defaultFieldResolver', \E_USER_DEPRECATED);
         return self::defaultFieldResolver($source, $args, $context, $info);
     }
 
@@ -1393,7 +1393,7 @@ class Executor
      */
     public static function setDefaultResolveFn($fn)
     {
-        trigger_error(__METHOD__ . ' is renamed to ' . __CLASS__ . '::setDefaultFieldResolver', E_USER_DEPRECATED);
+        \trigger_error(__METHOD__ . ' is renamed to ' . __CLASS__ . '::setDefaultFieldResolver', \E_USER_DEPRECATED);
         self::setDefaultFieldResolver($fn);
     }
 }

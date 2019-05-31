@@ -150,7 +150,7 @@ class ResolveInfo
 
         /** @var FieldNode $fieldNode */
         foreach ($this->fieldNodes as $fieldNode) {
-            $fields = array_merge_recursive($fields, $this->foldSelectionSet($fieldNode->selectionSet, $depth));
+            $fields = \array_merge_recursive($fields, $this->foldSelectionSet($fieldNode->selectionSet, $depth));
         }
 
         return $fields;
@@ -170,10 +170,10 @@ class ResolveInfo
                 if (isset($this->fragments[$spreadName])) {
                     /** @var FragmentDefinitionNode $fragment */
                     $fragment = $this->fragments[$spreadName];
-                    $fields = array_merge_recursive($this->foldSelectionSet($fragment->selectionSet, $descend), $fields);
+                    $fields = \array_merge_recursive($this->foldSelectionSet($fragment->selectionSet, $descend), $fields);
                 }
             } else if ($selectionNode instanceof InlineFragmentNode) {
-                $fields = array_merge_recursive($this->foldSelectionSet($selectionNode->selectionSet, $descend), $fields);
+                $fields = \array_merge_recursive($this->foldSelectionSet($selectionNode->selectionSet, $descend), $fields);
             }
         }
 
@@ -183,7 +183,7 @@ class ResolveInfo
     public function __get($name)
     {
         if ('fieldASTs' === $name) {
-            trigger_error('Property ' . __CLASS__ . '->fieldASTs was renamed to ' . __CLASS__ . '->fieldNodes', E_USER_DEPRECATED);
+            \trigger_error('Property ' . __CLASS__ . '->fieldASTs was renamed to ' . __CLASS__ . '->fieldNodes', \E_USER_DEPRECATED);
             return $this->fieldNodes;
         }
         throw new InvariantViolation("Undefined property '$name' in class " . __CLASS__);

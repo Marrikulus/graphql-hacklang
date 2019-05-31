@@ -153,9 +153,9 @@ class ValidationContext
             $spreads = [];
             $setsToVisit = [$node->selectionSet];
             while (!empty($setsToVisit)) {
-                $set = array_pop(&$setsToVisit);
+                $set = \array_pop(&$setsToVisit);
 
-                for ($i = 0; $i < count($set->selections); $i++) {
+                for ($i = 0; $i < \count($set->selections); $i++) {
                     $selection = $set->selections[$i];
                     if ($selection->kind === NodeKind::FRAGMENT_SPREAD) {
                         $spreads[] = $selection;
@@ -182,9 +182,9 @@ class ValidationContext
             $collectedNames = [];
             $nodesToVisit = [$operation];
             while (!empty($nodesToVisit)) {
-                $node = array_pop(&$nodesToVisit);
+                $node = \array_pop(&$nodesToVisit);
                 $spreads = $this->getFragmentSpreads($node);
-                for ($i = 0; $i < count($spreads); $i++) {
+                for ($i = 0; $i < \count($spreads); $i++) {
                     $fragName = $spreads[$i]->name->value;
 
                     if (empty($collectedNames[$fragName])) {
@@ -240,10 +240,10 @@ class ValidationContext
             $fragments = $this->getRecursivelyReferencedFragments($operation);
 
             $tmp = [$usages];
-            for ($i = 0; $i < count($fragments); $i++) {
+            for ($i = 0; $i < \count($fragments); $i++) {
                 $tmp[] = $this->getVariableUsages($fragments[$i]);
             }
-            $usages = call_user_func_array('array_merge', $tmp);
+            $usages = \call_user_func_array('array_merge', $tmp);
             $this->recursiveVariableUsages[$operation] = $usages;
         }
         return $usages;

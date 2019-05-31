@@ -230,7 +230,7 @@ abstract class GraphQlType implements \JsonSerializable
         $name = $tmp->getShortName();
 
         if ($tmp->getNamespaceName() !== __NAMESPACE__) {
-            return preg_replace('~Type$~', '', $name);
+            return \preg_replace('~Type$~', '', $name);
         }
         return null;
     }

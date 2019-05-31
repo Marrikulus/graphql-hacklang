@@ -66,7 +66,7 @@ class Config
             'GraphQL\Type\Defintion\Config is deprecated and will be removed in the next version. ' .
             'See https://github.com/webonyx/graphql-php/issues/148 for alternatives',
             Warning::WARNING_CONFIG_DEPRECATION,
-            E_USER_DEPRECATED
+            \E_USER_DEPRECATED
         );
 
         self::$enableValidation = true;
@@ -137,24 +137,24 @@ class Config
         $suffix = $pathStr ? " at $pathStr" : '';
 
         // Make sure there are no unexpected keys in map
-        $unexpectedKeys = array_keys(array_diff_key($map, $definitions));
+        $unexpectedKeys = \array_keys(\array_diff_key($map, $definitions));
 
         if (!empty($unexpectedKeys)) {
             if (!self::$allowCustomOptions) {
                 Warning::warnOnce(
-                    sprintf('Error in "%s" type definition: Non-standard keys "%s" ' . $suffix, $typeName, implode(', ', $unexpectedKeys)),
+                    \sprintf('Error in "%s" type definition: Non-standard keys "%s" ' . $suffix, $typeName, \implode(', ', $unexpectedKeys)),
                     Warning::WARNING_CONFIG
                 );
             }
-            $map = array_intersect_key($map, $definitions);
+            $map = \array_intersect_key($map, $definitions);
         }
 
         // Make sure that all required keys are present in map
-        $requiredKeys = array_filter($definitions, function($def) {return (self::getFlags($def) & self::REQUIRED) > 0;});
-        $missingKeys = array_keys(array_diff_key($requiredKeys, $map));
+        $requiredKeys = \array_filter($definitions, function($def) {return (self::getFlags($def) & self::REQUIRED) > 0;});
+        $missingKeys = \array_keys(\array_diff_key($requiredKeys, $map));
         Utils::invariant(
             empty($missingKeys),
-            'Error in "' . $typeName . '" type definition: Required keys missing: "%s" %s', implode(', ', $missingKeys), $suffix
+            'Error in "' . $typeName . '" type definition: Required keys missing: "%s" %s', \implode(', ', $missingKeys), $suffix
         );
 
         // Make sure that every map value is valid given the definition
@@ -182,7 +182,7 @@ class Config
             }
             if (($def->flags & self::MAYBE_THUNK) > 0) {
                 // TODO: consider wrapping thunk with other function to force validation of value returned by thunk
-                Utils::invariant(is_array($value) || is_callable($value), $err, 'array or callable');
+                Utils::invariant(is_array($value) || \is_callable($value), $err, 'array or callable');
             } else {
                 Utils::invariant(is_array($value), $err, 'array');
             }
@@ -217,7 +217,7 @@ class Config
                     }
                 }
             } else {
-                throw new InvariantViolation('Error in "'.$typeName.'" type definition: ' . "unexpected definition: " . print_r($def, true));
+                throw new InvariantViolation('Error in "'.$typeName.'" type definition: ' . "unexpected definition: " . \print_r($def, true));
             }
         } else {
             Utils::invariant(is_int($def), 'Error in "'.$typeName.'" type definition: ' . "Definition for '$pathStr' is expected to be single integer value");
@@ -249,43 +249,43 @@ class Config
                     Utils::invariant(is_int($value), $err, 'int');
                     break;
                 case $def & self::CALLBACK:
-                    Utils::invariant(is_callable($value), $err, 'callable');
+                    Utils::invariant(\is_callable($value), $err, 'callable');
                     break;
                 case $def & self::SCALAR:
-                    Utils::invariant(is_scalar($value), $err, 'scalar');
+                    Utils::invariant(\is_scalar($value), $err, 'scalar');
                     break;
                 case $def & self::NAME:
                     Utils::invariant(is_string($value), $err, 'name');
                     Utils::invariant(
-                        preg_match('~^[_a-zA-Z][_a-zA-Z0-9]*$~', $value),
+                        \preg_match('~^[_a-zA-Z][_a-zA-Z0-9]*$~', $value),
                         'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "%s" does not.',
                         $value
                     );
                     break;
                 case $def & self::INPUT_TYPE:
                     Utils::invariant(
-                        is_callable($value) || $value instanceof InputType,
+                        \is_callable($value) || $value instanceof InputType,
                         $err,
                         'InputType definition'
                     );
                     break;
                 case $def & self::OUTPUT_TYPE:
                     Utils::invariant(
-                        is_callable($value) || $value instanceof OutputType,
+                        \is_callable($value) || $value instanceof OutputType,
                         $err,
                         'OutputType definition'
                     );
                     break;
                 case $def & self::INTERFACE_TYPE:
                     Utils::invariant(
-                        is_callable($value) || $value instanceof InterfaceType,
+                        \is_callable($value) || $value instanceof InterfaceType,
                         $err,
                         'InterfaceType definition'
                     );
                     break;
                 case $def & self::OBJECT_TYPE:
                     Utils::invariant(
-                        is_callable($value) || $value instanceof ObjectType,
+                        \is_callable($value) || $value instanceof ObjectType,
                         $err,
                         'ObjectType definition'
                     );

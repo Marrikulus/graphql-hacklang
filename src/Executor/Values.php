@@ -57,7 +57,7 @@ class Values
                 );
             }
 
-            if (!array_key_exists($varName, $inputs)) {
+            if (!\array_key_exists($varName, $inputs)) {
                 $defaultValue = $definitionNode->defaultValue;
                 if ($defaultValue) {
                     $coercedValues[$varName] = AST::valueFromAST($defaultValue, $varType);
@@ -73,10 +73,10 @@ class Values
                 $value = $inputs[$varName];
                 $errors = self::isValidPHPValue($value, $varType);
                 if (!empty($errors)) {
-                    $message = "\n" . implode("\n", $errors);
+                    $message = "\n" . \implode("\n", $errors);
                     throw new Error(
                         'Variable "$' . $varName . '" got invalid value ' .
-                        json_encode($value) . '.' . $message,
+                        \json_encode($value) . '.' . $message,
                         [$definitionNode]
                     );
                 }
@@ -134,7 +134,7 @@ class Values
             } else if ($argumentNode->value instanceof VariableNode) {
                 $variableName = $argumentNode->value->name->value;
 
-                if ($variableValues && array_key_exists($variableName, $variableValues)) {
+                if ($variableValues && \array_key_exists($variableName, $variableValues)) {
                     // Note: this does not check that this variable value is correct.
                     // This assumes that this query has been validated and the variable
                     // usage here is of the correct type.
@@ -154,7 +154,7 @@ class Values
                 $coercedValue = AST::valueFromAST($valueNode, $argType, $variableValues);
                 if ($coercedValue === $undefined) {
                     $errors = DocumentValidator::isValidLiteralValue($argType, $valueNode);
-                    $message = !empty($errors) ? ("\n" . implode("\n", $errors)) : '';
+                    $message = !empty($errors) ? ("\n" . \implode("\n", $errors)) : '';
                     throw new Error(
                         'Argument "' . $name . '" got invalid value ' . Printer::doPrint($valueNode) . '.' . $message,
                         [ $argumentNode->value ]
@@ -236,7 +236,7 @@ class Values
                 $tmp = [];
                 foreach ($value as $index => $item) {
                     $errors = self::isValidPHPValue($item, $itemType);
-                    $tmp = array_merge($tmp, Utils::map($errors, function ($error) use ($index) {
+                    $tmp = \array_merge($tmp, Utils::map($errors, function ($error) use ($index) {
                         return "In element #$index: $error";
                     }));
                 }
@@ -254,7 +254,7 @@ class Values
             $errors = [];
 
             // Ensure every provided field is defined.
-            $props = is_object($value) ? get_object_vars($value) : $value;
+            $props = is_object($value) ? \get_object_vars($value) : $value;
             foreach ($props as $providedField => $tmp) {
                 if (!isset($fields[$providedField])) {
                     $errors[] = "In field \"{$providedField}\": Unknown field.";
@@ -264,7 +264,7 @@ class Values
             // Ensure every defined field is valid.
             foreach ($fields as $fieldName => $tmp) {
                 $newErrors = self::isValidPHPValue(isset($value[$fieldName]) ? $value[$fieldName] : null, $fields[$fieldName]->getType());
-                $errors = array_merge(
+                $errors = \array_merge(
                     $errors,
                     Utils::map($newErrors, function ($error) use ($fieldName) {
                         return "In field \"{$fieldName}\": {$error}";
@@ -346,7 +346,7 @@ class Values
             $coercedObj = [];
             $fields = $type->getFields();
             foreach ($fields as $fieldName => $field) {
-                if (!array_key_exists($fieldName, $value)) {
+                if (!\array_key_exists($fieldName, $value)) {
                     if ($field->defaultValueExists()) {
                         $coercedObj[$fieldName] = $field->defaultValue;
                     } else if ($field->getType() instanceof NoNull) {

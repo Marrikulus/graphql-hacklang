@@ -53,15 +53,15 @@ class Helper
         if ($method === 'POST') {
             $contentType = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : null;
 
-            if (stripos($contentType, 'application/graphql') !== false) {
+            if (\stripos($contentType, 'application/graphql') !== false) {
                 $rawBody =  $readRawBodyFn ? $readRawBodyFn() : $this->readRawBody();
                 $bodyParams = ['query' => $rawBody ?: ''];
-            } else if (stripos($contentType, 'application/json') !== false) {
+            } else if (\stripos($contentType, 'application/json') !== false) {
                 $rawBody = $readRawBodyFn ? $readRawBodyFn() : $this->readRawBody();
-                $bodyParams = json_decode($rawBody ?: '', true);
+                $bodyParams = \json_decode($rawBody ?: '', true);
 
-                if (json_last_error()) {
-                    throw new RequestError("Could not parse JSON: " . json_last_error_msg());
+                if (\json_last_error()) {
+                    throw new RequestError("Could not parse JSON: " . \json_last_error_msg());
                 }
                 if (!is_array($bodyParams)) {
                     throw new RequestError(
@@ -69,7 +69,7 @@ class Helper
                         Utils::printSafeJson($bodyParams)
                     );
                 }
-            } else if (stripos($contentType, 'application/x-www-form-urlencoded') !== false) {
+            } else if (\stripos($contentType, 'application/x-www-form-urlencoded') !== false) {
                 $bodyParams = $_POST;
             } else if (null === $contentType) {
                 throw new RequestError('Missing "Content-Type" header');
@@ -304,7 +304,7 @@ class Helper
         $source = $loader($op->queryId, $op);
 
         if (!is_string($source) && !$source instanceof DocumentNode) {
-            throw new InvariantViolation(sprintf(
+            throw new InvariantViolation(\sprintf(
                 "Persistent query loader must return query string or instance of %s but got: %s",
                 DocumentNode::class,
                 Utils::printSafe($source)
@@ -326,11 +326,11 @@ class Helper
         // Allow customizing validation rules per operation:
         $validationRules = $config->getValidationRules();
 
-        if (is_callable($validationRules)) {
+        if (\is_callable($validationRules)) {
             $validationRules = $validationRules($params, $doc, $operationType);
 
             if (!is_array($validationRules)) {
-                throw new InvariantViolation(sprintf(
+                throw new InvariantViolation(\sprintf(
                     "Expecting validation rules to be array or callable returning array, but got: %s",
                     Utils::printSafe($validationRules)
                 ));
@@ -411,12 +411,12 @@ class Helper
      */
     public function emitResponse($jsonSerializable, $httpStatus, $exitWhenDone)
     {
-        $body = json_encode($jsonSerializable);
-        header('Content-Type: application/json', true, $httpStatus);
+        $body = \json_encode($jsonSerializable);
+        \header('Content-Type: application/json', true, $httpStatus);
         echo $body;
 
         if ($exitWhenDone) {
-            exit;
+            \exit;
         }
     }
 
@@ -425,7 +425,7 @@ class Helper
      */
     private function readRawBody()
     {
-        return file_get_contents('php://input');
+        return \file_get_contents('php://input');
     }
 
     /**
@@ -437,7 +437,7 @@ class Helper
         if (is_array($result) && isset($result[0])) {
             Utils::each($result, function ($executionResult, $index) {
                 if (!$executionResult instanceof ExecutionResult) {
-                    throw new InvariantViolation(sprintf(
+                    throw new InvariantViolation(\sprintf(
                         "Expecting every entry of batched query result to be instance of %s but entry at position %d is %s",
                         ExecutionResult::class,
                         $index,
@@ -448,7 +448,7 @@ class Helper
             $httpStatus = 200;
         } else {
             if (!$result instanceof ExecutionResult) {
-                throw new InvariantViolation(sprintf(
+                throw new InvariantViolation(\sprintf(
                     "Expecting query result to be instance of %s but got %s",
                     ExecutionResult::class,
                     Utils::printSafe($result)
@@ -482,9 +482,9 @@ class Helper
                 throw new RequestError('Missing "Content-Type" header');
             }
 
-            if (stripos($contentType[0], 'application/graphql') !== false) {
+            if (\stripos($contentType[0], 'application/graphql') !== false) {
                 $bodyParams = ['query' => $request->getBody()->getContents()];
-            } else if (stripos($contentType[0], 'application/json') !== false) {
+            } else if (\stripos($contentType[0], 'application/json') !== false) {
                 $bodyParams = $request->getParsedBody();
 
                 if (null === $bodyParams) {
@@ -539,7 +539,7 @@ class Helper
     {
         $httpStatus = $this->resolveHttpStatus($result);
 
-        $result = json_encode($result);
+        $result = \json_encode($result);
         $writableBodyStream->write($result);
 
         return $response

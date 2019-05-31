@@ -103,7 +103,7 @@ class InterfaceType extends GraphQlType implements AbstractType, OutputType, Com
         $fields = $this->getFields();
 
         Utils::invariant(
-            !isset($this->config['resolveType']) || is_callable($this->config['resolveType']),
+            !isset($this->config['resolveType']) || \is_callable($this->config['resolveType']),
             "{$this->name} must provide \"resolveType\" as a function."
         );
 

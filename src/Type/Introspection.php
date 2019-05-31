@@ -256,7 +256,7 @@ EOD;
                         'description' => 'A list of all types supported by this server.',
                         'type' => new NoNull(new ListOfType(new NoNull(self::_type()))),
                         'resolve' => function (Schema $schema) {
-                            return array_values($schema->getTypeMap());
+                            return \array_values($schema->getTypeMap());
                         }
                     ],
                     'queryType' => [
@@ -328,25 +328,25 @@ EOD;
                         'deprecationReason' => 'Use `locations`.',
                         'type' => GraphQlType::nonNull(GraphQlType::boolean()),
                         'resolve' => function($d) {
-                            return in_array(DirectiveLocation::QUERY, $d->locations) ||
-                                in_array(DirectiveLocation::MUTATION, $d->locations) ||
-                                in_array(DirectiveLocation::SUBSCRIPTION, $d->locations);
+                            return \in_array(DirectiveLocation::QUERY, $d->locations) ||
+                                \in_array(DirectiveLocation::MUTATION, $d->locations) ||
+                                \in_array(DirectiveLocation::SUBSCRIPTION, $d->locations);
                         }
                     ],
                     'onFragment' => [
                         'deprecationReason' => 'Use `locations`.',
                         'type' => GraphQlType::nonNull(GraphQlType::boolean()),
                         'resolve' => function($d) {
-                            return in_array(DirectiveLocation::FRAGMENT_SPREAD, $d->locations) ||
-                            in_array(DirectiveLocation::INLINE_FRAGMENT, $d->locations) ||
-                            in_array(DirectiveLocation::FRAGMENT_DEFINITION, $d->locations);
+                            return \in_array(DirectiveLocation::FRAGMENT_SPREAD, $d->locations) ||
+                            \in_array(DirectiveLocation::INLINE_FRAGMENT, $d->locations) ||
+                            \in_array(DirectiveLocation::FRAGMENT_DEFINITION, $d->locations);
                         }
                     ],
                     'onField' => [
                         'deprecationReason' => 'Use `locations`.',
                         'type' => GraphQlType::nonNull(GraphQlType::boolean()),
                         'resolve' => function($d) {
-                            return in_array(DirectiveLocation::FIELD, $d->locations);
+                            return \in_array(DirectiveLocation::FIELD, $d->locations);
                         }
                     ]
                 ]
@@ -499,11 +499,11 @@ EOD;
                                     $fields = $type->getFields();
 
                                     if (empty($args['includeDeprecated'])) {
-                                        $fields = array_filter($fields, function (FieldDefinition $field) {
+                                        $fields = \array_filter($fields, function (FieldDefinition $field) {
                                             return !$field->deprecationReason;
                                         });
                                     }
-                                    return array_values($fields);
+                                    return \array_values($fields);
                                 }
                                 return null;
                             }
@@ -533,10 +533,10 @@ EOD;
                             ],
                             'resolve' => function ($type, $args) {
                                 if ($type instanceof EnumType) {
-                                    $values = array_values($type->getValues());
+                                    $values = \array_values($type->getValues());
 
                                     if (empty($args['includeDeprecated'])) {
-                                        $values = array_filter($values, function ($value) {
+                                        $values = \array_filter($values, function ($value) {
                                             return !$value->deprecationReason;
                                         });
                                     }
@@ -550,7 +550,7 @@ EOD;
                             'type' => GraphQlType::listOf(GraphQlType::nonNull(self::_inputValue())),
                             'resolve' => function ($type) {
                                 if ($type instanceof InputObjectType) {
-                                    return array_values($type->getFields());
+                                    return \array_values($type->getFields());
                                 }
                                 return null;
                             }
@@ -630,7 +630,7 @@ EOD;
                         'type' => [
                             'type' => GraphQlType::nonNull(self::_type()),
                             'resolve' => function ($value) {
-                                return method_exists($value, 'getType') ? $value->getType() : $value->type;
+                                return \method_exists($value, 'getType') ? $value->getType() : $value->type;
                             }
                         ],
                         'defaultValue' => [

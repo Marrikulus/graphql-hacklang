@@ -23,7 +23,7 @@ class KnownArgumentNames extends AbstractValidationRule
     {
         return [
             NodeKind::ARGUMENT => function(ArgumentNode $node, $key, $parent, $path, $ancestors) use ($context) {
-                $argumentOf = $ancestors[count($ancestors) - 1];
+                $argumentOf = $ancestors[\count($ancestors) - 1];
                 if ($argumentOf->kind === NodeKind::FIELD) {
                     $fieldDef = $context->getFieldDef();
 

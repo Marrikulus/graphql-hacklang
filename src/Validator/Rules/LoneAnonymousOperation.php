@@ -33,7 +33,7 @@ class LoneAnonymousOperation extends AbstractValidationRule
                         return $definition->kind === NodeKind::OPERATION_DEFINITION;
                     }
                 );
-                $operationCount = count($tmp);
+                $operationCount = \count($tmp);
             },
             NodeKind::OPERATION_DEFINITION => function(OperationDefinitionNode $node) use (&$operationCount, $context) {
                 if (!$node->name && $operationCount > 1) {

@@ -1,4 +1,4 @@
-<?hh // decl
+<?hh //decl
 namespace GraphQL\Utils;
 
 use GraphQL\Error\InvariantViolation;
@@ -66,11 +66,11 @@ class AST
      */
     public static function fromArray(array<string, mixed> $node):Node
     {
-        if (!array_key_exists('kind', $node))
+        if (!\array_key_exists('kind', $node))
         {
             throw new InvariantViolation("Unexpected node structure: " . Utils::printSafeJson($node));
         }
-        if (!array_key_exists($node['kind'], NodeKind::$classMap))
+        if (!\array_key_exists($node['kind'], NodeKind::$classMap))
         {
             throw new InvariantViolation("Unexpected node structure: " . Utils::printSafeJson($node));
         }
@@ -79,10 +79,10 @@ class AST
         $class = NodeKind::$classMap[$kind];
         $instance = new $class([]);
 
-        if (array_key_exists('loc', $node) &&
+        if (\array_key_exists('loc', $node) &&
             $node['loc'] !== null &&
-            array_key_exists('start', $node['loc']) &&
-            array_key_exists('end', $node['loc']))
+            \array_key_exists('start', $node['loc']) &&
+            \array_key_exists('end', $node['loc']))
         {
             $instance->loc = Location::create($node['loc']['start'], $node['loc']['end']);
         }
@@ -94,7 +94,7 @@ class AST
             }
             if (\is_array($value))
             {
-                if (array_key_exists(0, $value) || empty($value))
+                if (\array_key_exists(0, $value) || empty($value))
                 {
                     $value = new NodeList($value);
                 }
@@ -196,12 +196,12 @@ class AST
                 if (null !== $fieldValue) {
                     $fieldExists = true;
                 } else if ($isArray) {
-                    $fieldExists = array_key_exists($fieldName, $value);
+                    $fieldExists = \array_key_exists($fieldName, $value);
                 } else if ($isArrayLike) {
                     /** @var \ArrayAccess $value */
                     $fieldExists = $value->offsetExists($fieldName);
                 } else {
-                    $fieldExists = property_exists($value, $fieldName);
+                    $fieldExists = \property_exists($value, $fieldName);
                 }
 
                 if ($fieldExists) {
@@ -258,7 +258,7 @@ class AST
             // Use json_encode, which uses the same string encoding as GraphQL,
             // then remove the quotes.
             return new StringValueNode([
-                'value' => substr(json_encode($serialized), 1, -1)
+                'value' => \substr(\json_encode($serialized), 1, -1)
             ]);
         }
 
@@ -317,7 +317,7 @@ class AST
         if ($valueNode instanceof VariableNode) {
             $variableName = $valueNode->name->value;
 
-            if (!$variables || !array_key_exists($variableName, $variables)) {
+            if (!$variables || !\array_key_exists($variableName, $variables)) {
                 // No valid return value.
                 return $undefined;
             }
@@ -445,7 +445,7 @@ class AST
     private static function isMissingVariable($valueNode, $variables):bool
     {
         return $valueNode instanceof VariableNode &&
-        (!$variables || !array_key_exists($valueNode->name->value, $variables));
+        (!$variables || !\array_key_exists($valueNode->name->value, $variables));
     }
 
     /**

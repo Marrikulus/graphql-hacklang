@@ -56,7 +56,7 @@ class SchemaPrinter
 
     private static function isIntrospectionType($typename)
     {
-        return strpos($typename, '__') === 0;
+        return \strpos($typename, '__') === 0;
     }
 
     private static function isBuiltInScalar($typename)
@@ -72,18 +72,18 @@ class SchemaPrinter
 
     private static function printFilteredSchema(Schema $schema, $directiveFilter, $typeFilter)
     {
-        $directives = array_filter($schema->getDirectives(), function($directive) use ($directiveFilter) {
+        $directives = \array_filter($schema->getDirectives(), function($directive) use ($directiveFilter) {
             return $directiveFilter($directive->name);
         });
         $typeMap = $schema->getTypeMap();
-        $types = array_filter(array_keys($typeMap), $typeFilter);
-        sort($types);
-        $types = array_map(function($typeName) use ($typeMap) { return $typeMap[$typeName]; }, $types);
+        $types = \array_filter(\array_keys($typeMap), $typeFilter);
+        \sort($types);
+        $types = \array_map(function($typeName) use ($typeMap) { return $typeMap[$typeName]; }, $types);
 
-        return implode("\n\n", array_filter(array_merge(
+        return \implode("\n\n", \array_filter(\array_merge(
             [self::printSchemaDefinition($schema)],
-            array_map('self::printDirective', $directives),
-            array_map('self::printType', $types)
+            \array_map('self::printDirective', $directives),
+            \array_map('self::printType', $types)
         ))) . "\n";
     }
 
@@ -110,7 +110,7 @@ class SchemaPrinter
             $operationTypes[] = "  subscription: {$subscriptionType->name}";
         }
 
-        return "schema {\n" . implode("\n", $operationTypes) . "\n}";
+        return "schema {\n" . \implode("\n", $operationTypes) . "\n}";
     }
     
     /**
@@ -171,7 +171,7 @@ class SchemaPrinter
     {
         $interfaces = $type->getInterfaces();
         $implementedInterfaces = !empty($interfaces) ?
-            ' implements ' . implode(', ', array_map(function($i) {
+            ' implements ' . \implode(', ', \array_map(function($i) {
                 return $i->name;
             }, $interfaces)) : '';
         return self::printDescription($type) .
@@ -191,7 +191,7 @@ class SchemaPrinter
     private static function printUnion(UnionType $type)
     {
         return self::printDescription($type) .
-            "union {$type->name} = " . implode(" | ", $type->getTypes());
+            "union {$type->name} = " . \implode(" | ", $type->getTypes());
     }
 
     private static function printEnum(EnumType $type)
@@ -204,48 +204,48 @@ class SchemaPrinter
 
     private static function printEnumValues($values)
     {
-        return implode("\n", array_map(function($value, $i) {
+        return \implode("\n", \array_map(function($value, $i) {
             return self::printDescription($value, '  ', !$i) . '  ' .
                 $value->name . self::printDeprecated($value);
-        }, $values, array_keys($values)));
+        }, $values, \array_keys($values)));
     }
 
     private static function printInputObject(InputObjectType $type)
     {
-        $fields = array_values($type->getFields());
+        $fields = \array_values($type->getFields());
         return self::printDescription($type) . 
             "input {$type->name} {\n" .
-                implode("\n", array_map(function($f, $i) {
+                \implode("\n", \array_map(function($f, $i) {
                     return self::printDescription($f, '  ', !$i) . '  ' . self::printInputValue($f);
-                }, $fields, array_keys($fields))) . "\n" .
+                }, $fields, \array_keys($fields))) . "\n" .
             "}";
     }
 
     private static function printFields($type)
     {
-        $fields = array_values($type->getFields());
-        return implode("\n", array_map(function($f, $i) {
+        $fields = \array_values($type->getFields());
+        return \implode("\n", \array_map(function($f, $i) {
                 return self::printDescription($f, '  ', !$i) . '  ' .
                     $f->name . self::printArgs($f->args, '  ') . ': ' .
                     (string) $f->getType() . self::printDeprecated($f);
-            }, $fields, array_keys($fields)));
+            }, $fields, \array_keys($fields)));
     }
 
     private static function printArgs($args, $indentation = '')
     {
-        if (count($args) === 0) {
+        if (\count($args) === 0) {
             return '';
         }
 
         // If every arg does not have a description, print them on one line.
         if (Utils::every($args, function($arg) { return empty($arg->description); })) {
-            return '(' . implode(', ', array_map('self::printInputValue', $args)) . ')';
+            return '(' . \implode(', ', \array_map('self::printInputValue', $args)) . ')';
         }
 
-        return "(\n" . implode("\n", array_map(function($arg, $i) use ($indentation) {
+        return "(\n" . \implode("\n", \array_map(function($arg, $i) use ($indentation) {
             return self::printDescription($arg, '  ' . $indentation, !$i) . '  ' . $indentation .
                 self::printInputValue($arg);
-        }, $args, array_keys($args))) . "\n" . $indentation . ')';
+        }, $args, \array_keys($args))) . "\n" . $indentation . ')';
     }
 
     private static function printInputValue($arg)
@@ -261,7 +261,7 @@ class SchemaPrinter
     {
         return self::printDescription($directive) .
             'directive @' . $directive->name . self::printArgs($directive->args) .
-            ' on ' . implode(' | ', $directive->locations);
+            ' on ' . \implode(' | ', $directive->locations);
     }
 
     private static function printDeprecated($fieldOrEnumVal)
@@ -282,7 +282,7 @@ class SchemaPrinter
         if (!$def->description) {
             return '';
         }
-        $lines = explode("\n", $def->description);
+        $lines = \explode("\n", $def->description);
         $description = $indentation && !$firstInBlock ? "\n" : '';
         foreach ($lines as $line) {
             if ($line === '') {
@@ -290,7 +290,7 @@ class SchemaPrinter
             } else {
                 // For > 120 character long lines, cut at space boundaries into sublines
                 // of ~80 chars.
-                $sublines = self::breakLine($line, 120 - strlen($indentation));
+                $sublines = self::breakLine($line, 120 - \strlen($indentation));
                 foreach ($sublines as $subline) {
                     $description .= $indentation . '# ' . $subline . "\n";
                 }
@@ -301,13 +301,13 @@ class SchemaPrinter
 
     private static function breakLine($line, $len)
     {
-        if (strlen($line) < $len + 5) {
+        if (\strlen($line) < $len + 5) {
             return [$line];
         }
-        preg_match_all("/((?: |^).{15," . ($len - 40) . "}(?= |$))/", $line, $parts);
+        \preg_match_all("/((?: |^).{15," . ($len - 40) . "}(?= |$))/", $line, $parts);
         $parts = $parts[0];
-        return array_map(function($part) {
-            return trim($part);
+        return \array_map(function($part) {
+            return \trim($part);
         }, $parts);
     }
 }
