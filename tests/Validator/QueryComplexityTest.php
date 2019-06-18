@@ -31,7 +31,7 @@ class QueryComplexityTest extends AbstractQuerySecurityTest
      *
      * @return QueryComplexity
      */
-    protected function getRule($maxDepth = null)
+    protected function getRule(?int $maxDepth = null)
     {
         if (null === self::$rule) {
             self::$rule = new QueryComplexity($maxDepth);

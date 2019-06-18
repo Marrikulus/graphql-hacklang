@@ -19,7 +19,7 @@ use GraphQL\Validator\ValidationContext;
 
 class QueryComplexity extends AbstractQuerySecurity
 {
-    private $maxQueryComplexity;
+    private int $maxQueryComplexity;
 
     private $rawVariableValues = [];
 
@@ -112,10 +112,11 @@ class QueryComplexity extends AbstractQuerySecurity
         );
     }
 
-    private function fieldComplexity($node, @int $complexity = 0)
+    private function fieldComplexity(Node $node, int $complexity = 0):int
     {
         if (isset($node->selectionSet) && $node->selectionSet instanceof SelectionSetNode) {
-            foreach ($node->selectionSet->selections as $childNode) {
+            foreach ($node->selectionSet->selections as $childNode)
+            {
                 $complexity = $this->nodeComplexity($childNode, $complexity);
             }
         }
@@ -125,7 +126,8 @@ class QueryComplexity extends AbstractQuerySecurity
 
     private function nodeComplexity(Node $node, @int $complexity = 0)
     {
-        switch ($node->kind) {
+        switch ($node->kind)
+        {
             case NodeKind::FIELD:
                 /* @var FieldNode $node */
                 // default values
@@ -136,15 +138,18 @@ class QueryComplexity extends AbstractQuerySecurity
                 $childrenComplexity = 0;
 
                 // node has children?
-                if (isset($node->selectionSet)) {
+                if (isset($node->selectionSet))
+                {
                     $childrenComplexity = $this->fieldComplexity($node);
                 }
 
                 $astFieldInfo = $this->astFieldInfo($node);
                 $fieldDef = $astFieldInfo[1];
 
-                if ($fieldDef instanceof FieldDefinition) {
-                    if ($this->directiveExcludesField($node)) {
+                if ($fieldDef instanceof FieldDefinition)
+                {
+                    if ($this->directiveExcludesField($node))
+                    {
                         break;
                     }
 
@@ -161,7 +166,7 @@ class QueryComplexity extends AbstractQuerySecurity
             case NodeKind::INLINE_FRAGMENT:
                 /* @var InlineFragmentNode $node */
                 // node has children?
-                if (isset($node->selectionSet)) {
+                if ($node->selectionSet !== null) {
                     $complexity = $this->fieldComplexity($node, $complexity);
                 }
                 break;
@@ -183,8 +188,10 @@ class QueryComplexity extends AbstractQuerySecurity
     {
         $fieldName = $this->getFieldName($field);
         $astFieldInfo = [null, null];
-        if (isset($this->fieldNodeAndDefs[$fieldName])) {
-            foreach ($this->fieldNodeAndDefs[$fieldName] as $astAndDef) {
+        if (isset($this->fieldNodeAndDefs[$fieldName]))
+        {
+            foreach ($this->fieldNodeAndDefs[$fieldName] as $astAndDef)
+            {
                 if ($astAndDef[0] == $field) {
                     $astFieldInfo = $astAndDef;
                     break;
@@ -215,8 +222,10 @@ class QueryComplexity extends AbstractQuerySecurity
         return $args;
     }
 
-    private function directiveExcludesField(FieldNode $node) {
-        foreach ($node->directives as $directiveNode) {
+    private function directiveExcludesField(FieldNode $node):bool
+    {
+        foreach ($node->directives as $directiveNode)
+        {
             if ($directiveNode->name->value === 'deprecated') {
                 return false;
             }
@@ -227,21 +236,24 @@ class QueryComplexity extends AbstractQuerySecurity
                 $this->getRawVariableValues()
             );
 
-            if ($directiveNode->name->value === 'include') {
+            if ($directiveNode->name->value === 'include')
+            {
                 $directive = Directive::includeDirective();
                 $directiveArgs = Values::getArgumentValues($directive, $directiveNode, $variableValues);
 
-                return !$directiveArgs['if'];
-            } else {
+                return !(bool)$directiveArgs['if'];
+            }
+            else
+            {
                 $directive = Directive::skipDirective();
                 $directiveArgs = Values::getArgumentValues($directive, $directiveNode, $variableValues);
 
-                return $directiveArgs['if'];
+                return (bool)$directiveArgs['if'];
             }
         }
     }
 
-    protected function isEnabled()
+    protected function isEnabled():bool
     {
         return $this->getMaxQueryComplexity() !== static::DISABLED;
     }

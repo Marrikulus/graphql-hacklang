@@ -17,9 +17,9 @@ class QueryDepth extends AbstractQuerySecurity
     /**
      * @var int
      */
-    private $maxQueryDepth;
+    private int $maxQueryDepth;
 
-    public function __construct($maxQueryDepth)
+    public function __construct(int $maxQueryDepth)
     {
         $this->setMaxQueryDepth($maxQueryDepth);
     }
@@ -29,7 +29,7 @@ class QueryDepth extends AbstractQuerySecurity
      *
      * @param $maxQueryDepth
      */
-    public function setMaxQueryDepth($maxQueryDepth)
+    public function setMaxQueryDepth(int $maxQueryDepth)
     {
         $this->checkIfGreaterOrEqualToZero('maxQueryDepth', $maxQueryDepth);
 

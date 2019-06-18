@@ -95,7 +95,7 @@ class UniqueInputFieldNamesTest extends TestCase
         ]);
     }
 
-    private function duplicateField($name, $l1, $c1, $l2, $c2)
+    private function duplicateField(string $name, int $l1, int $c1, int $l2, int $c2):array<string, mixed>
     {
         return FormattedError::create(
             UniqueInputFieldNames::duplicateInputFieldMessage($name),

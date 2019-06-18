@@ -3,6 +3,8 @@
 namespace GraphQL\Tests\Validator;
 
 use GraphQL\Error\FormattedError;
+use GraphQL\Error\Error;
+use GraphQL\Language\SourceLocation;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Introspection;
 use GraphQL\Validator\DocumentValidator;
@@ -15,7 +17,7 @@ abstract class AbstractQuerySecurityTest extends \PHPUnit_Framework_TestCase
      *
      * @return AbstractQuerySecurity
      */
-    abstract protected function getRule($max);
+    abstract protected function getRule(int $max):AbstractQuerySecurityTest;
 
     /**
      * @param $max
@@ -34,32 +36,32 @@ abstract class AbstractQuerySecurityTest extends \PHPUnit_Framework_TestCase
         $this->getRule(-1);
     }
 
-    protected function createFormattedError($max, $count, $locations = [])
+    protected function createFormattedError(int $max, int $count, array<SourceLocation> $locations = []):array<string, mixed>
     {
         return FormattedError::create($this->getErrorMessage($max, $count), $locations);
     }
 
-    protected function assertDocumentValidator($queryString, $max, array $expectedErrors = [])
+    protected function assertDocumentValidator(string $queryString, int $max, array<array<string,mixed>> $expectedErrors = [])
     {
         $errors = DocumentValidator::validate(
             QuerySecuritySchema::buildSchema(),
             Parser::parse($queryString),
             [$this->getRule($max)]
         );
-
-        $this->assertEquals($expectedErrors, \array_map(['GraphQL\Error\Error', 'formatError'], $errors), $queryString);
+        $gotErrors = \array_map(class_meth(Error::class, 'formatError'), $errors);
+        $this->assertEquals($expectedErrors, $gotErrors, $queryString);
 
         return $errors;
     }
 
-    protected function assertIntrospectionQuery($maxExpected)
+    protected function assertIntrospectionQuery(int $maxExpected):void
     {
         $query = Introspection::getIntrospectionQuery(true);
 
         $this->assertMaxValue($query, $maxExpected);
     }
 
-    protected function assertIntrospectionTypeMetaFieldQuery($maxExpected)
+    protected function assertIntrospectionTypeMetaFieldQuery(int $maxExpected):void
     {
         $query = '
           {
@@ -72,7 +74,7 @@ abstract class AbstractQuerySecurityTest extends \PHPUnit_Framework_TestCase
         $this->assertMaxValue($query, $maxExpected);
     }
 
-    protected function assertTypeNameMetaFieldQuery($maxExpected)
+    protected function assertTypeNameMetaFieldQuery(int $maxExpected):void
     {
         $query = '
           {
@@ -85,7 +87,7 @@ abstract class AbstractQuerySecurityTest extends \PHPUnit_Framework_TestCase
         $this->assertMaxValue($query, $maxExpected);
     }
 
-    protected function assertMaxValue($query, $maxExpected)
+    protected function assertMaxValue(string $query, int $maxExpected):void
     {
         $this->assertDocumentValidator($query, $maxExpected);
         $newMax = $maxExpected - 1;

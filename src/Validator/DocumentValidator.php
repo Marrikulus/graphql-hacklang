@@ -90,7 +90,7 @@ class DocumentValidator
     public static function validate(
         Schema $schema,
         DocumentNode $ast,
-        ?array $rules = null,
+        ?array<AbstractValidationRule> $rules = null,
         ?TypeInfo $typeInfo = null
     )
     {
@@ -330,7 +330,7 @@ class DocumentValidator
      * @param AbstractValidationRule[] $rules
      * @return array
      */
-    public static function visitUsingRules(Schema $schema, TypeInfo $typeInfo, DocumentNode $documentNode, array $rules)
+    public static function visitUsingRules(Schema $schema, TypeInfo $typeInfo, DocumentNode $documentNode, array<AbstractValidationRule> $rules):array<Error>
     {
         $context = new ValidationContext($schema, $documentNode, $typeInfo);
         $visitors = [];

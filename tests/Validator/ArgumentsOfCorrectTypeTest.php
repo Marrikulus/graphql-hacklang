@@ -8,9 +8,9 @@ use GraphQL\Validator\Rules\ArgumentsOfCorrectType;
 
 class ArgumentsOfCorrectTypeTest extends TestCase
 {
-    public function badValue($argName, $typeName, $value, $line, $column, $errors = null)
+    public function badValue(string $argName, string $typeName, string $value, int $line, int $column, ?array<string> $errors = null):array<string, mixed>
     {
-        $realErrors = !$errors ? ["Expected type \"$typeName\", found $value."] : $errors;
+        $realErrors = $errors === null ? ["Expected type \"$typeName\", found $value."] : $errors;
 
         return FormattedError::create(
             ArgumentsOfCorrectType::badValueMessage($argName, $typeName, $value, $realErrors),

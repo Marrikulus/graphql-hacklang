@@ -22,7 +22,7 @@ class QueryDepthTest extends AbstractQuerySecurityTest
      *
      * @return QueryDepth
      */
-    protected function getRule($maxDepth)
+    protected function getRule(int $maxDepth):QueryDepth
     {
         return new QueryDepth($maxDepth);
     }
@@ -33,7 +33,7 @@ class QueryDepthTest extends AbstractQuerySecurityTest
      * @param array $expectedErrors
      * @dataProvider queryDataProvider
      */
-    public function testSimpleQueries(int $queryDepth, int $maxQueryDepth = 7, $expectedErrors = []):void
+    public function testSimpleQueries(int $queryDepth, int $maxQueryDepth = 7, array<array<string,mixed>> $expectedErrors = []):void
     {
         $this->assertDocumentValidator($this->buildRecursiveQuery($queryDepth), $maxQueryDepth, $expectedErrors);
     }
@@ -44,7 +44,7 @@ class QueryDepthTest extends AbstractQuerySecurityTest
      * @param array $expectedErrors
      * @dataProvider queryDataProvider
      */
-    public function testFragmentQueries(int $queryDepth, int $maxQueryDepth = 7, $expectedErrors = []):void
+    public function testFragmentQueries(int $queryDepth, int $maxQueryDepth = 7, array<array<string,mixed>> $expectedErrors = []):void
     {
         $this->assertDocumentValidator($this->buildRecursiveUsingFragmentQuery($queryDepth), $maxQueryDepth, $expectedErrors);
     }
@@ -55,7 +55,7 @@ class QueryDepthTest extends AbstractQuerySecurityTest
      * @param array $expectedErrors
      * @dataProvider queryDataProvider
      */
-    public function testInlineFragmentQueries(int $queryDepth, int $maxQueryDepth = 7, $expectedErrors = []):void
+    public function testInlineFragmentQueries(int $queryDepth, int $maxQueryDepth = 7, array<array<string,mixed>> $expectedErrors = []):void
     {
         $this->assertDocumentValidator($this->buildRecursiveUsingInlineFragmentQuery($queryDepth), $maxQueryDepth, $expectedErrors);
     }
@@ -75,7 +75,7 @@ class QueryDepthTest extends AbstractQuerySecurityTest
         $this->assertTypeNameMetaFieldQuery(1);
     }
 
-    public function queryDataProvider()
+    public function queryDataProvider():array<array<mixed>>
     {
         return [
             [1], // Valid because depth under default limit (7)

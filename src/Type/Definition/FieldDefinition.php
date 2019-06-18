@@ -271,10 +271,10 @@ class FieldDefinition
     }
 
     /**
-     * @param $childrenComplexity
-     * @return mixed
+     * @param int $childrenComplexity
+     * @return int
      */
-    public static function defaultComplexity($childrenComplexity)
+    public static function defaultComplexity(int $childrenComplexity):int
     {
         return $childrenComplexity + 1;
     }

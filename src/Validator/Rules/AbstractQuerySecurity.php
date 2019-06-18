@@ -22,12 +22,12 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
     /**
      * @var FragmentDefinitionNode[]
      */
-    private $fragments = [];
+    private array<string, FragmentDefinitionNode> $fragments = [];
 
     /**
      * @return \GraphQL\Language\AST\FragmentDefinitionNode[]
      */
-    protected function getFragments()
+    protected function getFragments():array<string, FragmentDefinitionNode>
     {
         return $this->fragments;
     }
@@ -37,14 +37,14 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
      *
      * @param $value
      */
-    protected function checkIfGreaterOrEqualToZero($name, $value)
+    protected function checkIfGreaterOrEqualToZero(string $name, int $value):void
     {
         if ($value < 0) {
             throw new \InvalidArgumentException(\sprintf('$%s argument must be greater or equal to 0.', $name));
         }
     }
 
-    protected function gatherFragmentDefinition(ValidationContext $context)
+    protected function gatherFragmentDefinition(ValidationContext $context):void
     {
         // Gather all the fragment definition.
         // Importantly this does not include inline fragments.
@@ -56,12 +56,12 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
         }
     }
 
-    protected function getFragment(FragmentSpreadNode $fragmentSpread)
+    protected function getFragment(FragmentSpreadNode $fragmentSpread):?FragmentDefinitionNode
     {
         $spreadName = $fragmentSpread->name->value;
         $fragments = $this->getFragments();
 
-        return isset($fragments[$spreadName]) ? $fragments[$spreadName] : null;
+        return \array_key_exists($spreadName, $fragments) ? $fragments[$spreadName] : null;
     }
 
     protected function invokeIfNeeded(ValidationContext $context, array $validators)
@@ -168,7 +168,7 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
         return $_astAndDefs;
     }
 
-    protected function getFieldName(FieldNode $node)
+    protected function getFieldName(FieldNode $node):string
     {
         $fieldName = $node->name->value;
         $responseName = $node->alias ? $node->alias->value : $fieldName;

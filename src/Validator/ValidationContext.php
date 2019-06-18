@@ -95,7 +95,7 @@ class ValidationContext
     /**
      * @param Error $error
      */
-    public function reportError(\GraphQL\Error\Error $error)
+    public function reportError(Error $error)
     {
         $this->errors[] = $error;
     }
@@ -103,7 +103,7 @@ class ValidationContext
     /**
      * @return Error[]
      */
-    public function getErrors():array
+    public function getErrors():array<Error>
     {
         return $this->errors;
     }

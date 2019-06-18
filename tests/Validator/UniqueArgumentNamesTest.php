@@ -177,7 +177,7 @@ class UniqueArgumentNamesTest extends TestCase
         ]);
     }
 
-    private function duplicateArg($argName, $l1, $c1, $l2, $c2)
+    private function duplicateArg(string $argName, int $l1, int $c1, int $l2, int $c2):array<string, mixed>
     {
         return FormattedError::create(
             UniqueArgumentNames::duplicateArgMessage($argName),

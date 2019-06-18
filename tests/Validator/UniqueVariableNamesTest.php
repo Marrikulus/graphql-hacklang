@@ -38,7 +38,7 @@ class UniqueVariableNamesTest extends TestCase
         ]);
     }
 
-    private function duplicateVariable($name, $l1, $c1, $l2, $c2)
+    private function duplicateVariable(string $name, int $l1, int $c1, int $l2, int $c2):array<string, mixed>
     {
         return FormattedError::create(
             UniqueVariableNames::duplicateVariableMessage($name),

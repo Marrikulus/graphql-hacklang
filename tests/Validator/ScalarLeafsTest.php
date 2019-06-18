@@ -127,7 +127,7 @@ class ScalarLeafsTest extends TestCase
         );
     }
 
-    private function noScalarSubselection($field, $type, $line, $column)
+    private function noScalarSubselection(string $field, string $type, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             ScalarLeafs::noSubselectionAllowedMessage($field, $type),
@@ -135,7 +135,7 @@ class ScalarLeafsTest extends TestCase
         );
     }
 
-    private function missingObjSubselection($field, $type, $line, $column)
+    private function missingObjSubselection(string $field, string $type, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             ScalarLeafs::requiredSubselectionMessage($field, $type),

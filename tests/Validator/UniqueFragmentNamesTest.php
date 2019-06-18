@@ -130,7 +130,7 @@ class UniqueFragmentNamesTest extends TestCase
         ]);
     }
 
-    private function duplicateFrag($fragName, $l1, $c1, $l2, $c2)
+    private function duplicateFrag(string $fragName, int $l1, int $c1, int $l2, int $c2):array<string, mixed>
     {
         return FormattedError::create(
             UniqueFragmentNames::duplicateFragmentNameMessage($fragName),

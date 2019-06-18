@@ -126,7 +126,7 @@ class UniqueDirectivesPerLocationTest extends TestCase
         ]);
     }
 
-    private function duplicateDirective($directiveName, $l1, $c1, $l2, $c2)
+    private function duplicateDirective(string $directiveName, int $l1, int $c1, int $l2, int $c2):array<string, mixed>
     {
         return [
             'message' =>UniqueDirectivesPerLocation::duplicateDirectiveMessage($directiveName),
