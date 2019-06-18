@@ -1,4 +1,5 @@
-<?hh //partial
+<?hh //strict
+//partial
 namespace GraphQL\Executor;
 
 use GraphQL\Error\Error;

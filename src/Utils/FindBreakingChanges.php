@@ -1,4 +1,5 @@
-<?hh //decl
+<?hh //strict
+//decl
 /**
  * Utility for finding breaking/dangerous changes between two schemas.
  */

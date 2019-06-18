@@ -1,4 +1,5 @@
-<?hh //partial
+<?hh //strict
+//partial
 namespace GraphQL\Language\AST;
 
 use GraphQL\Error\InvariantViolation;

@@ -1,4 +1,5 @@
-<?hh //decl
+<?hh //strict
+//decl
 namespace GraphQL\Type;
 
 use GraphQL\Type\Definition\AbstractType;

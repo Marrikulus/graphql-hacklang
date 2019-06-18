@@ -1,4 +1,5 @@
-<?hh //decl
+<?hh //strict
+//decl
 namespace GraphQL\Type\Definition;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\FieldDefinitionNode;

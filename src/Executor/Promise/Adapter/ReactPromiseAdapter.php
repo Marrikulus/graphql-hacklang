@@ -1,4 +1,5 @@
-<?hh //decl
+<?hh //strict
+//decl
 namespace GraphQL\Executor\Promise\Adapter;
 
 use GraphQL\Executor\Promise\Promise;
