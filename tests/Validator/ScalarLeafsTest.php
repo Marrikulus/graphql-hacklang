@@ -15,7 +15,7 @@ class ScalarLeafsTest extends TestCase
      */
     public function testValidScalarSelection():void
     {
-        $this->expectPassesRule(new ScalarLeafs, '
+        $this->expectPassesRule(new ScalarLeafs(), '
       fragment scalarSelection on Dog {
         barks
       }
@@ -27,7 +27,7 @@ class ScalarLeafsTest extends TestCase
      */
     public function testObjectTypeMissingSelection():void
     {
-        $this->expectFailsRule(new ScalarLeafs, '
+        $this->expectFailsRule(new ScalarLeafs(), '
       query directQueryOnObjectWithoutSubFields {
         human
       }
@@ -39,7 +39,7 @@ class ScalarLeafsTest extends TestCase
      */
     public function testInterfaceTypeMissingSelection():void
     {
-        $this->expectFailsRule(new ScalarLeafs, '
+        $this->expectFailsRule(new ScalarLeafs(), '
       {
         human { pets }
       }
@@ -51,7 +51,7 @@ class ScalarLeafsTest extends TestCase
      */
     public function testValidScalarSelectionWithArgs():void
     {
-        $this->expectPassesRule(new ScalarLeafs, '
+        $this->expectPassesRule(new ScalarLeafs(), '
       fragment scalarSelectionWithArgs on Dog {
         doesKnowCommand(dogCommand: SIT)
       }
@@ -63,7 +63,7 @@ class ScalarLeafsTest extends TestCase
      */
     public function testScalarSelectionNotAllowedOnBoolean():void
     {
-        $this->expectFailsRule(new ScalarLeafs, '
+        $this->expectFailsRule(new ScalarLeafs(), '
       fragment scalarSelectionsNotAllowedOnBoolean on Dog {
         barks { sinceWhen }
       }
@@ -76,7 +76,7 @@ class ScalarLeafsTest extends TestCase
      */
     public function testScalarSelectionNotAllowedOnEnum():void
     {
-        $this->expectFailsRule(new ScalarLeafs, '
+        $this->expectFailsRule(new ScalarLeafs(), '
       fragment scalarSelectionsNotAllowedOnEnum on Cat {
         furColor { inHexdec }
       }
@@ -90,7 +90,7 @@ class ScalarLeafsTest extends TestCase
      */
     public function testScalarSelectionNotAllowedWithArgs():void
     {
-        $this->expectFailsRule(new ScalarLeafs, '
+        $this->expectFailsRule(new ScalarLeafs(), '
       fragment scalarSelectionsNotAllowedWithArgs on Dog {
         doesKnowCommand(dogCommand: SIT) { sinceWhen }
       }
@@ -104,7 +104,7 @@ class ScalarLeafsTest extends TestCase
      */
     public function testScalarSelectionNotAllowedWithDirectives():void
     {
-        $this->expectFailsRule(new ScalarLeafs, '
+        $this->expectFailsRule(new ScalarLeafs(), '
       fragment scalarSelectionsNotAllowedWithDirectives on Dog {
         name @include(if: true) { isAlsoHumanName }
       }
@@ -118,7 +118,7 @@ class ScalarLeafsTest extends TestCase
      */
     public function testScalarSelectionNotAllowedWithDirectivesAndArgs():void
     {
-        $this->expectFailsRule(new ScalarLeafs, '
+        $this->expectFailsRule(new ScalarLeafs(), '
       fragment scalarSelectionsNotAllowedWithDirectivesAndArgs on Dog {
         doesKnowCommand(dogCommand: SIT) @include(if: true) { sinceWhen }
       }

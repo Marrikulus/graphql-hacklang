@@ -27,7 +27,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testAllVariablesDeeplyDefined():void
     {
-        $this->expectPassesRule(new NoUndefinedVariables, '
+        $this->expectPassesRule(new NoUndefinedVariables(), '
       query Foo($a: String, $b: String, $c: String) {
         field(a: $a) {
           field(b: $b) {
@@ -43,7 +43,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testAllVariablesDeeplyInInlineFragmentsDefined():void
     {
-        $this->expectPassesRule(new NoUndefinedVariables, '
+        $this->expectPassesRule(new NoUndefinedVariables(), '
       query Foo($a: String, $b: String, $c: String) {
         ... on Type {
           field(a: $a) {
@@ -63,7 +63,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testAllVariablesInFragmentsDeeplyDefined():void
     {
-        $this->expectPassesRule(new NoUndefinedVariables, '
+        $this->expectPassesRule(new NoUndefinedVariables(), '
       query Foo($a: String, $b: String, $c: String) {
         ...FragA
       }
@@ -89,7 +89,7 @@ class NoUndefinedVariablesTest extends TestCase
     public function testVariableWithinSingleFragmentDefinedInMultipleOperations():void
     {
         // variable within single fragment defined in multiple operations
-        $this->expectPassesRule(new NoUndefinedVariables, '
+        $this->expectPassesRule(new NoUndefinedVariables(), '
       query Foo($a: String) {
         ...FragA
       }
@@ -107,7 +107,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testVariableWithinFragmentsDefinedInOperations():void
     {
-        $this->expectPassesRule(new NoUndefinedVariables, '
+        $this->expectPassesRule(new NoUndefinedVariables(), '
       query Foo($a: String) {
         ...FragA
       }
@@ -128,7 +128,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testVariableWithinRecursiveFragmentDefined():void
     {
-        $this->expectPassesRule(new NoUndefinedVariables, '
+        $this->expectPassesRule(new NoUndefinedVariables(), '
       query Foo($a: String) {
         ...FragA
       }
@@ -145,7 +145,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testVariableNotDefined():void
     {
-        $this->expectFailsRule(new NoUndefinedVariables, '
+        $this->expectFailsRule(new NoUndefinedVariables(), '
       query Foo($a: String, $b: String, $c: String) {
         field(a: $a, b: $b, c: $c, d: $d)
       }
@@ -159,7 +159,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testVariableNotDefinedByUnNamedQuery():void
     {
-        $this->expectFailsRule(new NoUndefinedVariables, '
+        $this->expectFailsRule(new NoUndefinedVariables(), '
       {
         field(a: $a)
       }
@@ -173,7 +173,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testMultipleVariablesNotDefined():void
     {
-        $this->expectFailsRule(new NoUndefinedVariables, '
+        $this->expectFailsRule(new NoUndefinedVariables(), '
       query Foo($b: String) {
         field(a: $a, b: $b, c: $c)
       }
@@ -188,7 +188,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testVariableInFragmentNotDefinedByUnNamedQuery():void
     {
-        $this->expectFailsRule(new NoUndefinedVariables, '
+        $this->expectFailsRule(new NoUndefinedVariables(), '
       {
         ...FragA
       }
@@ -205,7 +205,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testVariableInFragmentNotDefinedByOperation():void
     {
-        $this->expectFailsRule(new NoUndefinedVariables, '
+        $this->expectFailsRule(new NoUndefinedVariables(), '
       query Foo($a: String, $b: String) {
         ...FragA
       }
@@ -232,7 +232,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testMultipleVariablesInFragmentsNotDefined():void
     {
-        $this->expectFailsRule(new NoUndefinedVariables, '
+        $this->expectFailsRule(new NoUndefinedVariables(), '
       query Foo($b: String) {
         ...FragA
       }
@@ -260,7 +260,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testSingleVariableInFragmentNotDefinedByMultipleOperations():void
     {
-        $this->expectFailsRule(new NoUndefinedVariables, '
+        $this->expectFailsRule(new NoUndefinedVariables(), '
       query Foo($a: String) {
         ...FragAB
       }
@@ -281,7 +281,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testVariablesInFragmentNotDefinedByMultipleOperations():void
     {
-        $this->expectFailsRule(new NoUndefinedVariables, '
+        $this->expectFailsRule(new NoUndefinedVariables(), '
       query Foo($b: String) {
         ...FragAB
       }
@@ -302,7 +302,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testVariableInFragmentUsedByOtherOperation():void
     {
-        $this->expectFailsRule(new NoUndefinedVariables, '
+        $this->expectFailsRule(new NoUndefinedVariables(), '
       query Foo($b: String) {
         ...FragA
       }
@@ -326,7 +326,7 @@ class NoUndefinedVariablesTest extends TestCase
      */
     public function testMultipleUndefinedVariablesProduceMultipleErrors():void
     {
-        $this->expectFailsRule(new NoUndefinedVariables, '
+        $this->expectFailsRule(new NoUndefinedVariables(), '
       query Foo($b: String) {
         ...FragAB
       }

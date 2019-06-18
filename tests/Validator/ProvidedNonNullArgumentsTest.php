@@ -16,7 +16,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
     public function testIgnoresUnknownArguments():void
     {
         // ignores unknown arguments
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
       {
         dog {
           isHousetrained(unknownArgument: true)
@@ -32,7 +32,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testArgOnOptionalArg():void
     {
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
         {
           dog {
             isHousetrained(atOtherHomes: true)
@@ -46,7 +46,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testNoArgOnOptionalArg():void
     {
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
         {
           dog {
             isHousetrained
@@ -60,7 +60,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testMultipleArgs():void
     {
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
         {
           complicatedArgs {
             multipleReqs(req1: 1, req2: 2)
@@ -74,7 +74,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testMultipleArgsReverseOrder():void
     {
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
         {
           complicatedArgs {
             multipleReqs(req2: 2, req1: 1)
@@ -88,7 +88,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testNoArgsOnMultipleOptional():void
     {
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
         {
           complicatedArgs {
             multipleOpts
@@ -102,7 +102,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testOneArgOnMultipleOptional():void
     {
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
         {
           complicatedArgs {
             multipleOpts(opt1: 1)
@@ -116,7 +116,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testSecondArgOnMultipleOptional():void
     {
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
         {
           complicatedArgs {
             multipleOpts(opt2: 1)
@@ -130,7 +130,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testMultipleReqsOnMixedList():void
     {
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
         {
           complicatedArgs {
             multipleOptAndReq(req1: 3, req2: 4)
@@ -144,7 +144,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testMultipleReqsAndOneOptOnMixedList():void
     {
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
         {
           complicatedArgs {
             multipleOptAndReq(req1: 3, req2: 4, opt1: 5)
@@ -158,7 +158,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testAllReqsAndOptsOnMixedList():void
     {
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
         {
           complicatedArgs {
             multipleOptAndReq(req1: 3, req2: 4, opt1: 5, opt2: 6)
@@ -174,7 +174,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testMissingOneNonNullableArgument():void
     {
-        $this->expectFailsRule(new ProvidedNonNullArguments, '
+        $this->expectFailsRule(new ProvidedNonNullArguments(), '
         {
           complicatedArgs {
             multipleReqs(req2: 2)
@@ -190,7 +190,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testMissingMultipleNonNullableArguments():void
     {
-        $this->expectFailsRule(new ProvidedNonNullArguments, '
+        $this->expectFailsRule(new ProvidedNonNullArguments(), '
         {
           complicatedArgs {
             multipleReqs
@@ -207,7 +207,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testIncorrectValueAndMissingArgument():void
     {
-        $this->expectFailsRule(new ProvidedNonNullArguments, '
+        $this->expectFailsRule(new ProvidedNonNullArguments(), '
         {
           complicatedArgs {
             multipleReqs(req1: "one")
@@ -225,7 +225,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testIgnoresUnknownDirectives():void
     {
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
         {
           dog @unknown
         }
@@ -237,7 +237,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testWithDirectivesOfValidTypes():void
     {
-        $this->expectPassesRule(new ProvidedNonNullArguments, '
+        $this->expectPassesRule(new ProvidedNonNullArguments(), '
         {
           dog @include(if: true) {
             name
@@ -254,7 +254,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
      */
     public function testWithDirectiveWithMissingTypes():void
     {
-        $this->expectFailsRule(new ProvidedNonNullArguments, '
+        $this->expectFailsRule(new ProvidedNonNullArguments(), '
         {
           dog @include {
             name @skip

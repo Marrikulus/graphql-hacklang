@@ -15,7 +15,7 @@ class FragmentsOnCompositeTypesTest extends TestCase
      */
     public function testObjectIsValidFragmentType():void
     {
-        $this->expectPassesRule(new FragmentsOnCompositeTypes, '
+        $this->expectPassesRule(new FragmentsOnCompositeTypes(), '
       fragment validFragment on Dog {
         barks
       }
@@ -27,7 +27,7 @@ class FragmentsOnCompositeTypesTest extends TestCase
      */
     public function testInterfaceIsValidFragmentType():void
     {
-        $this->expectPassesRule(new FragmentsOnCompositeTypes, '
+        $this->expectPassesRule(new FragmentsOnCompositeTypes(), '
       fragment validFragment on Pet {
         name
       }
@@ -39,7 +39,7 @@ class FragmentsOnCompositeTypesTest extends TestCase
      */
     public function testObjectIsValidInlineFragmentType():void
     {
-        $this->expectPassesRule(new FragmentsOnCompositeTypes, '
+        $this->expectPassesRule(new FragmentsOnCompositeTypes(), '
       fragment validFragment on Pet {
         ... on Dog {
           barks
@@ -53,7 +53,7 @@ class FragmentsOnCompositeTypesTest extends TestCase
      */
     public function testInlineFragmentWithoutTypeIsValid():void
     {
-        $this->expectPassesRule(new FragmentsOnCompositeTypes, '
+        $this->expectPassesRule(new FragmentsOnCompositeTypes(), '
       fragment validFragment on Pet {
         ... {
           name
@@ -67,7 +67,7 @@ class FragmentsOnCompositeTypesTest extends TestCase
      */
     public function testUnionIsValidFragmentType():void
     {
-        $this->expectPassesRule(new FragmentsOnCompositeTypes, '
+        $this->expectPassesRule(new FragmentsOnCompositeTypes(), '
       fragment validFragment on CatOrDog {
         __typename
       }
@@ -79,7 +79,7 @@ class FragmentsOnCompositeTypesTest extends TestCase
      */
     public function testScalarIsInvalidFragmentType():void
     {
-        $this->expectFailsRule(new FragmentsOnCompositeTypes, '
+        $this->expectFailsRule(new FragmentsOnCompositeTypes(), '
       fragment scalarFragment on Boolean {
         bad
       }
@@ -92,7 +92,7 @@ class FragmentsOnCompositeTypesTest extends TestCase
      */
     public function testEnumIsInvalidFragmentType():void
     {
-        $this->expectFailsRule(new FragmentsOnCompositeTypes, '
+        $this->expectFailsRule(new FragmentsOnCompositeTypes(), '
       fragment scalarFragment on FurColor {
         bad
       }
@@ -105,7 +105,7 @@ class FragmentsOnCompositeTypesTest extends TestCase
      */
     public function testInputObjectIsInvalidFragmentType():void
     {
-        $this->expectFailsRule(new FragmentsOnCompositeTypes, '
+        $this->expectFailsRule(new FragmentsOnCompositeTypes(), '
       fragment inputFragment on ComplexInput {
         stringField
       }
@@ -118,7 +118,7 @@ class FragmentsOnCompositeTypesTest extends TestCase
      */
     public function testScalarIsInvalidInlineFragmentType():void
     {
-        $this->expectFailsRule(new FragmentsOnCompositeTypes, '
+        $this->expectFailsRule(new FragmentsOnCompositeTypes(), '
       fragment invalidFragment on Pet {
         ... on String {
           barks

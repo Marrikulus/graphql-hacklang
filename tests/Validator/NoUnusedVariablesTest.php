@@ -27,7 +27,7 @@ class NoUnusedVariablesTest extends TestCase
      */
     public function testUsesAllVariablesDeeply():void
     {
-        $this->expectPassesRule(new NoUnusedVariables, '
+        $this->expectPassesRule(new NoUnusedVariables(), '
       query Foo($a: String, $b: String, $c: String) {
         field(a: $a) {
           field(b: $b) {
@@ -43,7 +43,7 @@ class NoUnusedVariablesTest extends TestCase
      */
     public function testUsesAllVariablesDeeplyInInlineFragments():void
     {
-        $this->expectPassesRule(new NoUnusedVariables, '
+        $this->expectPassesRule(new NoUnusedVariables(), '
       query Foo($a: String, $b: String, $c: String) {
         ... on Type {
           field(a: $a) {
@@ -63,7 +63,7 @@ class NoUnusedVariablesTest extends TestCase
      */
     public function testUsesAllVariablesInFragments():void
     {
-        $this->expectPassesRule(new NoUnusedVariables, '
+        $this->expectPassesRule(new NoUnusedVariables(), '
       query Foo($a: String, $b: String, $c: String) {
         ...FragA
       }
@@ -88,7 +88,7 @@ class NoUnusedVariablesTest extends TestCase
      */
     public function testVariableUsedByFragmentInMultipleOperations():void
     {
-        $this->expectPassesRule(new NoUnusedVariables, '
+        $this->expectPassesRule(new NoUnusedVariables(), '
       query Foo($a: String) {
         ...FragA
       }
@@ -109,7 +109,7 @@ class NoUnusedVariablesTest extends TestCase
      */
     public function testVariableUsedByRecursiveFragment():void
     {
-        $this->expectPassesRule(new NoUnusedVariables, '
+        $this->expectPassesRule(new NoUnusedVariables(), '
       query Foo($a: String) {
         ...FragA
       }
@@ -126,7 +126,7 @@ class NoUnusedVariablesTest extends TestCase
      */
     public function testVariableNotUsed():void
     {
-        $this->expectFailsRule(new NoUnusedVariables, '
+        $this->expectFailsRule(new NoUnusedVariables(), '
       query ($a: String, $b: String, $c: String) {
         field(a: $a, b: $b)
       }
@@ -140,7 +140,7 @@ class NoUnusedVariablesTest extends TestCase
      */
     public function testMultipleVariablesNotUsed():void
     {
-        $this->expectFailsRule(new NoUnusedVariables, '
+        $this->expectFailsRule(new NoUnusedVariables(), '
       query Foo($a: String, $b: String, $c: String) {
         field(b: $b)
       }
@@ -155,7 +155,7 @@ class NoUnusedVariablesTest extends TestCase
      */
     public function testVariableNotUsedInFragments():void
     {
-        $this->expectFailsRule(new NoUnusedVariables, '
+        $this->expectFailsRule(new NoUnusedVariables(), '
       query Foo($a: String, $b: String, $c: String) {
         ...FragA
       }
@@ -182,7 +182,7 @@ class NoUnusedVariablesTest extends TestCase
      */
     public function testMultipleVariablesNotUsed2()
     {
-        $this->expectFailsRule(new NoUnusedVariables, '
+        $this->expectFailsRule(new NoUnusedVariables(), '
       query Foo($a: String, $b: String, $c: String) {
         ...FragA
       }
@@ -210,7 +210,7 @@ class NoUnusedVariablesTest extends TestCase
      */
     public function testVariableNotUsedByUnreferencedFragment():void
     {
-        $this->expectFailsRule(new NoUnusedVariables, '
+        $this->expectFailsRule(new NoUnusedVariables(), '
       query Foo($b: String) {
         ...FragA
       }
@@ -230,7 +230,7 @@ class NoUnusedVariablesTest extends TestCase
      */
     public function testVariableNotUsedByFragmentUsedByOtherOperation():void
     {
-        $this->expectFailsRule(new NoUnusedVariables, '
+        $this->expectFailsRule(new NoUnusedVariables(), '
       query Foo($b: String) {
         ...FragA
       }

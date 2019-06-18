@@ -27,7 +27,7 @@ class UniqueFragmentNamesTest extends TestCase
      */
     public function testOneFragment():void
     {
-        $this->expectPassesRule(new UniqueFragmentNames, '
+        $this->expectPassesRule(new UniqueFragmentNames(), '
       {
         ...fragA
       }
@@ -43,7 +43,7 @@ class UniqueFragmentNamesTest extends TestCase
      */
     public function testManyFragments():void
     {
-        $this->expectPassesRule(new UniqueFragmentNames, '
+        $this->expectPassesRule(new UniqueFragmentNames(), '
       {
         ...fragA
         ...fragB
@@ -66,7 +66,7 @@ class UniqueFragmentNamesTest extends TestCase
      */
     public function testInlineFragmentsAreAlwaysUnique():void
     {
-        $this->expectPassesRule(new UniqueFragmentNames, '
+        $this->expectPassesRule(new UniqueFragmentNames(), '
       {
         ...on Type {
           fieldA
@@ -83,7 +83,7 @@ class UniqueFragmentNamesTest extends TestCase
      */
     public function testFragmentAndOperationNamedTheSame():void
     {
-        $this->expectPassesRule(new UniqueFragmentNames, '
+        $this->expectPassesRule(new UniqueFragmentNames(), '
       query Foo {
         ...Foo
       }
@@ -98,7 +98,7 @@ class UniqueFragmentNamesTest extends TestCase
      */
     public function testFragmentsNamedTheSame():void
     {
-        $this->expectFailsRule(new UniqueFragmentNames, '
+        $this->expectFailsRule(new UniqueFragmentNames(), '
       {
         ...fragA
       }
@@ -118,7 +118,7 @@ class UniqueFragmentNamesTest extends TestCase
      */
     public function testFragmentsNamedTheSameWithoutBeingReferenced():void
     {
-        $this->expectFailsRule(new UniqueFragmentNames, '
+        $this->expectFailsRule(new UniqueFragmentNames(), '
       fragment fragA on Type {
         fieldA
       }

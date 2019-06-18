@@ -777,7 +777,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testOneArgOnMultipleOptional():void
     {
-        $this->expectPassesRule(new ArgumentsOfCorrectType, '
+        $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             multipleOpts(opt1: 1)
@@ -791,7 +791,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testSecondArgOnMultipleOptional():void
     {
-        $this->expectPassesRule(new ArgumentsOfCorrectType, '
+        $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             multipleOpts(opt2: 1)
@@ -805,7 +805,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testMultipleReqsOnMixedList():void
     {
-        $this->expectPassesRule(new ArgumentsOfCorrectType, '
+        $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             multipleOptAndReq(req1: 3, req2: 4)
@@ -819,7 +819,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testMultipleReqsAndOneOptOnMixedList():void
     {
-        $this->expectPassesRule(new ArgumentsOfCorrectType, '
+        $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             multipleOptAndReq(req1: 3, req2: 4, opt1: 5)
@@ -833,7 +833,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testAllReqsAndOptsOnMixedList():void
     {
-        $this->expectPassesRule(new ArgumentsOfCorrectType, '
+        $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             multipleOptAndReq(req1: 3, req2: 4, opt1: 5, opt2: 6)
@@ -849,7 +849,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testIncorrectValueType():void
     {
-        $this->expectFailsRule(new ArgumentsOfCorrectType, '
+        $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             multipleReqs(req2: "two", req1: "one")
@@ -866,7 +866,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testIncorrectValueAndMissingArgument():void
     {
-        $this->expectFailsRule(new ArgumentsOfCorrectType, '
+        $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             multipleReqs(req1: "one")
@@ -903,7 +903,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testOptionalArgDespiteRequiredFieldInType():void
     {
-        $this->expectPassesRule(new ArgumentsOfCorrectType, '
+        $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             complexArgField
@@ -917,7 +917,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testPartialObjectOnlyRequired():void
     {
-        $this->expectPassesRule(new ArgumentsOfCorrectType, '
+        $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             complexArgField(complexArg: { requiredField: true })
@@ -931,7 +931,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testPartialObjectRequiredFieldCanBeFalsey():void
     {
-        $this->expectPassesRule(new ArgumentsOfCorrectType, '
+        $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             complexArgField(complexArg: { requiredField: false })
@@ -945,7 +945,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testPartialObjectIncludingRequired():void
     {
-        $this->expectPassesRule(new ArgumentsOfCorrectType, '
+        $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             complexArgField(complexArg: { requiredField: true, intField: 4 })
@@ -959,7 +959,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testFullObject():void
     {
-        $this->expectPassesRule(new ArgumentsOfCorrectType, '
+        $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             complexArgField(complexArg: {
@@ -1001,7 +1001,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testPartialObjectMissingRequired():void
     {
-        $this->expectFailsRule(new ArgumentsOfCorrectType, '
+        $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             complexArgField(complexArg: { intField: 4 })
@@ -1019,7 +1019,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testPartialObjectInvalidFieldType():void
     {
-        $this->expectFailsRule(new ArgumentsOfCorrectType, '
+        $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             complexArgField(complexArg: {
@@ -1045,7 +1045,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testPartialObjectUnknownFieldArg():void
     {
-        $this->expectFailsRule(new ArgumentsOfCorrectType, '
+        $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
           complicatedArgs {
             complexArgField(complexArg: {
@@ -1090,7 +1090,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
      */
     public function testWithDirectiveWithIncorrectTypes():void
     {
-        $this->expectFailsRule(new ArgumentsOfCorrectType, '
+        $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
           dog @include(if: "yes") {
             name @skip(if: ENUM)

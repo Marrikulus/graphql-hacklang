@@ -42,7 +42,7 @@ class NoUnusedFragmentsTest extends TestCase
      */
     public function testAllFragmentNamesAreUsedByMultipleOperations():void
     {
-        $this->expectPassesRule(new NoUnusedFragments, '
+        $this->expectPassesRule(new NoUnusedFragments(), '
       query Foo {
         human(id: 4) {
           ...HumanFields1
@@ -71,7 +71,7 @@ class NoUnusedFragmentsTest extends TestCase
      */
     public function testContainsUnknownFragments():void
     {
-        $this->expectFailsRule(new NoUnusedFragments, '
+        $this->expectFailsRule(new NoUnusedFragments(), '
       query Foo {
         human(id: 4) {
           ...HumanFields1
@@ -109,7 +109,7 @@ class NoUnusedFragmentsTest extends TestCase
      */
     public function testContainsUnknownFragmentsWithRefCycle():void
     {
-        $this->expectFailsRule(new NoUnusedFragments, '
+        $this->expectFailsRule(new NoUnusedFragments(), '
       query Foo {
         human(id: 4) {
           ...HumanFields1
@@ -150,7 +150,7 @@ class NoUnusedFragmentsTest extends TestCase
     public function testContainsUnknownAndUndefFragments():void
     {
 
-        $this->expectFailsRule(new NoUnusedFragments, '
+        $this->expectFailsRule(new NoUnusedFragments(), '
       query Foo {
         human(id: 4) {
           ...bar

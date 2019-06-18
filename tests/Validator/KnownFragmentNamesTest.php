@@ -15,7 +15,7 @@ class KnownFragmentNamesTest extends TestCase
      */
     public function testKnownFragmentNamesAreValid():void
     {
-        $this->expectPassesRule(new KnownFragmentNames, '
+        $this->expectPassesRule(new KnownFragmentNames(), '
       {
         human(id: 4) {
           ...HumanFields1
@@ -42,7 +42,7 @@ class KnownFragmentNamesTest extends TestCase
      */
     public function testUnknownFragmentNamesAreInvalid():void
     {
-        $this->expectFailsRule(new KnownFragmentNames, '
+        $this->expectFailsRule(new KnownFragmentNames(), '
       {
         human(id: 4) {
           ...UnknownFragment1

@@ -15,7 +15,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
      */
     public function testVariablesWithNoDefaultValues():void
     {
-        $this->expectPassesRule(new DefaultValuesOfCorrectType, '
+        $this->expectPassesRule(new DefaultValuesOfCorrectType(), '
       query NullableValues($a: Int, $b: String, $c: ComplexInput) {
         dog { name }
       }
@@ -27,7 +27,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
      */
     public function testRequiredVariablesWithoutDefaultValues():void
     {
-        $this->expectPassesRule(new DefaultValuesOfCorrectType, '
+        $this->expectPassesRule(new DefaultValuesOfCorrectType(), '
       query RequiredValues($a: Int!, $b: String!) {
         dog { name }
       }
@@ -39,7 +39,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
      */
     public function testVariablesWithValidDefaultValues():void
     {
-        $this->expectPassesRule(new DefaultValuesOfCorrectType, '
+        $this->expectPassesRule(new DefaultValuesOfCorrectType(), '
       query WithDefaultValues(
         $a: Int = 1,
         $b: String = "ok",
@@ -101,7 +101,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
      */
     public function testNoRequiredVariablesWithDefaultValues():void
     {
-        $this->expectFailsRule(new DefaultValuesOfCorrectType, '
+        $this->expectFailsRule(new DefaultValuesOfCorrectType(), '
       query UnreachableDefaultValues($a: Int! = 3, $b: String! = "default") {
         dog { name }
       }
@@ -116,7 +116,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
      */
     public function testVariablesWithInvalidDefaultValues():void
     {
-        $this->expectFailsRule(new DefaultValuesOfCorrectType, '
+        $this->expectFailsRule(new DefaultValuesOfCorrectType(), '
       query InvalidDefaultValues(
         $a: Int = "one",
         $b: String = 4,
@@ -142,7 +142,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
      */
     public function testComplexVariablesMissingRequiredField():void
     {
-        $this->expectFailsRule(new DefaultValuesOfCorrectType, '
+        $this->expectFailsRule(new DefaultValuesOfCorrectType(), '
       query MissingRequiredField($a: ComplexInput = {intField: 3}) {
         dog { name }
       }
@@ -158,7 +158,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
      */
     public function testListVariablesWithInvalidItem():void
     {
-        $this->expectFailsRule(new DefaultValuesOfCorrectType, '
+        $this->expectFailsRule(new DefaultValuesOfCorrectType(), '
       query InvalidItem($a: [String] = ["one", 2]) {
         dog { name }
       }

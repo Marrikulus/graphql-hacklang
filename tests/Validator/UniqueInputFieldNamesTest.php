@@ -27,7 +27,7 @@ class UniqueInputFieldNamesTest extends TestCase
      */
     public function testSameInputObjectWithinTwoArgs():void
     {
-        $this->expectPassesRule(new UniqueInputFieldNames, '
+        $this->expectPassesRule(new UniqueInputFieldNames(), '
       {
         field(arg1: { f: true }, arg2: { f: true })
       }
@@ -39,7 +39,7 @@ class UniqueInputFieldNamesTest extends TestCase
      */
     public function testMultipleInputObjectFields():void
     {
-        $this->expectPassesRule(new UniqueInputFieldNames, '
+        $this->expectPassesRule(new UniqueInputFieldNames(), '
       {
         field(arg: { f1: "value", f2: "value", f3: "value" })
       }
@@ -51,7 +51,7 @@ class UniqueInputFieldNamesTest extends TestCase
      */
     public function testAllowsForNestedInputObjectsWithSimilarFields():void
     {
-        $this->expectPassesRule(new UniqueInputFieldNames, '
+        $this->expectPassesRule(new UniqueInputFieldNames(), '
       {
         field(arg: {
           deep: {
@@ -71,7 +71,7 @@ class UniqueInputFieldNamesTest extends TestCase
      */
     public function testDuplicateInputObjectFields():void
     {
-        $this->expectFailsRule(new UniqueInputFieldNames, '
+        $this->expectFailsRule(new UniqueInputFieldNames(), '
       {
         field(arg: { f1: "value", f1: "value" })
       }
@@ -85,7 +85,7 @@ class UniqueInputFieldNamesTest extends TestCase
      */
     public function testManyDuplicateInputObjectFields():void
     {
-        $this->expectFailsRule(new UniqueInputFieldNames, '
+        $this->expectFailsRule(new UniqueInputFieldNames(), '
       {
         field(arg: { f1: "value", f1: "value", f1: "value" })
       }

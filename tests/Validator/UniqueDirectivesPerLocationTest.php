@@ -101,7 +101,7 @@ class UniqueDirectivesPerLocationTest extends TestCase
      */
     public function testDifferentDuplicateDirectivesInOneLocation():void
     {
-        $this->expectFailsRule(new UniqueDirectivesPerLocation, '
+        $this->expectFailsRule(new UniqueDirectivesPerLocation(), '
       fragment Test on Type {
         field @directiveA @directiveB @directiveA @directiveB
       }

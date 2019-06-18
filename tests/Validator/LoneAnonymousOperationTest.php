@@ -15,7 +15,7 @@ class LoneAnonymousOperationTest extends TestCase
      */
     public function testNoOperations():void
     {
-        $this->expectPassesRule(new LoneAnonymousOperation, '
+        $this->expectPassesRule(new LoneAnonymousOperation(), '
       fragment fragA on Type {
         field
       }
@@ -27,7 +27,7 @@ class LoneAnonymousOperationTest extends TestCase
      */
     public function testOneAnonOperation():void
     {
-        $this->expectPassesRule(new LoneAnonymousOperation, '
+        $this->expectPassesRule(new LoneAnonymousOperation(), '
       {
         field
       }
@@ -39,7 +39,7 @@ class LoneAnonymousOperationTest extends TestCase
      */
     public function testMultipleNamedOperations():void
     {
-        $this->expectPassesRule(new LoneAnonymousOperation, '
+        $this->expectPassesRule(new LoneAnonymousOperation(), '
       query Foo {
         field
       }
@@ -55,7 +55,7 @@ class LoneAnonymousOperationTest extends TestCase
      */
     public function testAnonOperationWithFragment():void
     {
-        $this->expectPassesRule(new LoneAnonymousOperation, '
+        $this->expectPassesRule(new LoneAnonymousOperation(), '
       {
         ...Foo
       }
@@ -70,7 +70,7 @@ class LoneAnonymousOperationTest extends TestCase
      */
     public function testMultipleAnonOperations():void
     {
-        $this->expectFailsRule(new LoneAnonymousOperation, '
+        $this->expectFailsRule(new LoneAnonymousOperation(), '
       {
         fieldA
       }
@@ -88,7 +88,7 @@ class LoneAnonymousOperationTest extends TestCase
      */
     public function testAnonOperationWithMutation():void
     {
-        $this->expectFailsRule(new LoneAnonymousOperation, '
+        $this->expectFailsRule(new LoneAnonymousOperation(), '
       {
         fieldA
       }
@@ -105,7 +105,7 @@ class LoneAnonymousOperationTest extends TestCase
      */
     public function testAnonOperationWithSubscription():void
     {
-        $this->expectFailsRule(new LoneAnonymousOperation, '
+        $this->expectFailsRule(new LoneAnonymousOperation(), '
       {
         fieldA
       }

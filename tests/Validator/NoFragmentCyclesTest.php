@@ -26,7 +26,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testSpreadingTwiceIsNotCircular():void
     {
-        $this->expectPassesRule(new NoFragmentCycles, '
+        $this->expectPassesRule(new NoFragmentCycles(), '
       fragment fragA on Dog { ...fragB, ...fragB }
       fragment fragB on Dog { name }
         ');
@@ -37,7 +37,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testSpreadingTwiceIndirectlyIsNotCircular():void
     {
-        $this->expectPassesRule(new NoFragmentCycles, '
+        $this->expectPassesRule(new NoFragmentCycles(), '
       fragment fragA on Dog { ...fragB, ...fragC }
       fragment fragB on Dog { ...fragC }
       fragment fragC on Dog { name }
@@ -49,7 +49,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testDoubleSpreadWithinAbstractTypes():void
     {
-        $this->expectPassesRule(new NoFragmentCycles, '
+        $this->expectPassesRule(new NoFragmentCycles(), '
       fragment nameFragment on Pet {
         ... on Dog { name }
         ... on Cat { name }
@@ -67,7 +67,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testDoesNotFalsePositiveOnUnknownFragment():void
     {
-        $this->expectPassesRule(new NoFragmentCycles, '
+        $this->expectPassesRule(new NoFragmentCycles(), '
       fragment nameFragment on Pet {
         ...UnknownFragment
       }
@@ -79,7 +79,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testSpreadingRecursivelyWithinFieldFails():void
     {
-        $this->expectFailsRule(new NoFragmentCycles, '
+        $this->expectFailsRule(new NoFragmentCycles(), '
       fragment fragA on Human { relatives { ...fragA } },
         ', [
             $this->cycleError('fragA', [], 2, 45)
@@ -91,7 +91,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testNoSpreadingItselfDirectly():void
     {
-        $this->expectFailsRule(new NoFragmentCycles, '
+        $this->expectFailsRule(new NoFragmentCycles(), '
       fragment fragA on Dog { ...fragA }
         ', [
             $this->cycleError('fragA', [], 2, 31)
@@ -103,7 +103,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testNoSpreadingItselfDirectlyWithinInlineFragment():void
     {
-        $this->expectFailsRule(new NoFragmentCycles, '
+        $this->expectFailsRule(new NoFragmentCycles(), '
       fragment fragA on Pet {
         ... on Dog {
           ...fragA
@@ -119,7 +119,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testNoSpreadingItselfIndirectly():void
     {
-        $this->expectFailsRule(new NoFragmentCycles, '
+        $this->expectFailsRule(new NoFragmentCycles(), '
       fragment fragA on Dog { ...fragB }
       fragment fragB on Dog { ...fragA }
         ', [
@@ -135,7 +135,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testNoSpreadingItselfIndirectlyReportsOppositeOrder():void
     {
-        $this->expectFailsRule(new NoFragmentCycles, '
+        $this->expectFailsRule(new NoFragmentCycles(), '
       fragment fragB on Dog { ...fragA }
       fragment fragA on Dog { ...fragB }
         ', [
@@ -151,7 +151,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testNoSpreadingItselfIndirectlyWithinInlineFragment():void
     {
-        $this->expectFailsRule(new NoFragmentCycles, '
+        $this->expectFailsRule(new NoFragmentCycles(), '
       fragment fragA on Pet {
         ... on Dog {
           ...fragB
@@ -175,7 +175,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testNoSpreadingItselfDeeply():void
     {
-        $this->expectFailsRule(new NoFragmentCycles, '
+        $this->expectFailsRule(new NoFragmentCycles(), '
       fragment fragA on Dog { ...fragB }
       fragment fragB on Dog { ...fragC }
       fragment fragC on Dog { ...fragO }
@@ -213,7 +213,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testNoSpreadingItselfDeeplyTwoPaths():void
     {
-        $this->expectFailsRule(new NoFragmentCycles, '
+        $this->expectFailsRule(new NoFragmentCycles(), '
       fragment fragA on Dog { ...fragB, ...fragC }
       fragment fragB on Dog { ...fragA }
       fragment fragC on Dog { ...fragA }
@@ -234,7 +234,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testNoSpreadingItselfDeeplyTwoPathsTraverseOrder():void
     {
-        $this->expectFailsRule(new NoFragmentCycles, '
+        $this->expectFailsRule(new NoFragmentCycles(), '
       fragment fragA on Dog { ...fragC }
       fragment fragB on Dog { ...fragC }
       fragment fragC on Dog { ...fragA, ...fragB }
@@ -255,7 +255,7 @@ class NoFragmentCyclesTest extends TestCase
      */
     public function testNoSpreadingItselfDeeplyAndImmediately():void
     {
-        $this->expectFailsRule(new NoFragmentCycles, '
+        $this->expectFailsRule(new NoFragmentCycles(), '
       fragment fragA on Dog { ...fragB }
       fragment fragB on Dog { ...fragB, ...fragC }
       fragment fragC on Dog { ...fragA, ...fragB }

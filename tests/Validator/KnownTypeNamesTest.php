@@ -15,7 +15,7 @@ class KnownTypeNamesTest extends TestCase
      */
     public function testKnownTypeNamesAreValid():void
     {
-        $this->expectPassesRule(new KnownTypeNames, '
+        $this->expectPassesRule(new KnownTypeNames(), '
       query Foo($var: String, $required: [String!]!) {
         user(id: 4) {
           pets { ... on Pet { name }, ...PetFields }
@@ -32,7 +32,7 @@ class KnownTypeNamesTest extends TestCase
      */
     public function testUnknownTypeNamesAreInvalid():void
     {
-        $this->expectFailsRule(new KnownTypeNames, '
+        $this->expectFailsRule(new KnownTypeNames(), '
       query Foo($var: JumbledUpLetters) {
         user(id: 4) {
           name
@@ -54,7 +54,7 @@ class KnownTypeNamesTest extends TestCase
      */
     public function testIgnoresTypeDefinitions():void
     {
-        $this->expectFailsRule(new KnownTypeNames, '
+        $this->expectFailsRule(new KnownTypeNames(), '
       type NotInTheSchema {
         field: FooBar
       }

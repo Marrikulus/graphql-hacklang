@@ -26,7 +26,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testOfTheSameObjectWithInlineFragment():void
     {
-        $this->expectPassesRule(new PossibleFragmentSpreads, '
+        $this->expectPassesRule(new PossibleFragmentSpreads(), '
       fragment objectWithinObjectAnon on Dog { ... on Dog { barkVolume } }
         ');
     }
@@ -36,7 +36,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testObjectIntoAnImplementedInterface():void
     {
-        $this->expectPassesRule(new PossibleFragmentSpreads, '
+        $this->expectPassesRule(new PossibleFragmentSpreads(), '
       fragment objectWithinInterface on Pet { ...dogFragment }
       fragment dogFragment on Dog { barkVolume }
         ');
@@ -47,7 +47,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testObjectIntoContainingUnion():void
     {
-        $this->expectPassesRule(new PossibleFragmentSpreads, '
+        $this->expectPassesRule(new PossibleFragmentSpreads(), '
       fragment objectWithinUnion on CatOrDog { ...dogFragment }
       fragment dogFragment on Dog { barkVolume }
         ');
@@ -58,7 +58,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testUnionIntoContainedObject():void
     {
-        $this->expectPassesRule(new PossibleFragmentSpreads, '
+        $this->expectPassesRule(new PossibleFragmentSpreads(), '
       fragment unionWithinObject on Dog { ...catOrDogFragment }
       fragment catOrDogFragment on CatOrDog { __typename }
         ');
@@ -69,7 +69,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testUnionIntoOverlappingInterface():void
     {
-        $this->expectPassesRule(new PossibleFragmentSpreads, '
+        $this->expectPassesRule(new PossibleFragmentSpreads(), '
       fragment unionWithinInterface on Pet { ...catOrDogFragment }
       fragment catOrDogFragment on CatOrDog { __typename }
         ');
@@ -80,7 +80,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testUnionIntoOverlappingUnion():void
     {
-        $this->expectPassesRule(new PossibleFragmentSpreads, '
+        $this->expectPassesRule(new PossibleFragmentSpreads(), '
       fragment unionWithinUnion on DogOrHuman { ...catOrDogFragment }
       fragment catOrDogFragment on CatOrDog { __typename }
         ');
@@ -91,7 +91,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testInterfaceIntoImplementedObject():void
     {
-        $this->expectPassesRule(new PossibleFragmentSpreads, '
+        $this->expectPassesRule(new PossibleFragmentSpreads(), '
       fragment interfaceWithinObject on Dog { ...petFragment }
       fragment petFragment on Pet { name }
         ');
@@ -102,7 +102,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testInterfaceIntoOverlappingInterface():void
     {
-        $this->expectPassesRule(new PossibleFragmentSpreads, '
+        $this->expectPassesRule(new PossibleFragmentSpreads(), '
       fragment interfaceWithinInterface on Pet { ...beingFragment }
       fragment beingFragment on Being { name }
         ');
@@ -113,7 +113,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testInterfaceIntoOverlappingInterfaceInInlineFragment():void
     {
-        $this->expectPassesRule(new PossibleFragmentSpreads, '
+        $this->expectPassesRule(new PossibleFragmentSpreads(), '
       fragment interfaceWithinInterface on Pet { ... on Being { name } }
         ');
     }
@@ -123,7 +123,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testInterfaceIntoOverlappingUnion():void
     {
-        $this->expectPassesRule(new PossibleFragmentSpreads, '
+        $this->expectPassesRule(new PossibleFragmentSpreads(), '
       fragment interfaceWithinUnion on CatOrDog { ...petFragment }
       fragment petFragment on Pet { name }
         ');
@@ -134,7 +134,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testDifferentObjectIntoObject():void
     {
-        $this->expectFailsRule(new PossibleFragmentSpreads, '
+        $this->expectFailsRule(new PossibleFragmentSpreads(), '
       fragment invalidObjectWithinObject on Cat { ...dogFragment }
       fragment dogFragment on Dog { barkVolume }
         ',
@@ -147,7 +147,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testDifferentObjectIntoObjectInInlineFragment():void
     {
-        $this->expectFailsRule(new PossibleFragmentSpreads, '
+        $this->expectFailsRule(new PossibleFragmentSpreads(), '
       fragment invalidObjectWithinObjectAnon on Cat {
         ... on Dog { barkVolume }
       }
@@ -161,7 +161,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testObjectIntoNotImplementingInterface():void
     {
-        $this->expectFailsRule(new PossibleFragmentSpreads, '
+        $this->expectFailsRule(new PossibleFragmentSpreads(), '
       fragment invalidObjectWithinInterface on Pet { ...humanFragment }
       fragment humanFragment on Human { pets { name } }
         ',
@@ -174,7 +174,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testObjectIntoNotContainingUnion():void
     {
-        $this->expectFailsRule(new PossibleFragmentSpreads, '
+        $this->expectFailsRule(new PossibleFragmentSpreads(), '
       fragment invalidObjectWithinUnion on CatOrDog { ...humanFragment }
       fragment humanFragment on Human { pets { name } }
         ',
@@ -187,7 +187,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testUnionIntoNotContainedObject():void
     {
-        $this->expectFailsRule(new PossibleFragmentSpreads, '
+        $this->expectFailsRule(new PossibleFragmentSpreads(), '
       fragment invalidUnionWithinObject on Human { ...catOrDogFragment }
       fragment catOrDogFragment on CatOrDog { __typename }
         ',
@@ -200,7 +200,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testUnionIntoNonOverlappingInterface():void
     {
-        $this->expectFailsRule(new PossibleFragmentSpreads, '
+        $this->expectFailsRule(new PossibleFragmentSpreads(), '
       fragment invalidUnionWithinInterface on Pet { ...humanOrAlienFragment }
       fragment humanOrAlienFragment on HumanOrAlien { __typename }
         ',
@@ -213,7 +213,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testUnionIntoNonOverlappingUnion():void
     {
-        $this->expectFailsRule(new PossibleFragmentSpreads, '
+        $this->expectFailsRule(new PossibleFragmentSpreads(), '
       fragment invalidUnionWithinUnion on CatOrDog { ...humanOrAlienFragment }
       fragment humanOrAlienFragment on HumanOrAlien { __typename }
         ',
@@ -226,7 +226,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testInterfaceIntoNonImplementingObject():void
     {
-        $this->expectFailsRule(new PossibleFragmentSpreads, '
+        $this->expectFailsRule(new PossibleFragmentSpreads(), '
       fragment invalidInterfaceWithinObject on Cat { ...intelligentFragment }
       fragment intelligentFragment on Intelligent { iq }
         ',
@@ -242,7 +242,7 @@ class PossibleFragmentSpreadsTest extends TestCase
         // Ideally this should fail, but our new lazy schema doesn't scan through all types and fields
         // So we don't have enough knowledge to check interface intersection and always allow this to pass:
 
-        $this->expectPassesRule(new PossibleFragmentSpreads, '
+        $this->expectPassesRule(new PossibleFragmentSpreads(), '
       fragment invalidInterfaceWithinInterface on Pet {
         ...intelligentFragment
       }
@@ -258,7 +258,7 @@ class PossibleFragmentSpreadsTest extends TestCase
         // Ideally this should fail, but our new lazy schema doesn't scan through all types and fields
         // So we don't have enough knowledge to check interface intersection and always allow this to pass:
 
-        $this->expectPassesRule(new PossibleFragmentSpreads, '
+        $this->expectPassesRule(new PossibleFragmentSpreads(), '
       fragment invalidInterfaceWithinInterfaceAnon on Pet {
         ...on Intelligent { iq }
       }
@@ -270,7 +270,7 @@ class PossibleFragmentSpreadsTest extends TestCase
      */
     public function testInterfaceIntoNonOverlappingUnion():void
     {
-        $this->expectFailsRule(new PossibleFragmentSpreads, '
+        $this->expectFailsRule(new PossibleFragmentSpreads(), '
       fragment invalidInterfaceWithinUnion on HumanOrAlien { ...petFragment }
       fragment petFragment on Pet { name }
         ',

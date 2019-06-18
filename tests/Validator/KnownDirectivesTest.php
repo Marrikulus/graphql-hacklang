@@ -15,7 +15,7 @@ class KnownDirectivesTest extends TestCase
      */
     public function testWithNoDirectives():void
     {
-        $this->expectPassesRule(new KnownDirectives, '
+        $this->expectPassesRule(new KnownDirectives(), '
       query Foo {
         name
         ...Frag
@@ -32,7 +32,7 @@ class KnownDirectivesTest extends TestCase
      */
     public function testWithKnownDirectives():void
     {
-        $this->expectPassesRule(new KnownDirectives, '
+        $this->expectPassesRule(new KnownDirectives(), '
       {
         dog @include(if: true) {
           name
@@ -49,7 +49,7 @@ class KnownDirectivesTest extends TestCase
      */
     public function testWithUnknownDirective():void
     {
-        $this->expectFailsRule(new KnownDirectives, '
+        $this->expectFailsRule(new KnownDirectives(), '
       {
         dog @unknown(directive: "value") {
           name
@@ -65,7 +65,7 @@ class KnownDirectivesTest extends TestCase
      */
     public function testWithManyUnknownDirectives():void
     {
-        $this->expectFailsRule(new KnownDirectives, '
+        $this->expectFailsRule(new KnownDirectives(), '
       {
         dog @unknown(directive: "value") {
           name
@@ -89,7 +89,7 @@ class KnownDirectivesTest extends TestCase
      */
     public function testWithWellPlacedDirectives():void
     {
-        $this->expectPassesRule(new KnownDirectives, '
+        $this->expectPassesRule(new KnownDirectives(), '
       query Foo {
         name @include(if: true)
         ...Frag @include(if: true)
@@ -104,7 +104,7 @@ class KnownDirectivesTest extends TestCase
      */
     public function testWithMisplacedDirectives():void
     {
-        $this->expectFailsRule(new KnownDirectives, '
+        $this->expectFailsRule(new KnownDirectives(), '
       query Foo @include(if: true) {
         name @operationOnly
         ...Frag @operationOnly
