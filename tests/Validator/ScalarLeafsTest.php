@@ -13,7 +13,7 @@ class ScalarLeafsTest extends TestCase
     /**
      * @it valid scalar selection
      */
-    public function testValidScalarSelection()
+    public function testValidScalarSelection():void
     {
         $this->expectPassesRule(new ScalarLeafs, '
       fragment scalarSelection on Dog {
@@ -25,7 +25,7 @@ class ScalarLeafsTest extends TestCase
     /**
      * @it object type missing selection
      */
-    public function testObjectTypeMissingSelection()
+    public function testObjectTypeMissingSelection():void
     {
         $this->expectFailsRule(new ScalarLeafs, '
       query directQueryOnObjectWithoutSubFields {
@@ -37,7 +37,7 @@ class ScalarLeafsTest extends TestCase
     /**
      * @it interface type missing selection
      */
-    public function testInterfaceTypeMissingSelection()
+    public function testInterfaceTypeMissingSelection():void
     {
         $this->expectFailsRule(new ScalarLeafs, '
       {
@@ -49,7 +49,7 @@ class ScalarLeafsTest extends TestCase
     /**
      * @it valid scalar selection with args
      */
-    public function testValidScalarSelectionWithArgs()
+    public function testValidScalarSelectionWithArgs():void
     {
         $this->expectPassesRule(new ScalarLeafs, '
       fragment scalarSelectionWithArgs on Dog {
@@ -61,7 +61,7 @@ class ScalarLeafsTest extends TestCase
     /**
      * @it scalar selection not allowed on Boolean
      */
-    public function testScalarSelectionNotAllowedOnBoolean()
+    public function testScalarSelectionNotAllowedOnBoolean():void
     {
         $this->expectFailsRule(new ScalarLeafs, '
       fragment scalarSelectionsNotAllowedOnBoolean on Dog {
@@ -74,7 +74,7 @@ class ScalarLeafsTest extends TestCase
     /**
      * @it scalar selection not allowed on Enum
      */
-    public function testScalarSelectionNotAllowedOnEnum()
+    public function testScalarSelectionNotAllowedOnEnum():void
     {
         $this->expectFailsRule(new ScalarLeafs, '
       fragment scalarSelectionsNotAllowedOnEnum on Cat {
@@ -88,7 +88,7 @@ class ScalarLeafsTest extends TestCase
     /**
      * @it scalar selection not allowed with args
      */
-    public function testScalarSelectionNotAllowedWithArgs()
+    public function testScalarSelectionNotAllowedWithArgs():void
     {
         $this->expectFailsRule(new ScalarLeafs, '
       fragment scalarSelectionsNotAllowedWithArgs on Dog {
@@ -102,7 +102,7 @@ class ScalarLeafsTest extends TestCase
     /**
      * @it Scalar selection not allowed with directives
      */
-    public function testScalarSelectionNotAllowedWithDirectives()
+    public function testScalarSelectionNotAllowedWithDirectives():void
     {
         $this->expectFailsRule(new ScalarLeafs, '
       fragment scalarSelectionsNotAllowedWithDirectives on Dog {
@@ -116,7 +116,7 @@ class ScalarLeafsTest extends TestCase
     /**
      * @it Scalar selection not allowed with directives and args
      */
-    public function testScalarSelectionNotAllowedWithDirectivesAndArgs()
+    public function testScalarSelectionNotAllowedWithDirectivesAndArgs():void
     {
         $this->expectFailsRule(new ScalarLeafs, '
       fragment scalarSelectionsNotAllowedWithDirectivesAndArgs on Dog {

@@ -13,7 +13,7 @@ class KnownDirectivesTest extends TestCase
     /**
      * @it with no directives
      */
-    public function testWithNoDirectives()
+    public function testWithNoDirectives():void
     {
         $this->expectPassesRule(new KnownDirectives, '
       query Foo {
@@ -30,7 +30,7 @@ class KnownDirectivesTest extends TestCase
     /**
      * @it with known directives
      */
-    public function testWithKnownDirectives()
+    public function testWithKnownDirectives():void
     {
         $this->expectPassesRule(new KnownDirectives, '
       {
@@ -47,7 +47,7 @@ class KnownDirectivesTest extends TestCase
     /**
      * @it with unknown directive
      */
-    public function testWithUnknownDirective()
+    public function testWithUnknownDirective():void
     {
         $this->expectFailsRule(new KnownDirectives, '
       {
@@ -63,7 +63,7 @@ class KnownDirectivesTest extends TestCase
     /**
      * @it with many unknown directives
      */
-    public function testWithManyUnknownDirectives()
+    public function testWithManyUnknownDirectives():void
     {
         $this->expectFailsRule(new KnownDirectives, '
       {
@@ -87,7 +87,7 @@ class KnownDirectivesTest extends TestCase
     /**
      * @it with well placed directives
      */
-    public function testWithWellPlacedDirectives()
+    public function testWithWellPlacedDirectives():void
     {
         $this->expectPassesRule(new KnownDirectives, '
       query Foo {
@@ -102,7 +102,7 @@ class KnownDirectivesTest extends TestCase
     /**
      * @it with misplaced directives
      */
-    public function testWithMisplacedDirectives()
+    public function testWithMisplacedDirectives():void
     {
         $this->expectFailsRule(new KnownDirectives, '
       query Foo @include(if: true) {

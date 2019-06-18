@@ -13,7 +13,7 @@ class UniqueFragmentNamesTest extends TestCase
     /**
      * @it no fragments
      */
-    public function testNoFragments()
+    public function testNoFragments():void
     {
         $this->expectPassesRule(new UniqueFragmentNames(), '
       {
@@ -25,7 +25,7 @@ class UniqueFragmentNamesTest extends TestCase
     /**
      * @it one fragment
      */
-    public function testOneFragment()
+    public function testOneFragment():void
     {
         $this->expectPassesRule(new UniqueFragmentNames, '
       {
@@ -41,7 +41,7 @@ class UniqueFragmentNamesTest extends TestCase
     /**
      * @it many fragments
      */
-    public function testManyFragments()
+    public function testManyFragments():void
     {
         $this->expectPassesRule(new UniqueFragmentNames, '
       {
@@ -64,7 +64,7 @@ class UniqueFragmentNamesTest extends TestCase
     /**
      * @it inline fragments are always unique
      */
-    public function testInlineFragmentsAreAlwaysUnique()
+    public function testInlineFragmentsAreAlwaysUnique():void
     {
         $this->expectPassesRule(new UniqueFragmentNames, '
       {
@@ -81,7 +81,7 @@ class UniqueFragmentNamesTest extends TestCase
     /**
      * @it fragment and operation named the same
      */
-    public function testFragmentAndOperationNamedTheSame()
+    public function testFragmentAndOperationNamedTheSame():void
     {
         $this->expectPassesRule(new UniqueFragmentNames, '
       query Foo {
@@ -96,7 +96,7 @@ class UniqueFragmentNamesTest extends TestCase
     /**
      * @it fragments named the same
      */
-    public function testFragmentsNamedTheSame()
+    public function testFragmentsNamedTheSame():void
     {
         $this->expectFailsRule(new UniqueFragmentNames, '
       {
@@ -116,7 +116,7 @@ class UniqueFragmentNamesTest extends TestCase
     /**
      * @it fragments named the same without being referenced
      */
-    public function testFragmentsNamedTheSameWithoutBeingReferenced()
+    public function testFragmentsNamedTheSameWithoutBeingReferenced():void
     {
         $this->expectFailsRule(new UniqueFragmentNames, '
       fragment fragA on Type {

@@ -13,7 +13,7 @@ class UniqueOperationNamesTest extends TestCase
     /**
      * @it no operations
      */
-    public function testNoOperations()
+    public function testNoOperations():void
     {
         $this->expectPassesRule(new UniqueOperationNames(), '
       fragment fragA on Type {
@@ -25,9 +25,9 @@ class UniqueOperationNamesTest extends TestCase
     /**
      * @it one anon operation
      */
-    public function testOneAnonOperation()
+    public function testOneAnonOperation():void
     {
-        $this->expectPassesRule(new UniqueOperationNames, '
+        $this->expectPassesRule(new UniqueOperationNames(), '
       {
         field
       }
@@ -37,9 +37,9 @@ class UniqueOperationNamesTest extends TestCase
     /**
      * @it one named operation
      */
-    public function testOneNamedOperation()
+    public function testOneNamedOperation():void
     {
-        $this->expectPassesRule(new UniqueOperationNames, '
+        $this->expectPassesRule(new UniqueOperationNames(), '
       query Foo {
         field
       }
@@ -49,9 +49,9 @@ class UniqueOperationNamesTest extends TestCase
     /**
      * @it multiple operations
      */
-    public function testMultipleOperations()
+    public function testMultipleOperations():void
     {
-        $this->expectPassesRule(new UniqueOperationNames, '
+        $this->expectPassesRule(new UniqueOperationNames(), '
       query Foo {
         field
       }
@@ -65,9 +65,9 @@ class UniqueOperationNamesTest extends TestCase
     /**
      * @it multiple operations of different types
      */
-    public function testMultipleOperationsOfDifferentTypes()
+    public function testMultipleOperationsOfDifferentTypes():void
     {
-        $this->expectPassesRule(new UniqueOperationNames, '
+        $this->expectPassesRule(new UniqueOperationNames(), '
       query Foo {
         field
       }
@@ -85,9 +85,9 @@ class UniqueOperationNamesTest extends TestCase
     /**
      * @it fragment and operation named the same
      */
-    public function testFragmentAndOperationNamedTheSame()
+    public function testFragmentAndOperationNamedTheSame():void
     {
-        $this->expectPassesRule(new UniqueOperationNames, '
+        $this->expectPassesRule(new UniqueOperationNames(), '
       query Foo {
         ...Foo
       }
@@ -100,9 +100,9 @@ class UniqueOperationNamesTest extends TestCase
     /**
      * @it multiple operations of same name
      */
-    public function testMultipleOperationsOfSameName()
+    public function testMultipleOperationsOfSameName():void
     {
-        $this->expectFailsRule(new UniqueOperationNames, '
+        $this->expectFailsRule(new UniqueOperationNames(), '
       query Foo {
         fieldA
       }
@@ -117,9 +117,9 @@ class UniqueOperationNamesTest extends TestCase
     /**
      * @it multiple ops of same name of different types (mutation)
      */
-    public function testMultipleOpsOfSameNameOfDifferentTypes_Mutation()
+    public function testMultipleOpsOfSameNameOfDifferentTypes_Mutation():void
     {
-        $this->expectFailsRule(new UniqueOperationNames, '
+        $this->expectFailsRule(new UniqueOperationNames(), '
       query Foo {
         fieldA
       }
@@ -134,9 +134,9 @@ class UniqueOperationNamesTest extends TestCase
     /**
      * @it multiple ops of same name of different types (subscription)
      */
-    public function testMultipleOpsOfSameNameOfDifferentTypes_Subscription()
+    public function testMultipleOpsOfSameNameOfDifferentTypes_Subscription():void
     {
-        $this->expectFailsRule(new UniqueOperationNames, '
+        $this->expectFailsRule(new UniqueOperationNames(), '
       query Foo {
         fieldA
       }

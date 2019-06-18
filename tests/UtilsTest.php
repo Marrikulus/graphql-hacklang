@@ -6,7 +6,7 @@ use GraphQL\Utils\Utils;
 
 class UtilsTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAssignThrowsExceptionOnMissingRequiredKey()
+    public function testAssignThrowsExceptionOnMissingRequiredKey():void
     {
         $object = new \stdClass();
         $object->requiredKey = 'value';

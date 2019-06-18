@@ -12,7 +12,7 @@ class ValidationTest extends TestCase
     /**
      * @it validates queries
      */
-    public function testValidatesQueries()
+    public function testValidatesQueries():void
     {
         $this->expectPassesCompleteValidation('
           query {
@@ -28,7 +28,7 @@ class ValidationTest extends TestCase
         ');
     }
 /*
-    public function testAllowsSettingRulesGlobally()
+    public function testAllowsSettingRulesGlobally():void
     {
         $rule = new QueryComplexity(0);
 
@@ -37,7 +37,7 @@ class ValidationTest extends TestCase
         $this->assertSame($rule, $instance);
     }
 */
-    public function testPassesValidationWithEmptyRules()
+    public function testPassesValidationWithEmptyRules():void
     {
         $query = '{invalid}';
 

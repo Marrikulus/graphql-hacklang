@@ -19,7 +19,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it unique fields
      */
-    public function testUniqueFields()
+    public function testUniqueFields():void
     {
         $this->expectPassesRule(new OverlappingFieldsCanBeMerged(), '
       fragment uniqueFields on Dog {
@@ -32,7 +32,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it identical fields
      */
-    public function testIdenticalFields()
+    public function testIdenticalFields():void
     {
         $this->expectPassesRule(new OverlappingFieldsCanBeMerged, '
       fragment mergeIdenticalFields on Dog {
@@ -45,7 +45,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it identical fields with identical args
      */
-    public function testIdenticalFieldsWithIdenticalArgs()
+    public function testIdenticalFieldsWithIdenticalArgs():void
     {
         $this->expectPassesRule(new OverlappingFieldsCanBeMerged, '
       fragment mergeIdenticalFieldsWithIdenticalArgs on Dog {
@@ -58,7 +58,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it identical fields with identical directives
      */
-    public function testIdenticalFieldsWithIdenticalDirectives()
+    public function testIdenticalFieldsWithIdenticalDirectives():void
     {
         $this->expectPassesRule(new OverlappingFieldsCanBeMerged, '
       fragment mergeSameFieldsWithSameDirectives on Dog {
@@ -71,7 +71,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it different args with different aliases
      */
-    public function testDifferentArgsWithDifferentAliases()
+    public function testDifferentArgsWithDifferentAliases():void
     {
         $this->expectPassesRule(new OverlappingFieldsCanBeMerged, '
       fragment differentArgsWithDifferentAliases on Dog {
@@ -84,7 +84,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it different directives with different aliases
      */
-    public function testDifferentDirectivesWithDifferentAliases()
+    public function testDifferentDirectivesWithDifferentAliases():void
     {
         $this->expectPassesRule(new OverlappingFieldsCanBeMerged, '
       fragment differentDirectivesWithDifferentAliases on Dog {
@@ -97,7 +97,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it different skip/include directives accepted
      */
-    public function testDifferentSkipIncludeDirectivesAccepted()
+    public function testDifferentSkipIncludeDirectivesAccepted():void
     {
         // Note: Differing skip/include directives don't create an ambiguous return
         // value and are acceptable in conditions where differing runtime values
@@ -113,7 +113,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it Same aliases with different field targets
      */
-    public function testSameAliasesWithDifferentFieldTargets()
+    public function testSameAliasesWithDifferentFieldTargets():void
     {
         $this->expectFailsRule(new OverlappingFieldsCanBeMerged, '
       fragment sameAliasesWithDifferentFieldTargets on Dog {
@@ -131,7 +131,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it Same aliases allowed on non-overlapping fields
      */
-    public function testSameAliasesAllowedOnNonOverlappingFields()
+    public function testSameAliasesAllowedOnNonOverlappingFields():void
     {
         // This is valid since no object can be both a "Dog" and a "Cat", thus
         // these fields can never overlap.
@@ -150,7 +150,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it Alias masking direct field access
      */
-    public function testAliasMaskingDirectFieldAccess()
+    public function testAliasMaskingDirectFieldAccess():void
     {
         $this->expectFailsRule(new OverlappingFieldsCanBeMerged, '
       fragment aliasMaskingDirectFieldAccess on Dog {
@@ -168,7 +168,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it different args, second adds an argument
      */
-    public function testDifferentArgsSecondAddsAnArgument()
+    public function testDifferentArgsSecondAddsAnArgument():void
     {
         $this->expectFailsRule(new OverlappingFieldsCanBeMerged, '
       fragment conflictingArgs on Dog {
@@ -186,7 +186,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it different args, second missing an argument
      */
-    public function testDifferentArgsSecondMissingAnArgument()
+    public function testDifferentArgsSecondMissingAnArgument():void
     {
         $this->expectFailsRule(new OverlappingFieldsCanBeMerged, '
       fragment conflictingArgs on Dog {
@@ -206,7 +206,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it conflicting args
      */
-    public function testConflictingArgs()
+    public function testConflictingArgs():void
     {
         $this->expectFailsRule(new OverlappingFieldsCanBeMerged, '
       fragment conflictingArgs on Dog {
@@ -224,7 +224,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it allows different args where no conflict is possible
      */
-    public function testAllowsDifferentArgsWhereNoConflictIsPossible()
+    public function testAllowsDifferentArgsWhereNoConflictIsPossible():void
     {
         // This is valid since no object can be both a "Dog" and a "Cat", thus
         // these fields can never overlap.
@@ -243,7 +243,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it encounters conflict in fragments
      */
-    public function testEncountersConflictInFragments()
+    public function testEncountersConflictInFragments():void
     {
         $this->expectFailsRule(new OverlappingFieldsCanBeMerged, '
       {
@@ -267,7 +267,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it reports each conflict once
      */
-    public function testReportsEachConflictOnce()
+    public function testReportsEachConflictOnce():void
     {
         $this->expectFailsRule(new OverlappingFieldsCanBeMerged, '
       {
@@ -310,7 +310,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it deep conflict
      */
-    public function testDeepConflict()
+    public function testDeepConflict():void
     {
         $this->expectFailsRule(new OverlappingFieldsCanBeMerged, '
       {
@@ -337,7 +337,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it deep conflict with multiple issues
      */
-    public function testDeepConflictWithMultipleIssues()
+    public function testDeepConflictWithMultipleIssues():void
     {
         $this->expectFailsRule(new OverlappingFieldsCanBeMerged, '
       {
@@ -371,7 +371,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it very deep conflict
      */
-    public function testVeryDeepConflict()
+    public function testVeryDeepConflict():void
     {
         $this->expectFailsRule(new OverlappingFieldsCanBeMerged, '
       {
@@ -404,7 +404,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it reports deep conflict to nearest common ancestor
      */
-    public function testReportsDeepConflictToNearestCommonAncestor()
+    public function testReportsDeepConflictToNearestCommonAncestor():void
     {
         $this->expectFailsRule(new OverlappingFieldsCanBeMerged, '
       {
@@ -440,7 +440,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it conflicting return types which potentially overlap
      */
-    public function testConflictingReturnTypesWhichPotentiallyOverlap()
+    public function testConflictingReturnTypesWhichPotentiallyOverlap():void
     {
         // This is invalid since an object could potentially be both the Object
         // type IntBox and the interface type NonNullStringBox1. While that
@@ -472,7 +472,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it compatible return shapes on different return types
      */
-    public function testCompatibleReturnShapesOnDifferentReturnTypes()
+    public function testCompatibleReturnShapesOnDifferentReturnTypes():void
     {
         // In this case `deepBox` returns `SomeBox` in the first usage, and
         // `StringBox` in the second usage. These return types are not the same!
@@ -498,7 +498,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it disallows differing return types despite no overlap
      */
-    public function testDisallowsDifferingReturnTypesDespiteNoOverlap()
+    public function testDisallowsDifferingReturnTypesDespiteNoOverlap():void
     {
         $this->expectFailsRuleWithSchema($this->getTestSchema(), new OverlappingFieldsCanBeMerged, '
         {
@@ -526,7 +526,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it disallows differing return type nullability despite no overlap
      */
-    public function testDisallowsDifferingReturnTypeNullabilityDespiteNoOverlap()
+    public function testDisallowsDifferingReturnTypeNullabilityDespiteNoOverlap():void
     {
         $this->expectFailsRuleWithSchema($this->getTestSchema(), new OverlappingFieldsCanBeMerged, '
         {
@@ -554,7 +554,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it disallows differing return type list despite no overlap
      */
-    public function testDisallowsDifferingReturnTypeListDespiteNoOverlap()
+    public function testDisallowsDifferingReturnTypeListDespiteNoOverlap():void
     {
         $this->expectFailsRuleWithSchema($this->getTestSchema(), new OverlappingFieldsCanBeMerged, '
         {
@@ -610,7 +610,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
       ]);
     }
 
-    public function testDisallowsDifferingSubfields()
+    public function testDisallowsDifferingSubfields():void
     {
         $this->expectFailsRuleWithSchema($this->getTestSchema(), new OverlappingFieldsCanBeMerged, '
         {
@@ -644,7 +644,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it disallows differing deep return types despite no overlap
      */
-    public function testDisallowsDifferingDeepReturnTypesDespiteNoOverlap()
+    public function testDisallowsDifferingDeepReturnTypesDespiteNoOverlap():void
     {
         $this->expectFailsRuleWithSchema($this->getTestSchema(), new OverlappingFieldsCanBeMerged, '
         {
@@ -680,7 +680,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it allows non-conflicting overlaping types
      */
-    public function testAllowsNonConflictingOverlapingTypes()
+    public function testAllowsNonConflictingOverlapingTypes():void
     {
         $this->expectPassesRuleWithSchema($this->getTestSchema(), new OverlappingFieldsCanBeMerged, '
         {
@@ -699,7 +699,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it same wrapped scalar return types
      */
-    public function testSameWrappedScalarReturnTypes()
+    public function testSameWrappedScalarReturnTypes():void
     {
         $this->expectPassesRuleWithSchema($this->getTestSchema(), new OverlappingFieldsCanBeMerged, '
         {
@@ -718,7 +718,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it allows inline typeless fragments
      */
-    public function testAllowsInlineTypelessFragments()
+    public function testAllowsInlineTypelessFragments():void
     {
         $this->expectPassesRuleWithSchema($this->getTestSchema(), new OverlappingFieldsCanBeMerged, '
         {
@@ -733,7 +733,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it compares deep types including list
      */
-    public function testComparesDeepTypesIncludingList()
+    public function testComparesDeepTypesIncludingList():void
     {
         $this->expectFailsRuleWithSchema($this->getTestSchema(), new OverlappingFieldsCanBeMerged, '
         {
@@ -772,7 +772,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
     /**
      * @it ignores unknown types
      */
-    public function testIgnoresUnknownTypes()
+    public function testIgnoresUnknownTypes():void
     {
         $this->expectPassesRuleWithSchema($this->getTestSchema(), new OverlappingFieldsCanBeMerged, '
         {

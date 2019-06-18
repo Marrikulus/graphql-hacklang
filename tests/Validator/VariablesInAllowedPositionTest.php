@@ -13,7 +13,7 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it Boolean => Boolean
      */
-    public function testBooleanXBoolean()
+    public function testBooleanXBoolean():void
     {
         // Boolean => Boolean
         $this->expectPassesRule(new VariablesInAllowedPosition(), '
@@ -29,10 +29,10 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it Boolean => Boolean within fragment
      */
-    public function testBooleanXBooleanWithinFragment()
+    public function testBooleanXBooleanWithinFragment():void
     {
         // Boolean => Boolean within fragment
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       fragment booleanArgFrag on ComplicatedArgs {
         booleanArgField(booleanArg: $booleanArg)
       }
@@ -44,7 +44,7 @@ class VariablesInAllowedPositionTest extends TestCase
       }
         ');
 
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       query Query($booleanArg: Boolean)
       {
         complicatedArgs {
@@ -60,10 +60,10 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it Boolean! => Boolean
      */
-    public function testBooleanNonNullXBoolean()
+    public function testBooleanNonNullXBoolean():void
     {
         // Boolean! => Boolean
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       query Query($nonNullBooleanArg: Boolean!)
       {
         complicatedArgs {
@@ -76,10 +76,10 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it Boolean! => Boolean within fragment
      */
-    public function testBooleanNonNullXBooleanWithinFragment()
+    public function testBooleanNonNullXBooleanWithinFragment():void
     {
         // Boolean! => Boolean within fragment
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       fragment booleanArgFrag on ComplicatedArgs {
         booleanArgField(booleanArg: $nonNullBooleanArg)
       }
@@ -96,10 +96,10 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it Int => Int! with default
      */
-    public function testIntXIntNonNullWithDefault()
+    public function testIntXIntNonNullWithDefault():void
     {
         // Int => Int! with default
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       query Query($intArg: Int = 1)
       {
         complicatedArgs {
@@ -112,9 +112,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it [String] => [String]
      */
-    public function testListOfStringXListOfString()
+    public function testListOfStringXListOfString():void
     {
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       query Query($stringListVar: [String])
       {
         complicatedArgs {
@@ -127,9 +127,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it [String!] => [String]
      */
-    public function testListOfStringNonNullXListOfString()
+    public function testListOfStringNonNullXListOfString():void
     {
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       query Query($stringListVar: [String!])
       {
         complicatedArgs {
@@ -142,9 +142,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it String => [String] in item position
      */
-    public function testStringXListOfStringInItemPosition()
+    public function testStringXListOfStringInItemPosition():void
     {
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       query Query($stringVar: String)
       {
         complicatedArgs {
@@ -157,9 +157,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it String! => [String] in item position
      */
-    public function testStringNonNullXListOfStringInItemPosition()
+    public function testStringNonNullXListOfStringInItemPosition():void
     {
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       query Query($stringVar: String!)
       {
         complicatedArgs {
@@ -172,9 +172,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it ComplexInput => ComplexInput
      */
-    public function testComplexInputXComplexInput()
+    public function testComplexInputXComplexInput():void
     {
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       query Query($complexVar: ComplexInput)
       {
         complicatedArgs {
@@ -187,9 +187,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it ComplexInput => ComplexInput in field position
      */
-    public function testComplexInputXComplexInputInFieldPosition()
+    public function testComplexInputXComplexInputInFieldPosition():void
     {
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       query Query($boolVar: Boolean = false)
       {
         complicatedArgs {
@@ -202,9 +202,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it Boolean! => Boolean! in directive
      */
-    public function testBooleanNonNullXBooleanNonNullInDirective()
+    public function testBooleanNonNullXBooleanNonNullInDirective():void
     {
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       query Query($boolVar: Boolean!)
       {
         dog @include(if: $boolVar)
@@ -215,9 +215,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it Boolean => Boolean! in directive with default
      */
-    public function testBooleanXBooleanNonNullInDirectiveWithDefault()
+    public function testBooleanXBooleanNonNullInDirectiveWithDefault():void
     {
-        $this->expectPassesRule(new VariablesInAllowedPosition, '
+        $this->expectPassesRule(new VariablesInAllowedPosition(), '
       query Query($boolVar: Boolean = false)
       {
         dog @include(if: $boolVar)
@@ -228,9 +228,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it Int => Int!
      */
-    public function testIntXIntNonNull()
+    public function testIntXIntNonNull():void
     {
-        $this->expectFailsRule(new VariablesInAllowedPosition, '
+        $this->expectFailsRule(new VariablesInAllowedPosition(), '
       query Query($intArg: Int) {
         complicatedArgs {
           nonNullIntArgField(nonNullIntArg: $intArg)
@@ -247,9 +247,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it Int => Int! within fragment
      */
-    public function testIntXIntNonNullWithinFragment()
+    public function testIntXIntNonNullWithinFragment():void
     {
-        $this->expectFailsRule(new VariablesInAllowedPosition, '
+        $this->expectFailsRule(new VariablesInAllowedPosition(), '
       fragment nonNullIntArgFieldFrag on ComplicatedArgs {
         nonNullIntArgField(nonNullIntArg: $intArg)
       }
@@ -270,10 +270,10 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it Int => Int! within nested fragment
      */
-    public function testIntXIntNonNullWithinNestedFragment()
+    public function testIntXIntNonNullWithinNestedFragment():void
     {
         // Int => Int! within nested fragment
-        $this->expectFailsRule(new VariablesInAllowedPosition, '
+        $this->expectFailsRule(new VariablesInAllowedPosition(), '
       fragment outerFrag on ComplicatedArgs {
         ...nonNullIntArgFieldFrag
       }
@@ -299,9 +299,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it String over Boolean
      */
-    public function testStringOverBoolean()
+    public function testStringOverBoolean():void
     {
-        $this->expectFailsRule(new VariablesInAllowedPosition, '
+        $this->expectFailsRule(new VariablesInAllowedPosition(), '
       query Query($stringVar: String) {
         complicatedArgs {
           booleanArgField(booleanArg: $stringVar)
@@ -318,9 +318,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it String => [String]
      */
-    public function testStringXListOfString()
+    public function testStringXListOfString():void
     {
-        $this->expectFailsRule(new VariablesInAllowedPosition, '
+        $this->expectFailsRule(new VariablesInAllowedPosition(), '
       query Query($stringVar: String) {
         complicatedArgs {
           stringListArgField(stringListArg: $stringVar)
@@ -337,9 +337,9 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it Boolean => Boolean! in directive
      */
-    public function testBooleanXBooleanNonNullInDirective()
+    public function testBooleanXBooleanNonNullInDirective():void
     {
-        $this->expectFailsRule(new VariablesInAllowedPosition, '
+        $this->expectFailsRule(new VariablesInAllowedPosition(), '
       query Query($boolVar: Boolean) {
         dog @include(if: $boolVar)
       }
@@ -354,10 +354,10 @@ class VariablesInAllowedPositionTest extends TestCase
     /**
      * @it String => Boolean! in directive
      */
-    public function testStringXBooleanNonNullInDirective()
+    public function testStringXBooleanNonNullInDirective():void
     {
         // String => Boolean! in directive
-        $this->expectFailsRule(new VariablesInAllowedPosition, '
+        $this->expectFailsRule(new VariablesInAllowedPosition(), '
       query Query($stringVar: String) {
         dog @include(if: $stringVar)
       }

@@ -13,7 +13,7 @@ class KnownArgumentNamesTest extends TestCase
     /**
      * @it single arg is known
      */
-    public function testSingleArgIsKnown()
+    public function testSingleArgIsKnown():void
     {
         $this->expectPassesRule(new KnownArgumentNames, '
       fragment argOnRequiredArg on Dog {
@@ -25,7 +25,7 @@ class KnownArgumentNamesTest extends TestCase
     /**
      * @it multiple args are known
      */
-    public function testMultipleArgsAreKnown()
+    public function testMultipleArgsAreKnown():void
     {
         $this->expectPassesRule(new KnownArgumentNames, '
       fragment multipleArgs on ComplicatedArgs {
@@ -37,7 +37,7 @@ class KnownArgumentNamesTest extends TestCase
     /**
      * @it ignores args of unknown fields
      */
-    public function testIgnoresArgsOfUnknownFields()
+    public function testIgnoresArgsOfUnknownFields():void
     {
         $this->expectPassesRule(new KnownArgumentNames, '
       fragment argOnUnknownField on Dog {
@@ -49,7 +49,7 @@ class KnownArgumentNamesTest extends TestCase
     /**
      * @it multiple args in reverse order are known
      */
-    public function testMultipleArgsInReverseOrderAreKnown()
+    public function testMultipleArgsInReverseOrderAreKnown():void
     {
         $this->expectPassesRule(new KnownArgumentNames, '
       fragment multipleArgsReverseOrder on ComplicatedArgs {
@@ -61,7 +61,7 @@ class KnownArgumentNamesTest extends TestCase
     /**
      * @it no args on optional arg
      */
-    public function testNoArgsOnOptionalArg()
+    public function testNoArgsOnOptionalArg():void
     {
         $this->expectPassesRule(new KnownArgumentNames, '
       fragment noArgOnOptionalArg on Dog {
@@ -73,7 +73,7 @@ class KnownArgumentNamesTest extends TestCase
     /**
      * @it args are known deeply
      */
-    public function testArgsAreKnownDeeply()
+    public function testArgsAreKnownDeeply():void
     {
         $this->expectPassesRule(new KnownArgumentNames, '
       {
@@ -94,7 +94,7 @@ class KnownArgumentNamesTest extends TestCase
     /**
      * @it directive args are known
      */
-    public function testDirectiveArgsAreKnown()
+    public function testDirectiveArgsAreKnown():void
     {
         $this->expectPassesRule(new KnownArgumentNames, '
       {
@@ -106,7 +106,7 @@ class KnownArgumentNamesTest extends TestCase
     /**
      * @it undirective args are invalid
      */
-    public function testUndirectiveArgsAreInvalid()
+    public function testUndirectiveArgsAreInvalid():void
     {
         $this->expectFailsRule(new KnownArgumentNames, '
       {
@@ -120,7 +120,7 @@ class KnownArgumentNamesTest extends TestCase
     /**
      * @it invalid arg name
      */
-    public function testInvalidArgName()
+    public function testInvalidArgName():void
     {
         $this->expectFailsRule(new KnownArgumentNames, '
       fragment invalidArgName on Dog {
@@ -134,7 +134,7 @@ class KnownArgumentNamesTest extends TestCase
     /**
      * @it unknown args amongst known args
      */
-    public function testUnknownArgsAmongstKnownArgs()
+    public function testUnknownArgsAmongstKnownArgs():void
     {
         $this->expectFailsRule(new KnownArgumentNames, '
       fragment oneGoodArgOneInvalidArg on Dog {
@@ -149,7 +149,7 @@ class KnownArgumentNamesTest extends TestCase
     /**
      * @it unknown args deeply
      */
-    public function testUnknownArgsDeeply()
+    public function testUnknownArgsDeeply():void
     {
         $this->expectFailsRule(new KnownArgumentNames, '
       {

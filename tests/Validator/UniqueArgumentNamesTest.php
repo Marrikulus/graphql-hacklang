@@ -13,7 +13,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it no arguments on field
      */
-    public function testNoArgumentsOnField()
+    public function testNoArgumentsOnField():void
     {
         $this->expectPassesRule(new UniqueArgumentNames(), '
       {
@@ -25,7 +25,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it no arguments on directive
      */
-    public function testNoArgumentsOnDirective()
+    public function testNoArgumentsOnDirective():void
     {
         $this->expectPassesRule(new UniqueArgumentNames, '
       {
@@ -37,7 +37,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it argument on field
      */
-    public function testArgumentOnField()
+    public function testArgumentOnField():void
     {
         $this->expectPassesRule(new UniqueArgumentNames, '
       {
@@ -49,7 +49,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it argument on directive
      */
-    public function testArgumentOnDirective()
+    public function testArgumentOnDirective():void
     {
         $this->expectPassesRule(new UniqueArgumentNames, '
       {
@@ -61,7 +61,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it same argument on two fields
      */
-    public function testSameArgumentOnTwoFields()
+    public function testSameArgumentOnTwoFields():void
     {
         $this->expectPassesRule(new UniqueArgumentNames, '
       {
@@ -74,7 +74,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it same argument on field and directive
      */
-    public function testSameArgumentOnFieldAndDirective()
+    public function testSameArgumentOnFieldAndDirective():void
     {
         $this->expectPassesRule(new UniqueArgumentNames, '
       {
@@ -86,7 +86,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it same argument on two directives
      */
-    public function testSameArgumentOnTwoDirectives()
+    public function testSameArgumentOnTwoDirectives():void
     {
         $this->expectPassesRule(new UniqueArgumentNames, '
       {
@@ -98,7 +98,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it multiple field arguments
      */
-    public function testMultipleFieldArguments()
+    public function testMultipleFieldArguments():void
     {
         $this->expectPassesRule(new UniqueArgumentNames, '
       {
@@ -110,7 +110,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it multiple directive arguments
      */
-    public function testMultipleDirectiveArguments()
+    public function testMultipleDirectiveArguments():void
     {
         $this->expectPassesRule(new UniqueArgumentNames, '
       {
@@ -122,7 +122,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it duplicate field arguments
      */
-    public function testDuplicateFieldArguments()
+    public function testDuplicateFieldArguments():void
     {
         $this->expectFailsRule(new UniqueArgumentNames, '
       {
@@ -136,7 +136,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it many duplicate field arguments
      */
-    public function testManyDuplicateFieldArguments()
+    public function testManyDuplicateFieldArguments():void
     {
         $this->expectFailsRule(new UniqueArgumentNames, '
       {
@@ -151,7 +151,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it duplicate directive arguments
      */
-    public function testDuplicateDirectiveArguments()
+    public function testDuplicateDirectiveArguments():void
     {
         $this->expectFailsRule(new UniqueArgumentNames, '
       {
@@ -165,7 +165,7 @@ class UniqueArgumentNamesTest extends TestCase
     /**
      * @it many duplicate directive arguments
      */
-    public function testManyDuplicateDirectiveArguments()
+    public function testManyDuplicateDirectiveArguments():void
     {
         $this->expectFailsRule(new UniqueArgumentNames, '
       {

@@ -9,7 +9,7 @@ class UniqueDirectivesPerLocationTest extends TestCase
     /**
      * @it no directives
      */
-    public function testNoDirectives()
+    public function testNoDirectives():void
     {
         $this->expectPassesRule(new UniqueDirectivesPerLocation(), '
       fragment Test on Type {
@@ -21,7 +21,7 @@ class UniqueDirectivesPerLocationTest extends TestCase
     /**
      * @it unique directives in different locations
      */
-    public function testUniqueDirectivesInDifferentLocations()
+    public function testUniqueDirectivesInDifferentLocations():void
     {
         $this->expectPassesRule(new UniqueDirectivesPerLocation(), '
       fragment Test on Type @directiveA {
@@ -33,7 +33,7 @@ class UniqueDirectivesPerLocationTest extends TestCase
     /**
      * @it unique directives in same locations
      */
-    public function testUniqueDirectivesInSameLocations()
+    public function testUniqueDirectivesInSameLocations():void
     {
         $this->expectPassesRule(new UniqueDirectivesPerLocation(), '
       fragment Test on Type @directiveA @directiveB {
@@ -45,7 +45,7 @@ class UniqueDirectivesPerLocationTest extends TestCase
     /**
      * @it same directives in different locations
      */
-    public function testSameDirectivesInDifferentLocations()
+    public function testSameDirectivesInDifferentLocations():void
     {
         $this->expectPassesRule(new UniqueDirectivesPerLocation(), '
       fragment Test on Type @directiveA {
@@ -57,7 +57,7 @@ class UniqueDirectivesPerLocationTest extends TestCase
     /**
      * @it same directives in similar locations
      */
-    public function testSameDirectivesInSimilarLocations()
+    public function testSameDirectivesInSimilarLocations():void
     {
         $this->expectPassesRule(new UniqueDirectivesPerLocation(), '
       fragment Test on Type {
@@ -70,7 +70,7 @@ class UniqueDirectivesPerLocationTest extends TestCase
     /**
      * @it duplicate directives in one location
      */
-    public function testDuplicateDirectivesInOneLocation()
+    public function testDuplicateDirectivesInOneLocation():void
     {
         $this->expectFailsRule(new UniqueDirectivesPerLocation(), '
       fragment Test on Type {
@@ -84,7 +84,7 @@ class UniqueDirectivesPerLocationTest extends TestCase
     /**
      * @it many duplicate directives in one location
      */
-    public function testManyDuplicateDirectivesInOneLocation()
+    public function testManyDuplicateDirectivesInOneLocation():void
     {
         $this->expectFailsRule(new UniqueDirectivesPerLocation(), '
       fragment Test on Type {
@@ -99,7 +99,7 @@ class UniqueDirectivesPerLocationTest extends TestCase
     /**
      * @it different duplicate directives in one location
      */
-    public function testDifferentDuplicateDirectivesInOneLocation()
+    public function testDifferentDuplicateDirectivesInOneLocation():void
     {
         $this->expectFailsRule(new UniqueDirectivesPerLocation, '
       fragment Test on Type {
@@ -114,7 +114,7 @@ class UniqueDirectivesPerLocationTest extends TestCase
     /**
      * @it duplicate directives in many locations
      */
-    public function testDuplicateDirectivesInManyLocations()
+    public function testDuplicateDirectivesInManyLocations():void
     {
         $this->expectFailsRule(new UniqueDirectivesPerLocation(), '
       fragment Test on Type @directive @directive {

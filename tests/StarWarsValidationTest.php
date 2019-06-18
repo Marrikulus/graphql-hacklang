@@ -13,7 +13,7 @@ class StartWarsValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Validates a complex but valid query
      */
-    public function testValidatesAComplexButValidQuery()
+    public function testValidatesAComplexButValidQuery():void
     {
         $query = '
         query NestedQueryWithFragment {
@@ -40,7 +40,7 @@ class StartWarsValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Notes that non-existent fields are invalid
      */
-    public function testThatNonExistentFieldsAreInvalid()
+    public function testThatNonExistentFieldsAreInvalid():void
     {
         $query = '
         query HeroSpaceshipQuery {
@@ -56,7 +56,7 @@ class StartWarsValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Requires fields on objects
      */
-    public function testRequiresFieldsOnObjects()
+    public function testRequiresFieldsOnObjects():void
     {
         $query = '
         query HeroNoFieldsQuery {
@@ -71,7 +71,7 @@ class StartWarsValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Disallows fields on scalars
      */
-    public function testDisallowsFieldsOnScalars()
+    public function testDisallowsFieldsOnScalars():void
     {
       $query = '
         query HeroFieldsOnScalarQuery {
@@ -89,7 +89,7 @@ class StartWarsValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Disallows object fields on interfaces
      */
-    public function testDisallowsObjectFieldsOnInterfaces()
+    public function testDisallowsObjectFieldsOnInterfaces():void
     {
         $query = '
         query DroidFieldOnCharacter {
@@ -106,7 +106,7 @@ class StartWarsValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Allows object fields in fragments
      */
-    public function testAllowsObjectFieldsInFragments()
+    public function testAllowsObjectFieldsInFragments():void
     {
         $query = '
         query DroidFieldInFragment {
@@ -127,7 +127,7 @@ class StartWarsValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Allows object fields in inline fragments
      */
-    public function testAllowsObjectFieldsInInlineFragments()
+    public function testAllowsObjectFieldsInInlineFragments():void
     {
         $query = '
         query DroidFieldInFragment {
@@ -146,7 +146,7 @@ class StartWarsValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * Helper function to test a query and the expected response.
      */
-    private function validationErrors($query)
+    private function validationErrors($query):void
     {
         $ast = Parser::parse($query);
         return DocumentValidator::validate(StarWarsSchema::build(), $ast);

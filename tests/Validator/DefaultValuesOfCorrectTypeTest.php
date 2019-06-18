@@ -13,7 +13,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
     /**
      * @it variables with no default values
      */
-    public function testVariablesWithNoDefaultValues()
+    public function testVariablesWithNoDefaultValues():void
     {
         $this->expectPassesRule(new DefaultValuesOfCorrectType, '
       query NullableValues($a: Int, $b: String, $c: ComplexInput) {
@@ -25,7 +25,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
     /**
      * @it required variables without default values
      */
-    public function testRequiredVariablesWithoutDefaultValues()
+    public function testRequiredVariablesWithoutDefaultValues():void
     {
         $this->expectPassesRule(new DefaultValuesOfCorrectType, '
       query RequiredValues($a: Int!, $b: String!) {
@@ -37,7 +37,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
     /**
      * @it variables with valid default values
      */
-    public function testVariablesWithValidDefaultValues()
+    public function testVariablesWithValidDefaultValues():void
     {
         $this->expectPassesRule(new DefaultValuesOfCorrectType, '
       query WithDefaultValues(
@@ -53,7 +53,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
     /**
      * @it variables with valid default null values
      */
-    public function testVariablesWithValidDefaultNullValues()
+    public function testVariablesWithValidDefaultNullValues():void
     {
         $this->expectPassesRule(new DefaultValuesOfCorrectType(), '
       query WithDefaultValues(
@@ -69,7 +69,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
     /**
      * @it variables with invalid default null values
      */
-    public function testVariablesWithInvalidDefaultNullValues()
+    public function testVariablesWithInvalidDefaultNullValues():void
     {
         $this->expectFailsRule(new DefaultValuesOfCorrectType(), '
       query WithDefaultValues(
@@ -99,7 +99,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
     /**
      * @it no required variables with default values
      */
-    public function testNoRequiredVariablesWithDefaultValues()
+    public function testNoRequiredVariablesWithDefaultValues():void
     {
         $this->expectFailsRule(new DefaultValuesOfCorrectType, '
       query UnreachableDefaultValues($a: Int! = 3, $b: String! = "default") {
@@ -114,7 +114,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
     /**
      * @it variables with invalid default values
      */
-    public function testVariablesWithInvalidDefaultValues()
+    public function testVariablesWithInvalidDefaultValues():void
     {
         $this->expectFailsRule(new DefaultValuesOfCorrectType, '
       query InvalidDefaultValues(
@@ -140,7 +140,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
     /**
      * @it complex variables missing required field
      */
-    public function testComplexVariablesMissingRequiredField()
+    public function testComplexVariablesMissingRequiredField():void
     {
         $this->expectFailsRule(new DefaultValuesOfCorrectType, '
       query MissingRequiredField($a: ComplexInput = {intField: 3}) {
@@ -156,7 +156,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
     /**
      * @it list variables with invalid item
      */
-    public function testListVariablesWithInvalidItem()
+    public function testListVariablesWithInvalidItem():void
     {
         $this->expectFailsRule(new DefaultValuesOfCorrectType, '
       query InvalidItem($a: [String] = ["one", 2]) {

@@ -13,7 +13,7 @@ class UniqueVariableNamesTest extends TestCase
     /**
      * @it unique variable names
      */
-    public function testUniqueVariableNames()
+    public function testUniqueVariableNames():void
     {
         $this->expectPassesRule(new UniqueVariableNames(), '
       query A($x: Int, $y: String) { __typename }
@@ -24,9 +24,9 @@ class UniqueVariableNamesTest extends TestCase
     /**
      * @it duplicate variable names
      */
-    public function testDuplicateVariableNames()
+    public function testDuplicateVariableNames():void
     {
-        $this->expectFailsRule(new UniqueVariableNames, '
+        $this->expectFailsRule(new UniqueVariableNames(), '
       query A($x: Int, $x: Int, $x: String) { __typename }
       query B($x: String, $x: Int) { __typename }
       query C($x: Int, $x: Int) { __typename }

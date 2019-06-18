@@ -60,7 +60,7 @@ use GraphQL\Type\Definition\Type;
 
 class StarWarsSchema
 {
-    public static function build()
+    public static function build():Schema
     {
         /**
          * The original trilogy consists of three movies.

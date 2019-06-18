@@ -24,7 +24,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Good int value
      */
-    public function testGoodIntValue()
+    public function testGoodIntValue():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -38,7 +38,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Good negative int value
      */
-    public function testGoodNegativeIntValue()
+    public function testGoodNegativeIntValue():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -52,7 +52,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Good boolean value
      */
-    public function testGoodBooleanValue()
+    public function testGoodBooleanValue():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -66,7 +66,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Good string value
      */
-    public function testGoodStringValue()
+    public function testGoodStringValue():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -80,7 +80,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Good float value
      */
-    public function testGoodFloatValue()
+    public function testGoodFloatValue():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -91,7 +91,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
         ');
     }
 
-    public function testGoodNegativeFloatValue()
+    public function testGoodNegativeFloatValue():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -105,7 +105,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Int into Float
      */
-    public function testIntIntoFloat()
+    public function testIntIntoFloat():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -119,7 +119,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Int into ID
      */
-    public function testIntIntoID()
+    public function testIntIntoID():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -133,7 +133,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it String into ID
      */
-    public function testStringIntoID()
+    public function testStringIntoID():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -147,7 +147,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Good enum value
      */
-    public function testGoodEnumValue()
+    public function testGoodEnumValue():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -161,7 +161,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Enum with null value
      */
-    public function testEnumWithNullValue()
+    public function testEnumWithNullValue():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -175,7 +175,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it null into nullable type
      */
-    public function testNullIntoNullableType()
+    public function testNullIntoNullableType():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -199,7 +199,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Int into String
      */
-    public function testIntIntoString()
+    public function testIntIntoString():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -215,7 +215,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Float into String
      */
-    public function testFloatIntoString()
+    public function testFloatIntoString():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -231,7 +231,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Boolean into String
      */
-    public function testBooleanIntoString()
+    public function testBooleanIntoString():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -247,7 +247,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Unquoted String into String
      */
-    public function testUnquotedStringIntoString()
+    public function testUnquotedStringIntoString():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -265,7 +265,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it String into Int
      */
-    public function testStringIntoInt()
+    public function testStringIntoInt():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -281,7 +281,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Big Int into Int
      */
-    public function testBigIntIntoInt()
+    public function testBigIntIntoInt():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -297,7 +297,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Unquoted String into Int
      */
-    public function testUnquotedStringIntoInt()
+    public function testUnquotedStringIntoInt():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -313,7 +313,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Simple Float into Int
      */
-    public function testSimpleFloatIntoInt()
+    public function testSimpleFloatIntoInt():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -329,7 +329,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Float into Int
      */
-    public function testFloatIntoInt()
+    public function testFloatIntoInt():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -347,7 +347,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it String into Float
      */
-    public function testStringIntoFloat()
+    public function testStringIntoFloat():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -363,7 +363,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Boolean into Float
      */
-    public function testBooleanIntoFloat()
+    public function testBooleanIntoFloat():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -379,7 +379,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Unquoted into Float
      */
-    public function testUnquotedIntoFloat()
+    public function testUnquotedIntoFloat():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -397,7 +397,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Int into Boolean
      */
-    public function testIntIntoBoolean()
+    public function testIntIntoBoolean():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -413,7 +413,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Float into Boolean
      */
-    public function testFloatIntoBoolean()
+    public function testFloatIntoBoolean():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -429,7 +429,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it String into Boolean
      */
-    public function testStringIntoBoolean()
+    public function testStringIntoBoolean():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -445,7 +445,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Unquoted into Boolean
      */
-    public function testUnquotedIntoBoolean()
+    public function testUnquotedIntoBoolean():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -463,7 +463,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Float into ID
      */
-    public function testFloatIntoID()
+    public function testFloatIntoID():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -479,7 +479,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Boolean into ID
      */
-    public function testBooleanIntoID()
+    public function testBooleanIntoID():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -495,7 +495,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Unquoted into ID
      */
-    public function testUnquotedIntoID()
+    public function testUnquotedIntoID():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -513,7 +513,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Int into Enum
      */
-    public function testIntIntoEnum()
+    public function testIntIntoEnum():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -529,7 +529,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Float into Enum
      */
-    public function testFloatIntoEnum()
+    public function testFloatIntoEnum():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -545,7 +545,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it String into Enum
      */
-    public function testStringIntoEnum()
+    public function testStringIntoEnum():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -561,7 +561,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Boolean into Enum
      */
-    public function testBooleanIntoEnum()
+    public function testBooleanIntoEnum():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -577,7 +577,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Unknown Enum Value into Enum
      */
-    public function testUnknownEnumValueIntoEnum()
+    public function testUnknownEnumValueIntoEnum():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -593,7 +593,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Different case Enum Value into Enum
      */
-    public function testDifferentCaseEnumValueIntoEnum()
+    public function testDifferentCaseEnumValueIntoEnum():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -611,7 +611,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Good list value
      */
-    public function testGoodListValue()
+    public function testGoodListValue():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -625,7 +625,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Empty list value
      */
-    public function testEmptyListValue()
+    public function testEmptyListValue():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -639,7 +639,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Null value
      */
-    public function testNullValue()
+    public function testNullValue():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -653,7 +653,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Single value into List
      */
-    public function testSingleValueIntoList()
+    public function testSingleValueIntoList():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -669,7 +669,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Incorrect item type
      */
-    public function testIncorrectItemtype()
+    public function testIncorrectItemtype():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -687,7 +687,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Single value of incorrect type
      */
-    public function testSingleValueOfIncorrectType()
+    public function testSingleValueOfIncorrectType():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {
@@ -705,7 +705,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Arg on optional arg
      */
-    public function testArgOnOptionalArg()
+    public function testArgOnOptionalArg():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -719,7 +719,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it No Arg on optional arg
      */
-    public function testNoArgOnOptionalArg()
+    public function testNoArgOnOptionalArg():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -733,7 +733,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Multiple args
      */
-    public function testMultipleArgs()
+    public function testMultipleArgs():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -747,7 +747,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Multiple args reverse order
      */
-    public function testMultipleArgsReverseOrder()
+    public function testMultipleArgsReverseOrder():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -761,7 +761,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it No args on multiple optional
      */
-    public function testNoArgsOnMultipleOptional()
+    public function testNoArgsOnMultipleOptional():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -775,7 +775,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it One arg on multiple optional
      */
-    public function testOneArgOnMultipleOptional()
+    public function testOneArgOnMultipleOptional():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType, '
         {
@@ -789,7 +789,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Second arg on multiple optional
      */
-    public function testSecondArgOnMultipleOptional()
+    public function testSecondArgOnMultipleOptional():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType, '
         {
@@ -803,7 +803,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Multiple reqs on mixedList
      */
-    public function testMultipleReqsOnMixedList()
+    public function testMultipleReqsOnMixedList():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType, '
         {
@@ -817,7 +817,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Multiple reqs and one opt on mixedList
      */
-    public function testMultipleReqsAndOneOptOnMixedList()
+    public function testMultipleReqsAndOneOptOnMixedList():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType, '
         {
@@ -831,7 +831,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it All reqs and opts on mixedList
      */
-    public function testAllReqsAndOptsOnMixedList()
+    public function testAllReqsAndOptsOnMixedList():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType, '
         {
@@ -847,7 +847,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Incorrect value type
      */
-    public function testIncorrectValueType()
+    public function testIncorrectValueType():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType, '
         {
@@ -864,7 +864,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Incorrect value and missing argument
      */
-    public function testIncorrectValueAndMissingArgument()
+    public function testIncorrectValueAndMissingArgument():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType, '
         {
@@ -901,7 +901,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Optional arg, despite required field in type
      */
-    public function testOptionalArgDespiteRequiredFieldInType()
+    public function testOptionalArgDespiteRequiredFieldInType():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType, '
         {
@@ -915,7 +915,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Partial object, only required
      */
-    public function testPartialObjectOnlyRequired()
+    public function testPartialObjectOnlyRequired():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType, '
         {
@@ -929,7 +929,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Partial object, required field can be falsey
      */
-    public function testPartialObjectRequiredFieldCanBeFalsey()
+    public function testPartialObjectRequiredFieldCanBeFalsey():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType, '
         {
@@ -943,7 +943,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Partial object, including required
      */
-    public function testPartialObjectIncludingRequired()
+    public function testPartialObjectIncludingRequired():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType, '
         {
@@ -957,7 +957,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Full object
      */
-    public function testFullObject()
+    public function testFullObject():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType, '
         {
@@ -977,7 +977,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Full object with fields in different order
      */
-    public function testFullObjectWithFieldsInDifferentOrder()
+    public function testFullObjectWithFieldsInDifferentOrder():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -999,7 +999,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Partial object, missing required
      */
-    public function testPartialObjectMissingRequired()
+    public function testPartialObjectMissingRequired():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType, '
         {
@@ -1017,7 +1017,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Partial object, invalid field type
      */
-    public function testPartialObjectInvalidFieldType()
+    public function testPartialObjectInvalidFieldType():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType, '
         {
@@ -1043,7 +1043,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Partial object, unknown field arg
      */
-    public function testPartialObjectUnknownFieldArg()
+    public function testPartialObjectUnknownFieldArg():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType, '
         {
@@ -1071,7 +1071,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it with directives of valid types
      */
-    public function testWithDirectivesOfValidTypes()
+    public function testWithDirectivesOfValidTypes():void
     {
         $this->expectPassesRule(new ArgumentsOfCorrectType(), '
         {
@@ -1088,7 +1088,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it with directive with incorrect types
      */
-    public function testWithDirectiveWithIncorrectTypes()
+    public function testWithDirectiveWithIncorrectTypes():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType, '
         {
