@@ -287,7 +287,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 
         $actual = $EnumTypeWithNullishValue->getValues();
 
-        $this->assertEquals(count($expected), count($actual));
+        $this->assertEquals(\count($expected), \count($actual));
         $this->assertArraySubset($expected[0], (array)$actual[0]);
         $this->assertArraySubset($expected[1], (array)$actual[1]);
     }
@@ -525,7 +525,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $types = $union->getTypes();
-        $this->assertEquals(1, count($types));
+        $this->assertEquals(1, \count($types));
         $this->assertSame($this->objectType, $types[0]);
     }
 
@@ -624,7 +624,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($inputObject, $schema->getType('InputObject'));
         $this->assertTrue($called);
-        $this->assertEquals(count($inputObject->getFields()), 2);
+        $this->assertEquals(\count($inputObject->getFields()), 2);
         $this->assertSame($inputObject->getField('nested')->getType(), $inputObject);
         $this->assertSame($someMutation->getField('mutateSomething')->getArg('input')->getType(), $inputObject);
     }
@@ -656,7 +656,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($interface, $schema->getType('SomeInterface'));
         $this->assertTrue($called);
-        $this->assertEquals(count($interface->getFields()), 2);
+        $this->assertEquals(\count($interface->getFields()), 2);
         $this->assertSame($interface->getField('nested')->getType(), $interface);
         $this->assertSame($interface->getField('value')->getType(), Type::string());
     }

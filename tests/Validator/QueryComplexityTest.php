@@ -177,7 +177,7 @@ class QueryComplexityTest extends AbstractQuerySecurityTest
             [$otherRule, $this->getRule(1)]
         );
 
-        $this->assertEquals(1, count($errors));
+        $this->assertEquals(1, \count($errors));
         $this->assertSame($reportedError, $errors[0]);
 
         $this->setExpectedException('GraphQL\Error\Error');

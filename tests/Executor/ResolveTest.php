@@ -48,7 +48,7 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
     public function testDefaultFunctionCallsClosures()
     {
         $schema = $this->buildSchema(['type' => Type::string()]);
-        $_secret = 'secretValue' . uniqid();
+        $_secret = 'secretValue' . \uniqid();
 
         $source = [
             'test' => function() use ($_secret) {
@@ -91,7 +91,7 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
                 'aInt' => ['type' => Type::int()],
             ],
             'resolve' => function ($source, $args) {
-                return json_encode([$source, $args]);
+                return \json_encode([$source, $args]);
             }
         ]);
 

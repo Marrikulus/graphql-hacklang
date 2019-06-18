@@ -291,7 +291,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($types, $server->getTypes());
         $server->addTypes([$mutationType]);
-        $this->assertSame(array_merge($types, [$mutationType]), $server->getTypes());
+        $this->assertSame(\array_merge($types, [$mutationType]), $server->getTypes());
 
         $server = Server::create()
             ->setDirectives($directives = []);
@@ -305,7 +305,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $ast = $server->parse('{q}');
         $this->assertInstanceOf('GraphQL\Language\AST\DocumentNode', $ast);
 
-        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . preg_quote('{q', '/') . '/');
+        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . \preg_quote('{q', '/') . '/');
         $server->parse('{q');
         $this->fail('Expected exception not thrown');
     }
@@ -416,7 +416,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
                 'err' => [
                     'type' => Type::string(),
                     'resolve' => function() {
-                        trigger_error('notice', E_USER_NOTICE);
+                        \trigger_error('notice', \E_USER_NOTICE);
                         return 'err';
                     }
                 ]
@@ -535,12 +535,12 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         ;
 
         $mock->method('readInput')
-            ->will($this->returnValue(json_encode(['query' => '{err}'])));
+            ->will($this->returnValue(\json_encode(['query' => '{err}'])));
 
         $output = null;
         $mock->method('produceOutput')
             ->will($this->returnCallback(function($a1, $a2) use (&$output) {
-                $output = func_get_args();
+                $output = \func_get_args();
             }));
 
         /** @var $mock Server */

@@ -391,7 +391,7 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
         $ComplexEnum = $this->ComplexEnum;
         $values = $ComplexEnum->getValues();
 
-        $this->assertEquals(2, count($values));
+        $this->assertEquals(2, \count($values));
         $this->assertEquals('ONE', $values[0]->name);
         $this->assertEquals($this->Complex1, $values[0]->value);
         $this->assertEquals('TWO', $values[1]->name);
@@ -472,7 +472,7 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
     private function expectFailure($query, $vars, $err)
     {
         $result = GraphQL::executeAndReturnResult($this->schema, $query, null, null, $vars);
-        $this->assertEquals(1, count($result->errors));
+        $this->assertEquals(1, \count($result->errors));
 
         if (is_array($err)) {
             $this->assertEquals(

@@ -18,7 +18,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     {
         $char = Utils::chr(0x0007);
 
-        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . preg_quote('Syntax Error GraphQL (1:1) Cannot contain the invalid character "\u0007"', '/') . '/');
+        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . \preg_quote('Syntax Error GraphQL (1:1) Cannot contain the invalid character "\u0007"', '/') . '/');
         $this->lexOne($char);
     }
 
@@ -208,7 +208,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             'value' => 'unicode яуц'
         ], (array) $this->lexOne('"unicode яуц"'));
 
-        $unicode = json_decode('"\u1234\u5678\u90AB\uCDEF"');
+        $unicode = \json_decode('"\u1234\u5678\u90AB\uCDEF"');
         $this->assertArraySubset([
             'kind' => Token::STRING,
             'start' => 0,
@@ -409,8 +409,8 @@ class LexerTest extends \PHPUnit_Framework_TestCase
 
     public function reportsUsefulUnknownCharErrors()
     {
-        $unicode1 = json_decode('"\u203B"');
-        $unicode2 = json_decode('"\u200b"');
+        $unicode1 = \json_decode('"\u203B"');
+        $unicode2 = \json_decode('"\u200b"');
 
         return [
             ['..', "Syntax Error GraphQL (1:1) Cannot parse the unexpected character \".\".\n\n1: ..\n   ^\n"],
@@ -468,7 +468,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
         for ($tok = $startToken; $tok; $tok = $tok->next) {
             if (!empty($tokens)) {
                 // Tokens are double-linked, prev should point to last seen token.
-                $this->assertSame($tokens[count($tokens) - 1], $tok->prev);
+                $this->assertSame($tokens[\count($tokens) - 1], $tok->prev);
             }
             $tokens[] = $tok;
         }

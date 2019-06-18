@@ -910,28 +910,28 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                     'type' => Type::string(),
                     'args' => ['input' => ['type' => $TestInputObject]],
                     'resolve' => function ($_, $args) {
-                        return isset($args['input']) ? json_encode($args['input']) : null;
+                        return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'fieldWithNullableStringInput' => [
                     'type' => Type::string(),
                     'args' => ['input' => ['type' => Type::string()]],
                     'resolve' => function ($_, $args) {
-                        return isset($args['input']) ?  json_encode($args['input']) : null;
+                        return isset($args['input']) ?  \json_encode($args['input']) : null;
                     }
                 ],
                 'fieldWithNonNullableStringInput' => [
                     'type' => Type::string(),
                     'args' => ['input' => ['type' => Type::nonNull(Type::string())]],
                     'resolve' => function ($_, $args) {
-                        return isset($args['input']) ? json_encode($args['input']) : null;
+                        return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'fieldWithDefaultArgumentValue' => [
                     'type' => Type::string(),
                     'args' => [ 'input' => [ 'type' => Type::string(), 'defaultValue' => 'Hello World' ]],
                     'resolve' => function($_, $args) {
-                        return isset($args['input']) ? json_encode($args['input']) : null;
+                        return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'fieldWithNestedInputObject' => [
@@ -943,35 +943,35 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                         ]
                     ],
                     'resolve' => function($_, $args) {
-                        return isset($args['input']) ? json_encode($args['input']) : null;
+                        return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'list' => [
                     'type' => Type::string(),
                     'args' => ['input' => ['type' => Type::listOf(Type::string())]],
                     'resolve' => function ($_, $args) {
-                        return isset($args['input']) ? json_encode($args['input']) : null;
+                        return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'nnList' => [
                     'type' => Type::string(),
                     'args' => ['input' => ['type' => Type::nonNull(Type::listOf(Type::string()))]],
                     'resolve' => function ($_, $args) {
-                        return isset($args['input']) ? json_encode($args['input']) : null;
+                        return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'listNN' => [
                     'type' => Type::string(),
                     'args' => ['input' => ['type' => Type::listOf(Type::nonNull(Type::string()))]],
                     'resolve' => function ($_, $args) {
-                        return isset($args['input']) ? json_encode($args['input']) : null;
+                        return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'nnListNN' => [
                     'type' => Type::string(),
                     'args' => ['input' => ['type' => Type::nonNull(Type::listOf(Type::nonNull(Type::string())))]],
                     'resolve' => function ($_, $args) {
-                        return isset($args['input']) ? json_encode($args['input']) : null;
+                        return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
             ]

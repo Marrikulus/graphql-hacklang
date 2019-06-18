@@ -26,9 +26,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                     'fieldWithPhpError' => [
                         'type' => Type::string(),
                         'resolve' => function($root, $args, $context, $info) {
-                            trigger_error('deprecated', E_USER_DEPRECATED);
-                            trigger_error('notice', E_USER_NOTICE);
-                            trigger_error('warning', E_USER_WARNING);
+                            \trigger_error('deprecated', \E_USER_DEPRECATED);
+                            \trigger_error('notice', \E_USER_NOTICE);
+                            \trigger_error('warning', \E_USER_WARNING);
                             $a = [];
                             $a['test']; // should produce PHP notice
                             return $info->fieldName;

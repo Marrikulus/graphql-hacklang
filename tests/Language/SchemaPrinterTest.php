@@ -36,7 +36,7 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
      */
     public function testDoesNotAlterAst()
     {
-        $kitchenSink = file_get_contents(__DIR__ . '/schema-kitchen-sink.graphql');
+        $kitchenSink = \file_get_contents(__DIR__ . '/schema-kitchen-sink.graphql');
 
         $ast = Parser::parse($kitchenSink);
         $astCopy = $ast->cloneDeep();
@@ -47,7 +47,7 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
 
     public function testPrintsKitchenSink()
     {
-        $kitchenSink = file_get_contents(__DIR__ . '/schema-kitchen-sink.graphql');
+        $kitchenSink = \file_get_contents(__DIR__ . '/schema-kitchen-sink.graphql');
 
         $ast = Parser::parse($kitchenSink);
         $printed = Printer::doPrint($ast);

@@ -113,7 +113,7 @@ class PsrRequestStub implements ServerRequestInterface
      */
     public function getHeader($name)
     {
-        $name = strtolower($name);
+        $name = \strtolower($name);
         return isset($this->headers[$name]) ? $this->headers[$name] : [];
     }
 

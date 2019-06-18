@@ -482,7 +482,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
         $descriptor = $eager->getDescriptor();
         $typeLoader = function($name) use (&$called) {
             $called++;
-            $prop = lcfirst($name);
+            $prop = \lcfirst($name);
             return $this->{$prop};
         };
 

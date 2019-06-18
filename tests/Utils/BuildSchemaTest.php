@@ -156,7 +156,7 @@ type Hello {
 }
 ';
         $schema = BuildSchema::buildAST(Parser::parse($body));
-        $this->assertEquals(count($schema->getDirectives()), 3);
+        $this->assertEquals(\count($schema->getDirectives()), 3);
         $this->assertEquals($schema->getDirective('skip'), Directive::skipDirective());
         $this->assertEquals($schema->getDirective('include'), Directive::includeDirective());
         $this->assertEquals($schema->getDirective('deprecated'), Directive::deprecatedDirective());
@@ -181,7 +181,7 @@ type Hello {
 }
     ';
         $schema = BuildSchema::buildAST(Parser::parse($body));
-        $this->assertEquals(count($schema->getDirectives()), 3);
+        $this->assertEquals(\count($schema->getDirectives()), 3);
         $this->assertNotEquals($schema->getDirective('skip'), Directive::skipDirective());
         $this->assertNotEquals($schema->getDirective('include'), Directive::includeDirective());
         $this->assertNotEquals($schema->getDirective('deprecated'), Directive::deprecatedDirective());
@@ -1033,7 +1033,7 @@ interface Hello {
         $this->assertInstanceOf(\Closure::class, $defaultConfig['interfaces']);
         $this->assertArrayHasKey('description', $defaultConfig);
         $this->assertCount(5, $defaultConfig);
-        $this->assertEquals(array_keys($allNodesMap), ['Query', 'Color', 'Hello']);
+        $this->assertEquals(\array_keys($allNodesMap), ['Query', 'Color', 'Hello']);
         $this->assertEquals('My description of Query', $schema->getType('Query')->description);
 
 
@@ -1050,7 +1050,7 @@ interface Hello {
             'BLUE' => $enumValue,
         ], $defaultConfig['values']);
         $this->assertCount(4, $defaultConfig); // 3 + astNode
-        $this->assertEquals(array_keys($allNodesMap), ['Query', 'Color', 'Hello']);
+        $this->assertEquals(\array_keys($allNodesMap), ['Query', 'Color', 'Hello']);
         $this->assertEquals('My description of Color', $schema->getType('Color')->description);
 
         list($defaultConfig, $node, $allNodesMap) = $calls[2];
@@ -1060,7 +1060,7 @@ interface Hello {
         $this->assertInstanceOf(\Closure::class, $defaultConfig['resolveType']);
         $this->assertArrayHasKey('description', $defaultConfig);
         $this->assertCount(5, $defaultConfig);
-        $this->assertEquals(array_keys($allNodesMap), ['Query', 'Color', 'Hello']);
+        $this->assertEquals(\array_keys($allNodesMap), ['Query', 'Color', 'Hello']);
         $this->assertEquals('My description of Hello', $schema->getType('Hello')->description);
     }
 

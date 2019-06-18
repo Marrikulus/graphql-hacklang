@@ -2803,7 +2803,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
 
     private function withModifiers($types)
     {
-        return array_merge(
+        return \array_merge(
             $types,
             Utils::map($types, function ($type) {
                 return Type::listOf($type);

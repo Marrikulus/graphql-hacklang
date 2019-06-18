@@ -124,7 +124,7 @@ class StarWarsData
      */
     public static function getFriends($character)
     {
-        return array_map([__CLASS__, 'getCharacter'], $character['friends']);
+        return \array_map([__CLASS__, 'getCharacter'], $character['friends']);
     }
 
     /**

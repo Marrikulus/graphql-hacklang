@@ -24,7 +24,7 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
         return [
             // $resolvedValue, $onFulfilled, $expectedNextValue, $expectedNextReason, $expectedNextState
             ['test-value', null, 'test-value', null, SyncPromise::FULFILLED],
-            [uniqid(), $onFulfilledReturnsNull, null, null, SyncPromise::FULFILLED],
+            [\uniqid(), $onFulfilledReturnsNull, null, null, SyncPromise::FULFILLED],
             ['test-value', $onFulfilledReturnsSameValue, 'test-value', null, SyncPromise::FULFILLED],
             ['test-value-2', $onFulfilledReturnsOtherValue, 'other-test-value-2', null, SyncPromise::FULFILLED],
             ['test-value-3', $onFulfilledThrows, null, "onFulfilled throws this!", SyncPromise::REJECTED],

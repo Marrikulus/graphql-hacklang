@@ -20,7 +20,7 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        if(! class_exists('React\Promise\Promise')) {
+        if(! \class_exists('React\Promise\Promise')) {
             $this->markTestSkipped('react/promise package must be installed to run GraphQL\Tests\Executor\Promise\ReactPromiseAdapterTest');
         }
     }

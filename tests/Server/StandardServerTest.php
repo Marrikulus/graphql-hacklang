@@ -25,7 +25,7 @@ class StandardServerTest extends TestCase
 
     public function testSimpleRequestExecutionWithOutsideParsing()
     {
-        $body = json_encode([
+        $body = \json_encode([
             'query' => '{f1}'
         ]);
 

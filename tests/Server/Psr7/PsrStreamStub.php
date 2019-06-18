@@ -56,7 +56,7 @@ class PsrStreamStub implements StreamInterface
      */
     public function getSize()
     {
-        return strlen($this->content?:'');
+        return \strlen($this->content?:'');
     }
 
     /**
@@ -102,7 +102,7 @@ class PsrStreamStub implements StreamInterface
      *     SEEK_END: Set position to end-of-stream plus offset.
      * @throws \RuntimeException on failure.
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = \SEEK_SET)
     {
         throw new \Exception("Not implemented");
     }
@@ -142,7 +142,7 @@ class PsrStreamStub implements StreamInterface
     public function write($string)
     {
         $this->content = $string;
-        return strlen($string);
+        return \strlen($string);
     }
 
     /**

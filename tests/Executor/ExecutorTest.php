@@ -263,10 +263,10 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'rootValue',
             'operation',
             'variableValues',
-        ], array_keys((array) $info));
+        ], \array_keys((array) $info));
 
         $this->assertEquals('test', $info->fieldName);
-        $this->assertEquals(1, count($info->fieldNodes));
+        $this->assertEquals(1, \count($info->fieldNodes));
         $this->assertSame($ast->definitions[0]->selectionSet->selections[0], $info->fieldNodes[0]);
         $this->assertSame(GraphQlType::string(), $info->returnType);
         $this->assertSame($schema->getQueryType(), $info->parentType);
@@ -891,7 +891,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                 'fields' => [
                     'field' => [
                         'type' => GraphQlType::string(),
-                        'resolve' => function($data, $args) {return $args ? json_encode($args) : '';},
+                        'resolve' => function($data, $args) {return $args ? \json_encode($args) : '';},
                         'args' => [
                             'a' => ['type' => GraphQlType::boolean()],
                             'b' => ['type' => GraphQlType::boolean()],
@@ -957,7 +957,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ]
         ], $result->data);
 
-        $this->assertEquals(1, count($result->errors));
+        $this->assertEquals(1, \count($result->errors));
         $this->assertEquals([
             'message' => 'Expected value of type "SpecialType" but got: instance of GraphQL\Tests\Executor\NotSpecial.',
             'locations' => [['line' => 1, 'column' => 3]],
@@ -1046,7 +1046,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                 'fields' => [
                     'field' => [
                         'type' => GraphQlType::string(),
-                        'resolve' => function($data, $args) {return $args ? json_encode($args) : '';},
+                        'resolve' => function($data, $args) {return $args ? \json_encode($args) : '';},
                         'args' => [
                             'a' => ['type' => GraphQlType::boolean(), 'defaultValue' => 1],
                             'b' => ['type' => GraphQlType::boolean(), 'defaultValue' => null],

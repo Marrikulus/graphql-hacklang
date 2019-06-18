@@ -164,9 +164,9 @@ class StarWarsSchema
                         $fieldSelection = $info->getFieldSelection();
                         $fieldSelection['id'] = true;
 
-                        $friends = array_map(
+                        $friends = \array_map(
                             function($friend) use ($fieldSelection) {
-                                return array_intersect_key($friend, $fieldSelection);
+                                return \array_intersect_key($friend, $fieldSelection);
                             },
                             StarWarsData::getFriends($human)
                         );

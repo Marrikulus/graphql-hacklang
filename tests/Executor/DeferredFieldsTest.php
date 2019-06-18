@@ -128,7 +128,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
                     'resolve' => function($category, $args, $context, ResolveInfo $info) {
                         $this->path[] = $info->path;
                         return Utils::filter($this->storyDataSource, function($story) use ($category) {
-                            return in_array($category['id'], $story['categoryIds']);
+                            return \in_array($category['id'], $story['categoryIds']);
                         });
                     }
                 ],

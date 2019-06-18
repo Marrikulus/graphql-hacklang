@@ -20,7 +20,7 @@ class TestUtils
             'loc' => self::locationToArray($node->loc)
         ];
 
-        foreach (get_object_vars($node) as $prop => $propValue) {
+        foreach (\get_object_vars($node) as $prop => $propValue) {
             if (isset($result[$prop]))
                 continue;
 
@@ -31,7 +31,7 @@ class TestUtils
                 }
             } else if ($propValue instanceof Node) {
                 $tmp = self::nodeToArray($propValue);
-            } else if (is_scalar($propValue) || null === $propValue) {
+            } else if (\is_scalar($propValue) || null === $propValue) {
                 $tmp = $propValue;
             } else {
                 $tmp = null;

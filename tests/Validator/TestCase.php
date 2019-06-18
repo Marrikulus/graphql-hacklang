@@ -299,7 +299,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $defaultSchema = new Schema([
             'query' => $queryRoot,
-            'directives' => array_merge(GraphQL::getInternalDirectives(), [
+            'directives' => \array_merge(GraphQL::getInternalDirectives(), [
                 new Directive([
                     'name' => 'operationOnly',
                     'locations' => [ 'QUERY' ],
@@ -323,7 +323,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $errors = DocumentValidator::validate($schema, Parser::parse($queryString), $rules);
 
         $this->assertNotEmpty($errors, 'GraphQL should not validate');
-        $this->assertEquals($expectedErrors, array_map(['GraphQL\Error\Error', 'formatError'], $errors));
+        $this->assertEquals($expectedErrors, \array_map(['GraphQL\Error\Error', 'formatError'], $errors));
 
         return $errors;
     }

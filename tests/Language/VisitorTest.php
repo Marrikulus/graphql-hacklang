@@ -332,7 +332,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
      */
     public function testVisitsKitchenSink()
     {
-        $kitchenSink = file_get_contents(__DIR__ . '/kitchen-sink.graphql');
+        $kitchenSink = \file_get_contents(__DIR__ . '/kitchen-sink.graphql');
         $ast = Parser::parse($kitchenSink);
 
         $visited = [];

@@ -146,7 +146,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->typeLoader = function($name) {
             $this->calls[] = $name;
-            $prop = lcfirst($name);
+            $prop = \lcfirst($name);
             return isset($this->{$prop}) ? $this->{$prop} : null;
         };
     }

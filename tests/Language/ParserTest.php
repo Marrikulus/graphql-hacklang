@@ -144,7 +144,7 @@ HEREDOC;
     public function testParsesKitchenSink()
     {
         // Following should not throw:
-        $kitchenSink = file_get_contents(__DIR__ . '/kitchen-sink.graphql');
+        $kitchenSink = \file_get_contents(__DIR__ . '/kitchen-sink.graphql');
         $result = Parser::parse($kitchenSink);
         $this->assertNotEmpty($result);
     }

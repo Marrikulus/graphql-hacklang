@@ -82,8 +82,8 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
             'operation' => $operation
         ];
         $parsed = [
-            'raw' => $this->parseRawRequest('application/json', json_encode($body)),
-            'psr' => $this->parsePsrRequest('application/json', json_encode($body))
+            'raw' => $this->parseRawRequest('application/json', \json_encode($body)),
+            'psr' => $this->parsePsrRequest('application/json', \json_encode($body))
         ];
         foreach ($parsed as $method => $parsedBody) {
             $this->assertValidOperationParams($parsedBody, $query, null, $variables, $operation, $method);
@@ -99,12 +99,12 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
 
         $body = [
             'query' => $query,
-            'variables' => json_encode($variables),
+            'variables' => \json_encode($variables),
             'operation' => $operation
         ];
         $parsed = [
-            'raw' => $this->parseRawRequest('application/json', json_encode($body)),
-            'psr' => $this->parsePsrRequest('application/json', json_encode($body))
+            'raw' => $this->parseRawRequest('application/json', \json_encode($body)),
+            'psr' => $this->parsePsrRequest('application/json', \json_encode($body))
         ];
         foreach ($parsed as $method => $parsedBody) {
             $this->assertValidOperationParams($parsedBody, $query, null, $variables, $operation, $method);
@@ -124,8 +124,8 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
             'operation' => $operation
         ];
         $parsed = [
-            'raw' => $this->parseRawRequest('application/json', json_encode($body)),
-            'psr' => $this->parsePsrRequest('application/json', json_encode($body)),
+            'raw' => $this->parseRawRequest('application/json', \json_encode($body)),
+            'psr' => $this->parsePsrRequest('application/json', \json_encode($body)),
         ];
         foreach ($parsed as $method => $parsedBody) {
             $this->assertValidOperationParams($parsedBody, $query, null, $variables, $operation, $method);
@@ -148,8 +148,8 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
             ],
         ];
         $parsed = [
-            'raw' => $this->parseRawRequest('application/json', json_encode($body)),
-            'psr' => $this->parsePsrRequest('application/json', json_encode($body))
+            'raw' => $this->parseRawRequest('application/json', \json_encode($body)),
+            'psr' => $this->parsePsrRequest('application/json', \json_encode($body))
         ];
         foreach ($parsed as $method => $parsedBody) {
             $this->assertInternalType('array', $parsedBody, $method);
@@ -178,7 +178,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
     public function testFailsParsingNonPreParsedPsrRequest()
     {
         try {
-            $this->parsePsrRequest('application/json', json_encode(null));
+            $this->parsePsrRequest('application/json', \json_encode(null));
             $this->fail('Expected exception not thrown');
         } catch (InvariantViolation $e) {
             // Expecting parsing exception to be thrown somewhere else:
@@ -240,13 +240,13 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
     public function testFailsOnMethodsOtherThanPostOrGetRaw()
     {
         $this->setExpectedException(RequestError::class, 'HTTP Method "PUT" is not supported');
-        $this->parseRawRequest('application/json', json_encode([]), "PUT");
+        $this->parseRawRequest('application/json', \json_encode([]), "PUT");
     }
 
     public function testFailsOnMethodsOtherThanPostOrGetPsr()
     {
         $this->setExpectedException(RequestError::class, 'HTTP Method "PUT" is not supported');
-        $this->parsePsrRequest('application/json', json_encode([]), "PUT");
+        $this->parsePsrRequest('application/json', \json_encode([]), "PUT");
     }
 
     /**
@@ -285,7 +285,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
         $psrRequest->body = $psrRequestBody;
 
         if ($contentType === 'application/json') {
-            $parsedBody = json_decode($content, true);
+            $parsedBody = \json_decode($content, true);
             $parsedBody = $parsedBody === false ? null : $parsedBody;
         } else {
             $parsedBody = null;

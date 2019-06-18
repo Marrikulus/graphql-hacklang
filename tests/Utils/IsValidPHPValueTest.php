@@ -128,6 +128,6 @@ class IsValidPHPValueTest extends \PHPUnit_Framework_TestCase
 
     private function expectErrorResult($result, $size) {
         $this->assertInternalType('array', $result);
-        $this->assertEquals($size, count($result));
+        $this->assertEquals($size, \count($result));
     }
 }

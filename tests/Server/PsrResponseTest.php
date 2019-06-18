@@ -19,7 +19,7 @@ class PsrResponseTest extends \PHPUnit_Framework_TestCase
 
         /** @var PsrResponseStub $resp */
         $resp = $helper->toPsrResponse($result, $psrResponse, $stream);
-        $this->assertSame(json_encode($result), $resp->body->content);
+        $this->assertSame(\json_encode($result), $resp->body->content);
         $this->assertSame(['Content-Type' => ['application/json']], $resp->headers);
     }
 }

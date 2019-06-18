@@ -1090,7 +1090,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
                     'type' => Type::string(),
                     'args' => ['complex' => ['type' => $TestInputObject]],
                     'resolve' => function ($_, $args) {
-                        return json_encode($args['complex']);
+                        return \json_encode($args['complex']);
                     }
                 ]
             ]

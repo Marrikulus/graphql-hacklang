@@ -667,7 +667,7 @@ class QueryExecutionTest extends TestCase
         $helper = new Helper();
         $result = $helper->executeBatch($this->config, $batch);
         $this->assertInternalType('array', $result);
-        $this->assertCount(count($qs), $result);
+        $this->assertCount(\count($qs), $result);
 
         foreach ($result as $index => $entry) {
             $this->assertInstanceOf(ExecutionResult::class, $entry, "Result at $index is not an instance of " . ExecutionResult::class);

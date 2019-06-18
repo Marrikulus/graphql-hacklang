@@ -141,7 +141,7 @@ class ValuesTest extends \PHPUnit_Framework_TestCase {
       $this->assertEquals(
           $variables,
           self::runTestCase($variables),
-          'Output variables did not match input variables' . PHP_EOL . var_export($variables, true) . PHP_EOL
+          'Output variables did not match input variables' . \PHP_EOL . \var_export($variables, true) . \PHP_EOL
       );
   }
 

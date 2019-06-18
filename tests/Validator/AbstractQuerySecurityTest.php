@@ -47,7 +47,7 @@ abstract class AbstractQuerySecurityTest extends \PHPUnit_Framework_TestCase
             [$this->getRule($max)]
         );
 
-        $this->assertEquals($expectedErrors, array_map(['GraphQL\Error\Error', 'formatError'], $errors), $queryString);
+        $this->assertEquals($expectedErrors, \array_map(['GraphQL\Error\Error', 'formatError'], $errors), $queryString);
 
         return $errors;
     }
