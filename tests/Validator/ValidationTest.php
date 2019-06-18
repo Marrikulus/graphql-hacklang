@@ -46,6 +46,6 @@ class ValidationTest extends TestCase
             'locations' => [ ['line' => 1, 'column' => 2] ]
         ];
         $this->expectFailsCompleteValidation($query, [$expectedError]);
-        $this->expectValid($this->getDefaultSchema(), [], $query);
+        $this->expectValid(TestCase::getDefaultSchema(), [], $query);
     }
 }

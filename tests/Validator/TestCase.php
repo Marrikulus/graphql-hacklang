@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Validator;
 
 use GraphQL\GraphQL;
+use GraphQL\Error\Error;
 use GraphQL\Language\Lexer;
 use GraphQL\Language\Parser;
 use GraphQL\Schema;
@@ -12,16 +13,17 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Validator\DocumentValidator;
+use GraphQL\Validator\Rules\AbstractValidationRule;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * @return Schema
      */
-    public static function getDefaultSchema()
+    public static function getDefaultSchema():Schema
     {
         $FurColor = null;
 
@@ -29,8 +31,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'name' => 'Being',
             'fields' => [
                 'name' => [
-                    'type' => Type::string(),
-                    'args' => [ 'surname' => [ 'type' => Type::boolean() ] ]
+                    'type' => GraphQlType::string(),
+                    'args' => [ 'surname' => [ 'type' => GraphQlType::boolean() ] ]
                 ]
             ],
         ]);
@@ -39,8 +41,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'name' => 'Pet',
             'fields' => [
                 'name' => [
-                    'type' => Type::string(),
-                    'args' => [ 'surname' => [ 'type' => Type::boolean() ] ]
+                    'type' => GraphQlType::string(),
+                    'args' => [ 'surname' => [ 'type' => GraphQlType::boolean() ] ]
                 ]
             ],
         ]);
@@ -50,8 +52,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'fields' => function() {
                 return [
                     'name' => [
-                        'type' => Type::string(),
-                        'args' => ['surname' => ['type' => Type::boolean()]]
+                        'type' => GraphQlType::string(),
+                        'args' => ['surname' => ['type' => GraphQlType::boolean()]]
                     ]
                 ];
             }
@@ -71,23 +73,23 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'isTypeOf' => function() {return true;},
             'fields' => [
                 'name' => [
-                    'type' => Type::string(),
-                    'args' => [ 'surname' => [ 'type' => Type::boolean() ] ]
+                    'type' => GraphQlType::string(),
+                    'args' => [ 'surname' => [ 'type' => GraphQlType::boolean() ] ]
                 ],
-                'nickname' => ['type' => Type::string()],
-                'barkVolume' => ['type' => Type::int()],
-                'barks' => ['type' => Type::boolean()],
+                'nickname' => ['type' => GraphQlType::string()],
+                'barkVolume' => ['type' => GraphQlType::int()],
+                'barks' => ['type' => GraphQlType::boolean()],
                 'doesKnowCommand' => [
-                    'type' => Type::boolean(),
+                    'type' => GraphQlType::boolean(),
                     'args' => ['dogCommand' => ['type' => $DogCommand]]
                 ],
                 'isHousetrained' => [
-                    'type' => Type::boolean(),
-                    'args' => ['atOtherHomes' => ['type' => Type::boolean(), 'defaultValue' => true]]
+                    'type' => GraphQlType::boolean(),
+                    'args' => ['atOtherHomes' => ['type' => GraphQlType::boolean(), 'defaultValue' => true]]
                 ],
                 'isAtLocation' => [
-                    'type' => Type::boolean(),
-                    'args' => ['x' => ['type' => Type::int()], 'y' => ['type' => Type::int()]]
+                    'type' => GraphQlType::boolean(),
+                    'args' => ['x' => ['type' => GraphQlType::int()], 'y' => ['type' => GraphQlType::int()]]
                 ]
             ],
             'interfaces' => [$Being, $Pet, $Canine]
@@ -99,12 +101,12 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'fields' => function() use (&$FurColor) {
                 return [
                     'name' => [
-                        'type' => Type::string(),
-                        'args' => [ 'surname' => [ 'type' => Type::boolean() ] ]
+                        'type' => GraphQlType::string(),
+                        'args' => [ 'surname' => [ 'type' => GraphQlType::boolean() ] ]
                     ],
-                    'nickname' => ['type' => Type::string()],
-                    'meows' => ['type' => Type::boolean()],
-                    'meowVolume' => ['type' => Type::int()],
+                    'nickname' => ['type' => GraphQlType::string()],
+                    'meows' => ['type' => GraphQlType::boolean()],
+                    'meowVolume' => ['type' => GraphQlType::int()],
                     'furColor' => $FurColor
                 ];
             },
@@ -123,7 +125,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $Intelligent = new InterfaceType([
             'name' => 'Intelligent',
             'fields' => [
-                'iq' => ['type' => Type::int()]
+                'iq' => ['type' => GraphQlType::int()]
             ]
         ]);
 
@@ -135,12 +137,12 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'fields' => function() use (&$Human, $Pet) {
                 return [
                     'name' => [
-                        'type' => Type::string(),
-                        'args' => ['surname' => ['type' => Type::boolean()]]
+                        'type' => GraphQlType::string(),
+                        'args' => ['surname' => ['type' => GraphQlType::boolean()]]
                     ],
-                    'pets' => ['type' => Type::listOf($Pet)],
-                    'relatives' => ['type' => Type::listOf($Human)],
-                    'iq' => ['type' => Type::int()]
+                    'pets' => ['type' => GraphQlType::listOf($Pet)],
+                    'relatives' => ['type' => GraphQlType::listOf($Human)],
+                    'iq' => ['type' => GraphQlType::int()]
                 ];
             }
         ]);
@@ -150,12 +152,12 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'isTypeOf' => function() {return true;},
             'interfaces' => [$Being, $Intelligent],
             'fields' => [
-                'iq' => ['type' => Type::int()],
+                'iq' => ['type' => GraphQlType::int()],
                 'name' => [
-                    'type' => Type::string(),
-                    'args' => ['surname' => ['type' => Type::boolean()]]
+                    'type' => GraphQlType::string(),
+                    'args' => ['surname' => ['type' => GraphQlType::boolean()]]
                 ],
-                'numEyes' => ['type' => Type::int()]
+                'numEyes' => ['type' => GraphQlType::int()]
             ]
         ]);
 
@@ -191,11 +193,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $ComplexInput = new InputObjectType([
             'name' => 'ComplexInput',
             'fields' => [
-                'requiredField' => ['type' => Type::nonNull(Type::boolean())],
-                'intField' => ['type' => Type::int()],
-                'stringField' => ['type' => Type::string()],
-                'booleanField' => ['type' => Type::boolean()],
-                'stringListField' => ['type' => Type::listOf(Type::string())]
+                'requiredField' => ['type' => GraphQlType::nonNull(GraphQlType::boolean())],
+                'intField' => ['type' => GraphQlType::int()],
+                'stringField' => ['type' => GraphQlType::string()],
+                'booleanField' => ['type' => GraphQlType::boolean()],
+                'stringListField' => ['type' => GraphQlType::listOf(GraphQlType::string())]
             ]
         ]);
 
@@ -206,72 +208,72 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             // TODO NotNulls
             'fields' => [
                 'intArgField' => [
-                    'type' => Type::string(),
-                    'args' => ['intArg' => ['type' => Type::int()]],
+                    'type' => GraphQlType::string(),
+                    'args' => ['intArg' => ['type' => GraphQlType::int()]],
                 ],
                 'nonNullIntArgField' => [
-                    'type' => Type::string(),
-                    'args' => [ 'nonNullIntArg' => [ 'type' => Type::nonNull(Type::int())]],
+                    'type' => GraphQlType::string(),
+                    'args' => [ 'nonNullIntArg' => [ 'type' => GraphQlType::nonNull(GraphQlType::int())]],
                 ],
                 'stringArgField' => [
-                    'type' => Type::string(),
-                    'args' => [ 'stringArg' => [ 'type' => Type::string()]],
+                    'type' => GraphQlType::string(),
+                    'args' => [ 'stringArg' => [ 'type' => GraphQlType::string()]],
                 ],
                 'booleanArgField' => [
-                    'type' => Type::string(),
-                    'args' => ['booleanArg' => [ 'type' => Type::boolean() ]],
+                    'type' => GraphQlType::string(),
+                    'args' => ['booleanArg' => [ 'type' => GraphQlType::boolean() ]],
                 ],
                 'enumArgField' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [ 'enumArg' => ['type' => $FurColor ]],
                 ],
                 'floatArgField' => [
-                    'type' => Type::string(),
-                    'args' => [ 'floatArg' => [ 'type' => Type::float()]],
+                    'type' => GraphQlType::string(),
+                    'args' => [ 'floatArg' => [ 'type' => GraphQlType::float()]],
                 ],
                 'idArgField' => [
-                    'type' => Type::string(),
-                    'args' => [ 'idArg' => [ 'type' => Type::id() ]],
+                    'type' => GraphQlType::string(),
+                    'args' => [ 'idArg' => [ 'type' => GraphQlType::id() ]],
                 ],
                 'stringListArgField' => [
-                    'type' => Type::string(),
-                    'args' => [ 'stringListArg' => [ 'type' => Type::listOf(Type::string())]],
+                    'type' => GraphQlType::string(),
+                    'args' => [ 'stringListArg' => [ 'type' => GraphQlType::listOf(GraphQlType::string())]],
                 ],
                 'complexArgField' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [ 'complexArg' => [ 'type' => $ComplexInput ]],
                 ],
                 'multipleReqs' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'req1' => [ 'type' => Type::nonNull(Type::int())],
-                        'req2' => [ 'type' => Type::nonNull(Type::int())],
+                        'req1' => [ 'type' => GraphQlType::nonNull(GraphQlType::int())],
+                        'req2' => [ 'type' => GraphQlType::nonNull(GraphQlType::int())],
                     ],
                 ],
                 'multipleOpts' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
                         'opt1' => [
-                            'type' => Type::int(),
+                            'type' => GraphQlType::int(),
                             'defaultValue' => 0,
                         ],
                         'opt2' => [
-                            'type' => Type::int(),
+                            'type' => GraphQlType::int(),
                             'defaultValue' => 0,
                         ],
                     ],
                 ],
                 'multipleOptAndReq' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'req1' => [ 'type' => Type::nonNull(Type::int())],
-                        'req2' => [ 'type' => Type::nonNull(Type::int())],
+                        'req1' => [ 'type' => GraphQlType::nonNull(GraphQlType::int())],
+                        'req2' => [ 'type' => GraphQlType::nonNull(GraphQlType::int())],
                         'opt1' => [
-                            'type' => Type::int(),
+                            'type' => GraphQlType::int(),
                             'defaultValue' => 0,
                         ],
                         'opt2' => [
-                            'type' => Type::int(),
+                            'type' => GraphQlType::int(),
                             'defaultValue' => 0,
                         ],
                     ],
@@ -283,7 +285,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'name' => 'QueryRoot',
             'fields' => [
                 'human' => [
-                    'args' => ['id' => ['type' => Type::id()]],
+                    'args' => ['id' => ['type' => GraphQlType::id()]],
                     'type' => $Human
                 ],
                 'alien' => ['type' => $Alien],
@@ -309,7 +311,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         return $defaultSchema;
     }
 
-    public function expectValid($schema, $rules, $queryString)
+    public function expectValid(Schema $schema, array<AbstractValidationRule> $rules, string $queryString):void
     {
         $this->assertEquals(
             [],
@@ -318,43 +320,43 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function expectInvalid($schema, $rules, $queryString, $expectedErrors)
+    public function expectInvalid(Schema $schema, array<AbstractValidationRule> $rules, string $queryString, array<array<string, mixed>> $expectedErrors):array<Error>
     {
         $errors = DocumentValidator::validate($schema, Parser::parse($queryString), $rules);
 
         $this->assertNotEmpty($errors, 'GraphQL should not validate');
-        $this->assertEquals($expectedErrors, \array_map(['GraphQL\Error\Error', 'formatError'], $errors));
+        $this->assertEquals($expectedErrors, \array_map( class_meth(Error::class, 'formatError'), $errors));
 
         return $errors;
     }
 
-    public function expectPassesRule($rule, $queryString)
+    public function expectPassesRule(AbstractValidationRule $rule, string $queryString):void
     {
-        $this->expectValid($this->getDefaultSchema(), [$rule], $queryString);
+        $this->expectValid(TestCase::getDefaultSchema(), [$rule], $queryString);
     }
 
-    public function expectFailsRule($rule, $queryString, $errors)
+    public function expectFailsRule(AbstractValidationRule $rule, string $queryString, array<array<string, mixed>> $errors):array<Error>
     {
-        return $this->expectInvalid($this->getDefaultSchema(), [$rule], $queryString, $errors);
+        return $this->expectInvalid(TestCase::getDefaultSchema(), [$rule], $queryString, $errors);
     }
 
-    public function expectPassesRuleWithSchema($schema, $rule, $queryString)
+    public function expectPassesRuleWithSchema(Schema $schema, AbstractValidationRule $rule, string $queryString):void
     {
         $this->expectValid($schema, [$rule], $queryString);
     }
 
-    public function expectFailsRuleWithSchema($schema, $rule, $queryString, $errors)
+    public function expectFailsRuleWithSchema(Schema $schema, AbstractValidationRule $rule, string $queryString, array<array<string, mixed>> $errors):void
     {
         $this->expectInvalid($schema, [$rule], $queryString, $errors);
     }
 
-    public function expectPassesCompleteValidation($queryString)
+    public function expectPassesCompleteValidation(string $queryString):void
     {
-        $this->expectValid($this->getDefaultSchema(), DocumentValidator::allRules(), $queryString);
+        $this->expectValid(TestCase::getDefaultSchema(), DocumentValidator::allRules(), $queryString);
     }
 
-    public function expectFailsCompleteValidation($queryString, $errors)
+    public function expectFailsCompleteValidation(string $queryString, array<array<string, mixed>> $errors):void
     {
-        $this->expectInvalid($this->getDefaultSchema(), DocumentValidator::allRules(), $queryString, $errors);
+        $this->expectInvalid(TestCase::getDefaultSchema(), DocumentValidator::allRules(), $queryString, $errors);
     }
 }
