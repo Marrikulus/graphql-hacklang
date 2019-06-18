@@ -78,7 +78,7 @@ class SchemaPrinter
         });
         $typeMap = $schema->getTypeMap();
         $types = \array_filter(\array_keys($typeMap), $typeFilter);
-        \sort($types);
+        \sort(&$types);
         $types = \array_map(function($typeName) use ($typeMap) { return $typeMap[$typeName]; }, $types);
 
         return \implode("\n\n", \array_filter(\array_merge(
@@ -305,7 +305,7 @@ class SchemaPrinter
         if (\strlen($line) < $len + 5) {
             return [$line];
         }
-        \preg_match_all("/((?: |^).{15," . ($len - 40) . "}(?= |$))/", $line, $parts);
+        \preg_match_all("/((?: |^).{15," . ($len - 40) . "}(?= |$))/", $line, &$parts);
         $parts = $parts[0];
         return \array_map(function($part) {
             return \trim($part);

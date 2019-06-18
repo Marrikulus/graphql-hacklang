@@ -244,8 +244,8 @@ class MixedStore implements \ArrayAccess<mixed,mixed>
             $index = \array_search($offset, $this->arrayKeys, true);
 
             if (false !== $index) {
-                \array_splice($this->arrayKeys, $index, 1);
-                \array_splice($this->arrayValues, $index, 1);
+                \array_splice(&$this->arrayKeys, $index, 1);
+                \array_splice(&$this->arrayValues, $index, 1);
             }
         } else if (null === $offset) {
             $this->nullValue = null;

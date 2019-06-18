@@ -78,7 +78,7 @@ class NoFragmentCycles extends AbstractValidationRule
                         $this->detectCycleRecursive($spreadFragment, $context);
                     }
                 }
-                \array_pop($this->spreadPath);
+                \array_pop(&$this->spreadPath);
             } else {
                 $cyclePath = \array_slice($this->spreadPath, $cycleIndex);
                 $nodes = $cyclePath;
