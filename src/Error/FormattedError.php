@@ -1,4 +1,4 @@
-<?hh //partial
+<?hh //strict
 namespace GraphQL\Error;
 
 use GraphQL\Language\SourceLocation;
@@ -134,7 +134,7 @@ class FormattedError
         }
 
         if ($debug & Debug::INCLUDE_TRACE) {
-            if ($e instanceof \ErrorException || $e instanceof \Error) {
+            if ($e instanceof \ErrorException || $e instanceof Error) {
                 $formattedError = \array_merge($formattedError, [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
@@ -180,32 +180,38 @@ class FormattedError
      * @param \Throwable $error
      * @return array
      */
-    public static function toSafeTrace($error)
+    public static function toSafeTrace(\Exception $error):array<string, mixed>
     {
         $trace = $error->getTrace();
 
-        // Remove invariant entries as they don't provide much value:
-        if (
-            isset($trace[0]['function']) && isset($trace[0]['class']) &&
-            ('GraphQL\Utils\Utils::invariant' === $trace[0]['class'].'::'.$trace[0]['function'])) {
-            \array_shift(&$trace);
-        }
-
-        // Remove root call as it's likely error handler trace:
-        else if (!isset($trace[0]['file']))
+        if(\array_key_exists(0, $trace) && ($t = $trace[0]) !== null && \is_array($t))
         {
-            \array_shift(&$trace);
+            // Remove invariant entries as they don't provide much value:
+            if (\array_key_exists('function', $t) && \array_key_exists('class', $t) &&
+                ('GraphQL\Utils\Utils::invariant' === $t['class'].'::'.$t['function']))
+            {
+                \array_shift(&$trace);
+            }
+            // Remove root call as it's likely error handler trace:
+            else if (!(\array_key_exists('file', $t) && $t['file'] !== null))
+            {
+                \array_shift(&$trace);
+            }
         }
 
-        return \array_map(function($err) {
+        /* HH_FIXME[4110]*/
+        return \array_map(function($err)
+        {
             $safeErr = \array_intersect_key($err, ['file' => true, 'line' => true]);
 
-            if (isset($err['function'])) {
+            if ($err !== null  && \is_array($err) && \array_key_exists('function', $err))
+            {
                 $func = $err['function'];
                 $args = \count($err['args']) !== 0 ? \array_map(class_meth(__CLASS__, 'printVar'), $err['args']) : [];
                 $funcStr = $func . '(' . \implode(", ", $args) . ')';
 
-                if (isset($err['class'])) {
+                if (\array_key_exists('class',$err))
+                {
                     $safeErr['call'] = $err['class'] . '::' . $funcStr;
                 } else {
                     $safeErr['function'] = $funcStr;
@@ -260,7 +266,7 @@ class FormattedError
      * @param SourceLocation[] $locations
      * @return array
      */
-    public static function create(\Exception $error, array<SourceLocation> $locations = []):array<string, mixed>
+    public static function create(string $error, array<SourceLocation> $locations = []):array<string, mixed>
     {
         $formatted = [
             'message' => $error
