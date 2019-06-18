@@ -35,7 +35,7 @@ abstract class ScalarType<T> extends GraphQlType implements OutputType, InputTyp
     public function __construct(array<string, mixed> $config = [])
     {
         $this->name = (string)idx($config, 'name', $this->tryInferName());
-        if (\array_key_exists('description', $config) && is_string($config['description']))
+        if (\array_key_exists('description', $config) && ($config['description'] is string))
         {
             $this->description = (string)$config['description'];
         }

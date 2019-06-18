@@ -53,7 +53,7 @@ values as specified by
      */
     public function parseValue($value)
     {
-        return (is_numeric($value) && !is_string($value)) ? (float) $value : null;
+        return (is_numeric($value) && !($value is string)) ? (float) $value : null;
     }
 
     /**

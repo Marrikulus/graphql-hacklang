@@ -75,13 +75,13 @@ class EnumType extends GraphQlType implements InputType, OutputType, LeafType<?s
                     throw new InvariantViolation("{$this->name} values must be an array");
                 }
                 foreach ($config['values'] as $name => $value) {
-                    if (is_string($name)) {
+                    if ($name is string) {
                         if (!is_array($value)) {
                             $value = ['name' => $name, 'value' => $value];
                         } else {
                             $value += ['name' => $name, 'value' => $name];
                         }
-                    } else if (is_int($name) && is_string($value)) {
+                    } else if (($name is int) && ($value is string)) {
                         $value = ['name' => $value, 'value' => $value];
                     } else {
                         throw new InvariantViolation("{$this->name} values must be an array with value names as keys.");
@@ -120,7 +120,7 @@ class EnumType extends GraphQlType implements InputType, OutputType, LeafType<?s
      */
     public function isValidValue(mixed $value):bool
     {
-        return is_string($value) && $this->getNameLookup()->offsetExists($value);
+        return ($value is string) && $this->getNameLookup()->offsetExists($value);
     }
 
     /**

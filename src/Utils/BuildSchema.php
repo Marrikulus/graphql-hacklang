@@ -626,7 +626,7 @@ class BuildSchema
         {
             $doc = Parser::parseSource($source);
         }
-        elseif(is_string($source))
+        elseif(($source is string))
         {
             $doc = Parser::parse($source);
         }

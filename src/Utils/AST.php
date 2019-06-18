@@ -232,19 +232,19 @@ class AST
         }
 
         // Others serialize based on their corresponding PHP scalar types.
-        if (is_bool($serialized)) {
+        if ($serialized is bool) {
             return new BooleanValueNode(['value' => $serialized]);
         }
-        if (is_int($serialized)) {
+        if ($serialized is int) {
             return new IntValueNode(['value' => $serialized]);
         }
-        if (is_float($serialized)) {
+        if ($serialized is float) {
             if ((int) $serialized == $serialized) {
                 return new IntValueNode(['value' => $serialized]);
             }
             return new FloatValueNode(['value' => $serialized]);
         }
-        if (is_string($serialized)) {
+        if ($serialized is string) {
             // Enum types use Enum literals.
             if ($type instanceof EnumType) {
                 return new EnumValueNode(['value' => $serialized]);

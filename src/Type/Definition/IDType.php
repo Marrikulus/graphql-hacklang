@@ -58,7 +58,7 @@ When expected as an input type, any string (such as `"4"`) or integer
      */
     public function parseValue($value)
     {
-        return (is_string($value) || is_int($value)) ? (string) $value : null;
+        return (($value is string) || ($value is int)) ? (string) $value : null;
     }
 
     /**

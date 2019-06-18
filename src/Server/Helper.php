@@ -133,20 +133,20 @@ class Helper
             $errors[] = new RequestError('GraphQL Request parameters "query" and "queryId" are mutually exclusive');
         }
 
-        if ($params->query !== null && (!is_string($params->query) || empty($params->query))) {
+        if ($params->query !== null && (!($params->query is string) || empty($params->query))) {
             $errors[] = new RequestError(
                 'GraphQL Request parameter "query" must be string, but got ' .
                 Utils::printSafeJson($params->query)
             );
         }
-        if ($params->queryId !== null && (!is_string($params->queryId) || empty($params->queryId))) {
+        if ($params->queryId !== null && (!($params->queryId is string) || empty($params->queryId))) {
             $errors[] = new RequestError(
                 'GraphQL Request parameter "queryId" must be string, but got ' .
                 Utils::printSafeJson($params->queryId)
             );
         }
 
-        if ($params->operation !== null && (!is_string($params->operation) || empty($params->operation))) {
+        if ($params->operation !== null && (!($params->operation is string) || empty($params->operation))) {
             $errors[] = new RequestError(
                 'GraphQL Request parameter "operation" must be string, but got ' .
                 Utils::printSafeJson($params->operation)
@@ -304,7 +304,7 @@ class Helper
 
         $source = $loader($op->queryId, $op);
 
-        if (!is_string($source) && !$source instanceof DocumentNode) {
+        if (!($source is string) && !$source instanceof DocumentNode) {
             throw new InvariantViolation(\sprintf(
                 "Persistent query loader must return query string or instance of %s but got: %s",
                 DocumentNode::class,

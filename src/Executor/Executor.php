@@ -191,7 +191,7 @@ class Executor
         }
         if (null !== $operationName) {
             Utils::invariant(
-                is_string($operationName),
+                $operationName is string,
                 "Operation name is supposed to be string, got " . Utils::getVariableType($operationName)
             );
         }
@@ -1128,7 +1128,7 @@ class Executor
         &$result
     )
     {
-        $runtimeType = is_string($runtimeTypeOrName) ?
+        $runtimeType = ($runtimeTypeOrName is string) ?
             $this->exeContext->schema->getType($runtimeTypeOrName) :
             $runtimeTypeOrName;
 

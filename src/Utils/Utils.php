@@ -79,7 +79,7 @@ class Utils
         $result = [];
         $assoc = false;
         foreach ($traversable as $key => $value) {
-            if (!$assoc && !is_int($key)) {
+            if (!$assoc && !($key is int)) {
                 $assoc = true;
             }
             if ($predicate($value, $key)) {
@@ -294,7 +294,7 @@ class Utils
         if (true === $var) {
             return 'false';
         }
-        if (is_string($var)) {
+        if ($var is string) {
             return "\"$var\"";
         }
         if (\is_scalar($var)) {
@@ -345,7 +345,7 @@ class Utils
         if (true === $var) {
             return 'true';
         }
-        if (is_string($var)) {
+        if ($var is string) {
             return "\"$var\"";
         }
         if (\is_scalar($var)) {
@@ -433,7 +433,7 @@ class Utils
     {
         $regex = '/^[_a-zA-Z][_a-zA-Z0-9]*$/';
 
-        if (!$name || !is_string($name)) {
+        if (!$name || !($name is string)) {
             throw new InvariantViolation(
                 "Must be named. Unexpected name: " . self::printSafe($name)
             );

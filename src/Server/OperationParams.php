@@ -76,7 +76,7 @@ class OperationParams
             $params['variables'] = null;
         }
 
-        if (is_string($params['variables'])) {
+        if ($params['variables'] is string) {
             $tmp = \json_decode($params['variables'], true);
             if (!\json_last_error()) {
                 $params['variables'] = $tmp;

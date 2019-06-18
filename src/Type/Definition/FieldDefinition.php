@@ -105,7 +105,7 @@ class FieldDefinition
         $map = [];
         foreach ($fields as $name => $field) {
             if (is_array($field)) {
-                if (!isset($field['name']) && is_string($name)) {
+                if (!isset($field['name']) && ($name is string)) {
                     $field['name'] = $name;
                 }
                 if (isset($field['args']) && !is_array($field['args'])) {
@@ -117,7 +117,7 @@ class FieldDefinition
             } else if ($field instanceof FieldDefinition) {
                 $fieldDef = $field;
             } else {
-                if (is_string($name) && $field) {
+                if (($name is string) && $field) {
                     $fieldDef = self::create(['name' => $name, 'type' => $field]);
                 } else {
                     throw new InvariantViolation(
@@ -146,14 +146,14 @@ class FieldDefinition
         $map = [];
         foreach ($fields as $name => $field) {
             if (is_array($field)) {
-                if (!isset($field['name']) && is_string($name)) {
+                if (!isset($field['name']) && ($name is string)) {
                     $field['name'] = $name;
                 }
                 $fieldDef = self::create($field);
             } else if ($field instanceof FieldDefinition) {
                 $fieldDef = $field;
             } else {
-                if (is_string($name)) {
+                if ($name is string) {
                     $fieldDef = self::create(['name' => $name, 'type' => $field]);
                 } else {
                     throw new InvariantViolation(

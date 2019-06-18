@@ -201,14 +201,14 @@ class Config
                         if ($def->flags & self::MAYBE_TYPE && $arrValue instanceof GraphQlType) {
                             $arrValue = ['type' => $arrValue];
                         }
-                        if ($def->flags & self::MAYBE_NAME && is_string($arrValue)) {
+                        if ($def->flags & self::MAYBE_NAME && ($arrValue is string)) {
                             $arrValue = ['name' => $arrValue];
                         }
 
                         if (!$arrValue instanceof FieldDefinition) {
                             Utils::invariant(is_array($arrValue), $err, $arrKey, Utils::getVariableType($arrValue));
 
-                            if ($def->flags & self::KEY_AS_NAME && is_string($arrKey)) {
+                            if ($def->flags & self::KEY_AS_NAME && ($arrKey is string)) {
                                 $arrValue += ['name' => $arrKey];
                             }
                             self::validateMap($typeName, $arrValue, $def->definition, "$pathStr:$arrKey");
@@ -221,7 +221,7 @@ class Config
                 throw new InvariantViolation('Error in "'.$typeName.'" type definition: ' . "unexpected definition: " . \print_r($def, true));
             }
         } else {
-            Utils::invariant(is_int($def), 'Error in "'.$typeName.'" type definition: ' . "Definition for '$pathStr' is expected to be single integer value");
+            Utils::invariant($def is int, 'Error in "'.$typeName.'" type definition: ' . "Definition for '$pathStr' is expected to be single integer value");
 
             if ($def & self::REQUIRED) {
                 Utils::invariant($value !== null, 'Error in "'.$typeName.'" type definition: ' . 'Value at "%s" can not be null', $pathStr);
@@ -235,19 +235,19 @@ class Config
                 case $def & self::ANY:
                     break;
                 case $def & self::BOOLEAN:
-                    Utils::invariant(is_bool($value), $err, 'boolean');
+                    Utils::invariant($value is bool, $err, 'boolean');
                     break;
                 case $def & self::STRING:
-                    Utils::invariant(is_string($value), $err, 'string');
+                    Utils::invariant($value is string, $err, 'string');
                     break;
                 case $def & self::NUMERIC:
                     Utils::invariant(is_numeric($value), $err, 'numeric');
                     break;
                 case $def & self::FLOAT:
-                    Utils::invariant(is_float($value) || is_int($value), $err, 'float');
+                    Utils::invariant(($value is float) || ($value is int), $err, 'float');
                     break;
                 case $def & self::INT:
-                    Utils::invariant(is_int($value), $err, 'int');
+                    Utils::invariant($value is int, $err, 'int');
                     break;
                 case $def & self::CALLBACK:
                     Utils::invariant(\is_callable($value), $err, 'callable');
@@ -256,7 +256,7 @@ class Config
                     Utils::invariant(\is_scalar($value), $err, 'scalar');
                     break;
                 case $def & self::NAME:
-                    Utils::invariant(is_string($value), $err, 'name');
+                    Utils::invariant($value is string, $err, 'name');
                     Utils::invariant(
                         \preg_match('~^[_a-zA-Z][_a-zA-Z0-9]*$~', $value),
                         'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "%s" does not.',

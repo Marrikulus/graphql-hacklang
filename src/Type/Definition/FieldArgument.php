@@ -130,7 +130,7 @@ class FieldArgument
             "Input Type but got: " . Utils::printSafe($this->type)
         );
         Utils::invariant(
-            $this->description === null || is_string($this->description),
+            $this->description === null || ($this->description is string),
             "{$parentType->name}.{$parentField->name}({$this->name}): argument description type must be " .
             "string but got: " . Utils::printSafe($this->description)
         );

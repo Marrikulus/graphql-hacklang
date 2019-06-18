@@ -55,7 +55,7 @@ represent free-form human-readable text.';
      */
     public function parseValue($value)
     {
-        return is_string($value) ? $value : null;
+        return ($value is string) ? $value : null;
     }
 
     /**

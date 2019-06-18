@@ -245,10 +245,10 @@ class FormattedError
         if ('' === $var) {
             return '(empty string)';
         }
-        if (is_string($var)) {
+        if ($var is string) {
             return "'" . \addcslashes($var, "'") . "'";
         }
-        if (is_bool($var)) {
+        if ($var is bool) {
             return $var === true ? 'true' : 'false';
         }
         if (\is_scalar($var)) {

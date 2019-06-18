@@ -208,7 +208,7 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
         parent::assertValid();
 
         Utils::invariant(
-            null === $this->description || is_string($this->description),
+            null === $this->description || ($this->description is string),
             "{$this->name} description must be string if set, but it is: " . Utils::printSafe($this->description)
         );
 

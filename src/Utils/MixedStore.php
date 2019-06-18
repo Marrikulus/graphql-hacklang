@@ -113,10 +113,10 @@ class MixedStore implements \ArrayAccess<mixed,mixed>
         if (true === $offset) {
             return $this->trueValueIsSet;
         }
-        if (is_int($offset) || is_string($offset)) {
+        if (($offset is int) || ($offset is string)) {
             return \array_key_exists($offset, $this->standardStore);
         }
-        if (is_float($offset)) {
+        if ($offset is float) {
             return \array_key_exists((string) $offset, $this->floatStore);
         }
         if (is_object($offset)) {
@@ -154,10 +154,10 @@ class MixedStore implements \ArrayAccess<mixed,mixed>
         if (false === $offset) {
             return $this->falseValue;
         }
-        if (is_int($offset) || is_string($offset)) {
+        if (($offset is int) || ($offset is string)) {
             return $this->standardStore[$offset];
         }
-        if (is_float($offset)) {
+        if ($offset is float) {
             return $this->floatStore[(string)$offset];
         }
         if (is_object($offset)) {
@@ -200,9 +200,9 @@ class MixedStore implements \ArrayAccess<mixed,mixed>
         } else if (true === $offset) {
             $this->trueValue = $value;
             $this->trueValueIsSet = true;
-        } else if (is_int($offset) || is_string($offset)) {
+        } else if (($offset is int) || ($offset is string)) {
             $this->standardStore[$offset] = $value;
-        } else if (is_float($offset)) {
+        } else if ($offset is float) {
             $this->floatStore[(string)$offset] = $value;
         } else if (is_object($offset)) {
             $this->objectStore[$offset] = $value;
@@ -234,9 +234,9 @@ class MixedStore implements \ArrayAccess<mixed,mixed>
         } else if (false === $offset) {
             $this->falseValue = null;
             $this->falseValueIsSet = false;
-        } else if (is_int($offset) || is_string($offset)) {
+        } else if (($offset is int) || ($offset is string)) {
             unset($this->standardStore[$offset]);
-        } else if (is_float($offset)) {
+        } else if ($offset is float) {
             unset($this->floatStore[(string)$offset]);
         } else if (is_object($offset)) {
             $this->objectStore->offsetUnset($offset);
