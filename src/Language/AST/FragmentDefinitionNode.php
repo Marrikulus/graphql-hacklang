@@ -8,7 +8,7 @@ class FragmentDefinitionNode extends Node implements DefinitionNode, HasSelectio
     public function __construct(
         public NameNode $name,
         public NamedTypeNode $typeCondition,
-        public NodeList $directives,
+        public array<DirectiveNode> $directives,
         public SelectionSetNode $selectionSet,
         ?Location $loc)
     {

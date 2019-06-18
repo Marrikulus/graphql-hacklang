@@ -14,10 +14,10 @@ type callback2arg = (function(mixed, mixed): mixed);
 
 class Utils
 {
-    public static function undefined()
+    public static function undefined():stdClass
     {
         static $undefined;
-        return $undefined ?: $undefined = new stdClass();
+        return $undefined ?? $undefined = new stdClass();
     }
 
     /**

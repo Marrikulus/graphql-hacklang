@@ -17,12 +17,12 @@ class FieldDefinition
     /**
      * @var string
      */
-    public $name;
+    public string $name;
 
     /**
      * @var FieldArgument[]
      */
-    public $args;
+    public array<FieldArgument> $args;
 
     /**
      * Callback for resolving field value given parent value.
@@ -43,17 +43,17 @@ class FieldDefinition
     /**
      * @var string|null
      */
-    public $description;
+    public ?string $description;
 
     /**
      * @var string|null
      */
-    public $deprecationReason;
+    public ?string $deprecationReason;
 
     /**
      * @var FieldDefinitionNode|null
      */
-    public $astNode;
+    public ?FieldDefinitionNode $astNode;
 
     /**
      * Original field definition config

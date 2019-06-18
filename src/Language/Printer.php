@@ -202,7 +202,7 @@ class Printer
                 },
                 NodeKind::FIELD_DEFINITION => function(FieldDefinitionNode $def) {
                     return $def->name
-                         . $this->wrap('(', $this->join($def->arguments, ', '), ')')
+                         . $this->wrap('(', $this->join($def->values, ', '), ')')
                          . ': ' . $def->type
                          . $this->wrap(' ', $this->join($def->directives, ' '));
                 },

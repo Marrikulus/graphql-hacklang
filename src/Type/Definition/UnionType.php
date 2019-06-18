@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
@@ -20,12 +20,12 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
     /**
      * @var ObjectType[]
      */
-    private $types;
+    private ?array<ObjectType> $types = null;
 
     /**
      * @var ObjectType[]
      */
-    private $possibleTypeNames;
+    private ?array<string, bool> $possibleTypeNames = null;
 
     /**
      * UnionType constructor.
@@ -54,13 +54,18 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
         $this->name = $config['name'];
         $this->description = isset($config['description']) ? $config['description'] : null;
         $this->astNode = isset($config['astNode']) ? $config['astNode'] : null;
-        $this->config = $config;
+        $this->config = $config ?? [];
+    }
+
+    public function __toString():string
+    {
+        return "UnionType";
     }
 
     /**
      * @return ObjectType[]
      */
-    public function getPossibleTypes()
+    public function getPossibleTypes():array<ObjectType>
     {
         \trigger_error(__METHOD__ . ' is deprecated in favor of ' . __CLASS__ . '::getTypes()', \E_USER_DEPRECATED);
         return $this->getTypes();
@@ -69,25 +74,28 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
     /**
      * @return ObjectType[]
      */
-    public function getTypes()
+    public function getTypes():array<ObjectType>
     {
-        if (null === $this->types) {
-            if (!isset($this->config['types'])) {
+        if (null === $this->types)
+        {
+            if (array_key_exists('types', $this->config) && $this->config['types'] === null)
+            {
                 $types = null;
-            } else if (\is_callable($this->config['types'])) {
+            }
+            else if (\is_callable($this->config['types']))
+            {
+                /* HH_FIXME[4009]*/
                 $types = call_user_func($this->config['types']);
             } else {
                 $types = $this->config['types'];
             }
 
-            if (!is_array($types)) {
-                throw new InvariantViolation(
-                    "{$this->name} types must be an Array or a callable which returns an Array."
-                );
-            }
+            invariant(!is_array($types), "%s types must be an Array or a callable which returns an Array.", $this->name);
 
+            /* HH_FIXME[4110]*/
             $this->types = $types;
         }
+        /* HH_FIXME[4110]*/
         return $this->types;
     }
 
@@ -95,19 +103,26 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
      * @param Type $type
      * @return mixed
      */
-    public function isPossibleType(GraphQlType $type)
+    public function isPossibleType(GraphQlType $type):bool
     {
         if (!$type instanceof ObjectType) {
             return false;
         }
 
-        if (null === $this->possibleTypeNames) {
-            $this->possibleTypeNames = [];
-            foreach ($this->getTypes() as $possibleType) {
-                $this->possibleTypeNames[$possibleType->name] = true;
+        $possibleTypeNames = $this->possibleTypeNames;
+
+        if ($possibleTypeNames === null)
+        {
+            $possibleTypeNames = [];
+
+            foreach ($this->getTypes() as $possibleType)
+            {
+                $possibleTypeNames[$possibleType->name] = true;
             }
+            $this->possibleTypeNames = $possibleTypeNames;
         }
-        return isset($this->possibleTypeNames[$type->name]);
+
+        return \array_key_exists($type->name, $possibleTypeNames) && $possibleTypeNames[$type->name] !== null;
     }
 
     /**
@@ -120,8 +135,10 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
      */
     public function resolveType($objectValue, $context, ResolveInfo $info)
     {
-        if (isset($this->config['resolveType'])) {
+        if (isset($this->config['resolveType']))
+        {
             $fn = $this->config['resolveType'];
+            /* HH_FIXME[4009]*/
             return $fn($objectValue, $context, $info);
         }
         return null;
@@ -130,7 +147,7 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
     /**
      * @throws InvariantViolation
      */
-    public function assertValid()
+    public function assertValid():void
     {
         parent::assertValid();
 
@@ -149,9 +166,10 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
 
         $includedTypeNames = [];
         foreach ($types as $objType) {
-            Utils::invariant(
+            invariant(
                 $objType instanceof ObjectType,
-                "{$this->name} may only contain Object types, it cannot contain: %s.",
+                "%s may only contain Object types, it cannot contain: %s.",
+                $this->name,
                 Utils::printSafe($objType)
             );
             Utils::invariant(

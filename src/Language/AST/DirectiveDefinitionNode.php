@@ -7,7 +7,7 @@ class DirectiveDefinitionNode extends Node implements TypeSystemDefinitionNode
 
     public function __construct(
         public NameNode $name,
-        public NodeList $arguments,
+        public array<InputValueDefinitionNode> $arguments,
         public array<NameNode> $locations,
         ?Location $loc)
     {

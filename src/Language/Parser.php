@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //strict
 namespace GraphQL\Language;
 
 use GraphQL\Language\AST\ArgumentNode;
@@ -24,7 +24,6 @@ use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\Location;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\NamedTypeNode;
-use GraphQL\Language\AST\NodeList;
 use GraphQL\Language\AST\NonNullTypeNode;
 use GraphQL\Language\AST\NullValueNode;
 use GraphQL\Language\AST\ObjectFieldNode;
@@ -62,18 +61,18 @@ class Parser
      *
      * @api
      * @param Source|string $source
-     * @param array $options
+     * @param bool $noLocation
      * @return DocumentNode
      */
-    public static function parseSource(Source $source, array<string,mixed> $options = []):DocumentNode
+    public static function parseSource(Source $source, bool $noLocation = false):DocumentNode
     {
-        $parser = new Parser($source, $options);
+        $parser = new Parser($source, $noLocation);
         return $parser->parseDocument();
     }
 
-    public static function parse(string $source, array<string,mixed> $options = []):DocumentNode
+    public static function parse(string $source, bool $noLocation = false):DocumentNode
     {
-        $parser = new Parser(new Source($source), $options);
+        $parser = new Parser(new Source($source), $noLocation);
         return $parser->parseDocument();
     }
 
@@ -89,12 +88,12 @@ class Parser
      *
      * @api
      * @param Source|string $source
-     * @param array $options
+     * @param bool $noLocation
      * @return BooleanValueNode|EnumValueNode|FloatValueNode|IntValueNode|ListValueNode|ObjectValueNode|StringValueNode|VariableNode
      */
-    public static function parseValue(Source $source, array<string,mixed> $options = []):Node
+    public static function parseValue(Source $source, bool $noLocation = false):Node
     {
-        $parser = new Parser($source, $options);
+        $parser = new Parser($source, $noLocation);
         $parser->expect(Token::SOF);
         $value = $parser->parseValueLiteral(false);
         $parser->expect(Token::EOF);
@@ -113,12 +112,12 @@ class Parser
      *
      * @api
      * @param Source|string $source
-     * @param array $options
+     * @param bool $noLocation
      * @return ListTypeNode|NameNode|NonNullTypeNode
      */
-    public static function parseType(Source $source, array<string,mixed> $options = []):Node
+    public static function parseType(Source $source, bool $noLocation = false):Node
     {
-        $parser = new Parser($source, $options);
+        $parser = new Parser($source, $noLocation);
         $parser->expect(Token::SOF);
         $type = $parser->parseTypeReference();
         $parser->expect(Token::EOF);
@@ -133,11 +132,11 @@ class Parser
     /**
      * Parser constructor.
      * @param Source $source
-     * @param array $options
+     * @param bool $noLocation
      */
-    public function __construct(Source $source, array<string,mixed> $options = [])
+    public function __construct(Source $source, bool $noLocation = false)
     {
-        $this->lexer = new Lexer($source, $options);
+        $this->lexer = new Lexer($source, $noLocation);
     }
 
     /**
@@ -149,7 +148,7 @@ class Parser
      */
     public function loc(Token $startToken):?Location
     {
-        if ( idx($this->lexer->options, 'noLocation', false))
+        if ($this->lexer->noLocation)
         {
             return new Location($startToken, $this->lexer->lastToken, $this->lexer->source);
         }
@@ -250,10 +249,10 @@ class Parser
      * @param int $openKind
      * @param callable $parseFn
      * @param int $closeKind
-     * @return NodeList
+     * @return Node[]
      * @throws SyntaxError
      */
-    public function any(string $openKind, (function():Node) $parseFn, string $closeKind):NodeList
+    public function any<T as Node>(string $openKind, (function():T) $parseFn, string $closeKind):array<T>
     {
         $this->expect($openKind);
 
@@ -261,7 +260,7 @@ class Parser
         while (!$this->skip($closeKind)) {
             $nodes[] = $parseFn();
         }
-        return new NodeList($nodes);
+        return $nodes;
     }
 
     /**
@@ -273,10 +272,10 @@ class Parser
      * @param $openKind
      * @param $parseFn
      * @param $closeKind
-     * @return NodeList
+     * @return Node[]
      * @throws SyntaxError
      */
-    public function many(string $openKind, (function():Node) $parseFn, string $closeKind):NodeList
+    public function many<T as Node>(string $openKind, (function():T) $parseFn, string $closeKind):array<T>
     {
         $this->expect($openKind);
 
@@ -284,7 +283,7 @@ class Parser
         while (!$this->skip($closeKind)) {
             $nodes[] = $parseFn();
         }
-        return new NodeList($nodes);
+        return $nodes;
     }
 
     /**
@@ -298,7 +297,7 @@ class Parser
         $token = $this->expect(Token::NAME);
 
         return new NameNode(
-            $token->value,
+            $token->value ?? "",
             $this->loc($token)
         );
     }
@@ -320,7 +319,7 @@ class Parser
         } while (!$this->skip(Token::EOF));
 
         return new DocumentNode(
-            new NodeList($definitions),
+            $definitions,
             $this->loc($start)
         );
     }
@@ -377,7 +376,7 @@ class Parser
                 null,
                 'query',
                 null,
-                new NodeList([]),
+                [],
                 $this->parseSelectionSet(),
                 $this->loc($start)
             );
@@ -423,9 +422,9 @@ class Parser
     }
 
     /**
-     * @return VariableDefinitionNode[]|NodeList
+     * @return VariableDefinitionNode[]|
      */
-    public function parseVariableDefinitions():NodeList
+    public function parseVariableDefinitions():array<VariableDefinitionNode>
     {
         return $this->peek(Token::PAREN_L) ?
             $this->many(
@@ -433,7 +432,7 @@ class Parser
                 inst_meth($this, 'parseVariableDefinition'),
                 Token::PAREN_R
             ) :
-            new NodeList([]);
+            [];
     }
 
     /**
@@ -526,13 +525,13 @@ class Parser
     }
 
     /**
-     * @return ArgumentNode[]|NodeList
+     * @return ArgumentNode[]
      */
-    public function parseArguments():NodeList
+    public function parseArguments():array<ArgumentNode>
     {
         return $this->peek(Token::PAREN_L) ?
             $this->many(Token::PAREN_L, inst_meth($this, 'parseArgument'), Token::PAREN_R) :
-            new NodeList([]);
+            [];
     }
 
     /**
@@ -734,7 +733,7 @@ class Parser
             $fields[] = $this->parseObjectField($isConst);
         }
         return new ObjectValueNode(
-            new NodeList($fields),
+            $fields,
             $this->loc($start)
         );
     }
@@ -760,15 +759,15 @@ class Parser
     // Implements the parsing rules in the Directives section.
 
     /**
-     * @return DirectiveNode[]|NodeList
+     * @return DirectiveNode[]
      */
-    public function parseDirectives():NodeList
+    public function parseDirectives():array<DirectiveNode>
     {
         $directives = [];
         while ($this->peek(Token::AT)) {
             $directives[] = $this->parseDirective();
         }
-        return new NodeList($directives);
+        return $directives;
     }
 
     /**
@@ -1000,12 +999,12 @@ class Parser
     }
 
     /**
-     * @return InputValueDefinitionNode[]|NodeList
+     * @return InputValueDefinitionNode[]
      */
-    public function parseArgumentDefs():NodeList
+    public function parseArgumentDefs():array<InputValueDefinitionNode>
     {
         if (!$this->peek(Token::PAREN_L)) {
-            return new NodeList([]);
+            return [];
         }
         return $this->many(Token::PAREN_L, inst_meth($this, 'parseInputValueDef'), Token::PAREN_R);
     }

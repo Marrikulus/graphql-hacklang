@@ -8,8 +8,8 @@ class FieldNode extends Node implements SelectionNode
     public function __construct(
         public NameNode $name,
         public ?NameNode $alias,
-        public NodeList $arguments,
-        public NodeList $directives,
+        public array<Node> $arguments,
+        public array<DirectiveNode> $directives,
         public ?SelectionSetNode $selectionSet,
         ?Location $loc)
     {

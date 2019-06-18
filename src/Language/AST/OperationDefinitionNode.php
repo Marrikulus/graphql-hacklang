@@ -8,8 +8,8 @@ class OperationDefinitionNode extends Node implements DefinitionNode, HasSelecti
     public function __construct(
         public ?NameNode $name,
         public string $operation,
-        public ?NodeList $variableDefinitions,
-        public NodeList $directives,
+        public ?array<Node> $variableDefinitions,
+        public array<DirectiveNode> $directives,
         public SelectionSetNode $selectionSet,
         ?Location $loc)
     {

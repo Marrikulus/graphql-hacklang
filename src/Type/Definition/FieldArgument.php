@@ -17,7 +17,7 @@ class FieldArgument
     /**
      * @var string
      */
-    public $name;
+    public string $name;
 
     /**
      * @var mixed
@@ -27,7 +27,7 @@ class FieldArgument
     /**
      * @var string|null
      */
-    public $description;
+    public ?string $description;
 
     /**
      * @var InputValueDefinitionNode|null

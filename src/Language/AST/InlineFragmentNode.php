@@ -7,7 +7,7 @@ class InlineFragmentNode extends Node implements SelectionNode
 
     public function __construct(
         public ?NamedTypeNode $typeCondition,
-        public NodeList $directives,
+        public array<DirectiveNode> $directives,
         public SelectionSetNode $selectionSet,
         ?Location $loc)
     {

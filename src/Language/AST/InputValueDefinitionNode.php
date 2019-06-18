@@ -9,7 +9,7 @@ class InputValueDefinitionNode extends Node
         public NameNode $name,
         public Node $type,
         public ?Node $defaultValue,
-        public NodeList $directives,
+        public array<DirectiveNode> $directives,
         public ?string $description,
         ?Location $loc)
     {

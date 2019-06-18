@@ -6,7 +6,7 @@ class DocumentNode extends Node
     public string $kind = NodeKind::DOCUMENT;
 
     public function __construct(
-        public NodeList $definitions,
+        public array<Node> $definitions,
         ?Location $loc)
     {
         parent::__construct($loc);

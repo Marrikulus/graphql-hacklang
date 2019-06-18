@@ -217,7 +217,7 @@ class Visitor
                             }
                             $editOffset++;
                         }
-                        else
+                        elseif($editValue !== null)
                         {
                             if ($node instanceof NodeList)
                             {

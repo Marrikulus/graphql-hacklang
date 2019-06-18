@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Executor;
 
 use GraphQL\Error\Error;
@@ -19,32 +19,32 @@ class ExecutionContext
     /**
      * @var Schema
      */
-    public $schema;
+    public Schema $schema;
 
     /**
      * @var FragmentDefinitionNode[]
      */
-    public $fragments;
+    public array<string, FragmentDefinitionNode> $fragments;
 
     /**
      * @var mixed
      */
-    public $rootValue;
+    public mixed $rootValue;
 
     /**
      * @var mixed
      */
-    public $contextValue;
+    public mixed $contextValue;
 
     /**
      * @var OperationDefinitionNode
      */
-    public $operation;
+    public OperationDefinitionNode $operation;
 
     /**
      * @var array
      */
-    public $variableValues;
+    public array $variableValues;
 
     /**
      * @var callable
@@ -54,16 +54,18 @@ class ExecutionContext
     /**
      * @var array
      */
-    public $errors;
+    public array<Error> $errors;
+
+    public $promises;
 
     public function __construct(
-        $schema,
-        $fragments,
-        $root,
-        $contextValue,
-        $operation,
+        Schema $schema,
+        array<string, FragmentDefinitionNode> $fragments,
+        mixed $root,
+        mixed $contextValue,
+        OperationDefinitionNode $operation,
         $variables,
-        $errors,
+        ?array<Error> $errors,
         $fieldResolver,
         $promiseAdapter
     )
@@ -74,12 +76,12 @@ class ExecutionContext
         $this->contextValue = $contextValue;
         $this->operation = $operation;
         $this->variableValues = $variables;
-        $this->errors = $errors ?: [];
+        $this->errors = $errors ?? [];
         $this->fieldResolver = $fieldResolver;
         $this->promises = $promiseAdapter;
     }
 
-    public function addError(Error $error)
+    public function addError(Error $error):ExecutionContext
     {
         $this->errors[] = $error;
         return $this;

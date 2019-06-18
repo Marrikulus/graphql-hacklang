@@ -50,7 +50,7 @@ class Schema
      *
      * @var Type[]
      */
-    private $resolvedTypes = [];
+    private array<GraphQlType> $resolvedTypes = [];
 
     /**
      * @var array
@@ -144,7 +144,7 @@ class Schema
      * @api
      * @return ObjectType
      */
-    public function getQueryType()
+    public function getQueryType():ObjectType
     {
         return $this->config->query;
     }
@@ -155,7 +155,7 @@ class Schema
      * @api
      * @return ObjectType|null
      */
-    public function getMutationType()
+    public function getMutationType():?ObjectType
     {
         return $this->config->mutation;
     }
@@ -166,7 +166,7 @@ class Schema
      * @api
      * @return ObjectType|null
      */
-    public function getSubscriptionType()
+    public function getSubscriptionType():?ObjectType
     {
         return $this->config->subscription;
     }
@@ -189,7 +189,7 @@ class Schema
      * @api
      * @return Type[]
      */
-    public function getTypeMap()
+    public function getTypeMap():array<GraphQlType>
     {
         if (!$this->fullyLoaded) {
             $this->resolvedTypes = $this->collectAllTypes();
@@ -205,7 +205,7 @@ class Schema
      * @param string $name
      * @return Type
      */
-    public function getType($name)
+    public function getType($name):GraphQlType
     {
         if (!isset($this->resolvedTypes[$name])) {
             $this->resolvedTypes[$name] = $this->loadType($name);

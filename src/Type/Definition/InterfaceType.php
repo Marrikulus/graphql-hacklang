@@ -50,6 +50,11 @@ class InterfaceType extends GraphQlType implements AbstractType, OutputType, Com
         $this->config = $config;
     }
 
+    public function __toString():string
+    {
+        return "InterfaceType";
+    }
+
     /**
      * @return FieldDefinition[]
      */

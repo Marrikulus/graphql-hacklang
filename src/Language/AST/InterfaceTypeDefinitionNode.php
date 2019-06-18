@@ -7,8 +7,8 @@ class InterfaceTypeDefinitionNode extends Node implements TypeDefinitionNode
 
     public function __construct(
         public NameNode $name,
-        public NodeList $directives,
-        public NodeList $fields,
+        public array<DirectiveNode> $directives,
+        public array<Node> $fields,
         public ?string $description,
         ?Location $loc)
     {

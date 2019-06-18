@@ -26,17 +26,17 @@ class SchemaConfig
     /**
      * @var ObjectType
      */
-    public $query;
+    public ObjectType $query;
 
     /**
      * @var ObjectType
      */
-    public $mutation;
+    public ?ObjectType $mutation;
 
     /**
      * @var ObjectType
      */
-    public $subscription;
+    public ?ObjectType $subscription;
 
     /**
      * @var Type[]|callable
@@ -46,7 +46,7 @@ class SchemaConfig
     /**
      * @var Directive[]
      */
-    public $directives;
+    public array<Directive> $directives;
 
     /**
      * @var callable
@@ -68,7 +68,7 @@ class SchemaConfig
      */
     public static function create(array $options = [])
     {
-        $config = new static();
+        $config = new SchemaConfig();
 
         if (!empty($options)) {
             if (isset($options['query'])) {
@@ -175,7 +175,7 @@ class SchemaConfig
      * @param ObjectType $query
      * @return SchemaConfig
      */
-    public function setQuery(ObjectType $query)
+    public function setQuery(ObjectType $query):this
     {
         $this->query = $query;
         return $this;
@@ -186,7 +186,7 @@ class SchemaConfig
      * @param ObjectType $mutation
      * @return SchemaConfig
      */
-    public function setMutation(ObjectType $mutation)
+    public function setMutation(ObjectType $mutation):this
     {
         $this->mutation = $mutation;
         return $this;
@@ -197,7 +197,7 @@ class SchemaConfig
      * @param ObjectType $subscription
      * @return SchemaConfig
      */
-    public function setSubscription(ObjectType $subscription)
+    public function setSubscription(ObjectType $subscription):this
     {
         $this->subscription = $subscription;
         return $this;
@@ -208,7 +208,7 @@ class SchemaConfig
      * @param Type[]|callable $types
      * @return SchemaConfig
      */
-    public function setTypes($types)
+    public function setTypes($types):this
     {
         $this->types = $types;
         return $this;
@@ -219,7 +219,7 @@ class SchemaConfig
      * @param Directive[] $directives
      * @return SchemaConfig
      */
-    public function setDirectives(array $directives)
+    public function setDirectives(array $directives):this
     {
         $this->directives = $directives;
         return $this;
@@ -230,7 +230,7 @@ class SchemaConfig
      * @param callable $typeLoader
      * @return SchemaConfig
      */
-    public function setTypeLoader(callable $typeLoader)
+    public function setTypeLoader(callable $typeLoader):this
     {
         $this->typeLoader = $typeLoader;
         return $this;
@@ -240,7 +240,7 @@ class SchemaConfig
      * @api
      * @return ObjectType
      */
-    public function getQuery()
+    public function getQuery():ObjectType
     {
         return $this->query;
     }
@@ -249,7 +249,7 @@ class SchemaConfig
      * @api
      * @return ObjectType
      */
-    public function getMutation()
+    public function getMutation():?ObjectType
     {
         return $this->mutation;
     }
@@ -258,7 +258,7 @@ class SchemaConfig
      * @api
      * @return ObjectType
      */
-    public function getSubscription()
+    public function getSubscription():?ObjectType
     {
         return $this->subscription;
     }
@@ -269,7 +269,7 @@ class SchemaConfig
      */
     public function getTypes()
     {
-        return $this->types ?: [];
+        return $this->types ?? [];
     }
 
     /**
@@ -278,7 +278,7 @@ class SchemaConfig
      */
     public function getDirectives()
     {
-        return $this->directives ?: [];
+        return $this->directives ?? [];
     }
 
     /**

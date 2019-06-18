@@ -132,7 +132,7 @@ abstract class Node
             if ($propValue === null)
                 continue;
 
-            if (is_array($propValue) || $propValue instanceof NodeList) {
+            if (is_array($propValue)) {
                 $tmp = [];
                 foreach ($propValue as $tmp1) {
                     $tmp[] = $tmp1 instanceof Node ? $this->recursiveToArray($tmp1) : (array) $tmp1;

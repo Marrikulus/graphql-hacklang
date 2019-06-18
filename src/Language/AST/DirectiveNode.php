@@ -7,7 +7,7 @@ class DirectiveNode extends Node
 
     public function __construct(
         public NameNode $name,
-        public NodeList $arguments,
+        public array<Node> $arguments,
         ?Location $loc)
     {
         parent::__construct($loc);

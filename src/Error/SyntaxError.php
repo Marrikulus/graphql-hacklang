@@ -11,7 +11,7 @@ class SyntaxError extends Error
      * @param int $position
      * @param string $description
      */
-    public function __construct(Source $source, $position, $description)
+    public function __construct(Source $source, int $position, string $description)
     {
         $location = $source->getLocation($position);
         $line = $location->line + $source->locationOffset->line - 1;

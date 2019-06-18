@@ -6,7 +6,7 @@ class SelectionSetNode extends Node
     public string $kind = NodeKind::SELECTION_SET;
 
     public function __construct(
-        public NodeList $selections,
+        public array<Node> $selections,
         ?Location $loc)
     {
         parent::__construct($loc);

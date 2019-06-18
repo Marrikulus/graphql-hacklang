@@ -7,9 +7,9 @@ class FieldDefinitionNode extends Node
 
     public function __construct(
         public NameNode $name,
-        public NodeList $values,
+        public array<InputValueDefinitionNode> $values,
         public Node $type,
-        public NodeList $directives,
+        public array<DirectiveNode> $directives,
         public ?string $description,
         ?Location $loc)
     {

@@ -23,7 +23,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
      */
     public function testAllowsEditingNodeOnEnterAndOnLeave()
     {
-        $ast = Parser::parse('{ a, b, c { a, b, c } }', [ 'noLocation' => true ]);
+        $ast = Parser::parse('{ a, b, c { a, b, c } }', true);
 
         $selectionSet = null;
         $editedAst = Visitor::visit($ast, [

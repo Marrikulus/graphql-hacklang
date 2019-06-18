@@ -7,8 +7,8 @@ class EnumTypeDefinitionNode extends Node implements TypeDefinitionNode
 
     public function __construct(
         public NameNode $name,
-        public NodeList $directives,
-        public NodeList $values,
+        public array<DirectiveNode> $directives,
+        public array<Node> $values,
         public ?string $description,
         ?Location $loc)
     {

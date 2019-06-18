@@ -2,13 +2,16 @@
 namespace GraphQL\Language\AST;
 
 use GraphQL\Utils\AST;
+use Countable;
+use IteratorAggregate;
+use ArrayAccess;
 
 /**
  * Class NodeList
  *
  * @package GraphQL\Utils
  */
-class NodeList implements \ArrayAccess<int, Node>, \IteratorAggregate<Node>, \Countable
+class NodeList implements IteratorAggregate<Node>, Countable, ArrayAccess<int, Node>
 {
     /**
      * @var array

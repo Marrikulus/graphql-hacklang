@@ -1,4 +1,4 @@
-<?hh //partial
+<?hh //decl
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Language\AST\DirectiveDefinitionNode;
@@ -141,7 +141,7 @@ class Directive
     /**
      * @var string
      */
-    public $name;
+    public string $name;
 
     /**
      * @var string|null
@@ -158,7 +158,7 @@ class Directive
     /**
      * @var FieldArgument[]
      */
-    public $args;
+    public array<FieldArgument> $args;
 
     /**
      * @var DirectiveDefinitionNode|null

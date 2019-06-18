@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //partial
 namespace GraphQL\Executor;
 
 use GraphQL\Error\Error;
@@ -29,25 +29,29 @@ use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Introspection;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Utils\Utils;
+use stdClass;
+
+type resolverFuncType = (function(mixed, array<string,mixed>, mixed, ResolveInfo): mixed);
 
 /**
  * Implements the "Evaluating requests" section of the GraphQL specification.
  */
 class Executor
 {
-    private static $UNDEFINED;
+    private static ?stdClass $UNDEFINED;
 
-    private static array<string> $defaultFieldResolver = [__CLASS__, 'defaultFieldResolver'];
+    /* HH_FIXME[4110]*/
+    private static resolverFuncType $defaultFieldResolver = [__CLASS__, 'defaultFieldResolver'];
 
     /**
      * @var PromiseAdapter
      */
-    private static $promiseAdapter;
+    private static ?PromiseAdapter $promiseAdapter;
 
     /**
      * @param PromiseAdapter|null $promiseAdapter
      */
-    public static function setPromiseAdapter(?PromiseAdapter $promiseAdapter = null)
+    public static function setPromiseAdapter(?PromiseAdapter $promiseAdapter = null):void
     {
         self::$promiseAdapter = $promiseAdapter;
     }
@@ -55,9 +59,9 @@ class Executor
     /**
      * @return PromiseAdapter
      */
-    public static function getPromiseAdapter()
+    public static function getPromiseAdapter():PromiseAdapter
     {
-        return self::$promiseAdapter ?: (self::$promiseAdapter = new SyncPromiseAdapter());
+        return self::$promiseAdapter ?? (self::$promiseAdapter = new SyncPromiseAdapter());
     }
 
     /**
@@ -66,7 +70,7 @@ class Executor
      * @param $fn
      * @throws \Exception
      */
-    public static function setDefaultFieldResolver(callable $fn)
+    public static function setDefaultFieldResolver(callable $fn):void
     {
         self::$defaultFieldResolver = $fn;
     }
@@ -91,10 +95,10 @@ class Executor
     public static function execute(
         Schema $schema,
         DocumentNode $ast,
-        $rootValue = null,
-        $contextValue = null,
-        $variableValues = null,
-        $operationName = null,
+        mixed $rootValue = null,
+        mixed $contextValue = null,
+        mixed $variableValues = null,
+        ?string $operationName = null,
         ?callable $fieldResolver = null
     )
     {
@@ -133,10 +137,10 @@ class Executor
         PromiseAdapter $promiseAdapter,
         Schema $schema,
         DocumentNode $ast,
-        $rootValue = null,
-        $contextValue = null,
+        mixed $rootValue = null,
+        mixed $contextValue = null,
         $variableValues = null,
-        $operationName = null,
+        ?string $operationName = null,
         ?callable $fieldResolver = null
     )
     {
@@ -170,13 +174,13 @@ class Executor
     private static function buildExecutionContext(
         Schema $schema,
         DocumentNode $documentNode,
-        $rootValue,
-        $contextValue,
+        mixed $rootValue,
+        mixed $contextValue,
         $rawVariableValues,
-        $operationName = null,
+        ?string $operationName = null,
         ?callable $fieldResolver = null,
         ?PromiseAdapter $promiseAdapter = null
-    )
+    ):ExecutionContext
     {
         if (null !== $rawVariableValues) {
             Utils::invariant(
@@ -203,13 +207,18 @@ class Executor
                             'Must provide operation name if query contains multiple operations.'
                         );
                     }
-                    if (!$operationName ||
-                        (isset($definition->name) && $definition->name->value === $operationName)) {
+
+                    if ($definition instanceof OperationDefinitionNode &&
+                        (!$operationName ||
+                        (isset($definition->name) && $definition->name->value === $operationName))) {
                         $operation = $definition;
                     }
                     break;
                 case NodeKind::FRAGMENT_DEFINITION:
-                    $fragments[$definition->name->value] = $definition;
+                    if ($definition instanceof FragmentDefinitionNode)
+                    {
+                        $fragments[$definition->name->value] = $definition;
+                    }
                     break;
                 default:
                     throw new Error(
@@ -229,8 +238,8 @@ class Executor
 
         $variableValues = Values::getVariableValues(
             $schema,
-            $operation->variableDefinitions ?: [],
-            $rawVariableValues ?: []
+            $operation->variableDefinitions ?? [],
+            $rawVariableValues ?? []
         );
 
         $exeContext = new ExecutionContext(
@@ -241,8 +250,8 @@ class Executor
             $operation,
             $variableValues,
             $errors,
-            $fieldResolver ?: self::$defaultFieldResolver,
-            $promiseAdapter ?: self::getPromiseAdapter()
+            $fieldResolver ?? self::$defaultFieldResolver,
+            $promiseAdapter ?? self::getPromiseAdapter()
         );
         return $exeContext;
     }
@@ -250,12 +259,8 @@ class Executor
     /**
      * @var ExecutionContext
      */
-    private $exeContext;
+    private ExecutionContext $exeContext;
 
-    /**
-     * @var PromiseAdapter
-     */
-    private $promises;
 
     /**
      * Executor constructor.
@@ -274,7 +279,7 @@ class Executor
     /**
      * @return Promise
      */
-    private function doExecute()
+    private function doExecute():Promise
     {
         // Return a Promise that will eventually resolve to the data described by
         // The "Response" section of the GraphQL specification.
@@ -283,7 +288,7 @@ class Executor
         // field and its descendants will be omitted, and sibling fields will still
         // be executed. An execution which encounters errors will still result in a
         // resolved Promise.
-        $result = $this->exeContext->promises->create(function (callable $resolve) {
+        $result = $this->exeContext->promises->create(function ((function(mixed):mixed) $resolve) {
             return $resolve($this->executeOperation($this->exeContext->operation, $this->exeContext->rootValue));
         });
         return $result
@@ -306,7 +311,7 @@ class Executor
      * @param $rootValue
      * @return Promise|\stdClass|array
      */
-    private function executeOperation(OperationDefinitionNode $operation, $rootValue)
+    private function executeOperation(OperationDefinitionNode $operation, mixed $rootValue):mixed
     {
         $type = $this->getOperationRootType($this->exeContext->schema, $operation);
         $fields = $this->collectFields($type, $operation->selectionSet, new \ArrayObject(), new \ArrayObject());
@@ -347,7 +352,7 @@ class Executor
      * @return ObjectType
      * @throws Error
      */
-    private function getOperationRootType(Schema $schema, OperationDefinitionNode $operation)
+    private function getOperationRootType(Schema $schema, OperationDefinitionNode $operation):ObjectType
     {
         switch ($operation->operation) {
             case 'query':
@@ -436,7 +441,8 @@ class Executor
         $containsPromise = false;
         $finalResults = [];
 
-        foreach ($fields as $responseName => $fieldNodes) {
+        foreach ($fields as $responseName => $fieldNodes)
+        {
             $fieldPath = $path;
             $fieldPath[] = $responseName;
             $result = $this->resolveField($parentType, $source, $fieldNodes, $fieldPath);
@@ -529,45 +535,54 @@ class Executor
             switch ($selection->kind) {
                 case NodeKind::FIELD:
                     if (!$this->shouldIncludeNode($selection)) {
-                        continue;
+                        break;
                     }
-                    $name = self::getFieldEntryKey($selection);
-                    if (!isset($fields[$name])) {
-                        $fields[$name] = new \ArrayObject();
+                    if($selection instanceof FieldNode)
+                    {
+                        $name = self::getFieldEntryKey($selection);
+                        if (!isset($fields[$name])) {
+                            $fields[$name] = new \ArrayObject();
+                        }
+                        $fields[$name][] = $selection;
                     }
-                    $fields[$name][] = $selection;
                     break;
                 case NodeKind::INLINE_FRAGMENT:
                     if (!$this->shouldIncludeNode($selection) ||
                         !$this->doesFragmentConditionMatch($selection, $runtimeType)
                     ) {
-                        continue;
+                        break;
                     }
-                    $this->collectFields(
-                        $runtimeType,
-                        $selection->selectionSet,
-                        $fields,
-                        $visitedFragmentNames
-                    );
+                    if ($selection instanceof InlineFragmentNode)
+                    {
+                        $this->collectFields(
+                            $runtimeType,
+                            $selection->selectionSet,
+                            $fields,
+                            $visitedFragmentNames
+                        );
+                    }
                     break;
                 case NodeKind::FRAGMENT_SPREAD:
-                    $fragName = $selection->name->value;
-                    if (!empty($visitedFragmentNames[$fragName]) || !$this->shouldIncludeNode($selection)) {
-                        continue;
-                    }
-                    $visitedFragmentNames[$fragName] = true;
+                    if ($selection instanceof FragmentSpreadNode)
+                    {
+                        $fragName = $selection->name->value;
+                        if (!empty($visitedFragmentNames[$fragName]) || !$this->shouldIncludeNode($selection)) {
+                            break;
+                        }
+                        $visitedFragmentNames[$fragName] = true;
 
-                    /** @var FragmentDefinitionNode|null $fragment */
-                    $fragment = isset($exeContext->fragments[$fragName]) ? $exeContext->fragments[$fragName] : null;
-                    if (!$fragment || !$this->doesFragmentConditionMatch($fragment, $runtimeType)) {
-                        continue;
+                        /** @var FragmentDefinitionNode|null $fragment */
+                        $fragment = isset($exeContext->fragments[$fragName]) ? $exeContext->fragments[$fragName] : null;
+                        if (!$fragment || !$this->doesFragmentConditionMatch($fragment, $runtimeType)) {
+                            break;
+                        }
+                        $this->collectFields(
+                            $runtimeType,
+                            $fragment->selectionSet,
+                            $fields,
+                            $visitedFragmentNames
+                        );
                     }
-                    $this->collectFields(
-                        $runtimeType,
-                        $fragment->selectionSet,
-                        $fields,
-                        $visitedFragmentNames
-                    );
                     break;
             }
         }
@@ -581,7 +596,7 @@ class Executor
      * @param FragmentSpreadNode | FieldNode | InlineFragmentNode $node
      * @return bool
      */
-    private function shouldIncludeNode($node)
+    private function shouldIncludeNode($node):bool
     {
         $variableValues = $this->exeContext->variableValues;
         $skipDirective = Directive::skipDirective();
@@ -617,7 +632,7 @@ class Executor
      * @param ObjectType $type
      * @return bool
      */
-    private function doesFragmentConditionMatch(/* FragmentDefinitionNode | InlineFragmentNode*/ $fragment, ObjectType $type)
+    private function doesFragmentConditionMatch(/* FragmentDefinitionNode | InlineFragmentNode*/ $fragment, ObjectType $type):bool
     {
         $typeConditionNode = $fragment->typeCondition;
 
@@ -641,7 +656,7 @@ class Executor
      * @param FieldNode $node
      * @return string
      */
-    private static function getFieldEntryKey(FieldNode $node)
+    private static function getFieldEntryKey(FieldNode $node):?string
     {
         return $node->alias ? $node->alias->value : $node->name->value;
     }
@@ -736,7 +751,7 @@ class Executor
      * @param ResolveInfo $info
      * @return \Throwable|Promise|mixed
      */
-    private function resolveOrError($fieldDef, $fieldNode, $resolveFn, $source, $context, $info)
+    private function resolveOrError($fieldDef, $fieldNode, $resolveFn, mixed $source, mixed $context, ResolveInfo $info)
     {
         try {
             // Build hash of arguments from the field.arguments AST, using the
@@ -840,7 +855,7 @@ class Executor
                 $fieldNodes,
                 $info,
                 $path,
-                $result
+                &$result
             );
             $promise = $this->getPromise($completed);
             if ($promise) {
@@ -897,7 +912,7 @@ class Executor
         // If result is a Promise, apply-lift over completeValue.
         if ($promise) {
             return $promise->then(function (&$resolved) use ($returnType, $fieldNodes, $info, $path) {
-                return $this->completeValue($returnType, $fieldNodes, $info, $path, $resolved);
+                return $this->completeValue($returnType, $fieldNodes, $info, $path, &$resolved);
             });
         }
 
@@ -913,7 +928,7 @@ class Executor
                 $fieldNodes,
                 $info,
                 $path,
-                $result
+                &$result
             );
             if ($completed === null) {
                 throw new InvariantViolation(
@@ -930,7 +945,7 @@ class Executor
 
         // If field type is List, complete each item in the list with the inner type
         if ($returnType instanceof ListOfType) {
-            return $this->completeListValue($returnType, $fieldNodes, $info, $path, $result);
+            return $this->completeListValue($returnType, $fieldNodes, $info, $path, &$result);
         }
 
         // Account for invalid schema definition when typeLoader returns different
@@ -950,16 +965,16 @@ class Executor
         // If field type is Scalar or Enum, serialize to a valid value, returning
         // null if serialization is not possible.
         if ($returnType instanceof LeafType) {
-            return $this->completeLeafValue($returnType, $result);
+            return $this->completeLeafValue($returnType, &$result);
         }
 
         if ($returnType instanceof AbstractType) {
-            return $this->completeAbstractValue($returnType, $fieldNodes, $info, $path, $result);
+            return $this->completeAbstractValue($returnType, $fieldNodes, $info, $path, &$result);
         }
 
         // Field type must be Object, Interface or Union and expect sub-selections.
         if ($returnType instanceof ObjectType) {
-            return $this->completeObjectValue($returnType, $fieldNodes, $info, $path, $result);
+            return $this->completeObjectValue($returnType, $fieldNodes, $info, $path, &$result);
         }
 
         throw new \RuntimeException("Cannot complete value of unexpected type \"{$returnType}\".");
@@ -978,21 +993,21 @@ class Executor
      *
      * @return mixed|null
      */
-    public static function defaultFieldResolver($source, $args, $context, ResolveInfo $info)
+    public static function defaultFieldResolver(mixed $source, array<string,mixed> $args, mixed $context, ResolveInfo $info):mixed
     {
         $fieldName = $info->fieldName;
         $property = null;
 
-        if (is_array($source) || $source instanceof \ArrayAccess) {
-            if (isset($source[$fieldName])) {
-                $property = $source[$fieldName];
-            }
-        } else if (is_object($source)) {
-            if (isset($source->{$fieldName})) {
-                $property = $source->{$fieldName};
-            }
-        }
-
+        //if (is_array($source) || $source instanceof \ArrayAccess) {
+        //    if (isset($source[$fieldName])) {
+        //        $property = $source[$fieldName];
+        //    }
+        //} else if (is_object($source)) {
+        //    if (isset($source->{$fieldName})) {
+        //        $property = $source->{$fieldName};
+        //    }
+        //}
+        /* HH_FIXME[4009]*/
         return $property instanceof \Closure ? $property($source, $args, $context, $info) : $property;
     }
 
@@ -1058,7 +1073,7 @@ class Executor
                     Warning::WARNING_FULL_SCHEMA_SCAN
                 );
             }
-            $runtimeType = self::defaultTypeResolver($result, $exeContext->contextValue, $info, $returnType);
+            $runtimeType = $this->defaultTypeResolver($result, $exeContext->contextValue, $info, $returnType);
         }
 
         $promise = $this->getPromise($runtimeType);
@@ -1070,12 +1085,12 @@ class Executor
                         $returnType,
                         $fieldNodes,
                         $info,
-                        $result
+                        &$result
                     ),
                     $fieldNodes,
                     $info,
                     $path,
-                    $result
+                    &$result
                 );
             });
         }
@@ -1086,12 +1101,12 @@ class Executor
                 $returnType,
                 $fieldNodes,
                 $info,
-                $result
+                &$result
             ),
             $fieldNodes,
             $info,
             $path,
-            $result
+            &$result
         );
     }
 
@@ -1229,7 +1244,7 @@ class Executor
                         $fieldNodes,
                         $info,
                         $path,
-                        $result
+                        &$result
                     );
                 });
             }
@@ -1243,7 +1258,7 @@ class Executor
             $fieldNodes,
             $info,
             $path,
-            $result
+            &$result
         );
     }
 
@@ -1277,7 +1292,7 @@ class Executor
      */
     private function collectAndExecuteSubfields(
         ObjectType $returnType,
-        $fieldNodes,
+        array<FieldNode> $fieldNodes,
         ResolveInfo $info,
         $path,
         &$result
@@ -1288,7 +1303,8 @@ class Executor
         $visitedFragmentNames = new \ArrayObject();
 
         foreach ($fieldNodes as $fieldNode) {
-            if (isset($fieldNode->selectionSet)) {
+            if ($fieldNode->selectionSet !== null)
+            {
                 $subFieldNodes = $this->collectFields(
                     $returnType,
                     $fieldNode->selectionSet,
@@ -1352,7 +1368,7 @@ class Executor
      * @param mixed $value
      * @return Promise|null
      */
-    private function getPromise($value)
+    private function getPromise($value):?Promise
     {
         if (null === $value || $value instanceof Promise) {
             return $value;
@@ -1380,7 +1396,7 @@ class Executor
      * @param ResolveInfo $info
      * @return mixed|null
      */
-    public static function defaultResolveFn($source, $args, $context, ResolveInfo $info)
+    public static function defaultResolveFn($source, $args, $context, ResolveInfo $info):mixed
     {
         \trigger_error(__METHOD__ . ' is renamed to ' . __CLASS__ . '::defaultFieldResolver', \E_USER_DEPRECATED);
         return self::defaultFieldResolver($source, $args, $context, $info);
@@ -1391,7 +1407,7 @@ class Executor
      *
      * @param callable $fn
      */
-    public static function setDefaultResolveFn($fn)
+    public static function setDefaultResolveFn($fn):void
     {
         \trigger_error(__METHOD__ . ' is renamed to ' . __CLASS__ . '::setDefaultFieldResolver', \E_USER_DEPRECATED);
         self::setDefaultFieldResolver($fn);
