@@ -79,7 +79,7 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
     {
         if (null === $this->types)
         {
-            if (array_key_exists('types', $this->config) && $this->config['types'] === null)
+            if (\array_key_exists('types', $this->config) && $this->config['types'] === null)
             {
                 $types = null;
             }
