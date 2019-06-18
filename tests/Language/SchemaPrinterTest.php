@@ -1,4 +1,5 @@
-<?hh //decl
+<?hh //strict
+//decl
 namespace GraphQL\Tests;
 
 use GraphQL\Language\AST\NameNode;

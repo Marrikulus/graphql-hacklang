@@ -1,4 +1,5 @@
-<?hh //decl
+<?hh //strict
+//decl
 /**
  * @author: Ivo Meißner
  * Date: 03.05.16

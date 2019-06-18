@@ -1,4 +1,4 @@
-<?hh //decl
+<?hh //strict
 namespace GraphQL\Tests\Utils;
 
 use GraphQL\GraphQL;

@@ -1,4 +1,5 @@
-<?hh //decl
+<?hh //strict
+//decl
 namespace GraphQL\Tests\Validator;
 
 use GraphQL\Validator\DocumentValidator;

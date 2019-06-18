@@ -1,4 +1,5 @@
-<?hh //decl
+<?hh //strict
+//decl
 namespace Utils;
 
 use GraphQL\Type\Definition\InputObjectType;
