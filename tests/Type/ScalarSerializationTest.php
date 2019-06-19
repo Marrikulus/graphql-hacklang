@@ -4,7 +4,7 @@ namespace GraphQL\Tests\Type;
 
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Error\UserError;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,7 +15,7 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
      */
     public function testSerializesOutputInt()
     {
-        $intType = Type::int();
+        $intType = GraphQlType::int();
 
         $this->assertSame(1, $intType->serialize(1));
         $this->assertSame(123, $intType->serialize('123'));
@@ -31,14 +31,14 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
     {
         // The GraphQL specification does not allow serializing non-integer values
         // as Int to avoid accidental data loss.
-        $intType = Type::int();
+        $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non-integer value: 0.1');
         $intType->serialize(0.1);
     }
 
     public function testSerializesOutputIntCannotRepresentFloat2()
     {
-        $intType = Type::int();
+        $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non-integer value: 1.1');
         $intType->serialize(1.1);
 
@@ -46,7 +46,7 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testSerializesOutputIntCannotRepresentNegativeFloat()
     {
-        $intType = Type::int();
+        $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non-integer value: -1.1');
         $intType->serialize(-1.1);
 
@@ -54,7 +54,7 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testSerializesOutputIntCannotRepresentNumericString()
     {
-        $intType = Type::int();
+        $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, '');
         $intType->serialize('Int cannot represent non-integer value: "-1.1"');
 
@@ -64,7 +64,7 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
     {
         // Maybe a safe PHP int, but bigger than 2^32, so not
         // representable as a GraphQL Int
-        $intType = Type::int();
+        $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non 32-bit signed integer value: 9876504321');
         $intType->serialize(9876504321);
 
@@ -72,28 +72,28 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testSerializesOutputIntCannotRepresentLowerThan32Bits()
     {
-        $intType = Type::int();
+        $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non 32-bit signed integer value: -9876504321');
         $intType->serialize(-9876504321);
     }
 
     public function testSerializesOutputIntCannotRepresentBiggerThanSigned32Bits()
     {
-        $intType = Type::int();
+        $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non 32-bit signed integer value: 1.0E+100');
         $intType->serialize(1e100);
     }
 
     public function testSerializesOutputIntCannotRepresentLowerThanSigned32Bits()
     {
-        $intType = Type::int();
+        $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non 32-bit signed integer value: -1.0E+100');
         $intType->serialize(-1e100);
     }
 
     public function testSerializesOutputIntCannotRepresentString()
     {
-        $intType = Type::int();
+        $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non 32-bit signed integer value: "one"');
         $intType->serialize('one');
 
@@ -101,7 +101,7 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testSerializesOutputIntCannotRepresentEmptyString()
     {
-        $intType = Type::int();
+        $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non 32-bit signed integer value: (empty string)');
         $intType->serialize('');
     }
@@ -111,7 +111,7 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
      */
     public function testSerializesOutputFloat()
     {
-        $floatType = Type::float();
+        $floatType = GraphQlType::float();
 
         $this->assertSame(1.0, $floatType->serialize(1));
         $this->assertSame(0.0, $floatType->serialize(0));
@@ -127,14 +127,14 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testSerializesOutputFloatCannotRepresentString()
     {
-        $floatType = Type::float();
+        $floatType = GraphQlType::float();
         $this->setExpectedException(InvariantViolation::class, 'Float cannot represent non numeric value: "one"');
         $floatType->serialize('one');
     }
 
     public function testSerializesOutputFloatCannotRepresentEmptyString()
     {
-        $floatType = Type::float();
+        $floatType = GraphQlType::float();
         $this->setExpectedException(InvariantViolation::class, 'Float cannot represent non numeric value: (empty string)');
         $floatType->serialize('');
     }
@@ -144,7 +144,7 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
      */
     public function testSerializesOutputStrings()
     {
-        $stringType = Type::string();
+        $stringType = GraphQlType::string();
 
         $this->assertSame('string', $stringType->serialize('string'));
         $this->assertSame('1', $stringType->serialize(1));
@@ -156,14 +156,14 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testSerializesOutputStringsCannotRepresentArray()
     {
-        $stringType = Type::string();
+        $stringType = GraphQlType::string();
         $this->setExpectedException(InvariantViolation::class, 'String cannot represent non scalar value: array(0)');
         $stringType->serialize([]);
     }
 
     public function testSerializesOutputStringsCannotRepresentObject()
     {
-        $stringType = Type::string();
+        $stringType = GraphQlType::string();
         $this->setExpectedException(InvariantViolation::class, 'String cannot represent non scalar value: instance of stdClass');
         $stringType->serialize(new \stdClass());
     }
@@ -173,7 +173,7 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
      */
     public function testSerializesOutputBoolean()
     {
-        $boolType = Type::boolean();
+        $boolType = GraphQlType::boolean();
 
         $this->assertSame(true, $boolType->serialize('string'));
         $this->assertSame(false, $boolType->serialize(''));
@@ -188,7 +188,7 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testSerializesOutputID()
     {
-        $idType = Type::id();
+        $idType = GraphQlType::id();
 
         $this->assertSame('string', $idType->serialize('string'));
         $this->assertSame('', $idType->serialize(''));
@@ -202,7 +202,7 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testSerializesOutputIDCannotRepresentObject()
     {
-        $idType = Type::id();
+        $idType = GraphQlType::id();
         $this->setExpectedException(InvariantViolation::class, 'ID type cannot represent non scalar value: instance of stdClass');
         $idType->serialize(new \stdClass());
     }

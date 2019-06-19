@@ -9,7 +9,7 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Utils\Utils;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
@@ -135,8 +135,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         // Check arrays of types:
         $this->expectValidationPasses(
             ['nest' => [
-                Type::string(),
-                Type::int()
+                GraphQlType::string(),
+                GraphQlType::int()
             ]],
             ['nest' => Config::arrayOf(
                 Config::OUTPUT_TYPE, Config::REQUIRED
@@ -146,7 +146,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         // Check arrays of types:
         $this->expectValidationThrows(
             ['nest' => [
-                Type::string(),
+                GraphQlType::string(),
                 new InputObjectType(['name' => 'test', 'fields' => []])
             ]],
             ['nest' => Config::arrayOf(
@@ -445,21 +445,21 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             [Config::INPUT_TYPE, null],
             [Config::INPUT_TYPE, new InputObjectType(['name' => 'test', 'fields' => []])],
             [Config::INPUT_TYPE, new EnumType(['name' => 'test2', 'values' => ['A', 'B', 'C']])],
-            [Config::INPUT_TYPE, Type::string()],
-            [Config::INPUT_TYPE, Type::int()],
-            [Config::INPUT_TYPE, Type::float()],
-            [Config::INPUT_TYPE, Type::boolean()],
-            [Config::INPUT_TYPE, Type::id()],
-            [Config::INPUT_TYPE, Type::listOf(Type::string())],
-            [Config::INPUT_TYPE, Type::nonNull(Type::string())],
+            [Config::INPUT_TYPE, GraphQlType::string()],
+            [Config::INPUT_TYPE, GraphQlType::int()],
+            [Config::INPUT_TYPE, GraphQlType::float()],
+            [Config::INPUT_TYPE, GraphQlType::boolean()],
+            [Config::INPUT_TYPE, GraphQlType::id()],
+            [Config::INPUT_TYPE, GraphQlType::listOf(GraphQlType::string())],
+            [Config::INPUT_TYPE, GraphQlType::nonNull(GraphQlType::string())],
             [Config::OUTPUT_TYPE, null],
             [Config::OUTPUT_TYPE, new ObjectType(['name' => 'test3', 'fields' => []])],
             [Config::OUTPUT_TYPE, new EnumType(['name' => 'test4', 'values' => ['A', 'B', 'C']])],
-            [Config::OUTPUT_TYPE, Type::string()],
-            [Config::OUTPUT_TYPE, Type::int()],
-            [Config::OUTPUT_TYPE, Type::float()],
-            [Config::OUTPUT_TYPE, Type::boolean()],
-            [Config::OUTPUT_TYPE, Type::id()],
+            [Config::OUTPUT_TYPE, GraphQlType::string()],
+            [Config::OUTPUT_TYPE, GraphQlType::int()],
+            [Config::OUTPUT_TYPE, GraphQlType::float()],
+            [Config::OUTPUT_TYPE, GraphQlType::boolean()],
+            [Config::OUTPUT_TYPE, GraphQlType::id()],
             [Config::OBJECT_TYPE, null],
             [Config::OBJECT_TYPE, new ObjectType(['name' => 'test6', 'fields' => []])],
             [Config::INTERFACE_TYPE, null],
@@ -606,7 +606,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         try {
             Config::validateField(
                 'TypeName',
-                ['type' => Type::string()],
+                ['type' => GraphQlType::string()],
                 ['name' => Config::STRING | Config::REQUIRED, 'type' => Config::OUTPUT_TYPE]
             );
             $this->fail('Expected exception not thrown');

@@ -6,7 +6,7 @@ namespace GraphQL\Tests\Server;
 use GraphQL\Deferred;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Schema;
 
 abstract class TestCase extends \PHPUnit_Framework_TestCase
@@ -18,13 +18,13 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'f1' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function($root, $args, $context, $info) {
                             return $info->fieldName;
                         }
                     ],
                     'fieldWithPhpError' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function($root, $args, $context, $info) {
                             \trigger_error('deprecated', \E_USER_DEPRECATED);
                             \trigger_error('notice', \E_USER_NOTICE);
@@ -35,23 +35,23 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                         }
                     ],
                     'fieldWithException' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function($root, $args, $context, $info) {
                             throw new UserError("This is the exception we want");
                         }
                     ],
                     'testContextAndRootValue' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function($root, $args, $context, $info) {
                             $context->testedRootValue = $root;
                             return $info->fieldName;
                         }
                     ],
                     'fieldWithArg' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'args' => [
                             'arg' => [
-                                'type' => Type::nonNull(Type::string())
+                                'type' => GraphQlType::nonNull(GraphQlType::string())
                             ],
                         ],
                         'resolve' => function($root, $args) {
@@ -59,10 +59,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                         }
                     ],
                     'dfd' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'args' => [
                             'num' => [
-                                'type' => Type::nonNull(Type::int())
+                                'type' => GraphQlType::nonNull(GraphQlType::int())
                             ],
                         ],
                         'resolve' => function($root, $args, $context) {
@@ -82,7 +82,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                         'type' => new ObjectType([
                             'name' => 'TestMutation',
                             'fields' => [
-                                'result' => Type::string()
+                                'result' => GraphQlType::string()
                             ]
                         ])
                     ]

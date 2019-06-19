@@ -10,7 +10,7 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\FindBreakingChanges;
@@ -26,7 +26,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Query',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string()
+                    'type' => GraphQlType::string()
                 ]
             ]
         ]);
@@ -37,13 +37,13 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $type1 = new ObjectType([
             'name' => 'Type1',
             'fields' => [
-                'field1' => ['type' => Type::string()],
+                'field1' => ['type' => GraphQlType::string()],
             ]
         ]);
         $type2 = new ObjectType([
             'name' => 'Type2',
             'fields' => [
-                'field1' => ['type' => Type::string()],
+                'field1' => ['type' => GraphQlType::string()],
             ]
         ]);
         $oldSchema = new Schema([
@@ -76,14 +76,14 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $objectType = new ObjectType([
             'name' => 'ObjectType',
             'fields' => [
-                'field1' => ['type' => Type::string()],
+                'field1' => ['type' => GraphQlType::string()],
             ]
         ]);
 
         $interfaceType = new InterfaceType([
             'name' => 'Type1',
             'fields' => [
-                'field1' => ['type' => Type::string()]
+                'field1' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -121,43 +121,43 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $typeA1 = new ObjectType([
             'name' => 'TypeA',
             'fields' => [
-                'field1' => ['type' => Type::string()],
+                'field1' => ['type' => GraphQlType::string()],
             ]
         ]);
         $typeA2 = new ObjectType([
             'name' => 'TypeA',
             'fields' => [
-                'field1' => ['type' => Type::string()],
+                'field1' => ['type' => GraphQlType::string()],
             ]
         ]);
         $typeB = new ObjectType([
             'name' => 'TypeB',
             'fields' => [
-                'field1' => ['type' => Type::string()],
+                'field1' => ['type' => GraphQlType::string()],
             ]
         ]);
         $oldType1 = new InterfaceType([
             'name' => 'Type1',
             'fields' => [
                 'field1' => ['type' => $typeA1],
-                'field2' => ['type' => Type::string()],
-                'field3' => ['type' => Type::string()],
+                'field2' => ['type' => GraphQlType::string()],
+                'field3' => ['type' => GraphQlType::string()],
                 'field4' => ['type' => $typeA1],
-                'field6' => ['type' => Type::string()],
-                'field7' => ['type' => Type::listOf(Type::string())],
-                'field8' => ['type' => Type::int()],
-                'field9' => ['type' => Type::nonNull(Type::int())],
-                'field10' => ['type' => Type::nonNull(Type::listOf(Type::int()))],
-                'field11' => ['type' => Type::int()],
-                'field12' => ['type' => Type::listOf(Type::int())],
-                'field13' => ['type' => Type::listOf(Type::nonNull(Type::int()))],
-                'field14' => ['type' => Type::listOf(Type::int())],
-                'field15' => ['type' => Type::listOf(Type::listOf(Type::int()))],
-                'field16' => ['type' => Type::nonNull(Type::int())],
-                'field17' => ['type' => Type::listOf(Type::int())],
+                'field6' => ['type' => GraphQlType::string()],
+                'field7' => ['type' => GraphQlType::listOf(GraphQlType::string())],
+                'field8' => ['type' => GraphQlType::int()],
+                'field9' => ['type' => GraphQlType::nonNull(GraphQlType::int())],
+                'field10' => ['type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int()))],
+                'field11' => ['type' => GraphQlType::int()],
+                'field12' => ['type' => GraphQlType::listOf(GraphQlType::int())],
+                'field13' => ['type' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::int()))],
+                'field14' => ['type' => GraphQlType::listOf(GraphQlType::int())],
+                'field15' => ['type' => GraphQlType::listOf(GraphQlType::listOf(GraphQlType::int()))],
+                'field16' => ['type' => GraphQlType::nonNull(GraphQlType::int())],
+                'field17' => ['type' => GraphQlType::listOf(GraphQlType::int())],
                 'field18' => [
-                    'type' => Type::listOf(Type::nonNull(
-                        Type::listOf(Type::nonNull(Type::int())))),
+                    'type' => GraphQlType::listOf(GraphQlType::nonNull(
+                        GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::int())))),
                 ],
             ]
         ]);
@@ -165,24 +165,24 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => ['type' => $typeA2],
-                'field3' => ['type' => Type::boolean()],
+                'field3' => ['type' => GraphQlType::boolean()],
                 'field4' => ['type' => $typeB],
-                'field5' => ['type' => Type::string()],
-                'field6' => ['type' => Type::listOf(Type::string())],
-                'field7' => ['type' => Type::string()],
-                'field8' => ['type' => Type::nonNull(Type::int())],
-                'field9' => ['type' => Type::int()],
-                'field10' => ['type' => Type::listOf(Type::int())],
-                'field11' => ['type' => Type::nonNull(Type::listOf(Type::int()))],
-                'field12' => ['type' => Type::listOf(Type::nonNull(Type::int()))],
-                'field13' => ['type' => Type::listOf(Type::int())],
-                'field14' => ['type' => Type::listOf(Type::listOf(Type::int()))],
-                'field15' => ['type' => Type::listOf(Type::int())],
-                'field16' => ['type' => Type::nonNull(Type::listOf(Type::int()))],
-                'field17' => ['type' => Type::nonNull(Type::listOf(Type::int()))],
+                'field5' => ['type' => GraphQlType::string()],
+                'field6' => ['type' => GraphQlType::listOf(GraphQlType::string())],
+                'field7' => ['type' => GraphQlType::string()],
+                'field8' => ['type' => GraphQlType::nonNull(GraphQlType::int())],
+                'field9' => ['type' => GraphQlType::int()],
+                'field10' => ['type' => GraphQlType::listOf(GraphQlType::int())],
+                'field11' => ['type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int()))],
+                'field12' => ['type' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::int()))],
+                'field13' => ['type' => GraphQlType::listOf(GraphQlType::int())],
+                'field14' => ['type' => GraphQlType::listOf(GraphQlType::listOf(GraphQlType::int()))],
+                'field15' => ['type' => GraphQlType::listOf(GraphQlType::int())],
+                'field16' => ['type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int()))],
+                'field17' => ['type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int()))],
                 'field18' => [
-                    'type' => Type::listOf(
-                        Type::listOf(Type::nonNull(Type::int()))),
+                    'type' => GraphQlType::listOf(
+                        GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::int()))),
                 ],
             ]
         ]);
@@ -270,49 +270,49 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'InputType1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                 ],
                 'field2' => [
-                    'type' => Type::boolean(),
+                    'type' => GraphQlType::boolean(),
                 ],
                 'field3' => [
-                    'type' => Type::listOf(Type::string())
+                    'type' => GraphQlType::listOf(GraphQlType::string())
                 ],
                 'field4' => [
-                    'type' => Type::nonNull(Type::string()),
+                    'type' => GraphQlType::nonNull(GraphQlType::string()),
                 ],
                 'field5' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                 ],
                 'field6' => [
-                    'type' => Type::listOf(Type::int())
+                    'type' => GraphQlType::listOf(GraphQlType::int())
                 ],
                 'field7' => [
-                    'type' => Type::nonNull(Type::listOf(Type::int()))
+                    'type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int()))
                 ],
                 'field8' => [
-                    'type' => Type::int(),
+                    'type' => GraphQlType::int(),
                 ],
                 'field9' => [
-                    'type' => Type::listOf(Type::int())
+                    'type' => GraphQlType::listOf(GraphQlType::int())
                 ],
                 'field10' => [
-                    'type' => Type::listOf(Type::nonNull(Type::int()))
+                    'type' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::int()))
                 ],
                 'field11' => [
-                    'type' => Type::listOf(Type::int())
+                    'type' => GraphQlType::listOf(GraphQlType::int())
                 ],
                 'field12' => [
-                    'type' => Type::listOf(Type::listOf(Type::int()))
+                    'type' => GraphQlType::listOf(GraphQlType::listOf(GraphQlType::int()))
                 ],
                 'field13' => [
-                    'type' => Type::nonNull(Type::int())
+                    'type' => GraphQlType::nonNull(GraphQlType::int())
                 ],
                 'field14' => [
-                    'type' => Type::listOf(Type::nonNull(Type::listOf(Type::int())))
+                    'type' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int())))
                 ],
                 'field15' => [
-                    'type' => Type::listOf(Type::nonNull(Type::listOf(Type::int())))
+                    'type' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int())))
                 ]
             ]
         ]);
@@ -321,46 +321,46 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'InputType1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::int(),
+                    'type' => GraphQlType::int(),
                 ],
                 'field3' => [
-                    'type' => Type::string()
+                    'type' => GraphQlType::string()
                 ],
                 'field4' => [
-                    'type' => Type::string()
+                    'type' => GraphQlType::string()
                 ],
                 'field5' => [
-                    'type' => Type::nonNull(Type::string())
+                    'type' => GraphQlType::nonNull(GraphQlType::string())
                 ],
                 'field6' => [
-                    'type' => Type::nonNull(Type::listOf(Type::int()))
+                    'type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int()))
                 ],
                 'field7' => [
-                    'type' => Type::listOf(Type::int())
+                    'type' => GraphQlType::listOf(GraphQlType::int())
                 ],
                 'field8' => [
-                    'type' => Type::nonNull(Type::listOf(Type::int()))
+                    'type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int()))
                 ],
                 'field9' => [
-                    'type' => Type::listOf(Type::nonNull(Type::int()))
+                    'type' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::int()))
                 ],
                 'field10' => [
-                    'type' => Type::listOf(Type::int())
+                    'type' => GraphQlType::listOf(GraphQlType::int())
                 ],
                 'field11' => [
-                    'type' => Type::listOf(Type::listOf(Type::int()))
+                    'type' => GraphQlType::listOf(GraphQlType::listOf(GraphQlType::int()))
                 ],
                 'field12' => [
-                    'type' => Type::listOf(Type::int())
+                    'type' => GraphQlType::listOf(GraphQlType::int())
                 ],
                 'field13' => [
-                    'type' => Type::nonNull(Type::listOf(Type::int()))
+                    'type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int()))
                 ],
                 'field14' => [
-                    'type' => Type::listOf(Type::listOf(Type::int()))
+                    'type' => GraphQlType::listOf(GraphQlType::listOf(GraphQlType::int()))
                 ],
                 'field15' => [
-                    'type' => Type::listOf(Type::nonNull(Type::listOf(Type::nonNull(Type::int()))))
+                    'type' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::int()))))
                 ]
             ]
         ]);
@@ -438,16 +438,16 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $oldInputType = new InputObjectType([
             'name' => 'InputType1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
         $newInputType = new InputObjectType([
             'name' => 'InputType1',
             'fields' => [
-                'field1' => Type::string(),
-                'requiredField' => Type::nonNull(Type::int()),
-                'optionalField' => Type::boolean()
+                'field1' => GraphQlType::string(),
+                'requiredField' => GraphQlType::nonNull(GraphQlType::int()),
+                'optionalField' => GraphQlType::boolean()
             ]
         ]);
 
@@ -483,28 +483,28 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $type1 = new ObjectType([
             'name' => 'Type1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
         $type1a = new ObjectType([
             'name' => 'Type1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
         $type2 = new ObjectType([
             'name' => 'Type2',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
         $type3 = new ObjectType([
             'name' => 'Type3',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
@@ -603,9 +603,9 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'name' => Type::string()
+                        'name' => GraphQlType::string()
                     ]
                 ]
             ]
@@ -615,7 +615,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $inputType = new InputObjectType([
             'name' => 'InputType1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
@@ -623,9 +623,9 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Interface1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'arg1' => Type::boolean(),
+                        'arg1' => GraphQlType::boolean(),
                         'objectArg' => $inputType
                     ]
                 ]
@@ -636,7 +636,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => []
                 ]
             ]
@@ -645,7 +645,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $newInterfaceType = new InterfaceType([
             'name' => 'Interface1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
@@ -696,23 +696,23 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'arg1' => Type::string(),
-                        'arg2' => Type::string(),
-                        'arg3' => Type::listOf(Type::string()),
-                        'arg4' => Type::string(),
-                        'arg5' => Type::nonNull(Type::string()),
-                        'arg6' => Type::nonNull(Type::string()),
-                        'arg7' => Type::nonNull(Type::listOf(Type::int())),
-                        'arg8' => Type::int(),
-                        'arg9' => Type::listOf(Type::int()),
-                        'arg10' => Type::listOf(Type::nonNull(Type::int())),
-                        'arg11' => Type::listOf(Type::int()),
-                        'arg12' => Type::listOf(Type::listOf(Type::int())),
-                        'arg13' => Type::nonNull(Type::int()),
-                        'arg14' => Type::listOf(Type::nonNull(Type::listOf(Type::int()))),
-                        'arg15' => Type::listOf(Type::nonNull(Type::listOf(Type::int())))
+                        'arg1' => GraphQlType::string(),
+                        'arg2' => GraphQlType::string(),
+                        'arg3' => GraphQlType::listOf(GraphQlType::string()),
+                        'arg4' => GraphQlType::string(),
+                        'arg5' => GraphQlType::nonNull(GraphQlType::string()),
+                        'arg6' => GraphQlType::nonNull(GraphQlType::string()),
+                        'arg7' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int())),
+                        'arg8' => GraphQlType::int(),
+                        'arg9' => GraphQlType::listOf(GraphQlType::int()),
+                        'arg10' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::int())),
+                        'arg11' => GraphQlType::listOf(GraphQlType::int()),
+                        'arg12' => GraphQlType::listOf(GraphQlType::listOf(GraphQlType::int())),
+                        'arg13' => GraphQlType::nonNull(GraphQlType::int()),
+                        'arg14' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int()))),
+                        'arg15' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int())))
                     ]
                 ]
             ]
@@ -722,23 +722,23 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'arg1' => Type::int(),
-                        'arg2' => Type::listOf(Type::string()),
-                        'arg3' => Type::string(),
-                        'arg4' => Type::nonNull(Type::string()),
-                        'arg5' => Type::int(),
-                        'arg6' => Type::nonNull(Type::int()),
-                        'arg7' => Type::listOf(Type::int()),
-                        'arg8' => Type::nonNull(Type::listOf(Type::int())),
-                        'arg9' => Type::listOf(Type::nonNull(Type::int())),
-                        'arg10' => Type::listOf(Type::int()),
-                        'arg11' => Type::listOf(Type::listOf(Type::int())),
-                        'arg12' => Type::listOf(Type::int()),
-                        'arg13' => Type::nonNull(Type::listOf(Type::int())),
-                        'arg14' => Type::listOf(Type::listOf(Type::int())),
-                        'arg15' => Type::listOf(Type::nonNull(Type::listOf(Type::nonNull(Type::int()))))
+                        'arg1' => GraphQlType::int(),
+                        'arg2' => GraphQlType::listOf(GraphQlType::string()),
+                        'arg3' => GraphQlType::string(),
+                        'arg4' => GraphQlType::nonNull(GraphQlType::string()),
+                        'arg5' => GraphQlType::int(),
+                        'arg6' => GraphQlType::nonNull(GraphQlType::int()),
+                        'arg7' => GraphQlType::listOf(GraphQlType::int()),
+                        'arg8' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int())),
+                        'arg9' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::int())),
+                        'arg10' => GraphQlType::listOf(GraphQlType::int()),
+                        'arg11' => GraphQlType::listOf(GraphQlType::listOf(GraphQlType::int())),
+                        'arg12' => GraphQlType::listOf(GraphQlType::int()),
+                        'arg13' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int())),
+                        'arg14' => GraphQlType::listOf(GraphQlType::listOf(GraphQlType::int())),
+                        'arg15' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::int()))))
                     ]
                 ]
             ]
@@ -822,9 +822,9 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'arg1' => Type::string()
+                        'arg1' => GraphQlType::string()
                     ]]
             ]
         ]);
@@ -832,11 +832,11 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'arg1' => Type::string(),
-                        'newRequiredArg' => Type::nonNull(Type::string()),
-                        'newOptionalArg' => Type::int()
+                        'arg1' => GraphQlType::string(),
+                        'newRequiredArg' => GraphQlType::nonNull(GraphQlType::string()),
+                        'newOptionalArg' => GraphQlType::int()
                     ]]
             ]
         ]);
@@ -870,14 +870,14 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $inputType1a = new InputObjectType([
             'name' => 'InputType1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
         $inputType1b = new InputObjectType([
             'name' => 'InputType1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
@@ -885,9 +885,9 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::int(),
+                    'type' => GraphQlType::int(),
                     'args' => [
-                        'arg1' => Type::nonNull(Type::int()),
+                        'arg1' => GraphQlType::nonNull(GraphQlType::int()),
                         'arg2' => $inputType1a
                     ]
                 ]
@@ -898,9 +898,9 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::int(),
+                    'type' => GraphQlType::int(),
                     'args' => [
-                        'arg1' => Type::nonNull(Type::int()),
+                        'arg1' => GraphQlType::nonNull(GraphQlType::int()),
                         'arg2' => $inputType1b
                     ]
                 ]
@@ -933,9 +933,9 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'arg1' => Type::nonNull(Type::string()),
+                        'arg1' => GraphQlType::nonNull(GraphQlType::string()),
                     ]
                 ]
             ]
@@ -944,9 +944,9 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'arg1' => Type::string()
+                        'arg1' => GraphQlType::string()
                     ]
                 ]
             ]
@@ -977,7 +977,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $interface1 = new InterfaceType([
             'name' => 'Interface1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ],
             'resolveType' => function () {
             }
@@ -986,13 +986,13 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'interfaces' => [$interface1],
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
         $newType = new ObjectType([
             'name' => 'Type1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
@@ -1026,7 +1026,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $typeThatGetsRemoved = new ObjectType([
             'name' => 'TypeThatGetsRemoved',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
@@ -1034,9 +1034,9 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'ArgThatChanges',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'id' => Type::int()
+                        'id' => GraphQlType::int()
                     ]
                 ]
             ]
@@ -1046,9 +1046,9 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'ArgThatChanges',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'id' => Type::string()
+                        'id' => GraphQlType::string()
                     ]
                 ]
             ]
@@ -1057,43 +1057,43 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $typeThatChangesTypeOld = new ObjectType([
             'name' => 'TypeThatChangesType',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
         $typeThatChangesTypeNew = new InterfaceType([
             'name' => 'TypeThatChangesType',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
         $typeThatHasBreakingFieldChangesOld = new InterfaceType([
             'name' => 'TypeThatHasBreakingFieldChanges',
             'fields' => [
-                'field1' => Type::string(),
-                'field2' => Type::string()
+                'field1' => GraphQlType::string(),
+                'field2' => GraphQlType::string()
             ]
         ]);
 
         $typeThatHasBreakingFieldChangesNew = new InterfaceType([
             'name' => 'TypeThatHasBreakingFieldChanges',
             'fields' => [
-                'field2' => Type::boolean()
+                'field2' => GraphQlType::boolean()
             ]
         ]);
 
         $typeInUnion1 = new ObjectType([
             'name' => 'TypeInUnion1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
         $typeInUnion2 = new ObjectType([
             'name' => 'TypeInUnion2',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
@@ -1131,7 +1131,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $interface1 = new InterfaceType([
             'name' => 'Interface1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ],
             'resolveType' => function () {
             }
@@ -1141,14 +1141,14 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'TypeThatLosesInterface1',
             'interfaces' => [$interface1],
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
         $typeThatLosesInterfaceNew = new ObjectType([
             'name' => 'TypeThatLosesInterface1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
@@ -1238,10 +1238,10 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
                         'name' => [
-                            'type' => Type::string(),
+                            'type' => GraphQlType::string(),
                             'defaultValue' => 'test'
                         ]
                     ]
@@ -1253,10 +1253,10 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
                         'name' => [
-                            'type' => Type::string(),
+                            'type' => GraphQlType::string(),
                             'defaultValue' => 'Testertest'
                         ]
                     ]
@@ -1333,21 +1333,21 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $type1 = new ObjectType([
             'name' => 'Type1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
         $type1a = new ObjectType([
             'name' => 'Type1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
         $type2 = new ObjectType([
             'name' => 'Type2',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
@@ -1410,10 +1410,10 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
                         'name' => [
-                            'type' => Type::string(),
+                            'type' => GraphQlType::string(),
                             'defaultValue' => 'test'
                         ]
                     ]
@@ -1425,10 +1425,10 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             'name' => 'Type1',
             'fields' => [
                 'field1' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
                         'name' => [
-                            'type' => Type::string(),
+                            'type' => GraphQlType::string(),
                             'defaultValue' => 'Testertest'
                         ]
                     ]
@@ -1439,14 +1439,14 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $typeInUnion1 = new ObjectType([
             'name' => 'TypeInUnion1',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 
         $typeInUnion2 = new ObjectType([
             'name' => 'TypeInUnion2',
             'fields' => [
-                'field1' => Type::string()
+                'field1' => GraphQlType::string()
             ]
         ]);
 

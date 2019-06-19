@@ -12,7 +12,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class LazyInterfaceTest extends \PHPUnit_Framework_TestCase
 {
@@ -64,7 +64,7 @@ class LazyInterfaceTest extends \PHPUnit_Framework_TestCase
             $this->lazyInterface = new InterfaceType([
                 'name' => 'LazyInterface',
                 'fields' => [
-                    'a' => Type::string()
+                    'a' => GraphQlType::string()
                 ],
                 'resolveType' => function() {
                     return $this->getTestObjectType();
@@ -86,7 +86,7 @@ class LazyInterfaceTest extends \PHPUnit_Framework_TestCase
                 'name' => 'TestObject',
                 'fields' => [
                     'name' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'resolve' => function() {
                             return 'testname';
                         }

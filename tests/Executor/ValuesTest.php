@@ -8,7 +8,7 @@ use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Language\AST\VariableNode;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Schema;
 
 class ValuesTest extends \PHPUnit_Framework_TestCase {
@@ -161,13 +161,13 @@ class ValuesTest extends \PHPUnit_Framework_TestCase {
                   'name' => 'Query',
                   'fields' => [
                       'test' => [
-                          'type' => Type::boolean(),
+                          'type' => GraphQlType::boolean(),
                           'args' => [
-                              'idInput' => Type::id(),
-                              'boolInput' => Type::boolean(),
-                              'intInput' => Type::int(),
-                              'stringInput' => Type::string(),
-                              'floatInput' => Type::float()
+                              'idInput' => GraphQlType::id(),
+                              'boolInput' => GraphQlType::boolean(),
+                              'intInput' => GraphQlType::int(),
+                              'stringInput' => GraphQlType::string(),
+                              'floatInput' => GraphQlType::float()
                           ]
                       ],
                   ]

@@ -8,7 +8,7 @@ use GraphQL\Language\SourceLocation;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Introspection;
 
 class EnumTypeTest extends \PHPUnit_Framework_TestCase
@@ -63,8 +63,8 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
                     'type' => $ColorType,
                     'args' => [
                         'fromEnum' => ['type' => $ColorType],
-                        'fromInt' => ['type' => Type::int()],
-                        'fromString' => ['type' => Type::string()],
+                        'fromInt' => ['type' => GraphQlType::int()],
+                        'fromString' => ['type' => GraphQlType::string()],
                     ],
                     'resolve' => function ($value, $args) {
                         if (isset($args['fromInt'])) {
@@ -81,8 +81,8 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
                 'simpleEnum' => [
                     'type' => $simpleEnum,
                     'args' => [
-                        'fromName' => ['type' => Type::string()],
-                        'fromValue' => ['type' => Type::string()]
+                        'fromName' => ['type' => GraphQlType::string()],
+                        'fromValue' => ['type' => GraphQlType::string()]
                     ],
                     'resolve' => function($value, $args) {
                         if (isset($args['fromName'])) {
@@ -94,10 +94,10 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
                     }
                 ],
                 'colorInt' => [
-                    'type' => Type::int(),
+                    'type' => GraphQlType::int(),
                     'args' => [
                         'fromEnum' => ['type' => $ColorType],
-                        'fromInt' => ['type' => Type::int()],
+                        'fromInt' => ['type' => GraphQlType::int()],
                     ],
                     'resolve' => function ($value, $args) {
                         if (isset($args['fromInt'])) {
@@ -118,10 +118,10 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
                             'defaultValue' => $Complex1
                         ],
                         'provideGoodValue' => [
-                            'type' => Type::boolean(),
+                            'type' => GraphQlType::boolean(),
                         ],
                         'provideBadValue' => [
-                            'type' => Type::boolean()
+                            'type' => GraphQlType::boolean()
                         ]
                     ],
                     'resolve' => function($value, $args) use ($Complex1, $Complex2) {

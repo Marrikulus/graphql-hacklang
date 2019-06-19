@@ -14,7 +14,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
 use GraphQL\Language\Visitor;
 use GraphQL\Tests\Validator\TestCase;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Utils\TypeInfo;
 
 class VisitorTest extends \PHPUnit_Framework_TestCase
@@ -1227,7 +1227,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
                 if (
                     $node->kind === 'Field' &&
                     !$node->selectionSet &&
-                    Type::isCompositeType(Type::getNamedType($type))
+                    GraphQlType::isCompositeType(GraphQlType::getNamedType($type))
                 ) {
                     return new FieldNode([
                         'alias' => $node->alias,

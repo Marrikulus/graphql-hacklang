@@ -14,7 +14,7 @@ use GraphQL\Language\AST\ObjectValueNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Utils\AST;
 
 class AstFromValueTest extends \PHPUnit_Framework_TestCase
@@ -26,13 +26,13 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
      */
     public function testConvertsBooleanValueToASTs()
     {
-        $this->assertEquals(new BooleanValueNode(['value' => true]), AST::astFromValue(true, Type::boolean()));
-        $this->assertEquals(new BooleanValueNode(['value' => false]), AST::astFromValue(false, Type::boolean()));
-        $this->assertEquals(new NullValueNode([]), AST::astFromValue(null, Type::boolean()));
-        $this->assertEquals(new BooleanValueNode(['value' => false]), AST::astFromValue(0, Type::boolean()));
-        $this->assertEquals(new BooleanValueNode(['value' => true]), AST::astFromValue(1, Type::boolean()));
-        $this->assertEquals(new BooleanValueNode(['value' => false]), AST::astFromValue(0, Type::nonNull(Type::boolean())));
-        $this->assertEquals(null, AST::astFromValue(null, Type::nonNull(Type::boolean()))); // Note: null means that AST cannot
+        $this->assertEquals(new BooleanValueNode(['value' => true]), AST::astFromValue(true, GraphQlType::boolean()));
+        $this->assertEquals(new BooleanValueNode(['value' => false]), AST::astFromValue(false, GraphQlType::boolean()));
+        $this->assertEquals(new NullValueNode([]), AST::astFromValue(null, GraphQlType::boolean()));
+        $this->assertEquals(new BooleanValueNode(['value' => false]), AST::astFromValue(0, GraphQlType::boolean()));
+        $this->assertEquals(new BooleanValueNode(['value' => true]), AST::astFromValue(1, GraphQlType::boolean()));
+        $this->assertEquals(new BooleanValueNode(['value' => false]), AST::astFromValue(0, GraphQlType::nonNull(GraphQlType::boolean())));
+        $this->assertEquals(null, AST::astFromValue(null, GraphQlType::nonNull(GraphQlType::boolean()))); // Note: null means that AST cannot
     }
 
     /**
@@ -40,9 +40,9 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
      */
     public function testConvertsIntValuesToASTs()
     {
-        $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123.0, Type::int()));
-        $this->assertEquals(new IntValueNode(['value' => '10000']), AST::astFromValue(1e4, Type::int()));
-        $this->assertEquals(new IntValueNode(['value' => '0']), AST::astFromValue(0e4, Type::int()));
+        $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123.0, GraphQlType::int()));
+        $this->assertEquals(new IntValueNode(['value' => '10000']), AST::astFromValue(1e4, GraphQlType::int()));
+        $this->assertEquals(new IntValueNode(['value' => '0']), AST::astFromValue(0e4, GraphQlType::int()));
     }
 
     public function testConvertsIntValuesToASTsCannotRepresentNonInteger()
@@ -50,13 +50,13 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
         // GraphQL spec does not allow coercing non-integer values to Int to avoid
         // accidental data loss.
         $this->setExpectedException(\Exception::class, 'Int cannot represent non-integer value: 123.5');
-        AST::astFromValue(123.5, Type::int());
+        AST::astFromValue(123.5, GraphQlType::int());
     }
 
     public function testConvertsIntValuesToASTsCannotRepresentNon32bitsInteger()
     {
         $this->setExpectedException(\Exception::class, 'Int cannot represent non 32-bit signed integer value: 1.0E+40');
-        AST::astFromValue(1e40, Type::int()); // Note: js version will produce 1e+40, both values are valid GraphQL floats
+        AST::astFromValue(1e40, GraphQlType::int()); // Note: js version will produce 1e+40, both values are valid GraphQL floats
     }
 
     /**
@@ -64,12 +64,12 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
      */
     public function testConvertsFloatValuesToIntOrFloatASTs()
     {
-        $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123, Type::float()));
-        $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123.0, Type::float()));
-        $this->assertEquals(new FloatValueNode(['value' => '123.5']), AST::astFromValue(123.5, Type::float()));
-        $this->assertEquals(new IntValueNode(['value' => '10000']), AST::astFromValue(1e4, Type::float()));
-        $this->assertEquals(new FloatValueNode(['value' => '1e+40']), AST::astFromValue(1e40, Type::float()));
-        $this->assertEquals(new IntValueNode(['value' => '0']), AST::astFromValue(0e40, Type::float()));
+        $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123, GraphQlType::float()));
+        $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123.0, GraphQlType::float()));
+        $this->assertEquals(new FloatValueNode(['value' => '123.5']), AST::astFromValue(123.5, GraphQlType::float()));
+        $this->assertEquals(new IntValueNode(['value' => '10000']), AST::astFromValue(1e4, GraphQlType::float()));
+        $this->assertEquals(new FloatValueNode(['value' => '1e+40']), AST::astFromValue(1e40, GraphQlType::float()));
+        $this->assertEquals(new IntValueNode(['value' => '0']), AST::astFromValue(0e40, GraphQlType::float()));
     }
 
     /**
@@ -77,13 +77,13 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
      */
     public function testConvertsStringValuesToASTs()
     {
-        $this->assertEquals(new StringValueNode(['value' => 'hello']), AST::astFromValue('hello', Type::string()));
-        $this->assertEquals(new StringValueNode(['value' => 'VALUE']), AST::astFromValue('VALUE', Type::string()));
-        $this->assertEquals(new StringValueNode(['value' => 'VA\\nLUE']), AST::astFromValue("VA\nLUE", Type::string()));
-        $this->assertEquals(new StringValueNode(['value' => '123']), AST::astFromValue(123, Type::string()));
-        $this->assertEquals(new StringValueNode(['value' => 'false']), AST::astFromValue(false, Type::string()));
-        $this->assertEquals(new NullValueNode([]), AST::astFromValue(null, Type::string()));
-        $this->assertEquals(null, AST::astFromValue(null, Type::nonNull(Type::string())));
+        $this->assertEquals(new StringValueNode(['value' => 'hello']), AST::astFromValue('hello', GraphQlType::string()));
+        $this->assertEquals(new StringValueNode(['value' => 'VALUE']), AST::astFromValue('VALUE', GraphQlType::string()));
+        $this->assertEquals(new StringValueNode(['value' => 'VA\\nLUE']), AST::astFromValue("VA\nLUE", GraphQlType::string()));
+        $this->assertEquals(new StringValueNode(['value' => '123']), AST::astFromValue(123, GraphQlType::string()));
+        $this->assertEquals(new StringValueNode(['value' => 'false']), AST::astFromValue(false, GraphQlType::string()));
+        $this->assertEquals(new NullValueNode([]), AST::astFromValue(null, GraphQlType::string()));
+        $this->assertEquals(null, AST::astFromValue(null, GraphQlType::nonNull(GraphQlType::string())));
     }
 
     /**
@@ -91,13 +91,13 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
      */
     public function testConvertIdValuesToIntOrStringASTs()
     {
-        $this->assertEquals(new StringValueNode(['value' => 'hello']), AST::astFromValue('hello', Type::id()));
-        $this->assertEquals(new StringValueNode(['value' => 'VALUE']), AST::astFromValue('VALUE', Type::id()));
-        $this->assertEquals(new StringValueNode(['value' => 'VA\\nLUE']), AST::astFromValue("VA\nLUE", Type::id()));
-        $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123, Type::id()));
-        $this->assertEquals(new StringValueNode(['value' => 'false']), AST::astFromValue(false, Type::id()));
-        $this->assertEquals(new NullValueNode([]), AST::astFromValue(null, Type::id()));
-        $this->assertEquals(null, AST::astFromValue(null, Type::nonNull(Type::id())));
+        $this->assertEquals(new StringValueNode(['value' => 'hello']), AST::astFromValue('hello', GraphQlType::id()));
+        $this->assertEquals(new StringValueNode(['value' => 'VALUE']), AST::astFromValue('VALUE', GraphQlType::id()));
+        $this->assertEquals(new StringValueNode(['value' => 'VA\\nLUE']), AST::astFromValue("VA\nLUE", GraphQlType::id()));
+        $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123, GraphQlType::id()));
+        $this->assertEquals(new StringValueNode(['value' => 'false']), AST::astFromValue(false, GraphQlType::id()));
+        $this->assertEquals(new NullValueNode([]), AST::astFromValue(null, GraphQlType::id()));
+        $this->assertEquals(null, AST::astFromValue(null, GraphQlType::nonNull(GraphQlType::id())));
     }
 
     /**
@@ -105,7 +105,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
      */
     public function testDoesNotConvertsNonNullValuestoNullValue()
     {
-        $this->assertSame(null, AST::astFromValue(null, Type::nonNull(Type::boolean())));
+        $this->assertSame(null, AST::astFromValue(null, GraphQlType::nonNull(GraphQlType::boolean())));
     }
 
     /**
@@ -134,7 +134,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
                 new StringValueNode(['value' => 'BAR'])
             ]
         ]);
-        $this->assertEquals($value1, AST::astFromValue(['FOO', 'BAR'], Type::listOf(Type::string())));
+        $this->assertEquals($value1, AST::astFromValue(['FOO', 'BAR'], GraphQlType::listOf(GraphQlType::string())));
 
         $value2 = new ListValueNode([
             'values' => [
@@ -142,7 +142,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
                 new EnumValueNode(['value' => 'GOODBYE']),
             ]
         ]);
-        $this->assertEquals($value2, AST::astFromValue(['HELLO', 'GOODBYE'], Type::listOf($this->myEnum())));
+        $this->assertEquals($value2, AST::astFromValue(['HELLO', 'GOODBYE'], GraphQlType::listOf($this->myEnum())));
     }
 
     /**
@@ -150,7 +150,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
      */
     public function testConvertsListSingletons()
     {
-        $this->assertEquals(new StringValueNode(['value' => 'FOO']), AST::astFromValue('FOO', Type::listOf(Type::string())));
+        $this->assertEquals(new StringValueNode(['value' => 'FOO']), AST::astFromValue('FOO', GraphQlType::listOf(GraphQlType::string())));
     }
 
     /**
@@ -161,7 +161,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
         $inputObj = new InputObjectType([
             'name' => 'MyInputObj',
             'fields' => [
-                'foo' => Type::float(),
+                'foo' => GraphQlType::float(),
                 'bar' => $this->myEnum()
             ]
         ]);
@@ -186,7 +186,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
         $inputObj = new InputObjectType([
             'name' => 'MyInputObj',
             'fields' => [
-                'foo' => Type::float(),
+                'foo' => GraphQlType::float(),
                 'bar' => $this->myEnum()
             ]
         ]);

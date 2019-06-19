@@ -10,7 +10,7 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Utils\Utils;
 
@@ -53,7 +53,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
 
         $this->SomeObjectType = new ObjectType([
             'name' => 'SomeObject',
-            'fields' => [ 'f' => [ 'type' => Type::string() ] ],
+            'fields' => [ 'f' => [ 'type' => GraphQlType::string() ] ],
             'interfaces' => function() {return [$this->SomeInterfaceType];}
         ]);
 
@@ -62,7 +62,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'isTypeOf' => function() {
                 return true;
             },
-            'fields' => [ 'f' => [ 'type' => Type::string() ]]
+            'fields' => [ 'f' => [ 'type' => GraphQlType::string() ]]
         ]);
         $this->SomeUnionType = new UnionType([
             'name' => 'SomeUnion',
@@ -77,7 +77,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'resolveType' => function() {
                 return null;
             },
-            'fields' => [ 'f' => ['type' => Type::string() ]]
+            'fields' => [ 'f' => ['type' => GraphQlType::string() ]]
         ]);
 
         $this->SomeEnumType = new EnumType([
@@ -90,12 +90,12 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $this->SomeInputObjectType = new InputObjectType([
             'name' => 'SomeInputObject',
             'fields' => [
-                'val' => [ 'type' => Type::string(), 'defaultValue' => 'hello' ]
+                'val' => [ 'type' => GraphQlType::string(), 'defaultValue' => 'hello' ]
             ]
         ]);
 
         $this->outputTypes = $this->withModifiers([
-            Type::string(),
+            GraphQlType::string(),
             $this->SomeScalarType,
             $this->SomeEnumType,
             $this->SomeObjectType,
@@ -109,7 +109,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $this->notOutputTypes[] = $this->String;
 
         $this->inputTypes = $this->withModifiers([
-            Type::string(),
+            GraphQlType::string(),
             $this->SomeScalarType,
             $this->SomeEnumType,
             $this->SomeInputObjectType,
@@ -238,7 +238,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $mutationType = new ObjectType([
             'name' => 'Mutation',
             'fields' => [
-                'edit' => ['type' => Type::string()]
+                'edit' => ['type' => GraphQlType::string()]
             ]
         ]);
         $schema = new Schema([
@@ -256,7 +256,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $subscriptionType = new ObjectType([
             'name' => 'Subscription',
             'fields' => [
-                'subscribe' => ['type' => Type::string()]
+                'subscribe' => ['type' => GraphQlType::string()]
             ]
         ]);
         $schema = new Schema([
@@ -353,7 +353,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $QueryType = new ObjectType([
             'name' => 'Query',
             'fields' => [
-                'normal' => [ 'type' => Type::string() ],
+                'normal' => [ 'type' => GraphQlType::string() ],
                 'fake' => [ 'type' => $FakeString ],
             ]
         ]);
@@ -373,12 +373,12 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     {
         $A = new ObjectType([
             'name' => 'SameName',
-            'fields' => [ 'f' => [ 'type' => Type::string() ]],
+            'fields' => [ 'f' => [ 'type' => GraphQlType::string() ]],
         ]);
 
         $B = new ObjectType([
             'name' => 'SameName',
-            'fields' => [ 'f' => [ 'type' => Type::string() ] ],
+            'fields' => [ 'f' => [ 'type' => GraphQlType::string() ] ],
         ]);
 
         $QueryType = new ObjectType([
@@ -406,19 +406,19 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
             'resolveType' => function() {},
-            'fields' => [ 'f' => [ 'type' => Type::string() ]],
+            'fields' => [ 'f' => [ 'type' => GraphQlType::string() ]],
         ]);
 
         $FirstBadObject = new ObjectType([
             'name' => 'BadObject',
             'interfaces' => [ $AnotherInterface ],
-            'fields' => [ 'f' => [ 'type' => Type::string() ]],
+            'fields' => [ 'f' => [ 'type' => GraphQlType::string() ]],
         ]);
 
         $SecondBadObject = new ObjectType([
             'name' => 'BadObject',
             'interfaces' => [ $AnotherInterface ],
-            'fields' => [ 'f' => [ 'type' => Type::string() ]],
+            'fields' => [ 'f' => [ 'type' => GraphQlType::string() ]],
         ]);
 
         $QueryType = new ObjectType([
@@ -451,7 +451,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
             'fields' => [
-                'f' => [ 'type' => Type::string() ]
+                'f' => [ 'type' => GraphQlType::string() ]
             ]
         ]));
 
@@ -468,7 +468,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'SomeObject',
             'fields' => function() {
                 return [
-                    'f' => ['type' => Type::string()]
+                    'f' => ['type' => GraphQlType::string()]
                 ];
             }
         ]));
@@ -516,7 +516,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
             'fields' => [
-                'bad-name-with-dashes' => ['type' => Type::string()]
+                'bad-name-with-dashes' => ['type' => GraphQlType::string()]
             ]
         ]));
 
@@ -540,7 +540,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
             'fields' => [
-                '__notPartOfIntrospection' => ['type' => Type::string()]
+                '__notPartOfIntrospection' => ['type' => GraphQlType::string()]
             ]
         ]));
 
@@ -559,7 +559,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
             'fields' => [
-                'field' => Type::string()
+                'field' => GraphQlType::string()
             ]
         ]));
         $schema->assertValid();
@@ -573,7 +573,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
             'fields' => [
-                'field' => new \stdClass(['type' => Type::string()])
+                'field' => new \stdClass(['type' => GraphQlType::string()])
             ]
         ]));
 
@@ -646,9 +646,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'SomeObject',
             'fields' => [
                 'goodField' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'goodArg' => ['type' => Type::string()]
+                        'goodArg' => ['type' => GraphQlType::string()]
                     ]
                 ]
             ]
@@ -665,9 +665,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'SomeObject',
             'fields' => [
                 'badField' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'bad-name-with-dashes' => ['type' => Type::string()]
+                        'bad-name-with-dashes' => ['type' => GraphQlType::string()]
                     ]
                 ]
             ]
@@ -693,9 +693,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'SomeObject',
             'fields' => [
                 'goodField' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'goodArg' => ['type' => Type::string()]
+                        'goodArg' => ['type' => GraphQlType::string()]
                     ]
                 ]
             ]
@@ -712,9 +712,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'SomeObject',
             'fields' => [
                 'badField' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        ['badArg' => Type::string()]
+                        ['badArg' => GraphQlType::string()]
                     ]
                 ]
             ]
@@ -739,13 +739,13 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'AnotherInterface',
             'resolveType' => function () {
             },
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]);
 
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
             'interfaces' => [$AnotherInterfaceType],
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]));
         $schema->assertValid();
     }
@@ -759,7 +759,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'AnotherInterface',
             'resolveType' => function () {
             },
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]);
 
         $schema = $this->schemaWithFieldType(new ObjectType([
@@ -767,7 +767,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'interfaces' => function () use ($AnotherInterfaceType) {
                 return [$AnotherInterfaceType];
             },
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]));
         $schema->assertValid();
     }
@@ -784,7 +784,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
             'interfaces' => new \stdClass(),
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]));
         $schema->assertValid();
     }
@@ -798,13 +798,13 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'NonUniqInterface',
             'resolveType' => function () {
             },
-            'fields' => ['f' => ['type' => Type::string()]],
+            'fields' => ['f' => ['type' => GraphQlType::string()]],
         ]);
 
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
             'resolveType' => function(){},
-            'fields' => ['f' => ['type' => Type::string()]],
+            'fields' => ['f' => ['type' => GraphQlType::string()]],
         ]);
 
         $schema = $this->schemaWithFieldType(new ObjectType([
@@ -812,7 +812,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'interfaces' => function () use ($NonUniqInterface, $AnotherInterface) {
                 return [$NonUniqInterface, $AnotherInterface, $NonUniqInterface];
             },
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]));
 
         $this->setExpectedException(
@@ -839,7 +839,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'interfaces' => function () {
                 return new \stdClass();
             },
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]));
     }
 
@@ -959,7 +959,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $schema = $this->schemaWithInputObject(new InputObjectType([
             'name' => 'SomeInputObject',
             'fields' => [
-                'f' => ['type' => Type::string()]
+                'f' => ['type' => GraphQlType::string()]
             ]
         ]));
 
@@ -975,7 +975,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'SomeInputObject',
             'fields' => function () {
                 return [
-                    'f' => ['type' => Type::string()]
+                    'f' => ['type' => GraphQlType::string()]
                 ];
             }
         ]));
@@ -1007,7 +1007,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $schema = $this->schemaWithInputObject(new InputObjectType([
             'name' => 'SomeInputObject',
             'fields' => [
-                ['field' => Type::string()]
+                ['field' => GraphQlType::string()]
             ]
         ]));
 
@@ -1077,7 +1077,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'SomeInputObject',
             'fields' => [
                 'f' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                 ]
             ]
         ]));
@@ -1094,7 +1094,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'SomeInputObject',
             'fields' => [
                 'f' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'resolve' => null,
                 ]
             ]
@@ -1111,7 +1111,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'SomeInputObject',
             'fields' => [
                 'f' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'resolve' => function () {
                         return 0;
                     },
@@ -1135,7 +1135,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'SomeInputObject',
             'fields' => [
                 'f' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'resolve' => new \stdClass(),
                 ]
             ]
@@ -1161,7 +1161,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'isTypeOf' => function () {
                 return true;
             },
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]));
         $schema->assertValid();
     }
@@ -1174,7 +1174,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'AnotherObject',
             'isTypeOf' => new \stdClass(),
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]));
 
         $this->setExpectedException(
@@ -1196,13 +1196,13 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'AnotherInterface',
             'resolveType' => function () {
             },
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]);
 
         $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
             'interfaces' => [$AnotherInterfaceType],
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]));
     }
 
@@ -1213,7 +1213,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     {
         $InterfaceTypeWithoutResolveType = new InterfaceType([
             'name' => 'InterfaceTypeWithoutResolveType',
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]);
 
         $schema = $this->schemaWithFieldType(new ObjectType([
@@ -1222,7 +1222,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 return true;
             },
             'interfaces' => [$InterfaceTypeWithoutResolveType],
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]));
 
         $schema->assertValid();
@@ -1237,7 +1237,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'AnotherInterface',
             'resolveType' => function () {
             },
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]);
 
         $schema = $this->schemaWithFieldType(new ObjectType([
@@ -1246,7 +1246,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 return true;
             },
             'interfaces' => [$AnotherInterfaceType],
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]));
 
         $schema->assertValid();
@@ -1260,7 +1260,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $type = new InterfaceType([
             'name' => 'AnotherInterface',
             'resolveType' => new \stdClass(),
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]);
 
         $this->setExpectedException(
@@ -1278,13 +1278,13 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     {
         $InterfaceTypeWithoutResolveType = new InterfaceType([
             'name' => 'InterfaceTypeWithoutResolveType',
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]);
 
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
             'interfaces' => [$InterfaceTypeWithoutResolveType],
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]));
 
         $this->setExpectedException(
@@ -1750,7 +1750,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'AnotherInterface',
             'resolveType' => function () {
             },
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]);
 
         $schema = $this->schemaWithObjectImplementingType($AnotherInterfaceType);
@@ -1973,7 +1973,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     public function testAcceptsAnTypeAsItemTypeOfList()
     {
         $types = $this->withModifiers([
-            Type::string(),
+            GraphQlType::string(),
             $this->SomeScalarType,
             $this->SomeObjectType,
             $this->SomeUnionType,
@@ -1984,7 +1984,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
 
         foreach ($types as $type) {
             try {
-                Type::listOf($type);
+                GraphQlType::listOf($type);
             } catch (\Exception $e) {
                 throw new \Exception("Expection thrown for type $type: {$e->getMessage()}", null, $e);
             }
@@ -2008,7 +2008,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ];
         foreach ($notTypes as $type) {
             try {
-                Type::listOf($type);
+                GraphQlType::listOf($type);
                 $this->fail("Expected exception not thrown for: " . Utils::printSafe($type));
             } catch (InvariantViolation $e) {
                 $this->assertEquals(
@@ -2028,19 +2028,19 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     public function testAcceptsAnTypeAsNullableTypeOfNonNull()
     {
         $nullableTypes = [
-            Type::string(),
+            GraphQlType::string(),
             $this->SomeScalarType,
             $this->SomeObjectType,
             $this->SomeUnionType,
             $this->SomeInterfaceType,
             $this->SomeEnumType,
             $this->SomeInputObjectType,
-            Type::listOf(Type::string()),
-            Type::listOf(Type::nonNull(Type::string())),
+            GraphQlType::listOf(GraphQlType::string()),
+            GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::string())),
         ];
         foreach ($nullableTypes as $type) {
             try {
-                Type::nonNull($type);
+                GraphQlType::nonNull($type);
             } catch (\Exception $e) {
                 throw new \Exception("Exception thrown for type $type: " . $e->getMessage(), null, $e);
             }
@@ -2055,7 +2055,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     public function testRejectsANonTypeAsNullableTypeOfNonNull()
     {
         $notNullableTypes = [
-            Type::nonNull(Type::string()),
+            GraphQlType::nonNull(GraphQlType::string()),
             [],
             new \stdClass(),
             'String',
@@ -2065,7 +2065,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ];
         foreach ($notNullableTypes as $type) {
             try {
-                Type::nonNull($type);
+                GraphQlType::nonNull($type);
                 $this->fail("Expected exception not thrown for: " . Utils::printSafe($type));
             } catch (InvariantViolation $e) {
                 $this->assertEquals(
@@ -2090,9 +2090,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             },
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'input' => ['type' => Type::string()]
+                        'input' => ['type' => GraphQlType::string()]
                     ]
                 ]
             ]
@@ -2103,9 +2103,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'interfaces' => [$AnotherInterface],
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'input' => ['type' => Type::string()]
+                        'input' => ['type' => GraphQlType::string()]
                     ]
                 ]
             ]
@@ -2126,9 +2126,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             },
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'input' => ['type' => Type::string()],
+                        'input' => ['type' => GraphQlType::string()],
                     ]
                 ]
             ]
@@ -2139,12 +2139,12 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'interfaces' => [$AnotherInterface],
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'input' => ['type' => Type::string()],
+                        'input' => ['type' => GraphQlType::string()],
                     ]
                 ],
-                'anotherfield' => ['type' => Type::string()]
+                'anotherfield' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -2163,9 +2163,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             },
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'input' => ['type' => Type::string()],
+                        'input' => ['type' => GraphQlType::string()],
                     ]
                 ]
             ]
@@ -2176,10 +2176,10 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'interfaces' => [$AnotherInterface],
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'input' => ['type' => Type::string()],
-                        'anotherInput' => ['type' => Type::string()],
+                        'input' => ['type' => GraphQlType::string()],
+                        'anotherInput' => ['type' => GraphQlType::string()],
                     ]
                 ]
             ]
@@ -2200,9 +2200,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             },
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'input' => ['type' => Type::string()],
+                        'input' => ['type' => GraphQlType::string()],
                     ]
                 ]
             ]
@@ -2213,10 +2213,10 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'interfaces' => [$AnotherInterface],
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'input' => ['type' => Type::string()],
-                        'anotherInput' => ['type' => Type::nonNull(Type::string())],
+                        'input' => ['type' => GraphQlType::string()],
+                        'anotherInput' => ['type' => GraphQlType::nonNull(GraphQlType::string())],
                     ]
                 ]
             ]
@@ -2243,9 +2243,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             },
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'input' => ['type' => Type::string()],
+                        'input' => ['type' => GraphQlType::string()],
                     ]
                 ]
             ]
@@ -2255,7 +2255,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'AnotherObject',
             'interfaces' => [$AnotherInterface],
             'fields' => [
-                'anotherfield' => ['type' => Type::string()]
+                'anotherfield' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -2278,7 +2278,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'resolveType' => function () {
             },
             'fields' => [
-                'field' => ['type' => Type::string()]
+                'field' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -2306,14 +2306,14 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $TypeA = new ObjectType([
             'name' => 'A',
             'fields' => [
-                'foo' => ['type' => Type::string()]
+                'foo' => ['type' => GraphQlType::string()]
             ]
         ]);
 
         $TypeB = new ObjectType([
             'name' => 'B',
             'fields' => [
-                'foo' => ['type' => Type::string()]
+                'foo' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -2411,9 +2411,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             },
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'input' => ['type' => Type::string()],
+                        'input' => ['type' => GraphQlType::string()],
                     ]
                 ]
             ]
@@ -2424,7 +2424,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'interfaces' => [$AnotherInterface],
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                 ]
             ]
         ]);
@@ -2450,9 +2450,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             },
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
-                        'input' => ['type' => Type::string()],
+                        'input' => ['type' => GraphQlType::string()],
                     ]
                 ]
             ]
@@ -2463,7 +2463,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'interfaces' => [$AnotherInterface],
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
                         'input' => ['type' => $this->SomeScalarType],
                     ]
@@ -2491,7 +2491,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'resolveType' => function () {
             },
             'fields' => [
-                'field' => ['type' => Type::nonNull(Type::listOf(Type::string()))]
+                'field' => ['type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::string()))]
             ]
         ]);
 
@@ -2499,7 +2499,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'AnotherObject',
             'interfaces' => [$AnotherInterface],
             'fields' => [
-                'field' => ['type' => Type::nonNull(Type::listOf(Type::string()))]
+                'field' => ['type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::string()))]
             ]
         ]);
 
@@ -2517,7 +2517,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'resolveType' => function () {
             },
             'fields' => [
-                'field' => ['type' => Type::listOf(Type::string())]
+                'field' => ['type' => GraphQlType::listOf(GraphQlType::string())]
             ]
         ]);
 
@@ -2525,7 +2525,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'AnotherObject',
             'interfaces' => [$AnotherInterface],
             'fields' => [
-                'field' => ['type' => Type::string()]
+                'field' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -2549,7 +2549,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'resolveType' => function () {
             },
             'fields' => [
-                'field' => ['type' => Type::string()]
+                'field' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -2557,7 +2557,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'AnotherObject',
             'interfaces' => [$AnotherInterface],
             'fields' => [
-                'field' => ['type' => Type::listOf(Type::string())]
+                'field' => ['type' => GraphQlType::listOf(GraphQlType::string())]
             ]
         ]);
 
@@ -2579,7 +2579,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'resolveType' => function () {
             },
             'fields' => [
-                'field' => ['type' => Type::string()]
+                'field' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -2587,7 +2587,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'AnotherObject',
             'interfaces' => [$AnotherInterface],
             'fields' => [
-                'field' => ['type' => Type::nonNull(Type::string())]
+                'field' => ['type' => GraphQlType::nonNull(GraphQlType::string())]
             ]
         ]);
 
@@ -2605,7 +2605,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'resolveType' => function () {
             },
             'fields' => [
-                'field' => ['type' => Type::nonNull(Type::string())]
+                'field' => ['type' => GraphQlType::nonNull(GraphQlType::string())]
             ]
         ]);
 
@@ -2613,7 +2613,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'AnotherObject',
             'interfaces' => [$AnotherInterface],
             'fields' => [
-                'field' => ['type' => Type::string()]
+                'field' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -2636,7 +2636,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'OldObject',
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'isDeprecated' => true
                 ]
             ]
@@ -2659,7 +2659,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                     return new ObjectType([
                         'name' => 'Query',
                         'fields' => [
-                            'test' => Type::string()
+                            'test' => GraphQlType::string()
                         ]
                     ]);
                 default:
@@ -2730,7 +2730,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'f' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'args' => [
                             'input' => ['type' => $inputObjectType]
                         ]
@@ -2766,7 +2766,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'BadResolver',
             'fields' => [
                 'badField' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'resolve' => $resolveValue
                 ]
             ]
@@ -2787,7 +2787,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $BadObjectType = new ObjectType([
             'name' => 'BadObject',
             'interfaces' => [$implementedType],
-            'fields' => ['f' => ['type' => Type::string()]]
+            'fields' => ['f' => ['type' => GraphQlType::string()]]
         ]);
 
         return new Schema([
@@ -2806,13 +2806,13 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         return \array_merge(
             $types,
             Utils::map($types, function ($type) {
-                return Type::listOf($type);
+                return GraphQlType::listOf($type);
             }),
             Utils::map($types, function ($type) {
-                return Type::nonNull($type);
+                return GraphQlType::nonNull($type);
             }),
             Utils::map($types, function ($type) {
-                return Type::nonNull(Type::listOf($type));
+                return GraphQlType::nonNull(GraphQlType::listOf($type));
             })
         );
     }
@@ -2872,7 +2872,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             'name' => 'BadObject',
             'fields' => [
                 'badField' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
                         'badArg' => ['type' => $argType]
                     ]
@@ -2904,7 +2904,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 'name' => 'Query',
                 'fields' => [
                     'f' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'args' => [
                             'badArg' => ['type' => $BadInputObjectType]
                         ]

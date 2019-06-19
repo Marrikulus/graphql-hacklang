@@ -5,7 +5,7 @@ namespace GraphQL\Tests\Executor;
 use GraphQL\GraphQL;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 require_once __DIR__ . '/TestClasses.php';
 
@@ -30,7 +30,7 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
      */
     public function testDefaultFunctionAccessesProperties()
     {
-        $schema = $this->buildSchema(['type' => Type::string()]);
+        $schema = $this->buildSchema(['type' => GraphQlType::string()]);
 
         $source = [
             'test' => 'testValue'
@@ -47,7 +47,7 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
      */
     public function testDefaultFunctionCallsClosures()
     {
-        $schema = $this->buildSchema(['type' => Type::string()]);
+        $schema = $this->buildSchema(['type' => GraphQlType::string()]);
         $_secret = 'secretValue' . \uniqid();
 
         $source = [
@@ -67,9 +67,9 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
     public function testDefaultFunctionPassesArgsAndContext()
     {
         $schema = $this->buildSchema([
-            'type' => Type::int(),
+            'type' => GraphQlType::int(),
             'args' => [
-                'addend1' => [ 'type' => Type::int() ],
+                'addend1' => [ 'type' => GraphQlType::int() ],
             ],
         ]);
 
@@ -85,10 +85,10 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
     public function testUsesProvidedResolveFunction()
     {
         $schema = $this->buildSchema([
-            'type' => Type::string(),
+            'type' => GraphQlType::string(),
             'args' => [
-                'aStr' => ['type' => Type::string()],
-                'aInt' => ['type' => Type::int()],
+                'aStr' => ['type' => GraphQlType::string()],
+                'aInt' => ['type' => GraphQlType::int()],
             ],
             'resolve' => function ($source, $args) {
                 return \json_encode([$source, $args]);

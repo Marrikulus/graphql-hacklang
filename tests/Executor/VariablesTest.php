@@ -10,7 +10,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class VariablesTest extends \PHPUnit_Framework_TestCase
 {
@@ -504,7 +504,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
             InvariantViolation::class,
             'String cannot represent non scalar value: array(3)'
         );
-        Type::string()->serialize([1, 2, 3]);
+        GraphQlType::string()->serialize([1, 2, 3]);
     }
 
     /**
@@ -888,9 +888,9 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $TestInputObject = new InputObjectType([
             'name' => 'TestInputObject',
             'fields' => [
-                'a' => ['type' => Type::string()],
-                'b' => ['type' => Type::listOf(Type::string())],
-                'c' => ['type' => Type::nonNull(Type::string())],
+                'a' => ['type' => GraphQlType::string()],
+                'b' => ['type' => GraphQlType::listOf(GraphQlType::string())],
+                'c' => ['type' => GraphQlType::nonNull(GraphQlType::string())],
                 'd' => ['type' => $ComplexScalarType],
             ]
         ]);
@@ -898,8 +898,8 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $TestNestedInputObject = new InputObjectType([
             'name' => 'TestNestedInputObject',
             'fields' => [
-                'na' => [ 'type' => Type::nonNull($TestInputObject) ],
-                'nb' => [ 'type' => Type::nonNull(Type::string()) ],
+                'na' => [ 'type' => GraphQlType::nonNull($TestInputObject) ],
+                'nb' => [ 'type' => GraphQlType::nonNull(GraphQlType::string()) ],
             ],
         ]);
 
@@ -907,35 +907,35 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
             'name' => 'TestType',
             'fields' => [
                 'fieldWithObjectInput' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => ['input' => ['type' => $TestInputObject]],
                     'resolve' => function ($_, $args) {
                         return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'fieldWithNullableStringInput' => [
-                    'type' => Type::string(),
-                    'args' => ['input' => ['type' => Type::string()]],
+                    'type' => GraphQlType::string(),
+                    'args' => ['input' => ['type' => GraphQlType::string()]],
                     'resolve' => function ($_, $args) {
                         return isset($args['input']) ?  \json_encode($args['input']) : null;
                     }
                 ],
                 'fieldWithNonNullableStringInput' => [
-                    'type' => Type::string(),
-                    'args' => ['input' => ['type' => Type::nonNull(Type::string())]],
+                    'type' => GraphQlType::string(),
+                    'args' => ['input' => ['type' => GraphQlType::nonNull(GraphQlType::string())]],
                     'resolve' => function ($_, $args) {
                         return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'fieldWithDefaultArgumentValue' => [
-                    'type' => Type::string(),
-                    'args' => [ 'input' => [ 'type' => Type::string(), 'defaultValue' => 'Hello World' ]],
+                    'type' => GraphQlType::string(),
+                    'args' => [ 'input' => [ 'type' => GraphQlType::string(), 'defaultValue' => 'Hello World' ]],
                     'resolve' => function($_, $args) {
                         return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'fieldWithNestedInputObject' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => [
                         'input' => [
                             'type' => $TestNestedInputObject,
@@ -947,29 +947,29 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                     }
                 ],
                 'list' => [
-                    'type' => Type::string(),
-                    'args' => ['input' => ['type' => Type::listOf(Type::string())]],
+                    'type' => GraphQlType::string(),
+                    'args' => ['input' => ['type' => GraphQlType::listOf(GraphQlType::string())]],
                     'resolve' => function ($_, $args) {
                         return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'nnList' => [
-                    'type' => Type::string(),
-                    'args' => ['input' => ['type' => Type::nonNull(Type::listOf(Type::string()))]],
+                    'type' => GraphQlType::string(),
+                    'args' => ['input' => ['type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::string()))]],
                     'resolve' => function ($_, $args) {
                         return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'listNN' => [
-                    'type' => Type::string(),
-                    'args' => ['input' => ['type' => Type::listOf(Type::nonNull(Type::string()))]],
+                    'type' => GraphQlType::string(),
+                    'args' => ['input' => ['type' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::string()))]],
                     'resolve' => function ($_, $args) {
                         return isset($args['input']) ? \json_encode($args['input']) : null;
                     }
                 ],
                 'nnListNN' => [
-                    'type' => Type::string(),
-                    'args' => ['input' => ['type' => Type::nonNull(Type::listOf(Type::nonNull(Type::string())))]],
+                    'type' => GraphQlType::string(),
+                    'args' => ['input' => ['type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::string())))]],
                     'resolve' => function ($_, $args) {
                         return isset($args['input']) ? \json_encode($args['input']) : null;
                     }

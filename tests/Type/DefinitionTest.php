@@ -12,7 +12,7 @@ use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Utils\Utils;
 
@@ -87,9 +87,9 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $this->blogImage = new ObjectType([
             'name' => 'Image',
             'fields' => [
-                'url' => ['type' => Type::string()],
-                'width' => ['type' => Type::int()],
-                'height' => ['type' => Type::int()]
+                'url' => ['type' => GraphQlType::string()],
+                'width' => ['type' => GraphQlType::int()],
+                'height' => ['type' => GraphQlType::int()]
             ]
         ]);
 
@@ -97,11 +97,11 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'name' => 'Author',
             'fields' => function() {
                 return [
-                    'id' => ['type' => Type::string()],
-                    'name' => ['type' => Type::string()],
+                    'id' => ['type' => GraphQlType::string()],
+                    'name' => ['type' => GraphQlType::string()],
                     'pic' => [ 'type' => $this->blogImage, 'args' => [
-                        'width' => ['type' => Type::int()],
-                        'height' => ['type' => Type::int()]
+                        'width' => ['type' => GraphQlType::int()],
+                        'height' => ['type' => GraphQlType::int()]
                     ]],
                     'recentArticle' => $this->blogArticle,
                 ];
@@ -111,11 +111,11 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $this->blogArticle = new ObjectType([
             'name' => 'Article',
             'fields' => [
-                'id' => ['type' => Type::string()],
-                'isPublished' => ['type' => Type::boolean()],
+                'id' => ['type' => GraphQlType::string()],
+                'isPublished' => ['type' => GraphQlType::boolean()],
                 'author' => ['type' => $this->blogAuthor],
-                'title' => ['type' => Type::string()],
-                'body' => ['type' => Type::string()]
+                'title' => ['type' => GraphQlType::string()],
+                'body' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -123,7 +123,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'name' => 'Query',
             'fields' => [
                 'article' => ['type' => $this->blogArticle, 'args' => [
-                    'id' => ['type' => Type::string()]
+                    'id' => ['type' => GraphQlType::string()]
                 ]],
                 'feed' => ['type' => new ListOfType($this->blogArticle)]
             ]
@@ -140,7 +140,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'name' => 'Subscription',
             'fields' => [
                 'articleSubscribe' => [
-                    'args' => [ 'id' => [ 'type' => Type::string() ]],
+                    'args' => [ 'id' => [ 'type' => GraphQlType::string() ]],
                     'type' => $this->blogArticle
                 ]
             ]
@@ -171,7 +171,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('GraphQL\Type\Definition\FieldDefinition', $titleField);
         $this->assertSame('title', $titleField->name);
-        $this->assertSame(Type::string(), $titleField->getType());
+        $this->assertSame(GraphQlType::string(), $titleField->getType());
 
         $authorField = $articleFieldType->getField('author');
         $this->assertInstanceOf('GraphQL\Type\Definition\FieldDefinition', $authorField);
@@ -301,7 +301,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
           'name' => 'foo',
           'fields' => [
             'bar' => [
-              'type' => Type::string(),
+              'type' => GraphQlType::string(),
               'deprecationReason' => 'A terrible reason'
             ]
           ]
@@ -309,7 +309,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 
         $field = $TypeWithDeprecatedField->getField('bar');
 
-        $this->assertEquals(Type::string(), $field->getType());
+        $this->assertEquals(GraphQlType::string(), $field->getType());
         $this->assertEquals(true, $field->isDeprecated());
         $this->assertEquals('A terrible reason', $field->deprecationReason);
         $this->assertEquals('bar', $field->name);
@@ -323,7 +323,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     {
         $nestedInputObject = new InputObjectType([
             'name' => 'NestedInputObject',
-            'fields' => ['value' => ['type' => Type::string()]]
+            'fields' => ['value' => ['type' => GraphQlType::string()]]
         ]);
         $someInputObject = new InputObjectType([
             'name' => 'SomeInputObject',
@@ -354,14 +354,14 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $someInterface = new InterfaceType([
             'name' => 'SomeInterface',
             'fields' => [
-                'f' => ['type' => Type::int()]
+                'f' => ['type' => GraphQlType::int()]
             ]
         ]);
 
         $someSubtype = new ObjectType([
             'name' => 'SomeSubtype',
             'fields' => [
-                'f' => ['type' => Type::int()]
+                'f' => ['type' => GraphQlType::int()]
             ],
             'interfaces' => [$someInterface],
             'isTypeOf' => function() {return true;}
@@ -389,7 +389,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $someSubtype = new ObjectType([
             'name' => 'SomeSubtype',
             'fields' => [
-                'f' => ['type' => Type::int()]
+                'f' => ['type' => GraphQlType::int()]
             ],
             'interfaces' => function() use (&$someInterface) { return [$someInterface]; },
             'isTypeOf' => function() {return true;}
@@ -398,7 +398,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $someInterface = new InterfaceType([
             'name' => 'SomeInterface',
             'fields' => [
-                'f' => ['type' => Type::int()]
+                'f' => ['type' => GraphQlType::int()]
             ]
         ]);
 
@@ -420,7 +420,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
      */
     public function testStringifiesSimpleTypes()
     {
-        $this->assertSame('Int', (string) Type::int());
+        $this->assertSame('Int', (string) GraphQlType::int());
         $this->assertSame('Article', (string) $this->blogArticle);
 
         $this->assertSame('Interface', (string) $this->interfaceType);
@@ -429,11 +429,11 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('InputObject', (string) $this->inputObjectType);
         $this->assertSame('Object', (string) $this->objectType);
 
-        $this->assertSame('Int!', (string) new NonNull(Type::int()));
-        $this->assertSame('[Int]', (string) new ListOfType(Type::int()));
-        $this->assertSame('[Int]!', (string) new NonNull(new ListOfType(Type::int())));
-        $this->assertSame('[Int!]', (string) new ListOfType(new NonNull(Type::int())));
-        $this->assertSame('[[Int]]', (string) new ListOfType(new ListOfType(Type::int())));
+        $this->assertSame('Int!', (string) new NonNull(GraphQlType::int()));
+        $this->assertSame('[Int]', (string) new ListOfType(GraphQlType::int()));
+        $this->assertSame('[Int]!', (string) new NonNull(new ListOfType(GraphQlType::int())));
+        $this->assertSame('[Int!]', (string) new ListOfType(new NonNull(GraphQlType::int())));
+        $this->assertSame('[[Int]]', (string) new ListOfType(new ListOfType(GraphQlType::int())));
     }
 
     /**
@@ -442,7 +442,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     public function testIdentifiesInputTypes()
     {
         $expected = [
-            [Type::int(), true],
+            [GraphQlType::int(), true],
             [$this->objectType, false],
             [$this->interfaceType, false],
             [$this->unionType, false],
@@ -451,7 +451,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         ];
 
         foreach ($expected as $index => $entry) {
-            $this->assertSame($entry[1], Type::isInputType($entry[0]), "Type {$entry[0]} was detected incorrectly");
+            $this->assertSame($entry[1], GraphQlType::isInputType($entry[0]), "Type {$entry[0]} was detected incorrectly");
         }
     }
 
@@ -461,7 +461,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     public function testIdentifiesOutputTypes()
     {
         $expected = [
-            [Type::int(), true],
+            [GraphQlType::int(), true],
             [$this->objectType, true],
             [$this->interfaceType, true],
             [$this->unionType, true],
@@ -470,7 +470,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         ];
 
         foreach ($expected as $index => $entry) {
-            $this->assertSame($entry[1], Type::isOutputType($entry[0]), "Type {$entry[0]} was detected incorrectly");
+            $this->assertSame($entry[1], GraphQlType::isOutputType($entry[0]), "Type {$entry[0]} was detected incorrectly");
         }
     }
 
@@ -480,7 +480,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     public function testProhibitsNonNullNesting()
     {
         $this->setExpectedException('\Exception');
-        new NonNull(new NonNull(Type::int()));
+        new NonNull(new NonNull(GraphQlType::int()));
     }
 
     /**
@@ -488,7 +488,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
      */
     public function testProhibitsPuttingNonObjectTypesInUnions()
     {
-        $int = Type::int();
+        $int = GraphQlType::int();
 
         $badUnionTypes = [
             $int,
@@ -535,7 +535,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $node = new InterfaceType([
             'name' => 'Node',
             'fields' => [
-                'id' => ['type' => Type::nonNull(Type::id())]
+                'id' => ['type' => GraphQlType::nonNull(GraphQlType::id())]
             ]
         ]);
 
@@ -549,8 +549,8 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
                 $called = true;
 
                 return [
-                    'id' => ['type' => Type::nonNull(Type::id())],
-                    'blogs' => ['type' => Type::nonNull(Type::listOf(Type::nonNull($blog)))]
+                    'id' => ['type' => GraphQlType::nonNull(GraphQlType::id())],
+                    'blogs' => ['type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::nonNull($blog)))]
                 ];
             },
             'interfaces' => function() use ($node) {
@@ -562,8 +562,8 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'name' => 'Blog',
             'fields' => function() use ($user) {
                 return [
-                    'id' => ['type' => Type::nonNull(Type::id())],
-                    'owner' => ['type' => Type::nonNull($user)]
+                    'id' => ['type' => GraphQlType::nonNull(GraphQlType::id())],
+                    'owner' => ['type' => GraphQlType::nonNull($user)]
                 ];
             },
             'interfaces' => function() use ($node) {
@@ -602,7 +602,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'fields' => function() use (&$inputObject, &$called) {
                 $called = true;
                 return [
-                    'value' => ['type' => Type::string()],
+                    'value' => ['type' => GraphQlType::string()],
                     'nested' => ['type' => $inputObject ]
                 ];
             }
@@ -637,7 +637,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'fields' => function() use (&$interface, &$called) {
                 $called = true;
                 return [
-                    'value' => ['type' => Type::string()],
+                    'value' => ['type' => GraphQlType::string()],
                     'nested' => ['type' => $interface ]
                 ];
             }
@@ -658,7 +658,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($called);
         $this->assertEquals(\count($interface->getFields()), 2);
         $this->assertSame($interface->getField('nested')->getType(), $interface);
-        $this->assertSame($interface->getField('value')->getType(), Type::string());
+        $this->assertSame($interface->getField('value')->getType(), GraphQlType::string());
     }
 
     public function testAllowsShorthandFieldDefinition()
@@ -667,12 +667,12 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'name' => 'SomeInterface',
             'fields' => function() use (&$interface) {
                 return [
-                    'value' => Type::string(),
+                    'value' => GraphQlType::string(),
                     'nested' => $interface,
                     'withArg' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'args' => [
-                            'arg1' => Type::int()
+                            'arg1' => GraphQlType::int()
                         ]
                     ]
                 ];
@@ -693,14 +693,14 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $valueField = $schema->getType('SomeInterface')->getField('value');
         $nestedField = $schema->getType('SomeInterface')->getField('nested');
 
-        $this->assertEquals(Type::string(), $valueField->getType());
+        $this->assertEquals(GraphQlType::string(), $valueField->getType());
         $this->assertEquals($interface, $nestedField->getType());
 
         $withArg = $schema->getType('SomeInterface')->getField('withArg');
-        $this->assertEquals(Type::string(), $withArg->getType());
+        $this->assertEquals(GraphQlType::string(), $withArg->getType());
 
         $this->assertEquals('arg1', $withArg->args[0]->name);
-        $this->assertEquals(Type::int(), $withArg->args[0]->getType());
+        $this->assertEquals(GraphQlType::int(), $withArg->args[0]->getType());
 
         $testField = $schema->getType('Query')->getField('test');
         $this->assertEquals($interface, $testField->getType());

@@ -9,7 +9,7 @@ use GraphQL\GraphQL;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Introspection;
 use GraphQL\Validator\Rules\ProvidedNonNullArguments;
 
@@ -25,7 +25,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
         $emptySchema = new Schema([
             'query' => new ObjectType([
                 'name' => 'QueryRoot',
-                'fields' => ['a' => Type::string()]
+                'fields' => ['a' => GraphQlType::string()]
             ])
         ]);
 
@@ -1077,9 +1077,9 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
         $TestInputObject = new InputObjectType([
             'name' => 'TestInputObject',
             'fields' => [
-                'a' => ['type' => Type::string(), 'defaultValue' => 'foo'],
-                'b' => ['type' => Type::listOf(Type::string())],
-                'c' => ['type' => Type::string(), 'defaultValue' => null ]
+                'a' => ['type' => GraphQlType::string(), 'defaultValue' => 'foo'],
+                'b' => ['type' => GraphQlType::listOf(GraphQlType::string())],
+                'c' => ['type' => GraphQlType::string(), 'defaultValue' => null ]
             ]
         ]);
 
@@ -1087,7 +1087,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
             'name' => 'TestType',
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => ['complex' => ['type' => $TestInputObject]],
                     'resolve' => function ($_, $args) {
                         return \json_encode($args['complex']);
@@ -1181,7 +1181,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
             'name' => 'TestType',
             'fields' => [
                 'testField' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                 ]
             ]
         ]);
@@ -1214,10 +1214,10 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
             'name' => 'TestType',
             'fields' => [
                 'nonDeprecated' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                 ],
                 'deprecated' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'deprecationReason' => 'Removed in 1.0'
                 ]
             ]
@@ -1268,10 +1268,10 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
             'name' => 'TestType',
             'fields' => [
                 'nonDeprecated' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                 ],
                 'deprecated' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'deprecationReason' => 'Removed in 1.0'
                 ]
             ]
@@ -1460,7 +1460,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
             'name' => 'TestType',
             'fields' => [
                 'testField' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                 ]
             ]
         ]);
@@ -1490,7 +1490,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
     {
         $QueryRoot = new ObjectType([
             'name' => 'QueryRoot',
-            'fields' => ['a' => Type::string()]
+            'fields' => ['a' => GraphQlType::string()]
         ]);
 
         $schema = new Schema(['query' => $QueryRoot]);
@@ -1550,7 +1550,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
     {
         $QueryRoot = new ObjectType([
             'name' => 'QueryRoot',
-            'fields' => ['a' => Type::string()]
+            'fields' => ['a' => GraphQlType::string()]
         ]);
 
         $schema = new Schema(['query' => $QueryRoot]);

@@ -10,7 +10,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Language\SourceLocation;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class MutationsTest extends \PHPUnit_Framework_TestCase
 {
@@ -124,7 +124,7 @@ class MutationsTest extends \PHPUnit_Framework_TestCase
     {
         $numberHolderType = new ObjectType([
             'fields' => [
-                'theNumber' => ['type' => Type::int()],
+                'theNumber' => ['type' => GraphQlType::int()],
             ],
             'name' => 'NumberHolder',
         ]);
@@ -139,28 +139,28 @@ class MutationsTest extends \PHPUnit_Framework_TestCase
                 'fields' => [
                     'immediatelyChangeTheNumber' => [
                         'type' => $numberHolderType,
-                        'args' => ['newNumber' => ['type' => Type::int()]],
+                        'args' => ['newNumber' => ['type' => GraphQlType::int()]],
                         'resolve' => (function (Root $obj, $args) {
                             return $obj->immediatelyChangeTheNumber($args['newNumber']);
                         })
                     ],
                     'promiseToChangeTheNumber' => [
                         'type' => $numberHolderType,
-                        'args' => ['newNumber' => ['type' => Type::int()]],
+                        'args' => ['newNumber' => ['type' => GraphQlType::int()]],
                         'resolve' => (function (Root $obj, $args) {
                             return $obj->promiseToChangeTheNumber($args['newNumber']);
                         })
                     ],
                     'failToChangeTheNumber' => [
                         'type' => $numberHolderType,
-                        'args' => ['newNumber' => ['type' => Type::int()]],
+                        'args' => ['newNumber' => ['type' => GraphQlType::int()]],
                         'resolve' => (function (Root $obj, $args) {
                             return $obj->failToChangeTheNumber($args['newNumber']);
                         })
                     ],
                     'promiseAndFailToChangeTheNumber' => [
                         'type' => $numberHolderType,
-                        'args' => ['newNumber' => ['type' => Type::int()]],
+                        'args' => ['newNumber' => ['type' => GraphQlType::int()]],
                         'resolve' => (function (Root $obj, $args) {
                             return $obj->promiseAndFailToChangeTheNumber($args['newNumber']);
                         })

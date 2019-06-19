@@ -18,7 +18,7 @@ use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 /**
  * Using our shorthand to describe type systems, the type system for our
@@ -107,23 +107,23 @@ class StarWarsSchema
             'fields' => function() use (&$characterInterface, $episodeEnum) {
                 return [
                     'id' => [
-                        'type' => Type::nonNull(Type::string()),
+                        'type' => GraphQlType::nonNull(GraphQlType::string()),
                         'description' => 'The id of the character.',
                     ],
                     'name' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'description' => 'The name of the character.'
                     ],
                     'friends' => [
-                        'type' => Type::listOf($characterInterface),
+                        'type' => GraphQlType::listOf($characterInterface),
                         'description' => 'The friends of the character, or an empty list if they have none.',
                     ],
                     'appearsIn' => [
-                        'type' => Type::listOf($episodeEnum),
+                        'type' => GraphQlType::listOf($episodeEnum),
                         'description' => 'Which movies they appear in.'
                     ],
                     'secretBackstory' => [
-                        'type' => Type::string(),
+                        'type' => GraphQlType::string(),
                         'description' => 'All secrets about their past.',
                     ],
                 ];
@@ -150,15 +150,15 @@ class StarWarsSchema
             'description' => 'A humanoid creature in the Star Wars universe.',
             'fields' => [
                 'id' => [
-                    'type' => new NonNull(Type::string()),
+                    'type' => new NonNull(GraphQlType::string()),
                     'description' => 'The id of the human.',
                 ],
                 'name' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'description' => 'The name of the human.',
                 ],
                 'friends' => [
-                    'type' => Type::listOf($characterInterface),
+                    'type' => GraphQlType::listOf($characterInterface),
                     'description' => 'The friends of the human, or an empty list if they have none.',
                     'resolve' => function ($human, $args, $context, ResolveInfo $info) {
                         $fieldSelection = $info->getFieldSelection();
@@ -175,15 +175,15 @@ class StarWarsSchema
                     },
                 ],
                 'appearsIn' => [
-                    'type' => Type::listOf($episodeEnum),
+                    'type' => GraphQlType::listOf($episodeEnum),
                     'description' => 'Which movies they appear in.'
                 ],
                 'homePlanet' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'description' => 'The home planet of the human, or null if unknown.'
                 ],
                 'secretBackstory' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'description' => 'Where are they from and how they came to be who they are.',
                     'resolve' => function() {
                         // This is to demonstrate error reporting
@@ -212,26 +212,26 @@ class StarWarsSchema
             'description' => 'A mechanical creature in the Star Wars universe.',
             'fields' => [
                 'id' => [
-                    'type' => Type::nonNull(Type::string()),
+                    'type' => GraphQlType::nonNull(GraphQlType::string()),
                     'description' => 'The id of the droid.',
                 ],
                 'name' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'description' => 'The name of the droid.'
                 ],
                 'friends' => [
-                    'type' => Type::listOf($characterInterface),
+                    'type' => GraphQlType::listOf($characterInterface),
                     'description' => 'The friends of the droid, or an empty list if they have none.',
                     'resolve' => function ($droid) {
                         return StarWarsData::getFriends($droid);
                     },
                 ],
                 'appearsIn' => [
-                    'type' => Type::listOf($episodeEnum),
+                    'type' => GraphQlType::listOf($episodeEnum),
                     'description' => 'Which movies they appear in.'
                 ],
                 'secretBackstory' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'description' => 'Construction date and the name of the designer.',
                     'resolve' => function() {
                         // This is to demonstrate error reporting
@@ -239,7 +239,7 @@ class StarWarsSchema
                     },
                 ],
                 'primaryFunction' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'description' => 'The primary function of the droid.'
                 ]
             ],
@@ -281,7 +281,7 @@ class StarWarsSchema
                         'id' => [
                             'name' => 'id',
                             'description' => 'id of the human',
-                            'type' => Type::nonNull(Type::string())
+                            'type' => GraphQlType::nonNull(GraphQlType::string())
                         ]
                     ],
                     'resolve' => function ($root, $args) {
@@ -295,7 +295,7 @@ class StarWarsSchema
                         'id' => [
                             'name' => 'id',
                             'description' => 'id of the droid',
-                            'type' => Type::nonNull(Type::string())
+                            'type' => GraphQlType::nonNull(GraphQlType::string())
                         ]
                     ],
                     'resolve' => function ($root, $args) {

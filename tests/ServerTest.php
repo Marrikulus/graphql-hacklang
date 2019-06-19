@@ -13,7 +13,7 @@ use GraphQL\Server;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\EagerResolution;
 use GraphQL\Validator\DocumentValidator;
 
@@ -46,7 +46,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseSetQueryTypeAndSetSchema()
     {
-        $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -61,7 +61,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseSetMutationTypeAndSetSchema()
     {
-        $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -76,7 +76,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseSetSubscriptionTypeAndSetSchema()
     {
-        $subscriptionType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $subscriptionType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -91,7 +91,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseSetDirectivesAndSetSchema()
     {
-        $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -106,7 +106,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseAddTypesAndSetSchema()
     {
-        $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -121,7 +121,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseSetTypeResolutionStrategyAndSetSchema()
     {
-        $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -136,7 +136,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseSetSchemaAndSetQueryType()
     {
-        $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -151,7 +151,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseSetSchemaAndSetMutationType()
     {
-        $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -166,7 +166,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseSetSchemaAndSetSubscriptionType()
     {
-        $subscriptionType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $subscriptionType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -181,7 +181,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseSetSchemaAndSetDirectives()
     {
-        $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -197,7 +197,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseSetSchemaAndAddTypes()
     {
-        $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -212,7 +212,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCanUseSetSchemaAndAddEmptyTypes()
     {
-        $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -225,7 +225,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseSetSchemaAndSetTypeResolutionStrategy()
     {
-        $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -241,7 +241,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testCannotUseSetSchemaAndSetSchema()
     {
-        $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -256,7 +256,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     public function testSchemaDefinition()
     {
-        $mutationType = $queryType = $subscriptionType = new ObjectType(['name' => 'A', 'fields' => ['a' => Type::string()]]);
+        $mutationType = $queryType = $subscriptionType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
             'query' => $queryType,
         ]);
@@ -313,7 +313,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testValidate()
     {
         $server = Server::create()
-            ->setQueryType(new ObjectType(['name' => 'Q', 'fields' => ['a' => Type::string()]]));
+            ->setQueryType(new ObjectType(['name' => 'Q', 'fields' => ['a' => GraphQlType::string()]]));
 
         $ast = $server->parse('{q}');
         $errors = $server->validate($ast);
@@ -357,7 +357,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'name' => 'Q',
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'resolve' => function($value, $args, $context, ResolveInfo $info) use (&$called) {
                         $called = true;
                         $this->assertEquals(null, $context);
@@ -385,7 +385,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'name' => 'QueryType',
             'fields' => [
                 'field' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'resolve' => function($value, $args, $context, ResolveInfo $info) use (&$called, $contextValue, $rootValue) {
                         $called = true;
                         $this->assertSame($rootValue, $value);
@@ -414,7 +414,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'name' => 'Query',
             'fields' => [
                 'err' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'resolve' => function() {
                         \trigger_error('notice', \E_USER_NOTICE);
                         return 'err';
@@ -480,7 +480,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'name' => 'Query',
             'fields' => [
                 'withException' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'resolve' => function() {
                         throw new UserError("Error");
                     }
@@ -563,7 +563,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             'name' => 'Query',
             'fields' => [
                 'test' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'resolve' => function() {
                         return 'ok';
                     }

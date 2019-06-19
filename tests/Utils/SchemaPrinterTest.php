@@ -8,7 +8,7 @@ use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Utils\SchemaPrinter;
@@ -39,7 +39,7 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
     public function testPrintsStringField()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::string()
+            'type' => GraphQlType::string()
         ]);
         $this->assertEquals($output, '
 schema {
@@ -58,7 +58,7 @@ type Root {
     public function testPrintArrayStringField()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::listOf(Type::string())
+            'type' => GraphQlType::listOf(GraphQlType::string())
         ]);
         $this->assertEquals($output, '
 schema {
@@ -77,7 +77,7 @@ type Root {
     public function testPrintNonNullStringField()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::nonNull(Type::string())
+            'type' => GraphQlType::nonNull(GraphQlType::string())
         ]);
         $this->assertEquals($output, '
 schema {
@@ -96,7 +96,7 @@ type Root {
     public function testPrintNonNullArrayStringField()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::nonNull(Type::listOf(Type::string()))
+            'type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::string()))
         ]);
         $this->assertEquals($output, '
 schema {
@@ -115,7 +115,7 @@ type Root {
     public function testPrintArrayNonNullStringField()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::listOf(Type::nonNull(Type::string()))
+            'type' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::string()))
         ]);
         $this->assertEquals($output, '
 schema {
@@ -134,7 +134,7 @@ type Root {
     public function testPrintNonNullArrayNonNullStringField()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::nonNull(Type::listOf(Type::nonNull(Type::string())))
+            'type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::string())))
         ]);
         $this->assertEquals($output, '
 schema {
@@ -154,7 +154,7 @@ type Root {
     {
         $fooType = new ObjectType([
             'name' => 'Foo',
-            'fields' => ['str' => ['type' => Type::string()]]
+            'fields' => ['str' => ['type' => GraphQlType::string()]]
         ]);
 
         $root = new ObjectType([
@@ -185,8 +185,8 @@ type Root {
     public function testPrintsStringFieldWithIntArg()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::string(),
-            'args' => ['argOne' => ['type' => Type::int()]]
+            'type' => GraphQlType::string(),
+            'args' => ['argOne' => ['type' => GraphQlType::int()]]
         ]);
         $this->assertEquals($output, '
 schema {
@@ -205,8 +205,8 @@ type Root {
     public function testPrintsStringFieldWithIntArgWithDefault()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::string(),
-            'args' => ['argOne' => ['type' => Type::int(), 'defaultValue' => 2]]
+            'type' => GraphQlType::string(),
+            'args' => ['argOne' => ['type' => GraphQlType::int(), 'defaultValue' => 2]]
         ]);
         $this->assertEquals($output, '
 schema {
@@ -225,8 +225,8 @@ type Root {
     public function testPrintsStringFieldWithIntArgWithDefaultNull()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::string(),
-            'args' => ['argOne' => ['type' => Type::int(), 'defaultValue' => null]]
+            'type' => GraphQlType::string(),
+            'args' => ['argOne' => ['type' => GraphQlType::int(), 'defaultValue' => null]]
         ]);
         $this->assertEquals($output, '
 schema {
@@ -245,8 +245,8 @@ type Root {
     public function testPrintsStringFieldWithNonNullIntArg()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::string(),
-            'args' => ['argOne' => ['type' => Type::nonNull(Type::int())]]
+            'type' => GraphQlType::string(),
+            'args' => ['argOne' => ['type' => GraphQlType::nonNull(GraphQlType::int())]]
         ]);
         $this->assertEquals($output, '
 schema {
@@ -265,10 +265,10 @@ type Root {
     public function testPrintsStringFieldWithMultipleArgs()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::string(),
+            'type' => GraphQlType::string(),
             'args' => [
-                'argOne' => ['type' => Type::int()],
-                'argTwo' => ['type' => Type::string()]
+                'argOne' => ['type' => GraphQlType::int()],
+                'argTwo' => ['type' => GraphQlType::string()]
             ]
         ]);
         $this->assertEquals($output, '
@@ -288,11 +288,11 @@ type Root {
     public function testPrintsStringFieldWithMultipleArgsFirstIsDefault()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::string(),
+            'type' => GraphQlType::string(),
             'args' => [
-                'argOne' => ['type' => Type::int(), 'defaultValue' => 1],
-                'argTwo' => ['type' => Type::string()],
-                'argThree' => ['type' => Type::boolean()]
+                'argOne' => ['type' => GraphQlType::int(), 'defaultValue' => 1],
+                'argTwo' => ['type' => GraphQlType::string()],
+                'argThree' => ['type' => GraphQlType::boolean()]
             ]
         ]);
         $this->assertEquals($output, '
@@ -312,11 +312,11 @@ type Root {
     public function testPrintsStringFieldWithMultipleArgsSecondIsDefault()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::string(),
+            'type' => GraphQlType::string(),
             'args' => [
-                'argOne' => ['type' => Type::int()],
-                'argTwo' => ['type' => Type::string(), 'defaultValue' => 'foo'],
-                'argThree' => ['type' => Type::boolean()]
+                'argOne' => ['type' => GraphQlType::int()],
+                'argTwo' => ['type' => GraphQlType::string(), 'defaultValue' => 'foo'],
+                'argThree' => ['type' => GraphQlType::boolean()]
             ]
         ]);
         $this->assertEquals($output, '
@@ -336,11 +336,11 @@ type Root {
     public function testPrintsStringFieldWithMultipleArgsLastIsDefault()
     {
         $output = $this->printSingleFieldSchema([
-            'type' => Type::string(),
+            'type' => GraphQlType::string(),
             'args' => [
-                'argOne' => ['type' => Type::int()],
-                'argTwo' => ['type' => Type::string()],
-                'argThree' => ['type' => Type::boolean(), 'defaultValue' => false]
+                'argOne' => ['type' => GraphQlType::int()],
+                'argTwo' => ['type' => GraphQlType::string()],
+                'argThree' => ['type' => GraphQlType::boolean(), 'defaultValue' => false]
             ]
         ]);
         $this->assertEquals($output, '
@@ -362,12 +362,12 @@ type Root {
         $fooType = new InterfaceType([
             'name' => 'Foo',
             'resolveType' => function() { return null; },
-            'fields' => ['str' => ['type' => Type::string()]]
+            'fields' => ['str' => ['type' => GraphQlType::string()]]
         ]);
 
         $barType = new ObjectType([
             'name' => 'Bar',
-            'fields' => ['str' => ['type' => Type::string()]],
+            'fields' => ['str' => ['type' => GraphQlType::string()]],
             'interfaces' => [$fooType]
         ]);
 
@@ -408,20 +408,20 @@ type Root {
         $fooType = new InterfaceType([
             'name' => 'Foo',
             'resolveType' => function() { return null; },
-            'fields' => ['str' => ['type' => Type::string()]]
+            'fields' => ['str' => ['type' => GraphQlType::string()]]
         ]);
 
         $baazType = new InterfaceType([
             'name' => 'Baaz',
             'resolveType' => function() { return null; },
-            'fields' => ['int' => ['type' => Type::int()]]
+            'fields' => ['int' => ['type' => GraphQlType::int()]]
         ]);
 
         $barType = new ObjectType([
             'name' => 'Bar',
             'fields' => [
-                'str' => ['type' => Type::string()],
-                'int' => ['type' => Type::int()]
+                'str' => ['type' => GraphQlType::string()],
+                'int' => ['type' => GraphQlType::int()]
             ],
             'interfaces' => [$fooType, $baazType]
         ]);
@@ -467,12 +467,12 @@ type Root {
     {
         $fooType = new ObjectType([
             'name' => 'Foo',
-            'fields' => ['bool' => ['type' => Type::boolean()]]
+            'fields' => ['bool' => ['type' => GraphQlType::boolean()]]
         ]);
 
         $barType = new ObjectType([
             'name' => 'Bar',
-            'fields' => ['str' => ['type' => Type::string()]]
+            'fields' => ['str' => ['type' => GraphQlType::string()]]
         ]);
 
         $singleUnion = new UnionType([
@@ -528,14 +528,14 @@ union SingleUnion = Foo
     {
         $inputType = new InputObjectType([
             'name' => 'InputType',
-            'fields' => ['int' => ['type' => Type::int()]]
+            'fields' => ['int' => ['type' => GraphQlType::int()]]
         ]);
 
         $root = new ObjectType([
             'name' => 'Root',
             'fields' => [
                 'str' => [
-                    'type' => Type::string(),
+                    'type' => GraphQlType::string(),
                     'args' => ['argOne' => ['type' => $inputType]]
                 ]
             ]
@@ -640,7 +640,7 @@ type Root {
         $root = new ObjectType([
             'name' => 'Root',
             'fields' => [
-                'onlyField' => ['type' => Type::string()]
+                'onlyField' => ['type' => GraphQlType::string()]
             ]
         ]);
 

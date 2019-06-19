@@ -8,7 +8,7 @@ use GraphQL\Language\SourceLocation;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Validator\Rules\OverlappingFieldsCanBeMerged;
 
@@ -800,7 +800,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
             'fields' => function() use (&$SomeBox) {
                 return [
                     'deepBox' => ['type' => $SomeBox],
-                    'unrelatedField' =>  ['type' => Type::string()]
+                    'unrelatedField' =>  ['type' => GraphQlType::string()]
                 ];
 
             }
@@ -811,10 +811,10 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
             'interfaces' => [$SomeBox],
             'fields' => function() use (&$StringBox, &$IntBox) {
                 return [
-                    'scalar' => ['type' => Type::string()],
+                    'scalar' => ['type' => GraphQlType::string()],
                     'deepBox' => ['type' => $StringBox],
-                    'unrelatedField' => ['type' => Type::string()],
-                    'listStringBox' => ['type' => Type::listOf($StringBox)],
+                    'unrelatedField' => ['type' => GraphQlType::string()],
+                    'listStringBox' => ['type' => GraphQlType::listOf($StringBox)],
                     'stringBox' => ['type' => $StringBox],
                     'intBox' => ['type' => $IntBox],
                 ];
@@ -826,10 +826,10 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
             'interfaces' => [$SomeBox],
             'fields' => function() use (&$StringBox, &$IntBox) {
                 return [
-                    'scalar' => ['type' => Type::int()],
+                    'scalar' => ['type' => GraphQlType::int()],
                     'deepBox' => ['type' => $IntBox],
-                    'unrelatedField' => ['type' => Type::string()],
-                    'listStringBox' => ['type' => Type::listOf($StringBox)],
+                    'unrelatedField' => ['type' => GraphQlType::string()],
+                    'listStringBox' => ['type' => GraphQlType::listOf($StringBox)],
                     'stringBox' => ['type' => $StringBox],
                     'intBox' => ['type' => $IntBox],
                 ];
@@ -840,7 +840,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
             'name' => 'NonNullStringBox1',
             'resolveType' => function() use (&$StringBox) {return $StringBox;},
             'fields' => [
-                'scalar' => [ 'type' => Type::nonNull(Type::string()) ]
+                'scalar' => [ 'type' => GraphQlType::nonNull(GraphQlType::string()) ]
             ]
         ]);
 
@@ -848,8 +848,8 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
             'name' => 'NonNullStringBox1Impl',
             'interfaces' => [ $SomeBox, $NonNullStringBox1 ],
             'fields' => [
-                'scalar' => [ 'type' => Type::nonNull(Type::string()) ],
-                'unrelatedField' => ['type' => Type::string() ],
+                'scalar' => [ 'type' => GraphQlType::nonNull(GraphQlType::string()) ],
+                'unrelatedField' => ['type' => GraphQlType::string() ],
                 'deepBox' => [ 'type' => $SomeBox ],
             ]
         ]);
@@ -858,7 +858,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
             'name' => 'NonNullStringBox2',
             'resolveType' => function() use (&$StringBox) {return $StringBox;},
             'fields' => [
-                'scalar' => ['type' => Type::nonNull(Type::string())]
+                'scalar' => ['type' => GraphQlType::nonNull(GraphQlType::string())]
             ]
         ]);
 
@@ -866,8 +866,8 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
             'name' => 'NonNullStringBox2Impl',
             'interfaces' => [ $SomeBox, $NonNullStringBox2 ],
             'fields' => [
-                'scalar' => [ 'type' => Type::nonNull(Type::string()) ],
-                'unrelatedField' => [ 'type' => Type::string() ],
+                'scalar' => [ 'type' => GraphQlType::nonNull(GraphQlType::string()) ],
+                'unrelatedField' => [ 'type' => GraphQlType::string() ],
                 'deepBox' => [ 'type' => $SomeBox ],
             ]
         ]);
@@ -876,15 +876,15 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
             'name' => 'Connection',
             'fields' => [
                 'edges' => [
-                    'type' => Type::listOf(new ObjectType([
+                    'type' => GraphQlType::listOf(new ObjectType([
                         'name' => 'Edge',
                         'fields' => [
                             'node' => [
                                 'type' => new ObjectType([
                                     'name' => 'Node',
                                     'fields' => [
-                                        'id' => ['type' => Type::id()],
-                                        'name' => ['type' => Type::string()]
+                                        'id' => ['type' => GraphQlType::id()],
+                                        'name' => ['type' => GraphQlType::string()]
                                     ]
                                 ])
                             ]

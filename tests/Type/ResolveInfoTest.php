@@ -6,7 +6,7 @@ use GraphQL\GraphQL;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class ResolveInfoTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,9 +15,9 @@ class ResolveInfoTest extends \PHPUnit_Framework_TestCase
         $image = new ObjectType([
             'name' => 'Image',
             'fields' => [
-                'url' => ['type' => Type::string()],
-                'width' => ['type' => Type::int()],
-                'height' => ['type' => Type::int()]
+                'url' => ['type' => GraphQlType::string()],
+                'width' => ['type' => GraphQlType::int()],
+                'height' => ['type' => GraphQlType::int()]
             ]
         ]);
 
@@ -27,11 +27,11 @@ class ResolveInfoTest extends \PHPUnit_Framework_TestCase
             'name' => 'Author',
             'fields' => function() use ($image, &$article) {
                 return [
-                    'id' => ['type' => Type::string()],
-                    'name' => ['type' => Type::string()],
+                    'id' => ['type' => GraphQlType::string()],
+                    'name' => ['type' => GraphQlType::string()],
                     'pic' => [ 'type' => $image, 'args' => [
-                        'width' => ['type' => Type::int()],
-                        'height' => ['type' => Type::int()]
+                        'width' => ['type' => GraphQlType::int()],
+                        'height' => ['type' => GraphQlType::int()]
                     ]],
                     'recentArticle' => ['type' => $article],
                 ];
@@ -42,20 +42,20 @@ class ResolveInfoTest extends \PHPUnit_Framework_TestCase
             'name' => 'Reply',
             'fields' => [
                 'author' => ['type' => $author],
-                'body' => ['type' => Type::string()]
+                'body' => ['type' => GraphQlType::string()]
             ]
         ]);
 
         $article = new ObjectType([
             'name' => 'Article',
             'fields' => [
-                'id' => ['type' => Type::string()],
-                'isPublished' => ['type' => Type::boolean()],
+                'id' => ['type' => GraphQlType::string()],
+                'isPublished' => ['type' => GraphQlType::boolean()],
                 'author' => ['type' => $author],
-                'title' => ['type' => Type::string()],
-                'body' => ['type' => Type::string()],
+                'title' => ['type' => GraphQlType::string()],
+                'body' => ['type' => GraphQlType::string()],
                 'image' => ['type' => $image],
-                'replies' => ['type' => Type::listOf($reply)]
+                'replies' => ['type' => GraphQlType::listOf($reply)]
             ]
         ]);
 
@@ -169,9 +169,9 @@ class ResolveInfoTest extends \PHPUnit_Framework_TestCase
         $image = new ObjectType([
             'name' => 'Image',
             'fields' => [
-                'url' => ['type' => Type::string()],
-                'width' => ['type' => Type::int()],
-                'height' => ['type' => Type::int()]
+                'url' => ['type' => GraphQlType::string()],
+                'width' => ['type' => GraphQlType::int()],
+                'height' => ['type' => GraphQlType::int()]
             ]
         ]);
 
@@ -181,11 +181,11 @@ class ResolveInfoTest extends \PHPUnit_Framework_TestCase
             'name' => 'Author',
             'fields' => function() use ($image, &$article) {
                 return [
-                    'id' => ['type' => Type::string()],
-                    'name' => ['type' => Type::string()],
+                    'id' => ['type' => GraphQlType::string()],
+                    'name' => ['type' => GraphQlType::string()],
                     'pic' => [ 'type' => $image, 'args' => [
-                        'width' => ['type' => Type::int()],
-                        'height' => ['type' => Type::int()]
+                        'width' => ['type' => GraphQlType::int()],
+                        'height' => ['type' => GraphQlType::int()]
                     ]],
                     'recentArticle' => ['type' => $article],
                 ];
@@ -196,20 +196,20 @@ class ResolveInfoTest extends \PHPUnit_Framework_TestCase
             'name' => 'Reply',
             'fields' => [
                 'author' => ['type' => $author],
-                'body' => ['type' => Type::string()]
+                'body' => ['type' => GraphQlType::string()]
             ]
         ]);
 
         $article = new ObjectType([
             'name' => 'Article',
             'fields' => [
-                'id' => ['type' => Type::string()],
-                'isPublished' => ['type' => Type::boolean()],
+                'id' => ['type' => GraphQlType::string()],
+                'isPublished' => ['type' => GraphQlType::boolean()],
                 'author' => ['type' => $author],
-                'title' => ['type' => Type::string()],
-                'body' => ['type' => Type::string()],
+                'title' => ['type' => GraphQlType::string()],
+                'body' => ['type' => GraphQlType::string()],
                 'image' => ['type' => $image],
-                'replies' => ['type' => Type::listOf($reply)]
+                'replies' => ['type' => GraphQlType::listOf($reply)]
             ]
         ]);
 

@@ -6,7 +6,7 @@ use GraphQL\Language\AST\NullValueNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Utils\Utils;
 use GraphQL\Utils\AST;
 
@@ -27,7 +27,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
      */
     public function testRejectsEmptyInput()
     {
-        $this->assertEquals(Utils::undefined(), AST::valueFromAST(null, Type::boolean()));
+        $this->assertEquals(Utils::undefined(), AST::valueFromAST(null, GraphQlType::boolean()));
     }
 
     /**
@@ -35,14 +35,14 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
      */
     public function testConvertsAccordingToInputCoercionRules()
     {
-        $this->runTestCase(Type::boolean(), 'true', true);
-        $this->runTestCase(Type::boolean(), 'false', false);
-        $this->runTestCase(Type::int(), '123', 123);
-        $this->runTestCase(Type::float(), '123', 123);
-        $this->runTestCase(Type::float(), '123.456', 123.456);
-        $this->runTestCase(Type::string(), '"abc123"', 'abc123');
-        $this->runTestCase(Type::id(), '123456', '123456');
-        $this->runTestCase(Type::id(), '"123456"', '123456');
+        $this->runTestCase(GraphQlType::boolean(), 'true', true);
+        $this->runTestCase(GraphQlType::boolean(), 'false', false);
+        $this->runTestCase(GraphQlType::int(), '123', 123);
+        $this->runTestCase(GraphQlType::float(), '123', 123);
+        $this->runTestCase(GraphQlType::float(), '123.456', 123.456);
+        $this->runTestCase(GraphQlType::string(), '"abc123"', 'abc123');
+        $this->runTestCase(GraphQlType::id(), '123456', '123456');
+        $this->runTestCase(GraphQlType::id(), '"123456"', '123456');
     }
 
     /**
@@ -52,14 +52,14 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     {
         $undefined = Utils::undefined();
 
-        $this->runTestCase(Type::boolean(), '123', $undefined);
-        $this->runTestCase(Type::int(), '123.456', $undefined);
-        $this->runTestCase(Type::int(), 'true', $undefined);
-        $this->runTestCase(Type::int(), '"123"', $undefined);
-        $this->runTestCase(Type::float(), '"123"', $undefined);
-        $this->runTestCase(Type::string(), '123', $undefined);
-        $this->runTestCase(Type::string(), 'true', $undefined);
-        $this->runTestCase(Type::id(), '123.456', $undefined);
+        $this->runTestCase(GraphQlType::boolean(), '123', $undefined);
+        $this->runTestCase(GraphQlType::int(), '123.456', $undefined);
+        $this->runTestCase(GraphQlType::int(), 'true', $undefined);
+        $this->runTestCase(GraphQlType::int(), '"123"', $undefined);
+        $this->runTestCase(GraphQlType::float(), '"123"', $undefined);
+        $this->runTestCase(GraphQlType::string(), '123', $undefined);
+        $this->runTestCase(GraphQlType::string(), 'true', $undefined);
+        $this->runTestCase(GraphQlType::id(), '123.456', $undefined);
     }
 
     /**
@@ -90,8 +90,8 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
      */
     public function testCoercesToNullUnlessNonNull()
     {
-        $this->runTestCase(Type::boolean(), 'null', null);
-        $this->runTestCase(Type::nonNull(Type::boolean()), 'null', Utils::undefined());
+        $this->runTestCase(GraphQlType::boolean(), 'null', null);
+        $this->runTestCase(GraphQlType::nonNull(GraphQlType::boolean()), 'null', Utils::undefined());
     }
 
     /**
@@ -99,7 +99,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
      */
     public function testCoercesListsOfValues()
     {
-        $listOfBool = Type::listOf(Type::boolean());
+        $listOfBool = GraphQlType::listOf(GraphQlType::boolean());
         $undefined = Utils::undefined();
 
         $this->runTestCase($listOfBool, 'true', [ true ]);
@@ -116,7 +116,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
      */
     public function testCoercesNonNullListsOfValues()
     {
-        $nonNullListOfBool = Type::nonNull(Type::listOf(Type::boolean()));
+        $nonNullListOfBool = GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::boolean()));
         $undefined = Utils::undefined();
 
         $this->runTestCase($nonNullListOfBool, 'true', [ true ]);
@@ -132,7 +132,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
      */
     public function testCoercesListsOfNonNullValues()
     {
-        $listOfNonNullBool = Type::listOf(Type::nonNull(Type::boolean()));
+        $listOfNonNullBool = GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::boolean()));
         $undefined = Utils::undefined();
 
         $this->runTestCase($listOfNonNullBool, 'true', [ true ]);
@@ -148,7 +148,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
      */
     public function testCoercesNonNullListsOfNonNullValues()
     {
-        $nonNullListOfNonNullBool = Type::nonNull(Type::listOf(Type::nonNull(Type::boolean())));
+        $nonNullListOfNonNullBool = GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::boolean())));
         $undefined = Utils::undefined();
 
         $this->runTestCase($nonNullListOfNonNullBool, 'true', [ true ]);
@@ -166,9 +166,9 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
         return $this->inputObj ?: $this->inputObj = new InputObjectType([
             'name' => 'TestInput',
             'fields' => [
-                'int' => [ 'type' => Type::int(), 'defaultValue' => 42 ],
-                'bool' => [ 'type' => Type::boolean() ],
-                'requiredBool' => [ 'type' => Type::nonNull(Type::boolean()) ],
+                'int' => [ 'type' => GraphQlType::int(), 'defaultValue' => 42 ],
+                'bool' => [ 'type' => GraphQlType::boolean() ],
+                'requiredBool' => [ 'type' => GraphQlType::nonNull(GraphQlType::boolean()) ],
             ]
         ]);
     }
@@ -196,9 +196,9 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
      */
     public function testAcceptsVariableValuesAssumingAlreadyCoerced()
     {
-        $this->runTestCaseWithVars([], Type::boolean(), '$var', Utils::undefined());
-        $this->runTestCaseWithVars([ 'var' => true ], Type::boolean(), '$var', true);
-        $this->runTestCaseWithVars([ 'var' => null ], Type::boolean(), '$var', null);
+        $this->runTestCaseWithVars([], GraphQlType::boolean(), '$var', Utils::undefined());
+        $this->runTestCaseWithVars([ 'var' => true ], GraphQlType::boolean(), '$var', true);
+        $this->runTestCaseWithVars([ 'var' => null ], GraphQlType::boolean(), '$var', null);
     }
 
     /**
@@ -206,8 +206,8 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
      */
     public function testAssertsVariablesAreProvidedAsItemsInLists()
     {
-        $listOfBool = Type::listOf(Type::boolean());
-        $listOfNonNullBool = Type::listOf(Type::nonNull(Type::boolean()));
+        $listOfBool = GraphQlType::listOf(GraphQlType::boolean());
+        $listOfNonNullBool = GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::boolean()));
 
         $this->runTestCaseWithVars([], $listOfBool, '[ $foo ]', [ null ]);
         $this->runTestCaseWithVars([], $listOfNonNullBool, '[ $foo ]', Utils::undefined());

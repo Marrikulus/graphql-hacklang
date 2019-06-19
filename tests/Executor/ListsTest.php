@@ -11,7 +11,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Language\SourceLocation;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class ListsTest extends \PHPUnit_Framework_TestCase
 {
@@ -635,25 +635,25 @@ class ListsTest extends \PHPUnit_Framework_TestCase
 
     private function checkHandlesNullableLists($testData, $expected)
     {
-        $testType = Type::listOf(Type::int());
+        $testType = GraphQlType::listOf(GraphQlType::int());
         $this->check($testType, $testData, $expected);
     }
 
     private function checkHandlesNonNullableLists($testData, $expected, $debug = false)
     {
-        $testType = Type::nonNull(Type::listOf(Type::int()));
+        $testType = GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::int()));
         $this->check($testType, $testData, $expected, $debug);
     }
 
     private function checkHandlesListOfNonNulls($testData, $expected, $debug = false)
     {
-        $testType = Type::listOf(Type::nonNull(Type::int()));
+        $testType = GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::int()));
         $this->check($testType, $testData, $expected, $debug);
     }
 
     public function checkHandlesNonNullListOfNonNulls($testData, $expected, $debug = false)
     {
-        $testType = Type::nonNull(Type::listOf(Type::nonNull(Type::int())));
+        $testType = GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::int())));
         $this->check($testType, $testData, $expected, $debug);
     }
 

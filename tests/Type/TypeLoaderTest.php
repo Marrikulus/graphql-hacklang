@@ -7,7 +7,7 @@ use GraphQL\Error\InvariantViolation;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Schema;
 
 class TypeLoaderTest extends \PHPUnit_Framework_TestCase
@@ -66,7 +66,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
             'fields' => function() {
                 $this->calls[] = 'Node.fields';
                 return [
-                    'id' => Type::string()
+                    'id' => GraphQlType::string()
                 ];
             },
             'resolveType' => function() {}
@@ -77,8 +77,8 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
             'fields' => function() {
                 $this->calls[] = 'Content.fields';
                 return [
-                    'title' => Type::string(),
-                    'body' => Type::string(),
+                    'title' => GraphQlType::string(),
+                    'body' => GraphQlType::string(),
                 ];
             },
             'resolveType' => function() {}
@@ -119,8 +119,8 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
                     'postStory' => [
                         'type' => $this->postStoryMutation,
                         'args' => [
-                            'input' => Type::nonNull($this->postStoryMutationInput),
-                            'clientRequestId' => Type::string()
+                            'input' => GraphQlType::nonNull($this->postStoryMutationInput),
+                            'clientRequestId' => GraphQlType::string()
                         ]
                     ]
                 ];
@@ -137,10 +137,10 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         $this->postStoryMutationInput = new InputObjectType([
             'name' => 'PostStoryMutationInput',
             'fields' => [
-                'title' => Type::string(),
-                'body' => Type::string(),
-                'author' => Type::id(),
-                'category' => Type::id()
+                'title' => GraphQlType::string(),
+                'body' => GraphQlType::string(),
+                'author' => GraphQlType::id(),
+                'category' => GraphQlType::id()
             ]
         ]);
 
@@ -156,7 +156,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         new Schema([
             'query' => new ObjectType([
                 'name' => 'Query',
-                'fields' => ['a' => Type::string()]
+                'fields' => ['a' => GraphQlType::string()]
             ]),
             'typeLoader' => function() {}
         ]);
@@ -172,7 +172,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         new Schema([
             'query' => new ObjectType([
                 'name' => 'Query',
-                'fields' => ['a' => Type::string()]
+                'fields' => ['a' => GraphQlType::string()]
             ]),
             'typeLoader' => []
         ]);
@@ -207,7 +207,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
             'Query' => $this->query,
             'Mutation' => $this->mutation,
             'Node' => $this->node,
-            'String' => Type::string(),
+            'String' => GraphQlType::string(),
             'Content' => $this->content,
             'BlogStory' => $this->blogStory,
             'PostStoryMutationInput' => $this->postStoryMutationInput,
@@ -350,7 +350,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $type = $schema->getType('ID');
-        $this->assertSame(Type::id(), $type);
+        $this->assertSame(GraphQlType::id(), $type);
         $this->assertEquals([], $this->calls);
     }
 }

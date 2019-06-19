@@ -6,7 +6,7 @@ use GraphQL\Error\InvariantViolation;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\EagerResolution;
 use GraphQL\Type\LazyResolution;
@@ -86,7 +86,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
         $this->node = new InterfaceType([
             'name' => 'Node',
             'fields' => [
-                'id' => Type::string()
+                'id' => GraphQlType::string()
             ]
         ]);
 
@@ -94,11 +94,11 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
             'name' => 'Content',
             'fields' => function() {
                 return [
-                    'title' => Type::string(),
-                    'body' => Type::string(),
+                    'title' => GraphQlType::string(),
+                    'body' => GraphQlType::string(),
                     'author' => $this->user,
-                    'comments' => Type::listOf($this->comment),
-                    'categories' => Type::listOf($this->category)
+                    'comments' => GraphQlType::listOf($this->comment),
+                    'categories' => GraphQlType::listOf($this->category)
                 ];
             }
         ]);
@@ -135,7 +135,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
                     $this->content->getField('author'),
                     $this->content->getField('comments'),
                     $this->content->getField('categories'),
-                    'url' => Type::string()
+                    'url' => GraphQlType::string()
                 ];
             },
         ]);
@@ -154,13 +154,13 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
                     $this->content->getField('author'),
                     $this->content->getField('comments'),
                     $this->content->getField('categories'),
-                    'streamUrl' => Type::string(),
-                    'downloadUrl' => Type::string(),
+                    'streamUrl' => GraphQlType::string(),
+                    'downloadUrl' => GraphQlType::string(),
                     'metadata' => $this->videoMetadata = new ObjectType([
                         'name' => 'VideoMetadata',
                         'fields' => [
-                            'lat' => Type::float(),
-                            'lng' => Type::float()
+                            'lat' => GraphQlType::float(),
+                            'lng' => GraphQlType::float()
                         ]
                     ])
                 ];
@@ -176,8 +176,8 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
                 return [
                     $this->node->getField('id'),
                     'author' => $this->user,
-                    'text' => Type::string(),
-                    'replies' => Type::listOf($this->comment),
+                    'text' => GraphQlType::string(),
+                    'replies' => GraphQlType::listOf($this->comment),
                     'parent' => $this->comment,
                     'content' => $this->content
                 ];
@@ -192,7 +192,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
             'fields' => function() {
                 return [
                     $this->node->getField('id'),
-                    'name' => Type::string(),
+                    'name' => GraphQlType::string(),
                 ];
             }
         ]);
@@ -205,7 +205,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
             'fields' => function() {
                 return [
                     $this->node->getField('id'),
-                    'name' => Type::string()
+                    'name' => GraphQlType::string()
                 ];
             }
         ]);
@@ -224,7 +224,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
                 'viewer' => $this->user,
                 'latestContent' => $this->content,
                 'node' => $this->node,
-                'mentions' => Type::listOf($this->mention)
+                'mentions' => GraphQlType::listOf($this->mention)
             ]
         ]);
 
@@ -239,16 +239,16 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
                         ]
                     ]),
                     'args' => [
-                        'input' => Type::nonNull($this->postStoryMutationInput = new InputObjectType([
+                        'input' => GraphQlType::nonNull($this->postStoryMutationInput = new InputObjectType([
                             'name' => 'PostStoryMutationInput',
                             'fields' => [
-                                'title' => Type::string(),
-                                'body' => Type::string(),
-                                'author' => Type::id(),
-                                'category' => Type::id()
+                                'title' => GraphQlType::string(),
+                                'body' => GraphQlType::string(),
+                                'author' => GraphQlType::id(),
+                                'category' => GraphQlType::id()
                             ]
                         ])),
-                        'clientRequestId' => Type::string()
+                        'clientRequestId' => GraphQlType::string()
                     ]
                 ],
                 'postComment' => [
@@ -259,16 +259,16 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
                         ]
                     ]),
                     'args' => [
-                        'input' => Type::nonNull($this->postCommentMutationInput = new InputObjectType([
+                        'input' => GraphQlType::nonNull($this->postCommentMutationInput = new InputObjectType([
                             'name' => 'PostCommentMutationInput',
                             'fields' => [
-                                'text' => Type::nonNull(Type::string()),
-                                'author' => Type::nonNull(Type::id()),
-                                'content' => Type::id(),
-                                'parent' => Type::id()
+                                'text' => GraphQlType::nonNull(GraphQlType::string()),
+                                'author' => GraphQlType::nonNull(GraphQlType::id()),
+                                'content' => GraphQlType::id(),
+                                'parent' => GraphQlType::id()
                             ]
                         ])),
-                        'clientRequestId' => Type::string()
+                        'clientRequestId' => GraphQlType::string()
                     ]
                 ]
             ]
@@ -280,11 +280,11 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
         // Has internal types by default:
         $eagerTypeResolution = new EagerResolution([]);
         $expectedTypeMap = [
-            'ID' => Type::id(),
-            'String' => Type::string(),
-            'Float' => Type::float(),
-            'Int' => Type::int(),
-            'Boolean' => Type::boolean()
+            'ID' => GraphQlType::id(),
+            'String' => GraphQlType::string(),
+            'Float' => GraphQlType::float(),
+            'Int' => GraphQlType::int(),
+            'Boolean' => GraphQlType::boolean()
         ];
         $this->assertEquals($expectedTypeMap, $eagerTypeResolution->getTypeMap());
 
@@ -332,20 +332,20 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
             'Mutation' => $this->mutation,
             'User' => $this->user,
             'Node' => $this->node,
-            'String' => Type::string(),
+            'String' => GraphQlType::string(),
             'Content' => $this->content,
             'Comment' => $this->comment,
             'Mention' => $this->mention,
             'BlogStory' => $this->blogStory,
             'Category' => $this->category,
             'PostStoryMutationInput' => $this->postStoryMutationInput,
-            'ID' => Type::id(),
+            'ID' => GraphQlType::id(),
             'PostStoryMutation' => $this->postStoryMutation,
             'PostCommentMutationInput' => $this->postCommentMutationInput,
             'PostCommentMutation' => $this->postCommentMutation,
-            'Float' => Type::float(),
-            'Int' => Type::int(),
-            'Boolean' => Type::boolean()
+            'Float' => GraphQlType::float(),
+            'Int' => GraphQlType::int(),
+            'Boolean' => GraphQlType::boolean()
         ];
 
         $this->assertEquals($expectedTypeMap, $eagerTypeResolution->getTypeMap());
@@ -416,16 +416,16 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
         $expectedTypeMap = [
             'Video' => $this->video,
             'Node' => $this->node,
-            'String' => Type::string(),
+            'String' => GraphQlType::string(),
             'Content' => $this->content,
             'User' => $this->user,
             'Comment' => $this->comment,
             'Category' => $this->category,
             'VideoMetadata' => $this->videoMetadata,
-            'Float' => Type::float(),
-            'ID' => Type::id(),
-            'Int' => Type::int(),
-            'Boolean' => Type::boolean()
+            'Float' => GraphQlType::float(),
+            'ID' => GraphQlType::id(),
+            'Int' => GraphQlType::int(),
+            'Boolean' => GraphQlType::boolean()
         ];
         $this->assertEquals($expectedTypeMap, $eagerTypeResolution->getTypeMap());
 

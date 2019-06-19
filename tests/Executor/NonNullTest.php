@@ -11,7 +11,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Language\SourceLocation;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class NonNullTest extends \PHPUnit_Framework_TestCase
 {
@@ -112,14 +112,14 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
             'name' => 'DataType',
             'fields' => function() use (&$dataType) {
                 return [
-                    'sync' => ['type' => Type::string()],
-                    'nonNullSync' => ['type' => Type::nonNull(Type::string())],
-                    'promise' => Type::string(),
-                    'nonNullPromise' => Type::nonNull(Type::string()),
+                    'sync' => ['type' => GraphQlType::string()],
+                    'nonNullSync' => ['type' => GraphQlType::nonNull(GraphQlType::string())],
+                    'promise' => GraphQlType::string(),
+                    'nonNullPromise' => GraphQlType::nonNull(GraphQlType::string()),
                     'nest' => $dataType,
-                    'nonNullNest' => Type::nonNull($dataType),
+                    'nonNullNest' => GraphQlType::nonNull($dataType),
                     'promiseNest' => $dataType,
-                    'nonNullPromiseNest' => Type::nonNull($dataType),
+                    'nonNullPromiseNest' => GraphQlType::nonNull($dataType),
                 ];
             }
         ]);

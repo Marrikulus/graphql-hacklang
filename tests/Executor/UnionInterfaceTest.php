@@ -12,7 +12,7 @@ use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 
 class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
@@ -28,7 +28,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
         $NamedType = new InterfaceType([
             'name' => 'Named',
             'fields' => [
-                'name' => ['type' => Type::string()]
+                'name' => ['type' => GraphQlType::string()]
             ]
         ]);
 
@@ -36,8 +36,8 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
             'name' => 'Dog',
             'interfaces' => [$NamedType],
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'woofs' => ['type' => Type::boolean()]
+                'name' => ['type' => GraphQlType::string()],
+                'woofs' => ['type' => GraphQlType::boolean()]
             ],
             'isTypeOf' => function ($value) {
                 return $value instanceof Dog;
@@ -48,8 +48,8 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
             'name' => 'Cat',
             'interfaces' => [$NamedType],
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'meows' => ['type' => Type::boolean()]
+                'name' => ['type' => GraphQlType::string()],
+                'meows' => ['type' => GraphQlType::boolean()]
             ],
             'isTypeOf' => function ($value) {
                 return $value instanceof Cat;
@@ -73,9 +73,9 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
             'name' => 'Person',
             'interfaces' => [$NamedType],
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'pets' => ['type' => Type::listOf($PetType)],
-                'friends' => ['type' => Type::listOf($NamedType)]
+                'name' => ['type' => GraphQlType::string()],
+                'pets' => ['type' => GraphQlType::listOf($PetType)],
+                'friends' => ['type' => GraphQlType::listOf($NamedType)]
             ],
             'isTypeOf' => function ($value) {
                 return $value instanceof Person;
@@ -370,7 +370,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
         $NamedType2 = new InterfaceType([
             'name' => 'Named',
             'fields' => [
-                'name' => ['type' => Type::string()]
+                'name' => ['type' => GraphQlType::string()]
             ],
             'resolveType' => function ($obj, $context, ResolveInfo $info) use (&$encounteredContext, &$encounteredSchema, &$encounteredRootValue, &$PersonType2) {
                 $encounteredContext = $context;
@@ -384,8 +384,8 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
             'name' => 'Person',
             'interfaces' => [$NamedType2],
             'fields' => [
-                'name' => ['type' => Type::string()],
-                'friends' => ['type' => Type::listOf($NamedType2)],
+                'name' => ['type' => GraphQlType::string()],
+                'friends' => ['type' => GraphQlType::listOf($NamedType2)],
             ],
         ]);
 

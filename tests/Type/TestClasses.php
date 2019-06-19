@@ -3,7 +3,7 @@
 namespace GraphQL\Tests\Type;
 
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\GraphQlType;
 
 class MyCustomType extends ObjectType
 {
@@ -11,7 +11,7 @@ class MyCustomType extends ObjectType
     {
         $config = [
             'fields' => [
-                'a' => Type::string()
+                'a' => GraphQlType::string()
             ]
         ];
         parent::__construct($config);
@@ -25,7 +25,7 @@ class OtherCustom extends ObjectType
     {
         $config = [
             'fields' => [
-                'b' => Type::string()
+                'b' => GraphQlType::string()
             ]
         ];
         parent::__construct($config);
