@@ -146,7 +146,7 @@ class StarWarsValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * Helper function to test a query and the expected response.
      */
-    private function validationErrors($query):void
+    private function validationErrors(string $query):array<Error>
     {
         $ast = Parser::parse($query);
         return DocumentValidator::validate(StarWarsSchema::build(), $ast);
