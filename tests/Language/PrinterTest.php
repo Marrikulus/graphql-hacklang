@@ -36,7 +36,7 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
      */
     public function testPrintsMinimalAst():void
     {
-        $ast = new FieldNode(['name' => new NameNode(['value' => 'foo'])]);
+        $ast = new FieldNode(new NameNode('foo'));
         $this->assertEquals('foo', Printer::doPrint($ast));
     }
 

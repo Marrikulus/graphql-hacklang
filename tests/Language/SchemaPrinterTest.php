@@ -14,9 +14,9 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
      */
     public function testPrintsMinimalAst():void
     {
-        $ast = new ScalarTypeDefinitionNode([
-            'name' => new NameNode(['value' => 'foo'])
-        ]);
+        $ast = new ScalarTypeDefinitionNode(
+            new NameNode(['value' => 'foo'])
+        );
         $this->assertEquals('scalar foo', Printer::doPrint($ast));
     }
 

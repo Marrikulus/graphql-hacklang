@@ -7,7 +7,7 @@ class IntValueNode extends Node implements ValueNode<?string>
 
     public function __construct(
 		public ?string $value,
-		?Location $loc
+		?Location $loc = null
 	) {
 		parent::__construct($loc);
 	}

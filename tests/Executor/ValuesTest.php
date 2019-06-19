@@ -179,26 +179,26 @@ class ValuesTest extends \PHPUnit_Framework_TestCase {
 
   private static function getVariableDefinitionNodes()
   {
-      $idInputDefinition = new VariableDefinitionNode([
-          'variable' => new VariableNode(['name' => new NameNode(['value' => 'idInput'])]),
-          'type' => new NamedTypeNode(['name' => new NameNode(['value' => 'ID'])])
+      $idInputDefinition = new VariableDefinitionNode(
+          new VariableNode(new NameNode('idInput')),
+          new NamedTypeNode(new NameNode('ID'))
+      );
+      $boolInputDefinition = new VariableDefinitionNode(
+          new VariableNode(new NameNode('boolInput')),
+          new NamedTypeNode(new NameNode('Boolean'))
+      );
+      $intInputDefinition = new VariableDefinitionNode(
+          new VariableNode(new NameNode('intInput')),
+          new NamedTypeNode(new NameNode('Int'))
       ]);
-      $boolInputDefinition = new VariableDefinitionNode([
-          'variable' => new VariableNode(['name' => new NameNode(['value' => 'boolInput'])]),
-          'type' => new NamedTypeNode(['name' => new NameNode(['value' => 'Boolean'])])
-      ]);
-      $intInputDefinition = new VariableDefinitionNode([
-          'variable' => new VariableNode(['name' => new NameNode(['value' => 'intInput'])]),
-          'type' => new NamedTypeNode(['name' => new NameNode(['value' => 'Int'])])
-      ]);
-      $stringInputDefintion = new VariableDefinitionNode([
-          'variable' => new VariableNode(['name' => new NameNode(['value' => 'stringInput'])]),
-          'type' => new NamedTypeNode(['name' => new NameNode(['value' => 'String'])])
-       ]);
-      $floatInputDefinition = new VariableDefinitionNode([
-          'variable' => new VariableNode(['name' => new NameNode(['value' => 'floatInput'])]),
-          'type' => new NamedTypeNode(['name' => new NameNode(['value' => 'Float'])])
-      ]);
+      $stringInputDefintion = new VariableDefinitionNode(
+          new VariableNode(new NameNode('stringInput')),
+          new NamedTypeNode(new NameNode('String'))
+      );
+      $floatInputDefinition = new VariableDefinitionNode(
+          new VariableNode(new NameNode('floatInput')),
+          new NamedTypeNode(new NameNode('Float'))
+      );
       return [$idInputDefinition, $boolInputDefinition, $intInputDefinition, $stringInputDefintion, $floatInputDefinition];
   }
 
