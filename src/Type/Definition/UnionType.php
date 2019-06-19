@@ -79,6 +79,7 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
     {
         if (null === $this->types)
         {
+            $types = null;
             if (\array_key_exists('types', $this->config) && $this->config['types'] === null)
             {
                 $types = null;
@@ -91,7 +92,7 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
                 $types = $this->config['types'];
             }
 
-            invariant(!is_array($types), "%s types must be an Array or a callable which returns an Array.", $this->name);
+            Utils::invariant(is_array($types), "%s types must be an Array or a callable which returns an Array.", $this->name);
 
             /* HH_FIXME[4110]*/
             $this->types = $types;
