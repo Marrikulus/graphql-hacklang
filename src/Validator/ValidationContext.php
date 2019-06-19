@@ -41,12 +41,12 @@ class ValidationContext
     /**
      * @var TypeInfo
      */
-    private $typeInfo;
+    private TypeInfo $typeInfo;
 
     /**
      * @var Error[]
      */
-    private array $errors;
+    private array<Error> $errors;
 
     /**
      * @var FragmentDefinitionNode[]
@@ -95,7 +95,7 @@ class ValidationContext
     /**
      * @param Error $error
      */
-    public function reportError(Error $error)
+    public function reportError(Error $error):void
     {
         $this->errors[] = $error;
     }
@@ -111,7 +111,7 @@ class ValidationContext
     /**
      * @return Schema
      */
-    public function getSchema()
+    public function getSchema():Schema
     {
         return $this->schema;
     }
