@@ -17,7 +17,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Utils\AST;
 
-class ASTFromValueTest extends \PHPUnit_Framework_TestCase
+class AstFromValueTest extends \PHPUnit_Framework_TestCase
 {
     // Describe: astFromValue
 

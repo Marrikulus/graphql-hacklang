@@ -5,7 +5,7 @@ namespace GraphQL\Tests;
 use GraphQL\Language\Parser;
 use GraphQL\Validator\DocumentValidator;
 
-class StartWarsValidationTest extends \PHPUnit_Framework_TestCase
+class StarWarsValidationTest extends \PHPUnit_Framework_TestCase
 {
     // Star Wars Validation Tests
     // Basic Queries
