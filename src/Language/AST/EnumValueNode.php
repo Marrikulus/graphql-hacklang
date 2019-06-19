@@ -3,13 +3,11 @@ namespace GraphQL\Language\AST;
 
 class EnumValueNode extends Node implements ValueNode<?string>
 {
-    public string $kind = NodeKind::ENUM;
-
     public function __construct(
         public ?string $value,
         ?Location $loc = null)
     {
-        parent::__construct($loc);
+        parent::__construct($loc, NodeKind::ENUM);
     }
 
     public function getValue():?string

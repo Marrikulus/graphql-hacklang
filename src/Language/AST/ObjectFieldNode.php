@@ -3,13 +3,11 @@ namespace GraphQL\Language\AST;
 
 class ObjectFieldNode extends Node
 {
-    public string $kind = NodeKind::OBJECT_FIELD;
-
     public function __construct(
         public NameNode $name,
         public Node $value,
         ?Location $loc = null)
     {
-        parent::__construct($loc);
+        parent::__construct($loc, NodeKind::OBJECT_FIELD);
     }
 }

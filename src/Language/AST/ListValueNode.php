@@ -4,13 +4,11 @@ namespace GraphQL\Language\AST;
 
 class ListValueNode extends Node implements ValueNode<array<Node>>
 {
-    public string $kind = NodeKind::LST;
-
     public function __construct(
         public array<Node> $values,
         ?Location $loc = null)
     {
-        parent::__construct($loc);
+        parent::__construct($loc, NodeKind::LST);
     }
 
     public function getValue():array<Node>

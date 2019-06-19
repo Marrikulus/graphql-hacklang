@@ -4,13 +4,11 @@ namespace GraphQL\Language\AST;
 
 class BooleanValueNode extends Node implements ValueNode<bool>
 {
-	public string $kind = NodeKind::BOOLEAN;
-
 	public function __construct(
 		public bool $value,
 		?Location $loc = null
 	) {
-		parent::__construct($loc);
+		parent::__construct($loc, NodeKind::BOOLEAN);
 	}
 
 	public function getValue():bool

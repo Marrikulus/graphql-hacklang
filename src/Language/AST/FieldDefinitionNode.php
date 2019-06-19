@@ -3,8 +3,6 @@ namespace GraphQL\Language\AST;
 
 class FieldDefinitionNode extends Node
 {
-    public string $kind = NodeKind::FIELD_DEFINITION;
-
     public function __construct(
         public NameNode $name,
         public array<InputValueDefinitionNode> $values,
@@ -13,6 +11,6 @@ class FieldDefinitionNode extends Node
         public ?string $description,
         ?Location $loc = null)
     {
-        parent::__construct($loc);
+        parent::__construct($loc, NodeKind::FIELD_DEFINITION);
     }
 }

@@ -3,13 +3,11 @@ namespace GraphQL\Language\AST;
 
 class FloatValueNode extends Node implements ValueNode<?string>
 {
-    public string $kind = NodeKind::FLOAT;
-
     public function __construct(
 		public ?string $value,
 		?Location $loc = null
 	) {
-		parent::__construct($loc);
+		parent::__construct($loc, NodeKind::FLOAT);
 	}
 
 	public function getValue():?string

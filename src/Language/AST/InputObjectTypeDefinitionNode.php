@@ -3,8 +3,6 @@ namespace GraphQL\Language\AST;
 
 class InputObjectTypeDefinitionNode extends Node implements TypeDefinitionNode
 {
-    public string $kind = NodeKind::INPUT_OBJECT_TYPE_DEFINITION;
-
     public function __construct(
         public NameNode $name,
         public array<DirectiveNode> $directives,
@@ -12,6 +10,6 @@ class InputObjectTypeDefinitionNode extends Node implements TypeDefinitionNode
         public ?string $description,
         ?Location $loc = null)
     {
-        parent::__construct($loc);
+        parent::__construct($loc, NodeKind::INPUT_OBJECT_TYPE_DEFINITION);
     }
 }

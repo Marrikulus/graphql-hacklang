@@ -3,8 +3,6 @@ namespace GraphQL\Language\AST;
 
 class InterfaceTypeDefinitionNode extends Node implements TypeDefinitionNode
 {
-    public string $kind = NodeKind::INTERFACE_TYPE_DEFINITION;
-
     public function __construct(
         public NameNode $name,
         public array<DirectiveNode> $directives,
@@ -12,6 +10,6 @@ class InterfaceTypeDefinitionNode extends Node implements TypeDefinitionNode
         public ?string $description,
         ?Location $loc = null)
     {
-        parent::__construct($loc);
+        parent::__construct($loc, NodeKind::INTERFACE_TYPE_DEFINITION);
     }
 }

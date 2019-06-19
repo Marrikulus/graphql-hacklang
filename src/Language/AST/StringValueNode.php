@@ -3,13 +3,11 @@ namespace GraphQL\Language\AST;
 
 class StringValueNode extends Node implements ValueNode<?string>
 {
-    public string $kind = NodeKind::STRING;
-
     public function __construct(
 		public ?string $value,
 		?Location $loc = null
 	) {
-		parent::__construct($loc);
+		parent::__construct($loc, NodeKind::STRING);
 	}
 
 	public function getValue():?string

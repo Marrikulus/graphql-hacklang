@@ -3,8 +3,6 @@ namespace GraphQL\Language\AST;
 
 class FieldNode extends Node implements SelectionNode
 {
-    public string $kind = NodeKind::FIELD;
-
     public function __construct(
         public NameNode $name,
         public ?NameNode $alias,
@@ -13,6 +11,6 @@ class FieldNode extends Node implements SelectionNode
         public ?SelectionSetNode $selectionSet,
         ?Location $loc = null)
     {
-        parent::__construct($loc);
+        parent::__construct($loc, NodeKind::FIELD);
     }
 }

@@ -3,8 +3,6 @@ namespace GraphQL\Language\AST;
 
 class OperationDefinitionNode extends Node implements DefinitionNode, HasSelectionSet
 {
-    public string $kind = NodeKind::OPERATION_DEFINITION;
-
     public function __construct(
         public ?NameNode $name,
         public string $operation,
@@ -13,6 +11,6 @@ class OperationDefinitionNode extends Node implements DefinitionNode, HasSelecti
         public SelectionSetNode $selectionSet,
         ?Location $loc = null)
     {
-        parent::__construct($loc);
+        parent::__construct($loc, NodeKind::OPERATION_DEFINITION);
     }
 }

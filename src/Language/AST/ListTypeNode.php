@@ -3,12 +3,10 @@ namespace GraphQL\Language\AST;
 
 class ListTypeNode extends Node implements TypeNode
 {
-    public string $kind = NodeKind::LIST_TYPE;
-
     public function __construct(
         public Node $type,
         ?Location $loc = null)
     {
-        parent::__construct($loc);
+        parent::__construct($loc, NodeKind::LIST_TYPE);
     }
 }
