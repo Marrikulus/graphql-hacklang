@@ -7,7 +7,7 @@ class DocumentNode extends Node
 
     public function __construct(
         public array<Node> $definitions,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

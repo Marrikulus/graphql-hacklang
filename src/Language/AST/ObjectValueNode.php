@@ -7,7 +7,7 @@ class ObjectValueNode extends Node implements ValueNode<array<ObjectFieldNode>>
 
     public function __construct(
         public array<ObjectFieldNode> $fields,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

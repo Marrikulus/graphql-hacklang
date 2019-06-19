@@ -9,7 +9,7 @@ class VariableDefinitionNode extends Node implements DefinitionNode
         public VariableNode $variable,
         public Node $type,
         public ?Node $defaultValue,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

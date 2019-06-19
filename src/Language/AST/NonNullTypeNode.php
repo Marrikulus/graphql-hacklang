@@ -7,7 +7,7 @@ class NonNullTypeNode extends Node implements TypeNode
 
     public function __construct(
         public Node $type,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

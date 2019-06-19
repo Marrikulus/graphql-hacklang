@@ -9,7 +9,7 @@ class DirectiveDefinitionNode extends Node implements TypeSystemDefinitionNode
         public NameNode $name,
         public array<InputValueDefinitionNode> $arguments,
         public array<NameNode> $locations,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

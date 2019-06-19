@@ -8,7 +8,7 @@ class OperationTypeDefinitionNode extends Node
     public function __construct(
         public string $operation,
         public NamedTypeNode $type,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

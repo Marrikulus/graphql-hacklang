@@ -7,7 +7,7 @@ class NamedTypeNode extends Node implements TypeNode
 
     public function __construct(
         public NameNode $name,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

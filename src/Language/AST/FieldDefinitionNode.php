@@ -11,7 +11,7 @@ class FieldDefinitionNode extends Node
         public Node $type,
         public array<DirectiveNode> $directives,
         public ?string $description,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

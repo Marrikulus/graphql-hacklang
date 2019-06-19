@@ -10,7 +10,7 @@ class FragmentDefinitionNode extends Node implements DefinitionNode, HasSelectio
         public NamedTypeNode $typeCondition,
         public array<DirectiveNode> $directives,
         public SelectionSetNode $selectionSet,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

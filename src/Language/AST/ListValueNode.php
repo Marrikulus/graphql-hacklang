@@ -8,7 +8,7 @@ class ListValueNode extends Node implements ValueNode<array<Node>>
 
     public function __construct(
         public array<Node> $values,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

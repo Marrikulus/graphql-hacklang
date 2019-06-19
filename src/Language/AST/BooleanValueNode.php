@@ -8,7 +8,7 @@ class BooleanValueNode extends Node implements ValueNode<bool>
 
 	public function __construct(
 		public bool $value,
-		?Location $loc
+		?Location $loc = null
 	) {
 		parent::__construct($loc);
 	}

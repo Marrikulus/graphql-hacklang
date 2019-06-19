@@ -8,7 +8,7 @@ class SchemaDefinitionNode extends Node implements TypeSystemDefinitionNode
     public function __construct(
         public array<DirectiveNode> $directives,
         public array<Node> $operationTypes,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

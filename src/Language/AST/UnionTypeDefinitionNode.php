@@ -10,7 +10,7 @@ class UnionTypeDefinitionNode extends Node implements TypeDefinitionNode
         public array<DirectiveNode> $directives,
         public array<NamedTypeNode> $types,
         public ?string $description,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

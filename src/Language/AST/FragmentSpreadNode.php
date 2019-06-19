@@ -8,7 +8,7 @@ class FragmentSpreadNode extends Node implements SelectionNode
     public function __construct(
         public NameNode $name,
         public array<DirectiveNode> $directives,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

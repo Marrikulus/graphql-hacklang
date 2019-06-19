@@ -7,7 +7,7 @@ class TypeExtensionDefinitionNode extends Node implements TypeSystemDefinitionNo
 
     public function __construct(
         public ObjectTypeDefinitionNode $definition,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

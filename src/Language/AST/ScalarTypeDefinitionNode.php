@@ -7,9 +7,9 @@ class ScalarTypeDefinitionNode extends Node implements TypeDefinitionNode
 
     public function __construct(
         public NameNode $name,
-        public array<DirectiveNode> $directives,
+        public array<DirectiveNode> $directives = [],
         public ?string $description,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

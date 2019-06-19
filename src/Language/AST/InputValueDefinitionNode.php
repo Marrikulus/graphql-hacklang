@@ -11,7 +11,7 @@ class InputValueDefinitionNode extends Node
         public ?Node $defaultValue,
         public array<DirectiveNode> $directives,
         public ?string $description,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

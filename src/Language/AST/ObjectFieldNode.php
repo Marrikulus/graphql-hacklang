@@ -8,7 +8,7 @@ class ObjectFieldNode extends Node
     public function __construct(
         public NameNode $name,
         public Node $value,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

@@ -9,7 +9,7 @@ class InlineFragmentNode extends Node implements SelectionNode
         public ?NamedTypeNode $typeCondition,
         public array<DirectiveNode> $directives,
         public SelectionSetNode $selectionSet,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

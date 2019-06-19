@@ -9,7 +9,7 @@ class EnumValueDefinitionNode extends Node
         public NameNode $name,
         public array<DirectiveNode> $directives,
         public ?string $description,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

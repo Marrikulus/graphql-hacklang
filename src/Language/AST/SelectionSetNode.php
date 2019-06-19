@@ -7,7 +7,7 @@ class SelectionSetNode extends Node
 
     public function __construct(
         public array<Node> $selections,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

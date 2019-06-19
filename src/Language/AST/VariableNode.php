@@ -7,7 +7,7 @@ class VariableNode extends Node
 
     public function __construct(
         public NameNode $name,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

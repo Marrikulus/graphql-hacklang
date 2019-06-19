@@ -11,7 +11,7 @@ class FieldNode extends Node implements SelectionNode
         public array<Node> $arguments,
         public array<DirectiveNode> $directives,
         public ?SelectionSetNode $selectionSet,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

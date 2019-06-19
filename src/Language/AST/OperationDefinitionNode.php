@@ -11,7 +11,7 @@ class OperationDefinitionNode extends Node implements DefinitionNode, HasSelecti
         public ?array<Node> $variableDefinitions,
         public array<DirectiveNode> $directives,
         public SelectionSetNode $selectionSet,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }

@@ -10,7 +10,7 @@ class EnumTypeDefinitionNode extends Node implements TypeDefinitionNode
         public array<DirectiveNode> $directives,
         public array<Node> $values,
         public ?string $description,
-        ?Location $loc)
+        ?Location $loc = null)
     {
         parent::__construct($loc);
     }
