@@ -16,7 +16,7 @@ class DisableIntrospectionTest extends TestCase
     public function testQueryContainsSchema():void
     {
         $this->expectFailsRule(new DisableIntrospection(DisableIntrospection::ENABLED), '
-      query { 
+      query {
         __schema {
           queryType {
             name
@@ -24,17 +24,17 @@ class DisableIntrospectionTest extends TestCase
         }
       }
         ',
-            [$this->error(3, 9)] 
+            [$this->error(3, 9)]
         );
     }
-    
+
     /**
      * @it fails if the query contains __type
      */
     public function testQueryContainsType():void
     {
         $this->expectFailsRule(new DisableIntrospection(DisableIntrospection::ENABLED), '
-      query { 
+      query {
         __type(
           name: "Query"
         ){
@@ -70,7 +70,7 @@ class DisableIntrospectionTest extends TestCase
     public function testQueryWhenDisabled():void
     {
         $this->expectPassesRule(new DisableIntrospection(DisableIntrospection::DISABLED), '
-      query { 
+      query {
         __type(
           name: "Query"
         ){
@@ -88,7 +88,7 @@ class DisableIntrospectionTest extends TestCase
         $disableIntrospection = new DisableIntrospection(DisableIntrospection::DISABLED);
         $disableIntrospection->setEnabled(DisableIntrospection::ENABLED);
         $this->expectFailsRule($disableIntrospection, '
-      query { 
+      query {
         __type(
           name: "Query"
         ){
@@ -108,7 +108,7 @@ class DisableIntrospectionTest extends TestCase
         $disableIntrospection = new DisableIntrospection(DisableIntrospection::ENABLED);
         $disableIntrospection->setEnabled(DisableIntrospection::DISABLED);
         $this->expectPassesRule($disableIntrospection, '
-      query { 
+      query {
         __type(
           name: "Query"
         ){
