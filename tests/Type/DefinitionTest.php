@@ -152,7 +152,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it defines a query only schema
      */
-    public function testDefinesAQueryOnlySchema()
+    public function testDefinesAQueryOnlySchema():void
     {
         $blogSchema = new Schema([
             'query' => $this->blogQuery
@@ -196,7 +196,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it defines a mutation schema
      */
-    public function testDefinesAMutationSchema()
+    public function testDefinesAMutationSchema():void
     {
         $schema = new Schema([
             'query' => $this->blogQuery,
@@ -215,7 +215,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it defines a subscription schema
      */
-    public function testDefinesSubscriptionSchema()
+    public function testDefinesSubscriptionSchema():void
     {
         $schema = new Schema([
             'query' => $this->blogQuery,
@@ -233,7 +233,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it defines an enum type with deprecated value
      */
-    public function testDefinesEnumTypeWithDeprecatedValue()
+    public function testDefinesEnumTypeWithDeprecatedValue():void
     {
         $enumTypeWithDeprecatedValue = new EnumType([
             'name' => 'EnumWithDeprecatedValue',
@@ -258,7 +258,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it defines an enum type with a value of `null` and `undefined`
      */
-    public function testDefinesAnEnumTypeWithAValueOfNullAndUndefined()
+    public function testDefinesAnEnumTypeWithAValueOfNullAndUndefined():void
     {
         $EnumTypeWithNullishValue = new EnumType([
             'name' => 'EnumWithNullishValue',
@@ -295,7 +295,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it defines an object type with deprecated field
      */
-    public function testDefinesAnObjectTypeWithDeprecatedField()
+    public function testDefinesAnObjectTypeWithDeprecatedField():void
     {
         $TypeWithDeprecatedField = new ObjectType([
           'name' => 'foo',
@@ -319,7 +319,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it includes nested input objects in the map
      */
-    public function testIncludesNestedInputObjectInTheMap()
+    public function testIncludesNestedInputObjectInTheMap():void
     {
         $nestedInputObject = new InputObjectType([
             'name' => 'NestedInputObject',
@@ -349,7 +349,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it includes interfaces\' subtypes in the type map
      */
-    public function testIncludesInterfaceSubtypesInTheTypeMap()
+    public function testIncludesInterfaceSubtypesInTheTypeMap():void
     {
         $someInterface = new InterfaceType([
             'name' => 'SomeInterface',
@@ -382,7 +382,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it includes interfaces\' thunk subtypes in the type map
      */
-    public function testIncludesInterfacesThunkSubtypesInTheTypeMap()
+    public function testIncludesInterfacesThunkSubtypesInTheTypeMap():void
     {
         $someInterface = null;
 
@@ -418,7 +418,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it stringifies simple types
      */
-    public function testStringifiesSimpleTypes()
+    public function testStringifiesSimpleTypes():void
     {
         $this->assertSame('Int', (string) GraphQlType::int());
         $this->assertSame('Article', (string) $this->blogArticle);
@@ -439,7 +439,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it identifies input types
      */
-    public function testIdentifiesInputTypes()
+    public function testIdentifiesInputTypes():void
     {
         $expected = [
             [GraphQlType::int(), true],
@@ -458,7 +458,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it identifies output types
      */
-    public function testIdentifiesOutputTypes()
+    public function testIdentifiesOutputTypes():void
     {
         $expected = [
             [GraphQlType::int(), true],
@@ -477,7 +477,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it prohibits nesting NonNull inside NonNull
      */
-    public function testProhibitsNonNullNesting()
+    public function testProhibitsNonNullNesting():void
     {
         $this->setExpectedException('\Exception');
         new NonNull(new NonNull(GraphQlType::int()));
@@ -486,7 +486,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it prohibits putting non-Object types in unions
      */
-    public function testProhibitsPuttingNonObjectTypesInUnions()
+    public function testProhibitsPuttingNonObjectTypesInUnions():void
     {
         $int = GraphQlType::int();
 
@@ -517,7 +517,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows a thunk for Union\'s types
      */
-    public function testAllowsThunkForUnionTypes()
+    public function testAllowsThunkForUnionTypes():void
     {
         $union = new UnionType([
             'name' => 'ThunkUnion',
@@ -529,7 +529,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->objectType, $types[0]);
     }
 
-    public function testAllowsRecursiveDefinitions()
+    public function testAllowsRecursiveDefinitions():void
     {
         // See https://github.com/webonyx/graphql-php/issues/16
         $node = new InterfaceType([
@@ -594,7 +594,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($user, $blog->getField('owner')->getType()->getWrappedType(true));
     }
 
-    public function testInputObjectTypeAllowsRecursiveDefinitions()
+    public function testInputObjectTypeAllowsRecursiveDefinitions():void
     {
         $called = false;
         $inputObject = new InputObjectType([
@@ -629,7 +629,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($someMutation->getField('mutateSomething')->getArg('input')->getType(), $inputObject);
     }
 
-    public function testInterfaceTypeAllowsRecursiveDefinitions()
+    public function testInterfaceTypeAllowsRecursiveDefinitions():void
     {
         $called = false;
         $interface = new InterfaceType([
@@ -661,7 +661,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($interface->getField('value')->getType(), GraphQlType::string());
     }
 
-    public function testAllowsShorthandFieldDefinition()
+    public function testAllowsShorthandFieldDefinition():void
     {
         $interface = new InterfaceType([
             'name' => 'SomeInterface',
@@ -707,7 +707,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test', $testField->name);
     }
 
-    public function testInfersNameFromClassname()
+    public function testInfersNameFromClassname():void
     {
         $myObj = new MyCustomType();
         $this->assertEquals('MyCustom', $myObj->name);
@@ -716,7 +716,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('OtherCustom', $otherCustom->name);
     }
 
-    public function testAllowsOverridingInternalTypes()
+    public function testAllowsOverridingInternalTypes():void
     {
         $idType = new CustomScalarType([
             'name' => 'ID',

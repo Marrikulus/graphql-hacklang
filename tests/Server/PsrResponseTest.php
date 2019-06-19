@@ -9,7 +9,7 @@ use GraphQL\Tests\Server\Psr7\PsrResponseStub;
 
 class PsrResponseTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConvertsResultToPsrResponse()
+    public function testConvertsResultToPsrResponse():void
     {
         $result = new ExecutionResult(['key' => 'value']);
         $stream = new PsrStreamStub();

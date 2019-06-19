@@ -24,7 +24,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts boolean values to ASTs
      */
-    public function testConvertsBooleanValueToASTs()
+    public function testConvertsBooleanValueToASTs():void
     {
         $this->assertEquals(new BooleanValueNode(['value' => true]), AST::astFromValue(true, GraphQlType::boolean()));
         $this->assertEquals(new BooleanValueNode(['value' => false]), AST::astFromValue(false, GraphQlType::boolean()));
@@ -38,14 +38,14 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts Int values to Int ASTs
      */
-    public function testConvertsIntValuesToASTs()
+    public function testConvertsIntValuesToASTs():void
     {
         $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123.0, GraphQlType::int()));
         $this->assertEquals(new IntValueNode(['value' => '10000']), AST::astFromValue(1e4, GraphQlType::int()));
         $this->assertEquals(new IntValueNode(['value' => '0']), AST::astFromValue(0e4, GraphQlType::int()));
     }
 
-    public function testConvertsIntValuesToASTsCannotRepresentNonInteger()
+    public function testConvertsIntValuesToASTsCannotRepresentNonInteger():void
     {
         // GraphQL spec does not allow coercing non-integer values to Int to avoid
         // accidental data loss.
@@ -62,7 +62,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts Float values to Int/Float ASTs
      */
-    public function testConvertsFloatValuesToIntOrFloatASTs()
+    public function testConvertsFloatValuesToIntOrFloatASTs():void
     {
         $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123, GraphQlType::float()));
         $this->assertEquals(new IntValueNode(['value' => '123']), AST::astFromValue(123.0, GraphQlType::float()));
@@ -75,7 +75,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts String values to String ASTs
      */
-    public function testConvertsStringValuesToASTs()
+    public function testConvertsStringValuesToASTs():void
     {
         $this->assertEquals(new StringValueNode(['value' => 'hello']), AST::astFromValue('hello', GraphQlType::string()));
         $this->assertEquals(new StringValueNode(['value' => 'VALUE']), AST::astFromValue('VALUE', GraphQlType::string()));
@@ -89,7 +89,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts ID values to Int/String ASTs
      */
-    public function testConvertIdValuesToIntOrStringASTs()
+    public function testConvertIdValuesToIntOrStringASTs():void
     {
         $this->assertEquals(new StringValueNode(['value' => 'hello']), AST::astFromValue('hello', GraphQlType::id()));
         $this->assertEquals(new StringValueNode(['value' => 'VALUE']), AST::astFromValue('VALUE', GraphQlType::id()));
@@ -103,7 +103,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not converts NonNull values to NullValue
      */
-    public function testDoesNotConvertsNonNullValuestoNullValue()
+    public function testDoesNotConvertsNonNullValuestoNullValue():void
     {
         $this->assertSame(null, AST::astFromValue(null, GraphQlType::nonNull(GraphQlType::boolean())));
     }
@@ -111,7 +111,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts string values to Enum ASTs if possible
      */
-    public function testConvertsStringValuesToEnumASTsIfPossible()
+    public function testConvertsStringValuesToEnumASTsIfPossible():void
     {
         $this->assertEquals(new EnumValueNode(['value' => 'HELLO']), AST::astFromValue('HELLO', $this->myEnum()));
         $this->assertEquals(new EnumValueNode(['value' => 'COMPLEX']), AST::astFromValue($this->complexValue(), $this->myEnum()));
@@ -126,7 +126,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts array values to List ASTs
      */
-    public function testConvertsArrayValuesToListASTs()
+    public function testConvertsArrayValuesToListASTs():void
     {
         $value1 = new ListValueNode([
             'values' => [
@@ -148,7 +148,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts list singletons
      */
-    public function testConvertsListSingletons()
+    public function testConvertsListSingletons():void
     {
         $this->assertEquals(new StringValueNode(['value' => 'FOO']), AST::astFromValue('FOO', GraphQlType::listOf(GraphQlType::string())));
     }
@@ -156,7 +156,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts input objects
      */
-    public function testConvertsInputObjects()
+    public function testConvertsInputObjects():void
     {
         $inputObj = new InputObjectType([
             'name' => 'MyInputObj',
@@ -181,7 +181,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts input objects with explicit nulls
      */
-    public function testConvertsInputObjectsWithExplicitNulls()
+    public function testConvertsInputObjectsWithExplicitNulls():void
     {
         $inputObj = new InputObjectType([
             'name' => 'MyInputObj',

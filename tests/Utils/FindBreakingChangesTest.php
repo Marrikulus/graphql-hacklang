@@ -32,7 +32,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testShouldDetectIfTypeWasRemoved()
+    public function testShouldDetectIfTypeWasRemoved():void
     {
         $type1 = new ObjectType([
             'name' => 'Type1',
@@ -71,7 +71,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([], FindBreakingChanges::findRemovedTypes($oldSchema, $oldSchema));
     }
 
-    public function testShouldDetectTypeChanges()
+    public function testShouldDetectTypeChanges():void
     {
         $objectType = new ObjectType([
             'name' => 'ObjectType',
@@ -116,7 +116,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testShouldDetectFieldChangesAndDeletions()
+    public function testShouldDetectFieldChangesAndDeletions():void
     {
         $typeA1 = new ObjectType([
             'name' => 'TypeA',
@@ -264,7 +264,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testShouldDetectInputFieldChanges()
+    public function testShouldDetectInputFieldChanges():void
     {
         $oldInputType = new InputObjectType([
             'name' => 'InputType1',
@@ -433,7 +433,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedFieldChanges, FindBreakingChanges::findFieldsThatChangedType($oldSchema, $newSchema));
     }
 
-    public function testDetectsNonNullFieldAddedToInputType()
+    public function testDetectsNonNullFieldAddedToInputType():void
     {
         $oldInputType = new InputObjectType([
             'name' => 'InputType1',
@@ -478,7 +478,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testDetectsIfTypeWasRemovedFromUnion()
+    public function testDetectsIfTypeWasRemovedFromUnion():void
     {
         $type1 = new ObjectType([
             'name' => 'Type1',
@@ -550,7 +550,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testDetectsValuesRemovedFromEnum()
+    public function testDetectsValuesRemovedFromEnum():void
     {
         $oldEnumType = new EnumType([
             'name' => 'EnumType1',
@@ -596,7 +596,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testDetectsRemovalOfFieldArgument()
+    public function testDetectsRemovalOfFieldArgument():void
     {
 
         $oldType = new ObjectType([
@@ -689,7 +689,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedChanges, FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges']);
     }
 
-    public function testDetectsFieldArgumentTypeChange()
+    public function testDetectsFieldArgumentTypeChange():void
     {
 
         $oldType = new ObjectType([
@@ -816,7 +816,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedChanges, FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges']);
     }
 
-    public function testDetectsAdditionOfFieldArg()
+    public function testDetectsAdditionOfFieldArg():void
     {
         $oldType = new ObjectType([
             'name' => 'Type1',
@@ -865,7 +865,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges'][0]);
     }
 
-    public function testDoesNotFlagArgsWithSameTypeSignature()
+    public function testDoesNotFlagArgsWithSameTypeSignature():void
     {
         $inputType1a = new InputObjectType([
             'name' => 'InputType1',
@@ -927,7 +927,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([], FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges']);
     }
 
-    public function testArgsThatMoveAwayFromNonNull()
+    public function testArgsThatMoveAwayFromNonNull():void
     {
         $oldType = new ObjectType([
             'name' => 'Type1',
@@ -972,7 +972,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([], FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges']);
     }
 
-    public function testDetectsRemovalOfInterfaces()
+    public function testDetectsRemovalOfInterfaces():void
     {
         $interface1 = new InterfaceType([
             'name' => 'Interface1',
@@ -1021,7 +1021,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             FindBreakingChanges::findInterfacesRemovedFromObjectTypes($oldSchema, $newSchema)[0]);
     }
 
-    public function testDetectsAllBreakingChanges()
+    public function testDetectsAllBreakingChanges():void
     {
         $typeThatGetsRemoved = new ObjectType([
             'name' => 'TypeThatGetsRemoved',
@@ -1232,7 +1232,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
 
     // findDangerousChanges tests below here
 
-    public function testFindDangerousArgChanges()
+    public function testFindDangerousArgChanges():void
     {
         $oldType = new ObjectType([
             'name' => 'Type1',
@@ -1287,7 +1287,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testDetectsEnumValueAdditions()
+    public function testDetectsEnumValueAdditions():void
     {
         $oldEnumType = new EnumType([
             'name' => 'EnumType1',
@@ -1328,7 +1328,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testDetectsAdditionsToUnionType()
+    public function testDetectsAdditionsToUnionType():void
     {
         $type1 = new ObjectType([
             'name' => 'Type1',
@@ -1388,7 +1388,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testFindsAllDangerousChanges()
+    public function testFindsAllDangerousChanges():void
     {
         $enumThatGainsAValueOld = new EnumType([
             'name' => 'EnumType1',

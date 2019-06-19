@@ -132,7 +132,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         Warning::enable(Warning::WARNING_NOT_A_TYPE);
     }
 
-    public function testRejectsTypesWithoutNames()
+    public function testRejectsTypesWithoutNames():void
     {
         $this->assertEachCallableThrows([
             function() {
@@ -153,7 +153,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ], 'Must be named. Unexpected name: null');
     }
 
-    public function testRejectsAnObjectTypeWithReservedName()
+    public function testRejectsAnObjectTypeWithReservedName():void
     {
         $this->assertWarnsOnce([
             function() {
@@ -185,7 +185,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ], 'Name "__ReservedName" must not begin with "__", which is reserved by GraphQL introspection. In a future release of graphql this will become an exception');
     }
 
-    public function testRejectsAnObjectTypeWithInvalidName()
+    public function testRejectsAnObjectTypeWithInvalidName():void
     {
         $this->assertEachCallableThrows([
             function() {
@@ -221,7 +221,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a Schema whose query type is an object type
      */
-    public function testAcceptsASchemaWhoseQueryTypeIsAnObjectType()
+    public function testAcceptsASchemaWhoseQueryTypeIsAnObjectType():void
     {
         // Must not throw:
         $schema = new Schema([
@@ -233,7 +233,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a Schema whose query and mutation types are object types
      */
-    public function testAcceptsASchemaWhoseQueryAndMutationTypesAreObjectTypes()
+    public function testAcceptsASchemaWhoseQueryAndMutationTypesAreObjectTypes():void
     {
         $mutationType = new ObjectType([
             'name' => 'Mutation',
@@ -251,7 +251,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a Schema whose query and subscription types are object types
      */
-    public function testAcceptsASchemaWhoseQueryAndSubscriptionTypesAreObjectTypes()
+    public function testAcceptsASchemaWhoseQueryAndSubscriptionTypesAreObjectTypes():void
     {
         $subscriptionType = new ObjectType([
             'name' => 'Subscription',
@@ -269,7 +269,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Schema without a query type
      */
-    public function testRejectsASchemaWithoutAQueryType()
+    public function testRejectsASchemaWithoutAQueryType():void
     {
         $this->setExpectedException(InvariantViolation::class, 'Schema query must be Object Type but got: NULL');
         new Schema([]);
@@ -278,7 +278,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Schema whose query type is an input type
      */
-    public function testRejectsASchemaWhoseQueryTypeIsAnInputType()
+    public function testRejectsASchemaWhoseQueryTypeIsAnInputType():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -292,7 +292,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Schema whose mutation type is an input type
      */
-    public function testRejectsASchemaWhoseMutationTypeIsAnInputType()
+    public function testRejectsASchemaWhoseMutationTypeIsAnInputType():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -307,7 +307,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Schema whose subscription type is an input type
      */
-    public function testRejectsASchemaWhoseSubscriptionTypeIsAnInputType()
+    public function testRejectsASchemaWhoseSubscriptionTypeIsAnInputType():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -322,7 +322,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Schema whose directives are incorrectly typed
      */
-    public function testRejectsASchemaWhoseDirectivesAreIncorrectlyTyped()
+    public function testRejectsASchemaWhoseDirectivesAreIncorrectlyTyped():void
     {
         $schema = new Schema([
             'query' => $this->SomeObjectType,
@@ -341,7 +341,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Schema which redefines a built-in type
      */
-    public function testRejectsASchemaWhichRedefinesABuiltInType()
+    public function testRejectsASchemaWhichRedefinesABuiltInType():void
     {
         $FakeString = new CustomScalarType([
             'name' => 'String',
@@ -369,7 +369,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Schema which defines an object type twice
      */
-    public function testRejectsASchemaWhichDfinesAnObjectTypeTwice()
+    public function testRejectsASchemaWhichDfinesAnObjectTypeTwice():void
     {
         $A = new ObjectType([
             'name' => 'SameName',
@@ -401,7 +401,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Schema which have same named objects implementing an interface
      */
-    public function testRejectsASchemaWhichHaveSameNamedObjectsImplementingAnInterface()
+    public function testRejectsASchemaWhichHaveSameNamedObjectsImplementingAnInterface():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -446,7 +446,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object type with fields object
      */
-    public function testAcceptsAnObjectTypeWithFieldsObject()
+    public function testAcceptsAnObjectTypeWithFieldsObject():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
@@ -462,7 +462,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object type with a field function
      */
-    public function testAcceptsAnObjectTypeWithAfieldFunction()
+    public function testAcceptsAnObjectTypeWithAfieldFunction():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
@@ -478,7 +478,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object type with missing fields
      */
-    public function testRejectsAnObjectTypeWithMissingFields()
+    public function testRejectsAnObjectTypeWithMissingFields():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject'
@@ -494,7 +494,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object type field with undefined config
      */
-    public function testRejectsAnObjectTypeFieldWithUndefinedConfig()
+    public function testRejectsAnObjectTypeFieldWithUndefinedConfig():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -511,7 +511,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object type with incorrectly named fields
      */
-    public function testRejectsAnObjectTypeWithIncorrectlyNamedFields()
+    public function testRejectsAnObjectTypeWithIncorrectlyNamedFields():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
@@ -530,7 +530,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it warns about an Object type with reserved named fields
      */
-    public function testWarnsAboutAnObjectTypeWithReservedNamedFields()
+    public function testWarnsAboutAnObjectTypeWithReservedNamedFields():void
     {
         $lastMessage = null;
         Warning::setWarningHandler(function($message) use (&$lastMessage) {
@@ -554,7 +554,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         Warning::setWarningHandler(null);
     }
 
-    public function testAcceptsShorthandNotationForFields()
+    public function testAcceptsShorthandNotationForFields():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
@@ -568,7 +568,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object type with incorrectly typed fields
      */
-    public function testRejectsAnObjectTypeWithIncorrectlyTypedFields()
+    public function testRejectsAnObjectTypeWithIncorrectlyTypedFields():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
@@ -587,7 +587,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object type with empty fields
      */
-    public function testRejectsAnObjectTypeWithEmptyFields()
+    public function testRejectsAnObjectTypeWithEmptyFields():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
@@ -604,7 +604,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object type with a field function that returns nothing
      */
-    public function testRejectsAnObjectTypeWithAFieldFunctionThatReturnsNothing()
+    public function testRejectsAnObjectTypeWithAFieldFunctionThatReturnsNothing():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -619,7 +619,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object type with a field function that returns empty
      */
-    public function testRejectsAnObjectTypeWithAFieldFunctionThatReturnsEmpty()
+    public function testRejectsAnObjectTypeWithAFieldFunctionThatReturnsEmpty():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
@@ -640,7 +640,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts field args with valid names
      */
-    public function testAcceptsFieldArgsWithValidNames()
+    public function testAcceptsFieldArgsWithValidNames():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
@@ -659,7 +659,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects field arg with invalid names
      */
-    public function testRejectsFieldArgWithInvalidNames()
+    public function testRejectsFieldArgWithInvalidNames():void
     {
         $QueryType = new ObjectType([
             'name' => 'SomeObject',
@@ -687,7 +687,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object type with field args
      */
-    public function testAcceptsAnObjectTypeWithFieldArgs()
+    public function testAcceptsAnObjectTypeWithFieldArgs():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
@@ -706,7 +706,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object type with incorrectly typed field args
      */
-    public function testRejectsAnObjectTypeWithIncorrectlyTypedFieldArgs()
+    public function testRejectsAnObjectTypeWithIncorrectlyTypedFieldArgs():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'SomeObject',
@@ -733,7 +733,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object type with array interfaces
      */
-    public function testAcceptsAnObjectTypeWithArrayInterfaces()
+    public function testAcceptsAnObjectTypeWithArrayInterfaces():void
     {
         $AnotherInterfaceType = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -753,7 +753,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object type with interfaces as a function returning an array
      */
-    public function testAcceptsAnObjectTypeWithInterfacesAsAFunctionReturningAnArray()
+    public function testAcceptsAnObjectTypeWithInterfacesAsAFunctionReturningAnArray():void
     {
         $AnotherInterfaceType = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -775,7 +775,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object type with incorrectly typed interfaces
      */
-    public function testRejectsAnObjectTypeWithIncorrectlyTypedInterfaces()
+    public function testRejectsAnObjectTypeWithIncorrectlyTypedInterfaces():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -792,7 +792,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object that declare it implements same interface more than once
      */
-    public function testRejectsAnObjectThatDeclareItImplementsSameInterfaceMoreThanOnce()
+    public function testRejectsAnObjectThatDeclareItImplementsSameInterfaceMoreThanOnce():void
     {
         $NonUniqInterface = new InterfaceType([
             'name' => 'NonUniqInterface',
@@ -828,7 +828,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object type with interfaces as a function returning an incorrect type
      */
-    public function testRejectsAnObjectTypeWithInterfacesAsAFunctionReturningAnIncorrectType()
+    public function testRejectsAnObjectTypeWithInterfacesAsAFunctionReturningAnIncorrectType():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -848,7 +848,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a Union type with array types
      */
-    public function testAcceptsAUnionTypeWithArrayTypes()
+    public function testAcceptsAUnionTypeWithArrayTypes():void
     {
         $schema = $this->schemaWithFieldType(new UnionType([
             'name' => 'SomeUnion',
@@ -863,7 +863,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a Union type with function returning an array of types
      */
-    public function testAcceptsAUnionTypeWithFunctionReturningAnArrayOfTypes()
+    public function testAcceptsAUnionTypeWithFunctionReturningAnArrayOfTypes():void
     {
         $schema = $this->schemaWithFieldType(new UnionType([
             'name' => 'SomeUnion',
@@ -880,7 +880,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Union type without types
      */
-    public function testRejectsAUnionTypeWithoutTypes()
+    public function testRejectsAUnionTypeWithoutTypes():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -895,7 +895,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Union type with empty types
      */
-    public function testRejectsAUnionTypeWithemptyTypes()
+    public function testRejectsAUnionTypeWithemptyTypes():void
     {
         $schema = $this->schemaWithFieldType(new UnionType([
             'name' => 'SomeUnion',
@@ -914,7 +914,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Union type with incorrectly typed types
      */
-    public function testRejectsAUnionTypeWithIncorrectlyTypedTypes()
+    public function testRejectsAUnionTypeWithIncorrectlyTypedTypes():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -931,7 +931,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Union type with duplicated member type
      */
-    public function testRejectsAUnionTypeWithDuplicatedMemberType()
+    public function testRejectsAUnionTypeWithDuplicatedMemberType():void
     {
         $schema = $this->schemaWithFieldType(new UnionType([
             'name' => 'SomeUnion',
@@ -954,7 +954,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Input Object type with fields
      */
-    public function testAcceptsAnInputObjectTypeWithFields()
+    public function testAcceptsAnInputObjectTypeWithFields():void
     {
         $schema = $this->schemaWithInputObject(new InputObjectType([
             'name' => 'SomeInputObject',
@@ -969,7 +969,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Input Object type with a field function
      */
-    public function testAcceptsAnInputObjectTypeWithAFieldFunction()
+    public function testAcceptsAnInputObjectTypeWithAFieldFunction():void
     {
         $schema = $this->schemaWithInputObject(new InputObjectType([
             'name' => 'SomeInputObject',
@@ -986,7 +986,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Input Object type with missing fields
      */
-    public function testRejectsAnInputObjectTypeWithMissingFields()
+    public function testRejectsAnInputObjectTypeWithMissingFields():void
     {
         $schema = $this->schemaWithInputObject(new InputObjectType([
             'name' => 'SomeInputObject',
@@ -1002,7 +1002,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Input Object type with incorrectly typed fields
      */
-    public function testRejectsAnInputObjectTypeWithIncorrectlyTypedFields()
+    public function testRejectsAnInputObjectTypeWithIncorrectlyTypedFields():void
     {
         $schema = $this->schemaWithInputObject(new InputObjectType([
             'name' => 'SomeInputObject',
@@ -1021,7 +1021,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Input Object type with empty fields
      */
-    public function testRejectsAnInputObjectTypeWithEmptyFields()
+    public function testRejectsAnInputObjectTypeWithEmptyFields():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -1036,7 +1036,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Input Object type with a field function that returns nothing
      */
-    public function testRejectsAnInputObjectTypeWithAFieldFunctionThatReturnsNothing()
+    public function testRejectsAnInputObjectTypeWithAFieldFunctionThatReturnsNothing():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -1052,7 +1052,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Input Object type with a field function that returns empty
      */
-    public function testRejectsAnInputObjectTypeWithAFieldFunctionThatReturnsEmpty()
+    public function testRejectsAnInputObjectTypeWithAFieldFunctionThatReturnsEmpty():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -1071,7 +1071,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Input Object type with no resolver
      */
-    public function testAcceptsAnInputObjectTypeWithNoResolver()
+    public function testAcceptsAnInputObjectTypeWithNoResolver():void
     {
         $schema = $this->schemaWithInputObject(new InputObjectType([
             'name' => 'SomeInputObject',
@@ -1088,7 +1088,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Input Object type with null resolver
      */
-    public function testAcceptsAnInputObjectTypeWithNullResolver()
+    public function testAcceptsAnInputObjectTypeWithNullResolver():void
     {
         $schema = $this->schemaWithInputObject(new InputObjectType([
             'name' => 'SomeInputObject',
@@ -1105,7 +1105,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Input Object type with resolver function
      */
-    public function testRejectsAnInputObjectTypeWithResolverFunction()
+    public function testRejectsAnInputObjectTypeWithResolverFunction():void
     {
         $schema = $this->schemaWithInputObject(new InputObjectType([
             'name' => 'SomeInputObject',
@@ -1129,7 +1129,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Input Object type with resolver constant
      */
-    public function testRejectsAnInputObjectTypeWithResolverConstant()
+    public function testRejectsAnInputObjectTypeWithResolverConstant():void
     {
         $schema = $this->schemaWithInputObject(new InputObjectType([
             'name' => 'SomeInputObject',
@@ -1154,7 +1154,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object type with an isTypeOf function
      */
-    public function testAcceptsAnObjectTypeWithAnIsTypeOfFunction()
+    public function testAcceptsAnObjectTypeWithAnIsTypeOfFunction():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'AnotherObject',
@@ -1169,7 +1169,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object type with an incorrect type for isTypeOf
      */
-    public function testRejectsAnObjectTypeWithAnIncorrectTypeForIsTypeOf()
+    public function testRejectsAnObjectTypeWithAnIncorrectTypeForIsTypeOf():void
     {
         $schema = $this->schemaWithFieldType(new ObjectType([
             'name' => 'AnotherObject',
@@ -1190,7 +1190,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Interface type defining resolveType
      */
-    public function testAcceptsAnInterfaceTypeDefiningResolveType()
+    public function testAcceptsAnInterfaceTypeDefiningResolveType():void
     {
         $AnotherInterfaceType = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -1209,7 +1209,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Interface with implementing type defining isTypeOf
      */
-    public function testAcceptsAnInterfaceWithImplementingTypeDefiningIsTypeOf()
+    public function testAcceptsAnInterfaceWithImplementingTypeDefiningIsTypeOf():void
     {
         $InterfaceTypeWithoutResolveType = new InterfaceType([
             'name' => 'InterfaceTypeWithoutResolveType',
@@ -1231,7 +1231,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Interface type defining resolveType with implementing type defining isTypeOf
      */
-    public function testAcceptsAnInterfaceTypeDefiningResolveTypeWithImplementingTypeDefiningIsTypeOf()
+    public function testAcceptsAnInterfaceTypeDefiningResolveTypeWithImplementingTypeDefiningIsTypeOf():void
     {
         $AnotherInterfaceType = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -1255,7 +1255,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Interface type with an incorrect type for resolveType
      */
-    public function testRejectsAnInterfaceTypeWithAnIncorrectTypeForResolveType()
+    public function testRejectsAnInterfaceTypeWithAnIncorrectTypeForResolveType():void
     {
         $type = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -1274,7 +1274,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Interface type not defining resolveType with implementing type not defining isTypeOf
      */
-    public function testRejectsAnInterfaceTypeNotDefiningResolveTypeWithImplementingTypeNotDefiningIsTypeOf()
+    public function testRejectsAnInterfaceTypeNotDefiningResolveTypeWithImplementingTypeNotDefiningIsTypeOf():void
     {
         $InterfaceTypeWithoutResolveType = new InterfaceType([
             'name' => 'InterfaceTypeWithoutResolveType',
@@ -1302,7 +1302,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a Union type defining resolveType
      */
-    public function testAcceptsAUnionTypeDefiningResolveType()
+    public function testAcceptsAUnionTypeDefiningResolveType():void
     {
         $schema = $this->schemaWithFieldType(new UnionType([
             'name' => 'SomeUnion',
@@ -1316,7 +1316,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a Union of Object types defining isTypeOf
      */
-    public function testAcceptsAUnionOfObjectTypesDefiningIsTypeOf()
+    public function testAcceptsAUnionOfObjectTypesDefiningIsTypeOf():void
     {
         $schema = $this->schemaWithFieldType(new UnionType([
             'name' => 'SomeUnion',
@@ -1329,7 +1329,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a Union type defining resolveType of Object types defining isTypeOf
      */
-    public function testAcceptsAUnionTypeDefiningResolveTypeOfObjectTypesDefiningIsTypeOf()
+    public function testAcceptsAUnionTypeDefiningResolveTypeOfObjectTypesDefiningIsTypeOf():void
     {
         $schema = $this->schemaWithFieldType(new UnionType([
             'name' => 'SomeUnion',
@@ -1343,7 +1343,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Union type with an incorrect type for resolveType
      */
-    public function testRejectsAUnionTypeWithAnIncorrectTypeForResolveType()
+    public function testRejectsAUnionTypeWithAnIncorrectTypeForResolveType():void
     {
         $schema = $this->schemaWithFieldType(new UnionType([
             'name' => 'SomeUnion',
@@ -1362,7 +1362,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Union type not defining resolveType of Object types not defining isTypeOf
      */
-    public function testRejectsAUnionTypeNotDefiningResolveTypeOfObjectTypesNotDefiningIsTypeOf()
+    public function testRejectsAUnionTypeNotDefiningResolveTypeOfObjectTypesNotDefiningIsTypeOf():void
     {
         $schema = $this->schemaWithFieldType(new UnionType([
             'name' => 'SomeUnion',
@@ -1383,7 +1383,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a Scalar type defining serialize
      */
-    public function testAcceptsAScalarTypeDefiningSerialize()
+    public function testAcceptsAScalarTypeDefiningSerialize():void
     {
         $schema = $this->schemaWithFieldType(new CustomScalarType([
             'name' => 'SomeScalar',
@@ -1396,7 +1396,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Scalar type not defining serialize
      */
-    public function testRejectsAScalarTypeNotDefiningSerialize()
+    public function testRejectsAScalarTypeNotDefiningSerialize():void
     {
         $schema = $this->schemaWithFieldType(new CustomScalarType([
             'name' => 'SomeScalar',
@@ -1414,7 +1414,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Scalar type defining serialize with an incorrect type
      */
-    public function testRejectsAScalarTypeDefiningSerializeWithAnIncorrectType()
+    public function testRejectsAScalarTypeDefiningSerializeWithAnIncorrectType():void
     {
         $schema = $this->schemaWithFieldType(new CustomScalarType([
             'name' => 'SomeScalar',
@@ -1434,7 +1434,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a Scalar type defining parseValue and parseLiteral
      */
-    public function testAcceptsAScalarTypeDefiningParseValueAndParseLiteral()
+    public function testAcceptsAScalarTypeDefiningParseValueAndParseLiteral():void
     {
         $schema = $this->schemaWithFieldType(new CustomScalarType([
             'name' => 'SomeScalar',
@@ -1452,7 +1452,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Scalar type defining parseValue but not parseLiteral
      */
-    public function testRejectsAScalarTypeDefiningParseValueButNotParseLiteral()
+    public function testRejectsAScalarTypeDefiningParseValueButNotParseLiteral():void
     {
         $schema = $this->schemaWithFieldType(new CustomScalarType([
             'name' => 'SomeScalar',
@@ -1472,7 +1472,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Scalar type defining parseLiteral but not parseValue
      */
-    public function testRejectsAScalarTypeDefiningParseLiteralButNotParseValue()
+    public function testRejectsAScalarTypeDefiningParseLiteralButNotParseValue():void
     {
         $schema = $this->schemaWithFieldType(new CustomScalarType([
             'name' => 'SomeScalar',
@@ -1493,7 +1493,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Scalar type defining parseValue and parseLiteral with an incorrect type
      */
-    public function testRejectsAScalarTypeDefiningParseValueAndParseLiteralWithAnIncorrectType()
+    public function testRejectsAScalarTypeDefiningParseValueAndParseLiteralWithAnIncorrectType():void
     {
         $schema = $this->schemaWithFieldType(new CustomScalarType([
             'name' => 'SomeScalar',
@@ -1517,7 +1517,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a well defined Enum type with empty value definition
      */
-    public function testAcceptsAWellDefinedEnumTypeWithEmptyValueDefinition()
+    public function testAcceptsAWellDefinedEnumTypeWithEmptyValueDefinition():void
     {
         $type = new EnumType([
             'name' => 'SomeEnum',
@@ -1535,7 +1535,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a well defined Enum type with internal value definition
      */
-    public function testAcceptsAWellDefinedEnumTypeWithInternalValueDefinition()
+    public function testAcceptsAWellDefinedEnumTypeWithInternalValueDefinition():void
     {
         $type = new EnumType([
             'name' => 'SomeEnum',
@@ -1550,7 +1550,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Enum type without values
      */
-    public function testRejectsAnEnumTypeWithoutValues()
+    public function testRejectsAnEnumTypeWithoutValues():void
     {
         $type = new EnumType([
             'name' => 'SomeEnum',
@@ -1567,7 +1567,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Enum type with empty values
      */
-    public function testRejectsAnEnumTypeWithEmptyValues()
+    public function testRejectsAnEnumTypeWithEmptyValues():void
     {
         $type = new EnumType([
             'name' => 'SomeEnum',
@@ -1585,7 +1585,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Enum type with incorrectly typed values
      */
-    public function testRejectsAnEnumTypeWithIncorrectlyTypedValues()
+    public function testRejectsAnEnumTypeWithIncorrectlyTypedValues():void
     {
         $type = new EnumType([
             'name' => 'SomeEnum',
@@ -1611,7 +1611,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    public function testDoesNotAllowIsDeprecatedWithoutDeprecationReasonOnEnum()
+    public function testDoesNotAllowIsDeprecatedWithoutDeprecationReasonOnEnum():void
     {
         $enum = new EnumType([
             'name' => 'SomeEnum',
@@ -1653,7 +1653,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an output type as an Object field type
      */
-    public function testAcceptsAnOutputTypeAsNnObjectFieldType()
+    public function testAcceptsAnOutputTypeAsNnObjectFieldType():void
     {
         foreach ($this->outputTypes as $type) {
             $schema = $this->schemaWithObjectFieldOfType($type);
@@ -1666,7 +1666,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an empty Object field type
      */
-    public function testRejectsAnEmptyObjectFieldType()
+    public function testRejectsAnEmptyObjectFieldType():void
     {
         $schema = $this->schemaWithObjectFieldOfType(null);
 
@@ -1681,7 +1681,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a non-output type as an Object field type
      */
-    public function testRejectsANonOutputTypeAsAnObjectFieldType()
+    public function testRejectsANonOutputTypeAsAnObjectFieldType():void
     {
         foreach ($this->notOutputTypes as $type) {
             $schema = $this->schemaWithObjectFieldOfType($type);
@@ -1703,7 +1703,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a lambda as an Object field resolver
      */
-    public function testAcceptsALambdaAsAnObjectFieldResolver()
+    public function testAcceptsALambdaAsAnObjectFieldResolver():void
     {
         $schema = $this->schemaWithObjectWithFieldResolver(function() {return [];});
         $schema->assertValid();
@@ -1712,7 +1712,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an empty Object field resolver
      */
-    public function testRejectsAnEmptyObjectFieldResolver()
+    public function testRejectsAnEmptyObjectFieldResolver():void
     {
         $schema = $this->schemaWithObjectWithFieldResolver([]);
 
@@ -1727,7 +1727,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a constant scalar value resolver
      */
-    public function testRejectsAConstantScalarValueResolver()
+    public function testRejectsAConstantScalarValueResolver():void
     {
         $schema = $this->schemaWithObjectWithFieldResolver(0);
         $this->setExpectedException(
@@ -1744,7 +1744,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object implementing an Interface
      */
-    public function testAcceptsAnObjectImplementingAnInterface()
+    public function testAcceptsAnObjectImplementingAnInterface():void
     {
         $AnotherInterfaceType = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -1760,7 +1760,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object implementing a non-Interface type
      */
-    public function testRejectsAnObjectImplementingANonInterfaceType()
+    public function testRejectsAnObjectImplementingANonInterfaceType():void
     {
         $notInterfaceTypes = $this->withModifiers([
             $this->SomeScalarType,
@@ -1790,7 +1790,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts a Union of an Object Type
      */
-    public function testAcceptsAUnionOfAnObjectType()
+    public function testAcceptsAUnionOfAnObjectType():void
     {
         $schema = $this->schemaWithUnionOfType($this->SomeObjectType);
         $schema->assertValid();
@@ -1799,7 +1799,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a Union of a non-Object type
      */
-    public function testRejectsAUnionOfANonObjectType()
+    public function testRejectsAUnionOfANonObjectType():void
     {
         $notObjectTypes = $this->withModifiers([
             $this->SomeScalarType,
@@ -1830,7 +1830,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an output type as an Interface field type
      */
-    public function testAcceptsAnOutputTypeAsAnInterfaceFieldType()
+    public function testAcceptsAnOutputTypeAsAnInterfaceFieldType():void
     {
         foreach ($this->outputTypes as $type) {
             $schema = $this->schemaWithInterfaceFieldOfType($type);
@@ -1841,7 +1841,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an empty Interface field type
      */
-    public function testRejectsAnEmptyInterfaceFieldType()
+    public function testRejectsAnEmptyInterfaceFieldType():void
     {
         $schema = $this->schemaWithInterfaceFieldOfType(null);
 
@@ -1856,7 +1856,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a non-output type as an Interface field type
      */
-    public function testRejectsANonOutputTypeAsAnInterfaceFieldType()
+    public function testRejectsANonOutputTypeAsAnInterfaceFieldType():void
     {
         foreach ($this->notOutputTypes as $type) {
             $schema = $this->schemaWithInterfaceFieldOfType($type);
@@ -1879,7 +1879,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an input type as a field arg type
      */
-    public function testAcceptsAnInputTypeAsAFieldArgType()
+    public function testAcceptsAnInputTypeAsAFieldArgType():void
     {
         foreach ($this->inputTypes as $type) {
             $schema = $this->schemaWithArgOfType($type);
@@ -1890,7 +1890,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an empty field arg type
      */
-    public function testRejectsAnEmptyFieldArgType()
+    public function testRejectsAnEmptyFieldArgType():void
     {
         $schema = $this->schemaWithArgOfType(null);
 
@@ -1901,7 +1901,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a non-input type as a field arg type
      */
-    public function testRejectsANonInputTypeAsAFieldArgType()
+    public function testRejectsANonInputTypeAsAFieldArgType():void
     {
         foreach ($this->notInputTypes as $type) {
             $schema = $this->schemaWithArgOfType($type);
@@ -1923,7 +1923,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an input type as an input field type
      */
-    public function testAcceptsAnInputTypeAsAnInputFieldType()
+    public function testAcceptsAnInputTypeAsAnInputFieldType():void
     {
         foreach ($this->inputTypes as $type) {
             $schema = $this->schemaWithInputFieldOfType($type);
@@ -1934,7 +1934,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an empty input field type
      */
-    public function testRejectsAnEmptyInputFieldType()
+    public function testRejectsAnEmptyInputFieldType():void
     {
         $schema = $this->schemaWithInputFieldOfType(null);
 
@@ -1948,7 +1948,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a non-input type as an input field type
      */
-    public function testRejectsANonInputTypeAsAnInputFieldType()
+    public function testRejectsANonInputTypeAsAnInputFieldType():void
     {
         foreach ($this->notInputTypes as $type) {
             $schema = $this->schemaWithInputFieldOfType($type);
@@ -1970,7 +1970,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an type as item type of list
      */
-    public function testAcceptsAnTypeAsItemTypeOfList()
+    public function testAcceptsAnTypeAsItemTypeOfList():void
     {
         $types = $this->withModifiers([
             GraphQlType::string(),
@@ -1994,7 +1994,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a non-type as item type of list
      */
-    public function testRejectsANonTypeAsItemTypeOfList()
+    public function testRejectsANonTypeAsItemTypeOfList():void
     {
         $notTypes = [
             [],
@@ -2025,7 +2025,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an type as nullable type of non-null
      */
-    public function testAcceptsAnTypeAsNullableTypeOfNonNull()
+    public function testAcceptsAnTypeAsNullableTypeOfNonNull():void
     {
         $nullableTypes = [
             GraphQlType::string(),
@@ -2052,7 +2052,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects a non-type as nullable type of non-null
      */
-    public function testRejectsANonTypeAsNullableTypeOfNonNull()
+    public function testRejectsANonTypeAsNullableTypeOfNonNull():void
     {
         $notNullableTypes = [
             GraphQlType::nonNull(GraphQlType::string()),
@@ -2082,7 +2082,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object which implements an Interface
      */
-    public function testAcceptsAnObjectWhichImplementsAnInterface()
+    public function testAcceptsAnObjectWhichImplementsAnInterface():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2118,7 +2118,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object which implements an Interface along with more fields
      */
-    public function testAcceptsAnObjectWhichImplementsAnInterfaceAlongWithMoreFields()
+    public function testAcceptsAnObjectWhichImplementsAnInterfaceAlongWithMoreFields():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2155,7 +2155,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object which implements an Interface field along with additional optional arguments
      */
-    public function testAcceptsAnObjectWhichImplementsAnInterfaceFieldAlongWithAdditionalOptionalArguments()
+    public function testAcceptsAnObjectWhichImplementsAnInterfaceFieldAlongWithAdditionalOptionalArguments():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2192,7 +2192,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object which implements an Interface field along with additional required arguments
      */
-    public function testRejectsAnObjectWhichImplementsAnInterfaceFieldAlongWithAdditionalRequiredArguments()
+    public function testRejectsAnObjectWhichImplementsAnInterfaceFieldAlongWithAdditionalRequiredArguments():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2235,7 +2235,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object missing an Interface field
      */
-    public function testRejectsAnObjectMissingAnInterfaceField()
+    public function testRejectsAnObjectMissingAnInterfaceField():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2271,7 +2271,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object with an incorrectly typed Interface field
      */
-    public function testRejectsAnObjectWithAnIncorrectlyTypedInterfaceField()
+    public function testRejectsAnObjectWithAnIncorrectlyTypedInterfaceField():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2301,7 +2301,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object with a differently typed Interface field
      */
-    public function testRejectsAnObjectWithADifferentlyTypedInterfaceField()
+    public function testRejectsAnObjectWithADifferentlyTypedInterfaceField():void
     {
         $TypeA = new ObjectType([
             'name' => 'A',
@@ -2347,7 +2347,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object with a subtyped Interface field (interface)
      */
-    public function testAcceptsAnObjectWithASubtypedInterfaceFieldForInterface()
+    public function testAcceptsAnObjectWithASubtypedInterfaceFieldForInterface():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2377,7 +2377,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object with a subtyped Interface field (union)
      */
-    public function testAcceptsAnObjectWithASubtypedInterfaceFieldForUnion()
+    public function testAcceptsAnObjectWithASubtypedInterfaceFieldForUnion():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2403,7 +2403,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object missing an Interface argument
      */
-    public function testRejectsAnObjectMissingAnInterfaceArgument()
+    public function testRejectsAnObjectMissingAnInterfaceArgument():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2442,7 +2442,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object with an incorrectly typed Interface argument
      */
-    public function testRejectsAnObjectWithAnIncorrectlyTypedInterfaceArgument()
+    public function testRejectsAnObjectWithAnIncorrectlyTypedInterfaceArgument():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2484,7 +2484,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object with an equivalently modified Interface field type
      */
-    public function testAcceptsAnObjectWithAnEquivalentlyModifiedInterfaceFieldType()
+    public function testAcceptsAnObjectWithAnEquivalentlyModifiedInterfaceFieldType():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2510,7 +2510,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object with a non-list Interface field list type
      */
-    public function testRejectsAnObjectWithANonListInterfaceFieldListType()
+    public function testRejectsAnObjectWithANonListInterfaceFieldListType():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2542,7 +2542,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object with a list Interface field non-list type
      */
-    public function testRejectsAnObjectWithAListInterfaceFieldNonListType()
+    public function testRejectsAnObjectWithAListInterfaceFieldNonListType():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2572,7 +2572,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts an Object with a subset non-null Interface field type
      */
-    public function testAcceptsAnObjectWithASubsetNonNullInterfaceFieldType()
+    public function testAcceptsAnObjectWithASubsetNonNullInterfaceFieldType():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2598,7 +2598,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects an Object with a superset nullable Interface field type
      */
-    public function testRejectsAnObjectWithASupersetNullableInterfaceFieldType()
+    public function testRejectsAnObjectWithASupersetNullableInterfaceFieldType():void
     {
         $AnotherInterface = new InterfaceType([
             'name' => 'AnotherInterface',
@@ -2630,7 +2630,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not allow isDeprecated without deprecationReason on field
      */
-    public function testDoesNotAllowIsDeprecatedWithoutDeprecationReasonOnField()
+    public function testDoesNotAllowIsDeprecatedWithoutDeprecationReasonOnField():void
     {
         $OldObject = new ObjectType([
             'name' => 'OldObject',
@@ -2650,7 +2650,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $schema->assertValid();
     }
 
-    public function testRejectsDifferentInstancesOfTheSameType()
+    public function testRejectsDifferentInstancesOfTheSameType():void
     {
         // Invalid: always creates new instance vs returning one from registry
         $typeLoader = function($name) use (&$typeLoader) {

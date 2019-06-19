@@ -99,7 +99,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
     /**
      * @it can introspect on union and intersection types
      */
-    public function testCanIntrospectOnUnionAndIntersectionTypes()
+    public function testCanIntrospectOnUnionAndIntersectionTypes():void
     {
 
         $ast = Parser::parse('
@@ -162,7 +162,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
     /**
      * @it executes using union types
      */
-    public function testExecutesUsingUnionTypes()
+    public function testExecutesUsingUnionTypes():void
     {
         // NOTE: This is an *invalid* query, but it should be an *executable* query.
         $ast = Parser::parse('
@@ -194,7 +194,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
     /**
      * @it executes union types with inline fragments
      */
-    public function testExecutesUnionTypesWithInlineFragments()
+    public function testExecutesUnionTypesWithInlineFragments():void
     {
         // This is the valid version of the query in the above test.
         $ast = Parser::parse('
@@ -231,7 +231,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
     /**
      * @it executes using interface types
      */
-    public function testExecutesUsingInterfaceTypes()
+    public function testExecutesUsingInterfaceTypes():void
     {
         // NOTE: This is an *invalid* query, but it should be an *executable* query.
         $ast = Parser::parse('
@@ -265,7 +265,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
     /**
      * @it executes interface types with inline fragments
      */
-    public function testExecutesInterfaceTypesWithInlineFragments()
+    public function testExecutesInterfaceTypesWithInlineFragments():void
     {
         // This is the valid version of the query in the above test.
         $ast = Parser::parse('
@@ -303,7 +303,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows fragment conditions to be abstract types
      */
-    public function testAllowsFragmentConditionsToBeAbstractTypes()
+    public function testAllowsFragmentConditionsToBeAbstractTypes():void
     {
         $ast = Parser::parse('
       {
@@ -360,7 +360,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
     /**
      * @it gets execution info in resolver
      */
-    public function testGetsExecutionInfoInResolver()
+    public function testGetsExecutionInfoInResolver():void
     {
         $encounteredContext = null;
         $encounteredSchema = null;

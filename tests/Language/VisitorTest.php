@@ -22,7 +22,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows editing a node both on enter and on leave
      */
-    public function testAllowsEditingNodeOnEnterAndOnLeave()
+    public function testAllowsEditingNodeOnEnterAndOnLeave():void
     {
         $ast = Parser::parse('{ a, b, c { a, b, c } }', true);
 
@@ -60,7 +60,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows editing the root node on enter and on leave
      */
-    public function testAllowsEditingRootNodeOnEnterAndLeave()
+    public function testAllowsEditingRootNodeOnEnterAndLeave():void
     {
         $ast = Parser::parse('{ a, b, c { a, b, c } }', [ 'noLocation' => true ]);
         $definitions = $ast->definitions;
@@ -93,7 +93,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows for editing on enter
      */
-    public function testAllowsForEditingOnEnter()
+    public function testAllowsForEditingOnEnter():void
     {
         $ast = Parser::parse('{ a, b, c { a, b, c } }', ['noLocation' => true]);
         $editedAst = Visitor::visit($ast, [
@@ -117,7 +117,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows for editing on leave
      */
-    public function testAllowsForEditingOnLeave()
+    public function testAllowsForEditingOnLeave():void
     {
         $ast = Parser::parse('{ a, b, c { a, b, c } }', ['noLocation' => true]);
         $editedAst = Visitor::visit($ast, [
@@ -142,7 +142,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it visits edited node
      */
-    public function testVisitsEditedNode()
+    public function testVisitsEditedNode():void
     {
         $addedField = new FieldNode(array(
             'name' => new NameNode(array(
@@ -175,7 +175,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows skipping a sub-tree
      */
-    public function testAllowsSkippingASubTree()
+    public function testAllowsSkippingASubTree():void
     {
         $visited = [];
         $ast = Parser::parse('{ a, b { x }, c }');
@@ -216,7 +216,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows early exit while visiting
      */
-    public function testAllowsEarlyExitWhileVisiting()
+    public function testAllowsEarlyExitWhileVisiting():void
     {
         $visited = [];
         $ast = Parser::parse('{ a, b { x }, c }');
@@ -255,7 +255,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows early exit while leaving
      */
-    public function testAllowsEarlyExitWhileLeaving()
+    public function testAllowsEarlyExitWhileLeaving():void
     {
         $visited = [];
 
@@ -294,7 +294,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows a named functions visitor API
      */
-    public function testAllowsANamedFunctionsVisitorAPI()
+    public function testAllowsANamedFunctionsVisitorAPI():void
     {
         $visited = [];
         $ast = Parser::parse('{ a, b { x }, c }');
@@ -330,7 +330,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it visits kitchen sink
      */
-    public function testVisitsKitchenSink()
+    public function testVisitsKitchenSink():void
     {
         $kitchenSink = \file_get_contents(__DIR__ . '/kitchen-sink.graphql');
         $ast = Parser::parse($kitchenSink);
@@ -663,7 +663,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows skipping a sub-tree
      */
-    public function testAllowsSkippingSubTree()
+    public function testAllowsSkippingSubTree():void
     {
         $visited = [];
 
@@ -706,7 +706,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows skipping different sub-trees
      */
-    public function testAllowsSkippingDifferentSubTrees()
+    public function testAllowsSkippingDifferentSubTrees():void
     {
         $visited = [];
 
@@ -815,7 +815,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows early exit from different points
      */
-    public function testAllowsEarlyExitFromDifferentPoints()
+    public function testAllowsEarlyExitFromDifferentPoints():void
     {
         $visited = [];
 
@@ -913,7 +913,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows early exit from leaving different points
      */
-    public function testAllowsEarlyExitFromLeavingDifferentPoints()
+    public function testAllowsEarlyExitFromLeavingDifferentPoints():void
     {
         $visited = [];
 
@@ -1122,7 +1122,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it maintains type info during visit
      */
-    public function testMaintainsTypeInfoDuringVisit()
+    public function testMaintainsTypeInfoDuringVisit():void
     {
         $visited = [];
 
@@ -1201,7 +1201,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it maintains type info during edit
      */
-    public function testMaintainsTypeInfoDuringEdit()
+    public function testMaintainsTypeInfoDuringEdit():void
     {
         $visited = [];
         $typeInfo = new TypeInfo(TestCase::getDefaultSchema());

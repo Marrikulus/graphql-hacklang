@@ -19,7 +19,7 @@ use GraphQL\Validator\DocumentValidator;
 
 class ServerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testDefaults()
+    public function testDefaults():void
     {
         $server = @new Server();
         $this->assertEquals(null, $server->getQueryType());
@@ -44,7 +44,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $server->getSchema();
     }
 
-    public function testCannotUseSetQueryTypeAndSetSchema()
+    public function testCannotUseSetQueryTypeAndSetSchema():void
     {
         $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -59,7 +59,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->setSchema($schema);
     }
 
-    public function testCannotUseSetMutationTypeAndSetSchema()
+    public function testCannotUseSetMutationTypeAndSetSchema():void
     {
         $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -74,7 +74,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->setSchema($schema);
     }
 
-    public function testCannotUseSetSubscriptionTypeAndSetSchema()
+    public function testCannotUseSetSubscriptionTypeAndSetSchema():void
     {
         $subscriptionType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -89,7 +89,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->setSchema($schema);
     }
 
-    public function testCannotUseSetDirectivesAndSetSchema()
+    public function testCannotUseSetDirectivesAndSetSchema():void
     {
         $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -104,7 +104,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->setSchema($schema);
     }
 
-    public function testCannotUseAddTypesAndSetSchema()
+    public function testCannotUseAddTypesAndSetSchema():void
     {
         $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -119,7 +119,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->setSchema($schema);
     }
 
-    public function testCannotUseSetTypeResolutionStrategyAndSetSchema()
+    public function testCannotUseSetTypeResolutionStrategyAndSetSchema():void
     {
         $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -134,7 +134,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->setSchema($schema);
     }
 
-    public function testCannotUseSetSchemaAndSetQueryType()
+    public function testCannotUseSetSchemaAndSetQueryType():void
     {
         $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -149,7 +149,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->setQueryType($queryType);
     }
 
-    public function testCannotUseSetSchemaAndSetMutationType()
+    public function testCannotUseSetSchemaAndSetMutationType():void
     {
         $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -164,7 +164,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->setMutationType($mutationType);
     }
 
-    public function testCannotUseSetSchemaAndSetSubscriptionType()
+    public function testCannotUseSetSchemaAndSetSubscriptionType():void
     {
         $subscriptionType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -179,7 +179,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->setSubscriptionType($subscriptionType);
     }
 
-    public function testCannotUseSetSchemaAndSetDirectives()
+    public function testCannotUseSetSchemaAndSetDirectives():void
     {
         $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -195,7 +195,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testCannotUseSetSchemaAndAddTypes()
+    public function testCannotUseSetSchemaAndAddTypes():void
     {
         $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -210,7 +210,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->addTypes([$queryType, $mutationType]);
     }
 
-    public function testCanUseSetSchemaAndAddEmptyTypes()
+    public function testCanUseSetSchemaAndAddEmptyTypes():void
     {
         $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -223,7 +223,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->addTypes([]);
     }
 
-    public function testCannotUseSetSchemaAndSetTypeResolutionStrategy()
+    public function testCannotUseSetSchemaAndSetTypeResolutionStrategy():void
     {
         $mutationType = $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -239,7 +239,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testCannotUseSetSchemaAndSetSchema()
+    public function testCannotUseSetSchemaAndSetSchema():void
     {
         $queryType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -254,7 +254,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->fail('Expected exception not thrown');
     }
 
-    public function testSchemaDefinition()
+    public function testSchemaDefinition():void
     {
         $mutationType = $queryType = $subscriptionType = new ObjectType(['name' => 'A', 'fields' => ['a' => GraphQlType::string()]]);
         $schema = new Schema([
@@ -299,7 +299,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($directives, $server->getDirectives());
     }
 
-    public function testParse()
+    public function testParse():void
     {
         $server = Server::create();
         $ast = $server->parse('{q}');
@@ -310,7 +310,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->fail('Expected exception not thrown');
     }
 
-    public function testValidate()
+    public function testValidate():void
     {
         $server = Server::create()
             ->setQueryType(new ObjectType(['name' => 'Q', 'fields' => ['a' => GraphQlType::string()]]));
@@ -326,7 +326,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $server->validate($ast);
     }
 
-    public function testPromiseAdapter()
+    public function testPromiseAdapter():void
     {
         $adapter1 = new SyncPromiseAdapter();
         $adapter2 = new SyncPromiseAdapter();
@@ -341,7 +341,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $server->setPromiseAdapter($adapter2);
     }
 
-    public function testValidationRules()
+    public function testValidationRules():void
     {
         $rules = [];
         $server = Server::create()
@@ -350,7 +350,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($rules, $server->getValidationRules());
     }
 
-    public function testExecuteQuery()
+    public function testExecuteQuery():void
     {
         $called = false;
         $queryType = new ObjectType([
@@ -408,7 +408,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['data' => ['field' => 'ok']], $result->toArray());
     }
 
-    public function testDebugPhpErrors()
+    public function testDebugPhpErrors():void
     {
         $queryType = new ObjectType([
             'name' => 'Query',
@@ -474,7 +474,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         \PHPUnit_Framework_Error_Notice::$enabled = $prevEnabled;
     }
 
-    public function testDebugExceptions()
+    public function testDebugExceptions():void
     {
         $queryType = new ObjectType([
             'name' => 'Query',
@@ -527,7 +527,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->assertArraySubset($expected, $result->toArray());
     }
 
-    public function testHandleRequest()
+    public function testHandleRequest():void
     {
         $mock = $this->getMockBuilder('GraphQL\Server')
             ->setMethods(['readInput', 'produceOutput'])

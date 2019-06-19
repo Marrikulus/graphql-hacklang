@@ -21,7 +21,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
     /**
      * @it isTypeOf used to resolve runtime type for Interface
      */
-    public function testIsTypeOfUsedToResolveRuntimeTypeForInterface()
+    public function testIsTypeOfUsedToResolveRuntimeTypeForInterface():void
     {
         $PetType = new InterfaceType([
             'name' => 'Pet',
@@ -107,7 +107,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
     /**
      * @it isTypeOf can be rejected
      */
-    public function testIsTypeOfCanBeRejected()
+    public function testIsTypeOfCanBeRejected():void
     {
 
         $PetType = new InterfaceType([
@@ -203,7 +203,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
     /**
      * @it isTypeOf used to resolve runtime type for Union
      */
-    public function testIsTypeOfUsedToResolveRuntimeTypeForUnion()
+    public function testIsTypeOfUsedToResolveRuntimeTypeForUnion():void
     {
 
         $DogType = new ObjectType([
@@ -281,7 +281,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
     /**
      * @it resolveType on Interface yields useful error
      */
-    public function testResolveTypeOnInterfaceYieldsUsefulError()
+    public function testResolveTypeOnInterfaceYieldsUsefulError():void
     {
         $PetType = new InterfaceType([
             'name' => 'Pet',
@@ -387,7 +387,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
     /**
      * @it resolveType on Union yields useful error
      */
-    public function testResolveTypeOnUnionYieldsUsefulError()
+    public function testResolveTypeOnUnionYieldsUsefulError():void
     {
 
         $HumanType = new ObjectType([
@@ -488,7 +488,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
     /**
      * @it resolveType allows resolving with type name
      */
-    public function testResolveTypeAllowsResolvingWithTypeName()
+    public function testResolveTypeAllowsResolvingWithTypeName():void
     {
         $PetType = new InterfaceType([
             'name' => 'Pet',
@@ -573,7 +573,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
     /**
      * @it resolveType can be caught
      */
-    public function testResolveTypeCanBeCaught()
+    public function testResolveTypeCanBeCaught():void
     {
 
         $PetType = new InterfaceType([

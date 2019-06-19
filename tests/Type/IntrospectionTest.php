@@ -20,7 +20,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it executes an introspection query
      */
-    public function testExecutesAnIntrospectionQuery()
+    public function testExecutesAnIntrospectionQuery():void
     {
         $emptySchema = new Schema([
             'query' => new ObjectType([
@@ -1072,7 +1072,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it introspects on input object
      */
-    public function testIntrospectsOnInputObject()
+    public function testIntrospectsOnInputObject():void
     {
         $TestInputObject = new InputObjectType([
             'name' => 'TestInputObject',
@@ -1207,7 +1207,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it identifies deprecated fields
      */
-    public function testIdentifiesDeprecatedFields()
+    public function testIdentifiesDeprecatedFields():void
     {
 
         $TestType = new ObjectType([
@@ -1262,7 +1262,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it respects the includeDeprecated parameter for fields
      */
-    public function testRespectsTheIncludeDeprecatedParameterForFields()
+    public function testRespectsTheIncludeDeprecatedParameterForFields():void
     {
         $TestType = new ObjectType([
             'name' => 'TestType',
@@ -1327,7 +1327,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it identifies deprecated enum values
      */
-    public function testIdentifiesDeprecatedEnumValues()
+    public function testIdentifiesDeprecatedEnumValues():void
     {
         $TestEnum = new EnumType([
             'name' => 'TestEnum',
@@ -1391,7 +1391,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it respects the includeDeprecated parameter for enum values
      */
-    public function testRespectsTheIncludeDeprecatedParameterForEnumValues()
+    public function testRespectsTheIncludeDeprecatedParameterForEnumValues():void
     {
         $TestEnum = new EnumType([
             'name' => 'TestEnum',
@@ -1486,7 +1486,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it exposes descriptions on types and fields
      */
-    public function testExposesDescriptionsOnTypesAndFields()
+    public function testExposesDescriptionsOnTypesAndFields():void
     {
         $QueryRoot = new ObjectType([
             'name' => 'QueryRoot',
@@ -1546,7 +1546,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it exposes descriptions on enums
      */
-    public function testExposesDescriptionsOnEnums()
+    public function testExposesDescriptionsOnEnums():void
     {
         $QueryRoot = new ObjectType([
             'name' => 'QueryRoot',

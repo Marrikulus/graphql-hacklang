@@ -25,7 +25,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         Warning::enable(Warning::WARNING_CONFIG_DEPRECATION);
     }
 
-    public function testToggling()
+    public function testToggling():void
     {
         // Disabled by default
         $this->assertEquals(false, Config::isValidationEnabled());
@@ -45,7 +45,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         Config::validate(['test' => []], ['test' => Config::STRING]);
     }
 
-    public function testValidateString()
+    public function testValidateString():void
     {
         $this->expectValidationPasses(
             [
@@ -65,7 +65,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testArray()
+    public function testArray():void
     {
         $this->expectValidationPasses(
             ['test' => [
@@ -156,7 +156,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testRequired()
+    public function testRequired():void
     {
         $this->expectValidationPasses(
             ['required' => ''],
@@ -226,7 +226,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testKeyAsName()
+    public function testKeyAsName():void
     {
         $this->expectValidationPasses(
             ['test' => [
@@ -261,7 +261,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testMaybeThunk()
+    public function testMaybeThunk():void
     {
         $this->expectValidationPasses(
             [
@@ -311,7 +311,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testMaybeType()
+    public function testMaybeType():void
     {
         $type = new ObjectType([
             'name' => 'Test',
@@ -351,7 +351,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testMaybeName()
+    public function testMaybeName():void
     {
         $this->expectValidationPasses(
             ['test' => [
@@ -561,7 +561,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testErrorMessageContainsTypeName()
+    public function testErrorMessageContainsTypeName():void
     {
         $this->expectValidationThrows(
             [
@@ -576,7 +576,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testValidateField()
+    public function testValidateField():void
     {
         Config::enableValidation();
 
@@ -633,7 +633,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testAllowCustomOptions()
+    public function testAllowCustomOptions():void
     {
         // Disabled by default when validation is enabled
         Config::enableValidation(true);

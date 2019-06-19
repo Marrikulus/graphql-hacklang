@@ -13,7 +13,7 @@ class StarWarsIntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Allows querying the schema for types
      */
-    public function testAllowsQueryingTheSchemaForTypes()
+    public function testAllowsQueryingTheSchemaForTypes():void
     {
         $query = '
         query IntrospectionTypeQuery {
@@ -54,7 +54,7 @@ class StarWarsIntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Allows querying the schema for query type
      */
-    public function testAllowsQueryingTheSchemaForQueryType()
+    public function testAllowsQueryingTheSchemaForQueryType():void
     {
         $query = '
         query IntrospectionQueryTypeQuery {
@@ -78,7 +78,7 @@ class StarWarsIntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Allows querying the schema for a specific type
      */
-    public function testAllowsQueryingTheSchemaForASpecificType()
+    public function testAllowsQueryingTheSchemaForASpecificType():void
     {
         $query = '
         query IntrospectionDroidTypeQuery {
@@ -98,7 +98,7 @@ class StarWarsIntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Allows querying the schema for an object kind
      */
-    public function testAllowsQueryingForAnObjectKind()
+    public function testAllowsQueryingForAnObjectKind():void
     {
         $query = '
         query IntrospectionDroidKindQuery {
@@ -120,7 +120,7 @@ class StarWarsIntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Allows querying the schema for an interface kind
      */
-    public function testAllowsQueryingForInterfaceKind()
+    public function testAllowsQueryingForInterfaceKind():void
     {
         $query = '
         query IntrospectionCharacterKindQuery {
@@ -142,7 +142,7 @@ class StarWarsIntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Allows querying the schema for object fields
      */
-    public function testAllowsQueryingForObjectFields()
+    public function testAllowsQueryingForObjectFields():void
     {
         $query = '
         query IntrospectionDroidFieldsQuery {
@@ -213,7 +213,7 @@ class StarWarsIntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Allows querying the schema for nested object fields
      */
-    public function testAllowsQueryingTheSchemaForNestedObjectFields()
+    public function testAllowsQueryingTheSchemaForNestedObjectFields():void
     {
         $query = '
         query IntrospectionDroidNestedFieldsQuery {
@@ -303,7 +303,7 @@ class StarWarsIntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Allows querying the schema for field args
      */
-    public function testAllowsQueryingTheSchemaForFieldArgs()
+    public function testAllowsQueryingTheSchemaForFieldArgs():void
     {
         $query = '
         query IntrospectionQueryTypeQuery {
@@ -397,7 +397,7 @@ class StarWarsIntrospectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Allows querying the schema for documentation
      */
-    public function testAllowsQueryingTheSchemaForDocumentation()
+    public function testAllowsQueryingTheSchemaForDocumentation():void
     {
         $query = '
         query IntrospectionDroidDescriptionQuery {

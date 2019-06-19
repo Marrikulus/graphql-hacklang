@@ -27,7 +27,7 @@ class BuildSchemaTest extends \PHPUnit_Framework_TestCase
     /**
      * @it can use built schema for limited execution
      */
-    public function testUseBuiltSchemaForLimitedExecution()
+    public function testUseBuiltSchemaForLimitedExecution():void
     {
         $schema = BuildSchema::buildAST(Parser::parse('
             schema { query: Query }
@@ -43,7 +43,7 @@ class BuildSchemaTest extends \PHPUnit_Framework_TestCase
     /**
      * @it can build a schema directly from the source
      */
-    public function testBuildSchemaDirectlyFromSource()
+    public function testBuildSchemaDirectlyFromSource():void
     {
         $schema = BuildSchema::build("
             schema { query: Query }
@@ -67,7 +67,7 @@ class BuildSchemaTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Simple Type
      */
-    public function testSimpleType()
+    public function testSimpleType():void
     {
         $body = '
 schema {
@@ -89,7 +89,7 @@ type HelloScalars {
     /**
      * @it With directives
      */
-    public function testWithDirectives()
+    public function testWithDirectives():void
     {
         $body = '
 schema {
@@ -109,7 +109,7 @@ type Hello {
     /**
      * @it Supports descriptions
      */
-    public function testSupportsDescriptions()
+    public function testSupportsDescriptions():void
     {
         $body = '
 schema {
@@ -144,7 +144,7 @@ type Hello {
     /**
      * @it Maintains @skip & @include
      */
-    public function testMaintainsSkipAndInclude()
+    public function testMaintainsSkipAndInclude():void
     {
         $body = '
 schema {
@@ -165,7 +165,7 @@ type Hello {
     /**
      * @it Overriding directives excludes specified
      */
-    public function testOverridingDirectivesExcludesSpecified()
+    public function testOverridingDirectivesExcludesSpecified():void
     {
         $body = '
 schema {
@@ -190,7 +190,7 @@ type Hello {
     /**
      * @it Type modifiers
      */
-    public function testTypeModifiers()
+    public function testTypeModifiers():void
     {
         $body = '
 schema {
@@ -212,7 +212,7 @@ type HelloScalars {
     /**
      * @it Recursive type
      */
-    public function testRecursiveType()
+    public function testRecursiveType():void
     {
         $body = '
 schema {
@@ -231,7 +231,7 @@ type Recurse {
     /**
      * @it Two types circular
      */
-    public function testTwoTypesCircular()
+    public function testTwoTypesCircular():void
     {
         $body = '
 schema {
@@ -255,7 +255,7 @@ type TypeTwo {
     /**
      * @it Single argument field
      */
-    public function testSingleArgumentField()
+    public function testSingleArgumentField():void
     {
         $body = '
 schema {
@@ -277,7 +277,7 @@ type Hello {
     /**
      * @it Simple type with multiple arguments
      */
-    public function testSimpleTypeWithMultipleArguments()
+    public function testSimpleTypeWithMultipleArguments():void
     {
         $body = '
 schema {
@@ -295,7 +295,7 @@ type Hello {
     /**
      * @it Simple type with interface
      */
-    public function testSimpleTypeWithInterface()
+    public function testSimpleTypeWithInterface():void
     {
         $body = '
 schema {
@@ -317,7 +317,7 @@ interface WorldInterface {
     /**
      * @it Simple output enum
      */
-    public function testSimpleOutputEnum()
+    public function testSimpleOutputEnum():void
     {
         $body = '
 schema {
@@ -339,7 +339,7 @@ type OutputEnumRoot {
     /**
      * @it Multiple value enum
      */
-    public function testMultipleValueEnum()
+    public function testMultipleValueEnum():void
     {
         $body = '
 schema {
@@ -362,7 +362,7 @@ type OutputEnumRoot {
     /**
      * @it Simple Union
      */
-    public function testSimpleUnion()
+    public function testSimpleUnion():void
     {
         $body = '
 schema {
@@ -386,7 +386,7 @@ type World {
     /**
      * @it Multiple Union
      */
-    public function testMultipleUnion()
+    public function testMultipleUnion():void
     {
         $body = '
 schema {
@@ -414,7 +414,7 @@ type WorldTwo {
     /**
      * @it CustomScalar
      */
-    public function testCustomScalar()
+    public function testCustomScalar():void
     {
         $body = '
 schema {
@@ -434,7 +434,7 @@ type Root {
     /**
      * @it CustomScalar
      */
-    public function testInputObject()
+    public function testInputObject():void
     {
         $body = '
 schema {
@@ -456,7 +456,7 @@ type Root {
     /**
      * @it Simple argument field with default
      */
-    public function testSimpleArgumentFieldWithDefault()
+    public function testSimpleArgumentFieldWithDefault():void
     {
         $body = '
 schema {
@@ -474,7 +474,7 @@ type Hello {
     /**
      * @it Simple type with mutation
      */
-    public function testSimpleTypeWithMutation()
+    public function testSimpleTypeWithMutation():void
     {
         $body = '
 schema {
@@ -499,7 +499,7 @@ type Mutation {
     /**
      * @it Simple type with subscription
      */
-    public function testSimpleTypeWithSubscription()
+    public function testSimpleTypeWithSubscription():void
     {
         $body = '
 schema {
@@ -524,7 +524,7 @@ type Subscription {
     /**
      * @it Unreferenced type implementing referenced interface
      */
-    public function testUnreferencedTypeImplementingReferencedInterface()
+    public function testUnreferencedTypeImplementingReferencedInterface():void
     {
         $body = '
 type Concrete implements Iface {
@@ -546,7 +546,7 @@ type Query {
     /**
      * @it Unreferenced type implementing referenced union
      */
-    public function testUnreferencedTypeImplementingReferencedUnion()
+    public function testUnreferencedTypeImplementingReferencedUnion():void
     {
         $body = '
 type Concrete {
@@ -566,7 +566,7 @@ union Union = Concrete
     /**
      * @it Supports @deprecated
      */
-    public function testSupportsDeprecated()
+    public function testSupportsDeprecated():void
     {
         $body = '
 enum MyEnum {
@@ -612,7 +612,7 @@ type Query {
     /**
      * @it Correctly assign AST nodes
      */
-    public function testCorrectlyAssignASTNodes()
+    public function testCorrectlyAssignASTNodes():void
     {
 
         $schema = BuildSchema::build('
@@ -681,7 +681,7 @@ type Query {
     /**
      * @it Requires a schema definition or Query type
      */
-    public function testRequiresSchemaDefinitionOrQueryType()
+    public function testRequiresSchemaDefinitionOrQueryType():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Must provide schema definition with query type or a type named Query.');
         $body = '
@@ -696,7 +696,7 @@ type Hello {
     /**
      * @it Allows only a single schema definition
      */
-    public function testAllowsOnlySingleSchemaDefinition()
+    public function testAllowsOnlySingleSchemaDefinition():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Must provide only one schema definition.');
         $body = '
@@ -719,7 +719,7 @@ type Hello {
     /**
      * @it Requires a query type
      */
-    public function testRequiresQueryType()
+    public function testRequiresQueryType():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Must provide schema definition with query type or a type named Query.');
         $body = '
@@ -738,7 +738,7 @@ type Hello {
     /**
      * @it Allows only a single query type
      */
-    public function testAllowsOnlySingleQueryType()
+    public function testAllowsOnlySingleQueryType():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Must provide only one query type in schema.');
         $body = '
@@ -762,7 +762,7 @@ type Yellow {
     /**
      * @it Allows only a single mutation type
      */
-    public function testAllowsOnlySingleMutationType()
+    public function testAllowsOnlySingleMutationType():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Must provide only one mutation type in schema.');
         $body = '
@@ -787,7 +787,7 @@ type Yellow {
     /**
      * @it Allows only a single subscription type
      */
-    public function testAllowsOnlySingleSubscriptionType()
+    public function testAllowsOnlySingleSubscriptionType():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Must provide only one subscription type in schema.');
         $body = '
@@ -812,7 +812,7 @@ type Yellow {
     /**
      * @it Unknown type referenced
      */
-    public function testUnknownTypeReferenced()
+    public function testUnknownTypeReferenced():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Type "Bar" not found in document.');
         $body = '
@@ -832,7 +832,7 @@ type Hello {
     /**
      * @it Unknown type in interface list
      */
-    public function testUnknownTypeInInterfaceList()
+    public function testUnknownTypeInInterfaceList():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Type "Bar" not found in document.');
         $body = '
@@ -850,7 +850,7 @@ type Hello implements Bar { }
     /**
      * @it Unknown type in union list
      */
-    public function testUnknownTypeInUnionList()
+    public function testUnknownTypeInUnionList():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Type "Bar" not found in document.');
         $body = '
@@ -869,7 +869,7 @@ type Hello { testUnion: TestUnion }
     /**
      * @it Unknown query type
      */
-    public function testUnknownQueryType()
+    public function testUnknownQueryType():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Specified query type "Wat" not found in document.');
         $body = '
@@ -888,7 +888,7 @@ type Hello {
     /**
      * @it Unknown mutation type
      */
-    public function testUnknownMutationType()
+    public function testUnknownMutationType():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Specified mutation type "Wat" not found in document.');
         $body = '
@@ -908,7 +908,7 @@ type Hello {
     /**
      * @it Unknown subscription type
      */
-    public function testUnknownSubscriptionType()
+    public function testUnknownSubscriptionType():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Specified subscription type "Awesome" not found in document.');
         $body = '
@@ -933,7 +933,7 @@ type Wat {
     /**
      * @it Does not consider operation names
      */
-    public function testDoesNotConsiderOperationNames()
+    public function testDoesNotConsiderOperationNames():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Specified query type "Foo" not found in document.');
         $body = '
@@ -950,7 +950,7 @@ query Foo { field }
     /**
      * @it Does not consider fragment names
      */
-    public function testDoesNotConsiderFragmentNames()
+    public function testDoesNotConsiderFragmentNames():void
     {
         $this->setExpectedException('GraphQL\Error\Error', 'Specified query type "Foo" not found in document.');
         $body = '
@@ -967,7 +967,7 @@ fragment Foo on Type { field }
     /**
      * @it Forbids duplicate type definitions
      */
-    public function testForbidsDuplicateTypeDefinitions()
+    public function testForbidsDuplicateTypeDefinitions():void
     {
         $body = '
 schema {
@@ -988,7 +988,7 @@ type Repeated {
         BuildSchema::buildAST($doc);
     }
 
-    public function testSupportsTypeConfigDecorator()
+    public function testSupportsTypeConfigDecorator():void
     {
         $body = '
 schema {
@@ -1064,7 +1064,7 @@ interface Hello {
         $this->assertEquals('My description of Hello', $schema->getType('Hello')->description);
     }
 
-    public function testCreatesTypesLazily()
+    public function testCreatesTypesLazily():void
     {
         $body = '
 schema {
@@ -1116,7 +1116,7 @@ type World implements Hello {
         $this->assertArrayHasKey('World', $types);
     }
 
-    public function testScalarDescription()
+    public function testScalarDescription():void
     {
         $schemaDef = '
 # An ISO-8601 encoded UTC date string.

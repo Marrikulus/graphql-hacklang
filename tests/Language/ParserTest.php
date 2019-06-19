@@ -58,7 +58,7 @@ fragment MissingOn Type
     /**
      * @it parse provides useful error when using source
      */
-    public function testParseProvidesUsefulErrorWhenUsingSource()
+    public function testParseProvidesUsefulErrorWhenUsingSource():void
     {
         $this->setExpectedException(SyntaxError::class, "Syntax Error MyQuery.graphql (1:6) Expected {, found <EOF>\n\n1: query\n        ^\n");
         Parser::parseSource(new Source('query', 'MyQuery.graphql'));
@@ -67,7 +67,7 @@ fragment MissingOn Type
     /**
      * @it parses variable inline values
      */
-    public function testParsesVariableInlineValues()
+    public function testParsesVariableInlineValues():void
     {
         // Following line should not throw:
         Parser::parseSource(new Source('{ field(complex: { a: { b: [ $var ] } }) }'));
@@ -76,7 +76,7 @@ fragment MissingOn Type
     /**
      * @it parses constant default values
      */
-    public function testParsesConstantDefaultValues()
+    public function testParsesConstantDefaultValues():void
     {
         $this->setExpectedException(SyntaxError::class, "Syntax Error GraphQL (1:37) Unexpected $\n\n" . '1: query Foo($x: Complex = { a: { b: [ $var ] } }) { field }' . "\n                                       ^\n");
         Parser::parse('query Foo($x: Complex = { a: { b: [ $var ] } }) { field }');
@@ -85,7 +85,7 @@ fragment MissingOn Type
     /**
      * @it does not accept fragments spread of "on"
      */
-    public function testDoesNotAcceptFragmentsNamedOn()
+    public function testDoesNotAcceptFragmentsNamedOn():void
     {
         $this->setExpectedException('GraphQL\Error\SyntaxError', 'Syntax Error GraphQL (1:10) Unexpected Name "on"');
         Parser::parse('fragment on on on { on }');
@@ -94,7 +94,7 @@ fragment MissingOn Type
     /**
      * @it does not accept fragments spread of "on"
      */
-    public function testDoesNotAcceptFragmentSpreadOfOn()
+    public function testDoesNotAcceptFragmentSpreadOfOn():void
     {
         $this->setExpectedException('GraphQL\Error\SyntaxError', 'Syntax Error GraphQL (1:9) Expected Name, found }');
         Parser::parse('{ ...on }');
@@ -103,7 +103,7 @@ fragment MissingOn Type
     /**
      * @it parses multi-byte characters
      */
-    public function testParsesMultiByteCharacters()
+    public function testParsesMultiByteCharacters():void
     {
         // Note: \u0A0A could be naively interpretted as two line-feed chars.
 
@@ -141,7 +141,7 @@ HEREDOC;
     /**
      * @it parses kitchen sink
      */
-    public function testParsesKitchenSink()
+    public function testParsesKitchenSink():void
     {
         // Following should not throw:
         $kitchenSink = \file_get_contents(__DIR__ . '/kitchen-sink.graphql');
@@ -152,7 +152,7 @@ HEREDOC;
     /**
      * allows non-keywords anywhere a Name is allowed
      */
-    public function testAllowsNonKeywordsAnywhereANameIsAllowed()
+    public function testAllowsNonKeywordsAnywhereANameIsAllowed():void
     {
         $nonKeywords = [
             'on',
@@ -185,7 +185,7 @@ fragment $fragmentName on Type {
     /**
      * @it parses anonymous mutation operations
      */
-    public function testParsessAnonymousMutationOperations()
+    public function testParsessAnonymousMutationOperations():void
     {
         // Should not throw:
         Parser::parse('
@@ -198,7 +198,7 @@ fragment $fragmentName on Type {
     /**
      * @it parses anonymous subscription operations
      */
-    public function testParsesAnonymousSubscriptionOperations()
+    public function testParsesAnonymousSubscriptionOperations():void
     {
         // Should not throw:
         Parser::parse('
@@ -211,7 +211,7 @@ fragment $fragmentName on Type {
     /**
      * @it parses named mutation operations
      */
-    public function testParsesNamedMutationOperations()
+    public function testParsesNamedMutationOperations():void
     {
         // Should not throw:
         Parser::parse('
@@ -224,7 +224,7 @@ fragment $fragmentName on Type {
     /**
      * @it parses named subscription operations
      */
-    public function testParsesNamedSubscriptionOperations()
+    public function testParsesNamedSubscriptionOperations():void
     {
         Parser::parse('
           subscription Foo {
@@ -236,7 +236,7 @@ fragment $fragmentName on Type {
     /**
      * @it creates ast
      */
-    public function testParseCreatesAst()
+    public function testParseCreatesAst():void
     {
         $source = new Source('{
   node(id: 4) {
@@ -340,7 +340,7 @@ fragment $fragmentName on Type {
     /**
      * @it allows parsing without source location information
      */
-    public function testAllowsParsingWithoutSourceLocationInformation()
+    public function testAllowsParsingWithoutSourceLocationInformation():void
     {
         $source = new Source('{ id }');
         $result = Parser::parseSource($source, ['noLocation' => true]);
@@ -351,7 +351,7 @@ fragment $fragmentName on Type {
     /**
      * @it contains location information that only stringifys start/end
      */
-    public function testConvertToArray()
+    public function testConvertToArray():void
     {
         $source = new Source('{ id }');
         $result = Parser::parseSource($source);
@@ -361,7 +361,7 @@ fragment $fragmentName on Type {
     /**
      * @it contains references to source
      */
-    public function testContainsReferencesToSource()
+    public function testContainsReferencesToSource():void
     {
         $source = new Source('{ id }');
         $result = Parser::parseSource($source);
@@ -371,7 +371,7 @@ fragment $fragmentName on Type {
     /**
      * @it contains references to start and end tokens
      */
-    public function testContainsReferencesToStartAndEndTokens()
+    public function testContainsReferencesToStartAndEndTokens():void
     {
         $source = new Source('{ id }');
         $result = Parser::parseSource($source);
@@ -384,7 +384,7 @@ fragment $fragmentName on Type {
     /**
      * @it parses null value
      */
-    public function testParsesNullValues()
+    public function testParsesNullValues():void
     {
         $this->assertEquals([
             'kind' => NodeKind::NULL,
@@ -395,7 +395,7 @@ fragment $fragmentName on Type {
     /**
      * @it parses list values
      */
-    public function testParsesListValues()
+    public function testParsesListValues():void
     {
         $this->assertEquals([
             'kind' => NodeKind::LST,
@@ -420,7 +420,7 @@ fragment $fragmentName on Type {
     /**
      * @it parses well known types
      */
-    public function testParsesWellKnownTypes()
+    public function testParsesWellKnownTypes():void
     {
         $this->assertEquals([
             'kind' => NodeKind::NAMED_TYPE,
@@ -436,7 +436,7 @@ fragment $fragmentName on Type {
     /**
      * @it parses custom types
      */
-    public function testParsesCustomTypes()
+    public function testParsesCustomTypes():void
     {
         $this->assertEquals([
             'kind' => NodeKind::NAMED_TYPE,
@@ -452,7 +452,7 @@ fragment $fragmentName on Type {
     /**
      * @it parses list types
      */
-    public function testParsesListTypes()
+    public function testParsesListTypes():void
     {
         $this->assertEquals([
             'kind' => NodeKind::LIST_TYPE,
@@ -472,7 +472,7 @@ fragment $fragmentName on Type {
     /**
      * @it parses non-null types
      */
-    public function testParsesNonNullTypes()
+    public function testParsesNonNullTypes():void
     {
         $this->assertEquals([
             'kind' => NodeKind::NON_NULL_TYPE,
@@ -492,7 +492,7 @@ fragment $fragmentName on Type {
     /**
      * @it parses nested types
      */
-    public function testParsesNestedTypes()
+    public function testParsesNestedTypes():void
     {
         $this->assertEquals([
             'kind' => NodeKind::LIST_TYPE,

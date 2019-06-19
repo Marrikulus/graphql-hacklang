@@ -25,7 +25,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it rejects empty input
      */
-    public function testRejectsEmptyInput()
+    public function testRejectsEmptyInput():void
     {
         $this->assertEquals(Utils::undefined(), AST::valueFromAST(null, GraphQlType::boolean()));
     }
@@ -33,7 +33,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts according to input coercion rules
      */
-    public function testConvertsAccordingToInputCoercionRules()
+    public function testConvertsAccordingToInputCoercionRules():void
     {
         $this->runTestCase(GraphQlType::boolean(), 'true', true);
         $this->runTestCase(GraphQlType::boolean(), 'false', false);
@@ -48,7 +48,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not convert when input coercion rules reject a value
      */
-    public function testDoesNotConvertWhenInputCoercionRulesRejectAValue()
+    public function testDoesNotConvertWhenInputCoercionRulesRejectAValue():void
     {
         $undefined = Utils::undefined();
 
@@ -65,7 +65,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts enum values according to input coercion rules
      */
-    public function testConvertsEnumValuesAccordingToInputCoercionRules()
+    public function testConvertsEnumValuesAccordingToInputCoercionRules():void
     {
         $testEnum = new EnumType([
             'name' => 'TestColor',
@@ -88,7 +88,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it coerces to null unless non-null
      */
-    public function testCoercesToNullUnlessNonNull()
+    public function testCoercesToNullUnlessNonNull():void
     {
         $this->runTestCase(GraphQlType::boolean(), 'null', null);
         $this->runTestCase(GraphQlType::nonNull(GraphQlType::boolean()), 'null', Utils::undefined());
@@ -97,7 +97,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it coerces lists of values
      */
-    public function testCoercesListsOfValues()
+    public function testCoercesListsOfValues():void
     {
         $listOfBool = GraphQlType::listOf(GraphQlType::boolean());
         $undefined = Utils::undefined();
@@ -114,7 +114,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it coerces non-null lists of values
      */
-    public function testCoercesNonNullListsOfValues()
+    public function testCoercesNonNullListsOfValues():void
     {
         $nonNullListOfBool = GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::boolean()));
         $undefined = Utils::undefined();
@@ -130,7 +130,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it coerces lists of non-null values
      */
-    public function testCoercesListsOfNonNullValues()
+    public function testCoercesListsOfNonNullValues():void
     {
         $listOfNonNullBool = GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::boolean()));
         $undefined = Utils::undefined();
@@ -146,7 +146,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it coerces non-null lists of non-null values
      */
-    public function testCoercesNonNullListsOfNonNullValues()
+    public function testCoercesNonNullListsOfNonNullValues():void
     {
         $nonNullListOfNonNullBool = GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::boolean())));
         $undefined = Utils::undefined();
@@ -176,7 +176,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it coerces input objects according to input coercion rules
      */
-    public function testCoercesInputObjectsAccordingToInputCoercionRules()
+    public function testCoercesInputObjectsAccordingToInputCoercionRules():void
     {
         $testInputObj = $this->inputObj();
         $undefined = Utils::undefined();
@@ -194,7 +194,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it accepts variable values assuming already coerced
      */
-    public function testAcceptsVariableValuesAssumingAlreadyCoerced()
+    public function testAcceptsVariableValuesAssumingAlreadyCoerced():void
     {
         $this->runTestCaseWithVars([], GraphQlType::boolean(), '$var', Utils::undefined());
         $this->runTestCaseWithVars([ 'var' => true ], GraphQlType::boolean(), '$var', true);
@@ -204,7 +204,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it asserts variables are provided as items in lists
      */
-    public function testAssertsVariablesAreProvidedAsItemsInLists()
+    public function testAssertsVariablesAreProvidedAsItemsInLists():void
     {
         $listOfBool = GraphQlType::listOf(GraphQlType::boolean());
         $listOfNonNullBool = GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::boolean()));
@@ -221,7 +221,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
     /**
      * @it omits input object fields for unprovided variables
      */
-    public function testOmitsInputObjectFieldsForUnprovidedVariables()
+    public function testOmitsInputObjectFieldsForUnprovidedVariables():void
     {
         $testInputObj = $this->inputObj();
 

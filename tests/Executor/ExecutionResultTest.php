@@ -6,14 +6,14 @@ use GraphQL\Executor\ExecutionResult;
 
 class ExecutionResultTest extends \PHPUnit_Framework_TestCase
 {
-    public function testToArrayWithoutExtensions()
+    public function testToArrayWithoutExtensions():void
     {
         $executionResult = new ExecutionResult();
 
         $this->assertEquals([], $executionResult->toArray());
     }
 
-    public function testToArrayExtensions()
+    public function testToArrayExtensions():void
     {
         $executionResult = new ExecutionResult(null, [], ['foo' => 'bar']);
 

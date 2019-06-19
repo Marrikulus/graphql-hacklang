@@ -12,7 +12,7 @@ use GraphQL\Tests\Server\Psr7\PsrStreamStub;
 
 class RequestParsingTest extends \PHPUnit_Framework_TestCase
 {
-    public function testParsesGraphqlRequest()
+    public function testParsesGraphqlRequest():void
     {
         $query = '{my query}';
         $parsed = [
@@ -26,7 +26,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testParsesUrlencodedRequest()
+    public function testParsesUrlencodedRequest():void
     {
         $query = '{my query}';
         $variables = ['test' => 1, 'test2' => 2];
@@ -48,7 +48,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testParsesGetRequest()
+    public function testParsesGetRequest():void
     {
         $query = '{my query}';
         $variables = ['test' => 1, 'test2' => 2];
@@ -70,7 +70,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testParsesJSONRequest()
+    public function testParsesJSONRequest():void
     {
         $query = '{my query}';
         $variables = ['test' => 1, 'test2' => 2];
@@ -91,7 +91,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testParsesVariablesAsJSON()
+    public function testParsesVariablesAsJSON():void
     {
         $query = '{my query}';
         $variables = ['test' => 1, 'test2' => 2];
@@ -112,7 +112,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testIgnoresInvalidVariablesJson()
+    public function testIgnoresInvalidVariablesJson():void
     {
         $query = '{my query}';
         $variables = '"some invalid json';
@@ -133,7 +133,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testParsesBatchJSONRequest()
+    public function testParsesBatchJSONRequest():void
     {
         $body = [
             [
@@ -159,7 +159,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testFailsParsingInvalidRawJsonRequestRaw()
+    public function testFailsParsingInvalidRawJsonRequestRaw():void
     {
         $body = 'not really{} a json';
 
@@ -167,7 +167,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
             $this->parseRawRequest('application/json', $body);
         }
 
-    public function testFailsParsingInvalidRawJsonRequestPsr()
+    public function testFailsParsingInvalidRawJsonRequestPsr():void
     {
         $body = 'not really{} a json';
 
@@ -175,7 +175,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
             $this->parsePsrRequest('application/json', $body);
     }
 
-    public function testFailsParsingNonPreParsedPsrRequest()
+    public function testFailsParsingNonPreParsedPsrRequest():void
     {
         try {
             $this->parsePsrRequest('application/json', \json_encode(null));
@@ -191,7 +191,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
 
     // There is no equivalent for psr request, because it should throw
 
-    public function testFailsParsingNonArrayOrObjectJsonRequestRaw()
+    public function testFailsParsingNonArrayOrObjectJsonRequestRaw():void
     {
         $body = '"str"';
 
@@ -199,7 +199,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
             $this->parseRawRequest('application/json', $body);
         }
 
-    public function testFailsParsingNonArrayOrObjectJsonRequestPsr()
+    public function testFailsParsingNonArrayOrObjectJsonRequestPsr():void
     {
         $body = '"str"';
 
@@ -207,7 +207,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
             $this->parsePsrRequest('application/json', $body);
         }
 
-    public function testFailsParsingInvalidContentTypeRaw()
+    public function testFailsParsingInvalidContentTypeRaw():void
     {
         $contentType = 'not-supported-content-type';
         $body = 'test';
@@ -216,7 +216,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
         $this->parseRawRequest($contentType, $body);
     }
 
-    public function testFailsParsingInvalidContentTypePsr()
+    public function testFailsParsingInvalidContentTypePsr():void
     {
         $contentType = 'not-supported-content-type';
         $body = 'test';
@@ -225,25 +225,25 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
             $this->parseRawRequest($contentType, $body);
         }
 
-    public function testFailsWithMissingContentTypeRaw()
+    public function testFailsWithMissingContentTypeRaw():void
     {
         $this->setExpectedException(RequestError::class, 'Missing "Content-Type" header');
             $this->parseRawRequest(null, 'test');
         }
 
-    public function testFailsWithMissingContentTypePsr()
+    public function testFailsWithMissingContentTypePsr():void
     {
         $this->setExpectedException(RequestError::class, 'Missing "Content-Type" header');
             $this->parsePsrRequest(null, 'test');
     }
 
-    public function testFailsOnMethodsOtherThanPostOrGetRaw()
+    public function testFailsOnMethodsOtherThanPostOrGetRaw():void
     {
         $this->setExpectedException(RequestError::class, 'HTTP Method "PUT" is not supported');
         $this->parseRawRequest('application/json', \json_encode([]), "PUT");
     }
 
-    public function testFailsOnMethodsOtherThanPostOrGetPsr()
+    public function testFailsOnMethodsOtherThanPostOrGetPsr():void
     {
         $this->setExpectedException(RequestError::class, 'HTTP Method "PUT" is not supported');
         $this->parsePsrRequest('application/json', \json_encode([]), "PUT");

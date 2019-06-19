@@ -151,7 +151,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         };
     }
 
-    public function testSchemaAcceptsTypeLoader()
+    public function testSchemaAcceptsTypeLoader():void
     {
         new Schema([
             'query' => new ObjectType([
@@ -162,7 +162,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testSchemaRejectsNonCallableTypeLoader()
+    public function testSchemaRejectsNonCallableTypeLoader():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -178,7 +178,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testWorksWithoutTypeLoader()
+    public function testWorksWithoutTypeLoader():void
     {
         $schema = new Schema([
             'query' => $this->query,
@@ -216,7 +216,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertArraySubset($expectedTypeMap, $schema->getTypeMap());
     }
 
-    public function testWorksWithTypeLoader()
+    public function testWorksWithTypeLoader():void
     {
         $schema = new Schema([
             'query' => $this->query,
@@ -242,7 +242,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['Node', 'Content', 'PostStoryMutationInput'], $this->calls);
     }
 
-    public function testOnlyCallsLoaderOnce()
+    public function testOnlyCallsLoaderOnce():void
     {
         $schema = new Schema([
             'query' => $this->query,
@@ -256,7 +256,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['Node'], $this->calls);
     }
 
-    public function testFailsOnNonExistentType()
+    public function testFailsOnNonExistentType():void
     {
         $schema = new Schema([
             'query' => $this->query,
@@ -271,7 +271,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         $schema->getType('NonExistingType');
     }
 
-    public function testFailsOnNonType()
+    public function testFailsOnNonType():void
     {
         $schema = new Schema([
             'query' => $this->query,
@@ -288,7 +288,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         $schema->getType('Node');
     }
 
-    public function testFailsOnInvalidLoad()
+    public function testFailsOnInvalidLoad():void
     {
         $schema = new Schema([
             'query' => $this->query,
@@ -305,7 +305,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         $schema->getType('Node');
     }
 
-    public function testPassesThroughAnExceptionInLoader()
+    public function testPassesThroughAnExceptionInLoader():void
     {
         $schema = new Schema([
             'query' => $this->query,
@@ -322,7 +322,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         $schema->getType('Node');
     }
 
-    public function testReturnsIdenticalResults()
+    public function testReturnsIdenticalResults():void
     {
         $withoutLoader = new Schema([
             'query' => $this->query,
@@ -341,7 +341,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($withoutLoader->getDirectives(), $withLoader->getDirectives());
     }
 
-    public function testSkipsLoaderForInternalTypes()
+    public function testSkipsLoaderForInternalTypes():void
     {
         $schema = new Schema([
             'query' => $this->query,

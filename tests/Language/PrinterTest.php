@@ -19,7 +19,7 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not alter ast
      */
-    public function testDoesntAlterAST()
+    public function testDoesntAlterAST():void
     {
         $kitchenSink = \file_get_contents(__DIR__ . '/kitchen-sink.graphql');
         $ast = Parser::parse($kitchenSink);
@@ -34,7 +34,7 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
     /**
      * @it prints minimal ast
      */
-    public function testPrintsMinimalAst()
+    public function testPrintsMinimalAst():void
     {
         $ast = new FieldNode(['name' => new NameNode(['value' => 'foo'])]);
         $this->assertEquals('foo', Printer::doPrint($ast));
@@ -43,7 +43,7 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
     /**
      * @it produces helpful error messages
      */
-    public function testProducesHelpfulErrorMessages()
+    public function testProducesHelpfulErrorMessages():void
     {
         $badAst1 = new \ArrayObject(['random' => 'Data']);
         $this->setExpectedException(\Exception::class, 'Invalid AST Node: {"random":"Data"}');
@@ -53,7 +53,7 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
     /**
      * @it correctly prints non-query operations without name
      */
-    public function testCorrectlyPrintsOpsWithoutName()
+    public function testCorrectlyPrintsOpsWithoutName():void
     {
         $queryAstShorthanded = Parser::parse('query { id, name }');
 
@@ -96,7 +96,7 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
     /**
      * @it prints kitchen sink
      */
-    public function testPrintsKitchenSink()
+    public function testPrintsKitchenSink():void
     {
         $kitchenSink = \file_get_contents(__DIR__ . '/kitchen-sink.graphql');
         $ast = Parser::parse($kitchenSink);

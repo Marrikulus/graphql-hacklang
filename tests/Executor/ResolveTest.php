@@ -28,7 +28,7 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
     /**
      * @it default function accesses properties
      */
-    public function testDefaultFunctionAccessesProperties()
+    public function testDefaultFunctionAccessesProperties():void
     {
         $schema = $this->buildSchema(['type' => GraphQlType::string()]);
 
@@ -45,7 +45,7 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
     /**
      * @it default function calls methods
      */
-    public function testDefaultFunctionCallsClosures()
+    public function testDefaultFunctionCallsClosures():void
     {
         $schema = $this->buildSchema(['type' => GraphQlType::string()]);
         $_secret = 'secretValue' . \uniqid();
@@ -64,7 +64,7 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
     /**
      * @it default function passes args and context
      */
-    public function testDefaultFunctionPassesArgsAndContext()
+    public function testDefaultFunctionPassesArgsAndContext():void
     {
         $schema = $this->buildSchema([
             'type' => GraphQlType::int(),
@@ -82,7 +82,7 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
     /**
      * @it uses provided resolve function
      */
-    public function testUsesProvidedResolveFunction()
+    public function testUsesProvidedResolveFunction():void
     {
         $schema = $this->buildSchema([
             'type' => GraphQlType::string(),

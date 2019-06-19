@@ -10,7 +10,7 @@ use GraphQL\Type\Definition\GraphQlType;
 
 class ResolveInfoTest extends \PHPUnit_Framework_TestCase
 {
-    public function testFieldSelection()
+    public function testFieldSelection():void
     {
         $image = new ObjectType([
             'name' => 'Image',
@@ -164,7 +164,7 @@ class ResolveInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDeepSelection, $actualDeepSelection);
     }
 
-    public function testMergedFragmentsFieldSelection()
+    public function testMergedFragmentsFieldSelection():void
     {
         $image = new ObjectType([
             'name' => 'Image',

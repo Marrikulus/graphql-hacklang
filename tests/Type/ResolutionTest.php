@@ -275,7 +275,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testEagerTypeResolution()
+    public function testEagerTypeResolution():void
     {
         // Has internal types by default:
         $eagerTypeResolution = new EagerResolution([]);
@@ -460,7 +460,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedDescriptor, $eagerTypeResolution->getDescriptor());
     }
 
-    public function testLazyResolutionFollowsEagerResolution()
+    public function testLazyResolutionFollowsEagerResolution():void
     {
         // Lazy resolution should work the same way as eager resolution works, except that it should load types on demand
         $eager = new EagerResolution([]);
@@ -561,14 +561,14 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
         return $lazy;
     }
 
-    public function testLazyThrowsOnInvalidLoadedType()
+    public function testLazyThrowsOnInvalidLoadedType():void
     {
         $lazy = $this->createLazy();
         $this->setExpectedException(InvariantViolation::class, "Lazy Type Resolution Error: Expecting GraphQL Type instance, but got integer");
         $lazy->resolveType('int');
     }
 
-    public function testLazyThrowsOnInvalidLoadedPossibleType()
+    public function testLazyThrowsOnInvalidLoadedPossibleType():void
     {
         $tmp = new InterfaceType(['name' => 'a', 'fields' => []]);
         $lazy = $this->createLazy();
@@ -576,7 +576,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
         $lazy->resolvePossibleTypes($tmp);
     }
 
-    public function testLazyThrowsOnInvalidLoadedPossibleTypeWithInteger()
+    public function testLazyThrowsOnInvalidLoadedPossibleTypeWithInteger():void
     {
         $tmp = new InterfaceType(['name' => 'b', 'fields' => []]);
         $lazy = $this->createLazy();

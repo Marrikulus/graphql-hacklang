@@ -8,7 +8,7 @@ use GraphQL\Type\Definition\GraphQlType;
 
 class IsValidPHPValueTest extends \PHPUnit_Framework_TestCase
 {
-    public function testValidIntValue()
+    public function testValidIntValue():void
     {
         // returns no error for positive int value
         $result = Values::isValidPHPValue(1, GraphQlType::int());
@@ -59,7 +59,7 @@ class IsValidPHPValueTest extends \PHPUnit_Framework_TestCase
         $this->expectErrorResult($result, 1);
     }
 
-    public function testValidFloatValue()
+    public function testValidFloatValue():void
     {
         // returns no error for positive float value
         $result = Values::isValidPHPValue(1.2, GraphQlType::float());

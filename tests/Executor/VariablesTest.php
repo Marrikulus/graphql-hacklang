@@ -20,7 +20,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @describe using inline structs
      */
-    public function testUsingInlineStructs()
+    public function testUsingInlineStructs():void
     {
         // executes with complex input:
         $doc = '
@@ -105,7 +105,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @describe using variables
      */
-    public function testUsingVariables()
+    public function testUsingVariables():void
     {
         // executes with complex input:
         $doc = '
@@ -248,7 +248,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows nullable inputs to be omitted
      */
-    public function testAllowsNullableInputsToBeOmitted()
+    public function testAllowsNullableInputsToBeOmitted():void
     {
         $doc = '
       {
@@ -266,7 +266,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows nullable inputs to be omitted in a variable
      */
-    public function testAllowsNullableInputsToBeOmittedInAVariable()
+    public function testAllowsNullableInputsToBeOmittedInAVariable():void
     {
         $doc = '
       query SetsNullable($value: String) {
@@ -282,7 +282,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows nullable inputs to be omitted in an unlisted variable
      */
-    public function testAllowsNullableInputsToBeOmittedInAnUnlistedVariable()
+    public function testAllowsNullableInputsToBeOmittedInAnUnlistedVariable():void
     {
         $doc = '
       query SetsNullable {
@@ -297,7 +297,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows nullable inputs to be set to null in a variable
      */
-    public function testAllowsNullableInputsToBeSetToNullInAVariable()
+    public function testAllowsNullableInputsToBeSetToNullInAVariable():void
     {
         $doc = '
       query SetsNullable($value: String) {
@@ -313,7 +313,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows nullable inputs to be set to a value in a variable
      */
-    public function testAllowsNullableInputsToBeSetToAValueInAVariable()
+    public function testAllowsNullableInputsToBeSetToAValueInAVariable():void
     {
         $doc = '
       query SetsNullable($value: String) {
@@ -328,7 +328,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows nullable inputs to be set to a value directly
      */
-    public function testAllowsNullableInputsToBeSetToAValueDirectly()
+    public function testAllowsNullableInputsToBeSetToAValueDirectly():void
     {
         $doc = '
       {
@@ -346,7 +346,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows non-nullable inputs to be omitted given a default
      */
-    public function testAllowsNonNullableInputsToBeOmittedGivenADefault()
+    public function testAllowsNonNullableInputsToBeOmittedGivenADefault():void
     {
         $doc = '
         query SetsNonNullable($value: String = "default") {
@@ -364,7 +364,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not allow non-nullable inputs to be omitted in a variable
      */
-    public function testDoesntAllowNonNullableInputsToBeOmittedInAVariable()
+    public function testDoesntAllowNonNullableInputsToBeOmittedInAVariable():void
     {
         $doc = '
         query SetsNonNullable($value: String!) {
@@ -389,7 +389,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not allow non-nullable inputs to be set to null in a variable
      */
-    public function testDoesNotAllowNonNullableInputsToBeSetToNullInAVariable()
+    public function testDoesNotAllowNonNullableInputsToBeSetToNullInAVariable():void
     {
         $doc = '
         query SetsNonNullable($value: String!) {
@@ -415,7 +415,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows non-nullable inputs to be set to a value in a variable
      */
-    public function testAllowsNonNullableInputsToBeSetToAValueInAVariable()
+    public function testAllowsNonNullableInputsToBeSetToAValueInAVariable():void
     {
         $doc = '
         query SetsNonNullable($value: String!) {
@@ -430,7 +430,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows non-nullable inputs to be set to a value directly
      */
-    public function testAllowsNonNullableInputsToBeSetToAValueDirectly()
+    public function testAllowsNonNullableInputsToBeSetToAValueDirectly():void
     {
         $doc = '
       {
@@ -446,7 +446,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it reports error for missing non-nullable inputs
      */
-    public function testReportsErrorForMissingNonNullableInputs()
+    public function testReportsErrorForMissingNonNullableInputs():void
     {
         $doc = '
       {
@@ -469,7 +469,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it reports error for array passed into string input
      */
-    public function testReportsErrorForArrayPassedIntoStringInput()
+    public function testReportsErrorForArrayPassedIntoStringInput():void
     {
 
         $doc = '
@@ -498,7 +498,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it serializing an array via GraphQLString throws TypeError
      */
-    public function testSerializingAnArrayViaGraphQLStringThrowsTypeError()
+    public function testSerializingAnArrayViaGraphQLStringThrowsTypeError():void
     {
         $this->setExpectedException(
             InvariantViolation::class,
@@ -510,7 +510,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it reports error for non-provided variables for non-nullable inputs
      */
-    public function testReportsErrorForNonProvidedVariablesForNonNullableInputs()
+    public function testReportsErrorForNonProvidedVariablesForNonNullableInputs():void
     {
         // Note: this test would typically fail validation before encountering
         // this execution error, however for queries which previously validated
@@ -543,7 +543,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows lists to be null
      */
-    public function testAllowsListsToBeNull()
+    public function testAllowsListsToBeNull():void
     {
         $doc = '
         query q($input:[String]) {
@@ -559,7 +559,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows lists to contain values
      */
-    public function testAllowsListsToContainValues()
+    public function testAllowsListsToContainValues():void
     {
         $doc = '
         query q($input:[String]) {
@@ -574,7 +574,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows lists to contain null
      */
-    public function testAllowsListsToContainNull()
+    public function testAllowsListsToContainNull():void
     {
         $doc = '
         query q($input:[String]) {
@@ -589,7 +589,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not allow non-null lists to be null
      */
-    public function testDoesNotAllowNonNullListsToBeNull()
+    public function testDoesNotAllowNonNullListsToBeNull():void
     {
         $doc = '
         query q($input:[String]!) {
@@ -615,7 +615,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows non-null lists to contain values
      */
-    public function testAllowsNonNullListsToContainValues()
+    public function testAllowsNonNullListsToContainValues():void
     {
         $doc = '
         query q($input:[String]!) {
@@ -630,7 +630,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows non-null lists to contain null
      */
-    public function testAllowsNonNullListsToContainNull()
+    public function testAllowsNonNullListsToContainNull():void
     {
         $doc = '
         query q($input:[String]!) {
@@ -646,7 +646,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows lists of non-nulls to be null
      */
-    public function testAllowsListsOfNonNullsToBeNull()
+    public function testAllowsListsOfNonNullsToBeNull():void
     {
         $doc = '
         query q($input:[String!]) {
@@ -661,7 +661,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows lists of non-nulls to contain values
      */
-    public function testAllowsListsOfNonNullsToContainValues()
+    public function testAllowsListsOfNonNullsToContainValues():void
     {
         $doc = '
         query q($input:[String!]) {
@@ -677,7 +677,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not allow lists of non-nulls to contain null
      */
-    public function testDoesNotAllowListsOfNonNullsToContainNull()
+    public function testDoesNotAllowListsOfNonNullsToContainNull():void
     {
         $doc = '
         query q($input:[String!]) {
@@ -703,7 +703,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not allow non-null lists of non-nulls to be null
      */
-    public function testDoesNotAllowNonNullListsOfNonNullsToBeNull()
+    public function testDoesNotAllowNonNullListsOfNonNullsToBeNull():void
     {
         $doc = '
         query q($input:[String!]!) {
@@ -729,7 +729,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it allows non-null lists of non-nulls to contain values
      */
-    public function testAllowsNonNullListsOfNonNullsToContainValues()
+    public function testAllowsNonNullListsOfNonNullsToContainValues():void
     {
         $doc = '
         query q($input:[String!]!) {
@@ -744,7 +744,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not allow non-null lists of non-nulls to contain null
      */
-    public function testDoesNotAllowNonNullListsOfNonNullsToContainNull()
+    public function testDoesNotAllowNonNullListsOfNonNullsToContainNull():void
     {
         $doc = '
         query q($input:[String!]!) {
@@ -770,7 +770,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not allow invalid types to be used as values
      */
-    public function testDoesNotAllowInvalidTypesToBeUsedAsValues()
+    public function testDoesNotAllowInvalidTypesToBeUsedAsValues():void
     {
         $doc = '
         query q($input: TestType!) {
@@ -797,7 +797,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not allow unknown types to be used as values
      */
-    public function testDoesNotAllowUnknownTypesToBeUsedAsValues()
+    public function testDoesNotAllowUnknownTypesToBeUsedAsValues():void
     {
         $doc = '
         query q($input: UnknownType!) {
@@ -826,7 +826,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it when no argument provided
      */
-    public function testWhenNoArgumentProvided()
+    public function testWhenNoArgumentProvided():void
     {
         $ast = Parser::parse('{
         fieldWithDefaultArgumentValue
@@ -841,7 +841,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it when omitted variable provided
      */
-    public function testWhenOmittedVariableProvided()
+    public function testWhenOmittedVariableProvided():void
     {
         $ast = Parser::parse('query optionalVariable($optional: String) {
             fieldWithDefaultArgumentValue(input: $optional)
@@ -856,7 +856,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
     /**
      * @it not when argument cannot be coerced
      */
-    public function testNotWhenArgumentCannotBeCoerced()
+    public function testNotWhenArgumentCannotBeCoerced():void
     {
         $ast = Parser::parse('{
             fieldWithDefaultArgumentValue(input: WRONG_TYPE)

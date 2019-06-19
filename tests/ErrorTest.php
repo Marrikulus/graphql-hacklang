@@ -12,7 +12,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it uses the stack of an original error
      */
-    public function testUsesTheStackOfAnOriginalError()
+    public function testUsesTheStackOfAnOriginalError():void
     {
         $prev = new \Exception("Original");
         $err = new Error('msg', null, null, null, null, $prev);
@@ -23,7 +23,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts nodes to positions and locations
      */
-    public function testConvertsNodesToPositionsAndLocations()
+    public function testConvertsNodesToPositionsAndLocations():void
     {
         $source = new Source('{
       field
@@ -59,7 +59,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it converts source and positions to locations
      */
-    public function testConvertsSourceAndPositionsToLocations()
+    public function testConvertsSourceAndPositionsToLocations():void
     {
         $source = new Source('{
       field
@@ -75,7 +75,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it serializes to include message
      */
-    public function testSerializesToIncludeMessage()
+    public function testSerializesToIncludeMessage():void
     {
         $e = new Error('msg');
         $this->assertEquals(['message' => 'msg'], $e->toSerializableArray());
@@ -84,7 +84,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it serializes to include message and locations
      */
-    public function testSerializesToIncludeMessageAndLocations()
+    public function testSerializesToIncludeMessageAndLocations():void
     {
         $node = Parser::parse('{ field }')->definitions[0]->selectionSet->selections[0];
         $e = new Error('msg', [ $node ]);
@@ -98,7 +98,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it serializes to include path
      */
-    public function testSerializesToIncludePath()
+    public function testSerializesToIncludePath():void
     {
         $e = new Error(
             'msg',

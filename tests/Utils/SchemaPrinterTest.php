@@ -36,7 +36,7 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Prints String Field
      */
-    public function testPrintsStringField()
+    public function testPrintsStringField():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::string()
@@ -55,7 +55,7 @@ type Root {
     /**
      * @it Prints [String] Field
      */
-    public function testPrintArrayStringField()
+    public function testPrintArrayStringField():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::listOf(GraphQlType::string())
@@ -74,7 +74,7 @@ type Root {
     /**
      * @it Prints String! Field
      */
-    public function testPrintNonNullStringField()
+    public function testPrintNonNullStringField():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::nonNull(GraphQlType::string())
@@ -93,7 +93,7 @@ type Root {
     /**
      * @it Prints [String]! Field
      */
-    public function testPrintNonNullArrayStringField()
+    public function testPrintNonNullArrayStringField():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::string()))
@@ -112,7 +112,7 @@ type Root {
     /**
      * @it Prints [String!] Field
      */
-    public function testPrintArrayNonNullStringField()
+    public function testPrintArrayNonNullStringField():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::string()))
@@ -131,7 +131,7 @@ type Root {
     /**
      * @it Prints [String!]! Field
      */
-    public function testPrintNonNullArrayNonNullStringField()
+    public function testPrintNonNullArrayNonNullStringField():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::string())))
@@ -150,7 +150,7 @@ type Root {
     /**
      * @it Prints Object Field
      */
-    public function testPrintObjectField()
+    public function testPrintObjectField():void
     {
         $fooType = new ObjectType([
             'name' => 'Foo',
@@ -182,7 +182,7 @@ type Root {
     /**
      * @it Prints String Field With Int Arg
      */
-    public function testPrintsStringFieldWithIntArg()
+    public function testPrintsStringFieldWithIntArg():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::string(),
@@ -202,7 +202,7 @@ type Root {
     /**
      * @it Prints String Field With Int Arg With Default
      */
-    public function testPrintsStringFieldWithIntArgWithDefault()
+    public function testPrintsStringFieldWithIntArgWithDefault():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::string(),
@@ -222,7 +222,7 @@ type Root {
     /**
      * @it Prints String Field With Int Arg With Default Null
      */
-    public function testPrintsStringFieldWithIntArgWithDefaultNull()
+    public function testPrintsStringFieldWithIntArgWithDefaultNull():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::string(),
@@ -242,7 +242,7 @@ type Root {
     /**
      * @it Prints String Field With Int! Arg
      */
-    public function testPrintsStringFieldWithNonNullIntArg()
+    public function testPrintsStringFieldWithNonNullIntArg():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::string(),
@@ -262,7 +262,7 @@ type Root {
     /**
      * @it Prints String Field With Multiple Args
      */
-    public function testPrintsStringFieldWithMultipleArgs()
+    public function testPrintsStringFieldWithMultipleArgs():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::string(),
@@ -285,7 +285,7 @@ type Root {
     /**
      * @it Prints String Field With Multiple Args, First is Default
      */
-    public function testPrintsStringFieldWithMultipleArgsFirstIsDefault()
+    public function testPrintsStringFieldWithMultipleArgsFirstIsDefault():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::string(),
@@ -309,7 +309,7 @@ type Root {
     /**
      * @it Prints String Field With Multiple Args, Second is Default
      */
-    public function testPrintsStringFieldWithMultipleArgsSecondIsDefault()
+    public function testPrintsStringFieldWithMultipleArgsSecondIsDefault():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::string(),
@@ -333,7 +333,7 @@ type Root {
     /**
      * @it Prints String Field With Multiple Args, Last is Default
      */
-    public function testPrintsStringFieldWithMultipleArgsLastIsDefault()
+    public function testPrintsStringFieldWithMultipleArgsLastIsDefault():void
     {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::string(),
@@ -357,7 +357,7 @@ type Root {
     /**
      * @it Print Interface
      */
-    public function testPrintInterface()
+    public function testPrintInterface():void
     {
         $fooType = new InterfaceType([
             'name' => 'Foo',
@@ -403,7 +403,7 @@ type Root {
     /**
      * @it Print Multiple Interface
      */
-    public function testPrintMultipleInterface()
+    public function testPrintMultipleInterface():void
     {
         $fooType = new InterfaceType([
             'name' => 'Foo',
@@ -463,7 +463,7 @@ type Root {
     /**
      * @it Print Unions
      */
-    public function testPrintUnions()
+    public function testPrintUnions():void
     {
         $fooType = new ObjectType([
             'name' => 'Foo',
@@ -524,7 +524,7 @@ union SingleUnion = Foo
     /**
      * @it Print Input Type
      */
-    public function testInputType()
+    public function testInputType():void
     {
         $inputType = new InputObjectType([
             'name' => 'InputType',
@@ -561,7 +561,7 @@ type Root {
     /**
      * @it Custom Scalar
      */
-    public function testCustomScalar()
+    public function testCustomScalar():void
     {
         $oddType = new CustomScalarType([
             'name' => 'Odd',
@@ -595,7 +595,7 @@ type Root {
     /**
      * @it Enum
      */
-    public function testEnum()
+    public function testEnum():void
     {
         $RGBType = new EnumType([
             'name' => 'RGB',
@@ -635,7 +635,7 @@ type Root {
     /**
      * @it Print Introspection Schema
      */
-    public function testPrintIntrospectionSchema()
+    public function testPrintIntrospectionSchema():void
     {
         $root = new ObjectType([
             'name' => 'Root',

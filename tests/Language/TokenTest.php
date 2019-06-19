@@ -6,7 +6,7 @@ use GraphQL\Language\Token;
 
 class TokenTest extends \PHPUnit_Framework_TestCase
 {
-    public function testReturnTokenOnArray()
+    public function testReturnTokenOnArray():void
     {
         $token = new Token('Kind', 1, 10, 3, 5);
         $expected = [

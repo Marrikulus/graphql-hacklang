@@ -21,7 +21,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * @it isTypeOf used to resolve runtime type for Interface
      */
-    public function testIsTypeOfUsedToResolveRuntimeTypeForInterface()
+    public function testIsTypeOfUsedToResolveRuntimeTypeForInterface():void
     {
         // isTypeOf used to resolve runtime type for Interface
         $petType = new InterfaceType([
@@ -95,7 +95,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * @it isTypeOf used to resolve runtime type for Union
      */
-    public function testIsTypeOfUsedToResolveRuntimeTypeForUnion()
+    public function testIsTypeOfUsedToResolveRuntimeTypeForUnion():void
     {
         $dogType = new ObjectType([
             'name' => 'Dog',
@@ -161,7 +161,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * @it resolveType on Interface yields useful error
      */
-    public function testResolveTypeOnInterfaceYieldsUsefulError()
+    public function testResolveTypeOnInterfaceYieldsUsefulError():void
     {
         $DogType = null;
         $CatType = null;
@@ -265,7 +265,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * @it resolveType on Union yields useful error
      */
-    public function testResolveTypeOnUnionYieldsUsefulError()
+    public function testResolveTypeOnUnionYieldsUsefulError():void
     {
         $HumanType = new ObjectType([
             'name' => 'Human',
@@ -360,7 +360,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * @it resolveType allows resolving with type name
      */
-    public function testResolveTypeAllowsResolvingWithTypeName()
+    public function testResolveTypeAllowsResolvingWithTypeName():void
     {
         $PetType = new InterfaceType([
             'name' => 'Pet',
@@ -434,7 +434,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
         ], $result);
     }
 
-    public function testHintsOnConflictingTypeInstancesInResolveType()
+    public function testHintsOnConflictingTypeInstancesInResolveType():void
     {
         $createTest = function() use (&$iface) {
             return new ObjectType([

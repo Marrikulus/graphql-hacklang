@@ -28,7 +28,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it executes arbitrary code
      */
-    public function testExecutesArbitraryCode()
+    public function testExecutesArbitraryCode():void
     {
         $deepData = null;
         $data = null;
@@ -166,7 +166,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it merges parallel fragments
      */
-    public function testMergesParallelFragments()
+    public function testMergesParallelFragments():void
     {
         $ast = Parser::parse('
       { a, ...FragOne, ...FragTwo }
@@ -227,7 +227,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it provides info about current execution state
      */
-    public function testProvidesInfoAboutCurrentExecutionState()
+    public function testProvidesInfoAboutCurrentExecutionState():void
     {
         $ast = Parser::parse('query ($var: String) { result: test }');
 
@@ -280,7 +280,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it threads root value context correctly
      */
-    public function testThreadsContextCorrectly()
+    public function testThreadsContextCorrectly():void
     {
         // threads context correctly
         $doc = 'query Example { a }';
@@ -314,7 +314,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it correctly threads arguments
      */
-    public function testCorrectlyThreadsArguments()
+    public function testCorrectlyThreadsArguments():void
     {
         $doc = '
       query Example {
@@ -351,7 +351,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it nulls out error subtrees
      */
-    public function testNullsOutErrorSubtrees()
+    public function testNullsOutErrorSubtrees():void
     {
         $doc = '{
       sync
@@ -529,7 +529,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it uses the inline operation if no operation name is provided
      */
-    public function testUsesTheInlineOperationIfNoOperationIsProvided()
+    public function testUsesTheInlineOperationIfNoOperationIsProvided():void
     {
         $doc = '{ a }';
         $data = ['a' => 'b'];
@@ -551,7 +551,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it uses the only operation if no operation name is provided
      */
-    public function testUsesTheOnlyOperationIfNoOperationIsProvided()
+    public function testUsesTheOnlyOperationIfNoOperationIsProvided():void
     {
         $doc = 'query Example { a }';
         $data = [ 'a' => 'b' ];
@@ -572,7 +572,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it uses the named operation if operation name is provided
      */
-    public function testUsesTheNamedOperationIfOperationNameIsProvided()
+    public function testUsesTheNamedOperationIfOperationNameIsProvided():void
     {
         $doc = 'query Example { first: a } query OtherExample { second: a }';
         $data = [ 'a' => 'b' ];
@@ -593,7 +593,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it provides error if no operation is provided
      */
-    public function testProvidesErrorIfNoOperationIsProvided()
+    public function testProvidesErrorIfNoOperationIsProvided():void
     {
         $doc = 'fragment Example on Type { a }';
         $data = [ 'a' => 'b' ];
@@ -622,7 +622,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it errors if no op name is provided with multiple operations
      */
-    public function testErrorsIfNoOperationIsProvidedWithMultipleOperations()
+    public function testErrorsIfNoOperationIsProvidedWithMultipleOperations():void
     {
         $doc = 'query Example { a } query OtherExample { a }';
         $data = ['a' => 'b'];
@@ -652,7 +652,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it errors if unknown operation name is provided
      */
-    public function testErrorsIfUnknownOperationNameIsProvided()
+    public function testErrorsIfUnknownOperationNameIsProvided():void
     {
         $doc = 'query Example { a } query OtherExample { a }';
         $ast = Parser::parse($doc);
@@ -690,7 +690,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it uses the query schema for queries
      */
-    public function testUsesTheQuerySchemaForQueries()
+    public function testUsesTheQuerySchemaForQueries():void
     {
         $doc = 'query Q { a } mutation M { c }';
         $data = ['a' => 'b', 'c' => 'd'];
@@ -717,7 +717,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it uses the mutation schema for mutations
      */
-    public function testUsesTheMutationSchemaForMutations()
+    public function testUsesTheMutationSchemaForMutations():void
     {
         $doc = 'query Q { a } mutation M { c }';
         $data = [ 'a' => 'b', 'c' => 'd' ];
@@ -743,7 +743,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it uses the subscription schema for subscriptions
      */
-    public function testUsesTheSubscriptionSchemaForSubscriptions()
+    public function testUsesTheSubscriptionSchemaForSubscriptions():void
     {
         $doc = 'query Q { a } subscription S { a }';
         $data = [ 'a' => 'b', 'c' => 'd' ];
@@ -767,7 +767,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['data' => ['a' => 'b']], $subscriptionResult->toArray());
     }
 
-    public function testCorrectFieldOrderingDespiteExecutionOrder()
+    public function testCorrectFieldOrderingDespiteExecutionOrder():void
     {
         $doc = '{
       a,
@@ -824,7 +824,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Avoids recursion
      */
-    public function testAvoidsRecursion()
+    public function testAvoidsRecursion():void
     {
         $doc = '
       query Q {
@@ -856,7 +856,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not include illegal fields in output
      */
-    public function testDoesNotIncludeIllegalFieldsInOutput()
+    public function testDoesNotIncludeIllegalFieldsInOutput():void
     {
         $doc = 'mutation M {
       thisIsIllegalDontIncludeMe
@@ -883,7 +883,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not include arguments that were not set
      */
-    public function testDoesNotIncludeArgumentsThatWereNotSet()
+    public function testDoesNotIncludeArgumentsThatWereNotSet():void
     {
         $schema = new Schema([
             'query' => new ObjectType([
@@ -918,7 +918,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it fails when an isTypeOf check is not met
      */
-    public function testFailsWhenAnIsTypeOfCheckIsNotMet()
+    public function testFailsWhenAnIsTypeOfCheckIsNotMet():void
     {
         $SpecialType = new ObjectType([
             'name' => 'SpecialType',
@@ -968,7 +968,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it fails to execute a query containing a type definition
      */
-    public function testFailsToExecuteQueryContainingTypeDefinition()
+    public function testFailsToExecuteQueryContainingTypeDefinition():void
     {
         $query = Parser::parse('
       { foo }
@@ -1003,7 +1003,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @it uses a custom field resolver
      */
-    public function testUsesACustomFieldResolver()
+    public function testUsesACustomFieldResolver():void
     {
         $query = Parser::parse('{ foo }');
 
@@ -1038,7 +1038,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $result->toArray());
     }
 
-    public function testSubstitutesArgumentWithDefaultValue()
+    public function testSubstitutesArgumentWithDefaultValue():void
     {
         $schema = new Schema([
             'query' => new ObjectType([
@@ -1082,7 +1082,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
     /**
      * @see https://github.com/webonyx/graphql-php/issues/59
      */
-    public function testSerializesToEmptyObjectVsEmptyArray()
+    public function testSerializesToEmptyObjectVsEmptyArray():void
     {
         $iface = null;
 

@@ -273,7 +273,7 @@ class ExtractTypesTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testExtractTypesFromQuery()
+    public function testExtractTypesFromQuery():void
     {
         $expectedTypeMap = [
             'Query' => $this->query,
@@ -290,7 +290,7 @@ class ExtractTypesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedTypeMap, $actualTypeMap);
     }
 
-    public function testExtractTypesFromMutation()
+    public function testExtractTypesFromMutation():void
     {
         $expectedTypeMap = [
             'Mutation' => $this->mutation,
@@ -312,7 +312,7 @@ class ExtractTypesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedTypeMap, $actualTypeMap);
     }
 
-    public function testThrowsOnMultipleTypesWithSameName()
+    public function testThrowsOnMultipleTypesWithSameName():void
     {
         $otherUserType = new ObjectType([
             'name' => 'User',

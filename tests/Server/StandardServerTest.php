@@ -23,7 +23,7 @@ class StandardServerTest extends TestCase
             ->setSchema($schema);
     }
 
-    public function testSimpleRequestExecutionWithOutsideParsing()
+    public function testSimpleRequestExecutionWithOutsideParsing():void
     {
         $body = \json_encode([
             'query' => '{f1}'
@@ -42,7 +42,7 @@ class StandardServerTest extends TestCase
         $this->assertEquals($expected, $result->toArray(true));
     }
 
-    public function testSimplePsrRequestExecution()
+    public function testSimplePsrRequestExecution():void
     {
         $body = [
             'query' => '{f1}'

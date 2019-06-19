@@ -12,7 +12,7 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
     /**
      * @it prints minimal ast
      */
-    public function testPrintsMinimalAst()
+    public function testPrintsMinimalAst():void
     {
         $ast = new ScalarTypeDefinitionNode([
             'name' => new NameNode(['value' => 'foo'])
@@ -23,7 +23,7 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
     /**
      * @it produces helpful error messages
      */
-    public function testProducesHelpfulErrorMessages()
+    public function testProducesHelpfulErrorMessages():void
     {
         // $badAst1 = { random: 'Data' };
         $badAst = (object) ['random' => 'Data'];
@@ -34,7 +34,7 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
     /**
      * @it does not alter ast
      */
-    public function testDoesNotAlterAst()
+    public function testDoesNotAlterAst():void
     {
         $kitchenSink = \file_get_contents(__DIR__ . '/schema-kitchen-sink.graphql');
 
@@ -45,7 +45,7 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($astCopy, $ast);
     }
 
-    public function testPrintsKitchenSink()
+    public function testPrintsKitchenSink():void
     {
         $kitchenSink = \file_get_contents(__DIR__ . '/schema-kitchen-sink.graphql');
 

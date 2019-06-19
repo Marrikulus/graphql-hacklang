@@ -13,7 +13,7 @@ class SchemaParserTest extends \PHPUnit_Framework_TestCase
     /**
      * @it Simple type
      */
-    public function testSimpleType()
+    public function testSimpleType():void
     {
         $body = '
 type Hello {
@@ -49,7 +49,7 @@ type Hello {
     /**
      * @it Simple extension
      */
-    public function testSimpleExtension()
+    public function testSimpleExtension():void
     {
         $body = '
 extend type Hello {
@@ -91,7 +91,7 @@ extend type Hello {
     /**
      * @it Simple non-null type
      */
-    public function testSimpleNonNullType()
+    public function testSimpleNonNullType():void
     {
         $body = '
 type Hello {
@@ -134,7 +134,7 @@ type Hello {
     /**
      * @it Simple type inheriting interface
      */
-    public function testSimpleTypeInheritingInterface()
+    public function testSimpleTypeInheritingInterface():void
     {
         $body = 'type Hello implements World { }';
         $loc = function($start, $end) { return TestUtils::locArray($start, $end); };
@@ -164,7 +164,7 @@ type Hello {
     /**
      * @it Simple type inheriting multiple interfaces
      */
-    public function testSimpleTypeInheritingMultipleInterfaces()
+    public function testSimpleTypeInheritingMultipleInterfaces():void
     {
         $body = 'type Hello implements Wo, rld { }';
         $loc = function($start, $end) {return TestUtils::locArray($start, $end);};
@@ -195,7 +195,7 @@ type Hello {
     /**
      * @it Single value enum
      */
-    public function testSingleValueEnum()
+    public function testSingleValueEnum():void
     {
         $body = 'enum Hello { WORLD }';
         $loc = function($start, $end) {return TestUtils::locArray($start, $end);};
@@ -222,7 +222,7 @@ type Hello {
     /**
      * @it Double value enum
      */
-    public function testDoubleValueEnum()
+    public function testDoubleValueEnum():void
     {
         $body = 'enum Hello { WO, RLD }';
         $loc = function($start, $end) {return TestUtils::locArray($start, $end);};
@@ -252,7 +252,7 @@ type Hello {
     /**
      * @it Simple interface
      */
-    public function testSimpleInterface()
+    public function testSimpleInterface():void
     {
         $body = '
 interface Hello {
@@ -287,7 +287,7 @@ interface Hello {
     /**
      * @it Simple field with arg
      */
-    public function testSimpleFieldWithArg()
+    public function testSimpleFieldWithArg():void
     {
         $body = '
 type Hello {
@@ -332,7 +332,7 @@ type Hello {
     /**
      * @it Simple field with arg with default value
      */
-    public function testSimpleFieldWithArgWithDefaultValue()
+    public function testSimpleFieldWithArgWithDefaultValue():void
     {
         $body = '
 type Hello {
@@ -376,7 +376,7 @@ type Hello {
     /**
      * @it Simple field with list arg
      */
-    public function testSimpleFieldWithListArg()
+    public function testSimpleFieldWithListArg():void
     {
         $body = '
 type Hello {
@@ -421,7 +421,7 @@ type Hello {
     /**
      * @it Simple field with two args
      */
-    public function testSimpleFieldWithTwoArgs()
+    public function testSimpleFieldWithTwoArgs():void
     {
         $body = '
 type Hello {
@@ -472,7 +472,7 @@ type Hello {
     /**
      * @it Simple union
      */
-    public function testSimpleUnion()
+    public function testSimpleUnion():void
     {
         $body = 'union Hello = World';
         $doc = Parser::parse($body);
@@ -498,7 +498,7 @@ type Hello {
     /**
      * @it Union with two types
      */
-    public function testUnionWithTwoTypes()
+    public function testUnionWithTwoTypes():void
     {
         $body = 'union Hello = Wo | Rld';
         $doc = Parser::parse($body);
@@ -528,7 +528,7 @@ type Hello {
     /**
      * @it Union with two types and leading pipe
      */
-    public function testUnionWithTwoTypesAndLeadingPipe()
+    public function testUnionWithTwoTypesAndLeadingPipe():void
     {
         $body = 'union Hello = | Wo | Rld';
         $doc = Parser::parse($body);
@@ -555,7 +555,7 @@ type Hello {
     /**
      * @it Union fails with no types
      */
-    public function testUnionFailsWithNoTypes()
+    public function testUnionFailsWithNoTypes():void
     {
         $body = 'union Hello = |';
         $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . \preg_quote('Syntax Error GraphQL (1:16) Expected Name, found <EOF>', '/') . '/');
@@ -565,7 +565,7 @@ type Hello {
     /**
      * @it Union fails with leading douple pipe
      */
-    public function testUnionFailsWithLeadingDoublePipe()
+    public function testUnionFailsWithLeadingDoublePipe():void
     {
         $body = 'union Hello = || Wo | Rld';
         $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . \preg_quote('Syntax Error GraphQL (1:16) Expected Name, found |', '/') . '/');
@@ -575,7 +575,7 @@ type Hello {
     /**
      * @it Union fails with double pipe
      */
-    public function testUnionFailsWithDoublePipe()
+    public function testUnionFailsWithDoublePipe():void
     {
         $body = 'union Hello = Wo || Rld';
         $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . \preg_quote('Syntax Error GraphQL (1:19) Expected Name, found |', '/') . '/');
@@ -585,7 +585,7 @@ type Hello {
     /**
      * @it Union fails with trailing pipe
      */
-    public function testUnionFailsWithTrailingPipe()
+    public function testUnionFailsWithTrailingPipe():void
     {
         $body = 'union Hello = | Wo | Rld |';
         $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . \preg_quote('Syntax Error GraphQL (1:27) Expected Name, found <EOF>', '/') . '/');
@@ -595,7 +595,7 @@ type Hello {
     /**
      * @it Scalar
      */
-    public function testScalar()
+    public function testScalar():void
     {
         $body = 'scalar Hello';
         $doc = Parser::parse($body);
@@ -619,7 +619,7 @@ type Hello {
     /**
      * @it Simple input object
      */
-    public function testSimpleInputObject()
+    public function testSimpleInputObject():void
     {
         $body = '
 input Hello {
@@ -655,7 +655,7 @@ input Hello {
     /**
      * @it Simple input object with args should fail
      */
-    public function testSimpleInputObjectWithArgsShouldFail()
+    public function testSimpleInputObjectWithArgsShouldFail():void
     {
         $body = '
 input Hello {
@@ -668,7 +668,7 @@ input Hello {
     /**
      * @it Simple type
      */
-    public function testSimpleTypeDescriptionInComments()
+    public function testSimpleTypeDescriptionInComments():void
     {
         $body = '
 # This is a simple type description.

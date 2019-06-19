@@ -15,7 +15,7 @@ class ExecutorSchemaTest extends \PHPUnit_Framework_TestCase
     /**
      * @it executes using a schema
      */
-    public function testExecutesUsingASchema()
+    public function testExecutesUsingASchema():void
     {
         $BlogArticle = null;
         $BlogImage = new ObjectType([
