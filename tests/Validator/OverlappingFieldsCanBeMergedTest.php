@@ -796,7 +796,9 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
 
         $SomeBox = new InterfaceType([
             'name' => 'SomeBox',
+            /* HH_FIXME[2087]*/
             'resolveType' => function() use (&$StringBox) {return $StringBox;},
+            /* HH_FIXME[2087]*/
             'fields' => function() use (&$SomeBox) {
                 return [
                     'deepBox' => ['type' => $SomeBox],
@@ -809,6 +811,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
         $StringBox = new ObjectType([
             'name' => 'StringBox',
             'interfaces' => [$SomeBox],
+            /* HH_FIXME[2087]*/
             'fields' => function() use (&$StringBox, &$IntBox) {
                 return [
                     'scalar' => ['type' => GraphQlType::string()],
@@ -824,6 +827,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
         $IntBox = new ObjectType([
             'name' => 'IntBox',
             'interfaces' => [$SomeBox],
+            /* HH_FIXME[2087]*/
             'fields' => function() use (&$StringBox, &$IntBox) {
                 return [
                     'scalar' => ['type' => GraphQlType::int()],
@@ -838,6 +842,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
 
         $NonNullStringBox1 = new InterfaceType([
             'name' => 'NonNullStringBox1',
+            /* HH_FIXME[2087]*/
             'resolveType' => function() use (&$StringBox) {return $StringBox;},
             'fields' => [
                 'scalar' => [ 'type' => GraphQlType::nonNull(GraphQlType::string()) ]
@@ -856,6 +861,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
 
         $NonNullStringBox2 = new InterfaceType([
             'name' => 'NonNullStringBox2',
+            /* HH_FIXME[2087]*/
             'resolveType' => function() use (&$StringBox) {return $StringBox;},
             'fields' => [
                 'scalar' => ['type' => GraphQlType::nonNull(GraphQlType::string())]

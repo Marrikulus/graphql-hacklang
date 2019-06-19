@@ -140,6 +140,7 @@ class QueryDepthTest extends AbstractQuerySecurityTest
             $key = ($i % 2 == 1) ? 'human' : 'dog';
             $template = $templates[$key];
 
+             /* HH_FIXME[4027]*/
             /* HH_FIXME[4110]*/
             $part = \sprintf($part, ('human' == $key ? ' owner ' : '').$template);
         }

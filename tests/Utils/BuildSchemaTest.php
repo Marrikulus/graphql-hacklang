@@ -1016,6 +1016,7 @@ interface Hello {
         $decorated = [];
         $calls = [];
 
+        /* HH_FIXME[2087]*/
         $typeConfigDecorator = function($defaultConfig, $node, $allNodesMap) use (&$decorated, &$calls) {
             $decorated[] = $defaultConfig['name'];
             $calls[] = [$defaultConfig, $node, $allNodesMap];
