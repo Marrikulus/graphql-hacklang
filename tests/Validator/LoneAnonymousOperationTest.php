@@ -117,7 +117,7 @@ class LoneAnonymousOperationTest extends TestCase
         ]);
     }
 
-    private function anonNotAlone($line, $column)
+    private function anonNotAlone(int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             LoneAnonymousOperation::anonOperationNotAloneMessage(),

@@ -132,7 +132,7 @@ class FragmentsOnCompositeTypesTest extends TestCase
         );
     }
 
-    private function error($fragName, $typeName, $line, $column)
+    private function error(string $fragName, string $typeName, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             FragmentsOnCompositeTypes::fragmentOnNonCompositeErrorMessage($fragName, $typeName),

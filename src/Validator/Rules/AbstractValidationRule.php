@@ -6,11 +6,11 @@ use GraphQL\Validator\ValidationContext;
 
 abstract class AbstractValidationRule
 {
-    protected $name;
+    protected ?string $name;
 
     public function getName()
     {
-        return $this->name ?: \get_class($this);
+        return $this->name ?? \get_class($this);
     }
 
     public function __invoke(ValidationContext $context)

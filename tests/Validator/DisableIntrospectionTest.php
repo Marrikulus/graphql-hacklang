@@ -119,7 +119,7 @@ class DisableIntrospectionTest extends TestCase
     }
 
 
-    private function error($line, $column)
+    private function error(int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             DisableIntrospection::introspectionDisabledMessage(),

@@ -13,7 +13,7 @@ use GraphQL\Validator\ValidationContext;
 class QueryComplexityTest extends AbstractQuerySecurityTest
 {
     /** @var QueryComplexity  */
-    private static $rule;
+    private static ?QueryComplexity $rule;
 
     /**
      * @param $max
@@ -188,7 +188,7 @@ class QueryComplexityTest extends AbstractQuerySecurityTest
         );
     }
 
-    private function assertDocumentValidators($query, $queryComplexity, $startComplexity)
+    private function assertDocumentValidators(string $query, int $queryComplexity, int $startComplexity):void
     {
         for ($maxComplexity = $startComplexity; $maxComplexity >= 0; --$maxComplexity) {
             $positions = [];

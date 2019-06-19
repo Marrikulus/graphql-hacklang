@@ -180,7 +180,7 @@ class NoUnusedVariablesTest extends TestCase
     /**
      * @it multiple variables not used
      */
-    public function testMultipleVariablesNotUsed2()
+    public function testMultipleVariablesNotUsed2():void
     {
         $this->expectFailsRule(new NoUnusedVariables(), '
       query Foo($a: String, $b: String, $c: String) {
@@ -249,7 +249,7 @@ class NoUnusedVariablesTest extends TestCase
         ]);
     }
 
-    private function unusedVar($varName, $opName, $line, $column)
+    private function unusedVar(string $varName, ?string $opName, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             NoUnusedVariables::unusedVariableMessage($varName, $opName),

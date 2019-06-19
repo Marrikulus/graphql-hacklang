@@ -302,7 +302,7 @@ class FieldsOnCorrectTypeTest extends TestCase
         $this->assertEquals($expected, FieldsOnCorrectType::undefinedFieldMessage('T', 'f', [ 'A', 'B', 'C', 'D', 'E', 'F' ]));
     }
 
-    private function undefinedField($field, $type, $suggestions, $line, $column)
+    private function undefinedField(string $field, string $type, array<string> $suggestions, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             FieldsOnCorrectType::undefinedFieldMessage($field, $type, $suggestions),

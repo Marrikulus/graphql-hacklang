@@ -880,7 +880,7 @@ class ArgumentsOfCorrectTypeTest extends TestCase
     /**
      * @it Null value
      */
-    public function testNullValue2()
+    public function testNullValue2():void
     {
         $this->expectFailsRule(new ArgumentsOfCorrectType(), '
         {

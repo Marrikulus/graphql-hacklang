@@ -170,7 +170,7 @@ class KnownArgumentNamesTest extends TestCase
         ]);
     }
 
-    private function unknownArg($argName, $fieldName, $typeName, $line, $column)
+    private function unknownArg(string $argName, string $fieldName, string $typeName, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             KnownArgumentNames::unknownArgMessage($argName, $fieldName, $typeName),
@@ -178,7 +178,7 @@ class KnownArgumentNamesTest extends TestCase
         );
     }
 
-    private function unknownDirectiveArg($argName, $directiveName, $line, $column)
+    private function unknownDirectiveArg(string $argName, string $directiveName, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             KnownArgumentNames::unknownDirectiveArgMessage($argName, $directiveName),

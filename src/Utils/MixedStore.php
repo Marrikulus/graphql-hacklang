@@ -66,17 +66,17 @@ class MixedStore implements \ArrayAccess<mixed,mixed>
     /**
      * @var bool
      */
-    private $trueValueIsSet;
+    private bool $trueValueIsSet;
 
     /**
      * @var mixed
      */
-    private $falseValue;
+    private bool $falseValue;
 
     /**
      * @var bool
      */
-    private $falseValueIsSet;
+    private bool $falseValueIsSet;
 
     /**
      * MixedStore constructor.
@@ -105,7 +105,7 @@ class MixedStore implements \ArrayAccess<mixed,mixed>
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
      */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset):bool
     {
         if (false === $offset) {
             return $this->falseValueIsSet;
@@ -146,7 +146,7 @@ class MixedStore implements \ArrayAccess<mixed,mixed>
      * @return mixed Can return all value types.
      * @since 5.0.0
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset):mixed
     {
         if (true === $offset) {
             return $this->trueValue;

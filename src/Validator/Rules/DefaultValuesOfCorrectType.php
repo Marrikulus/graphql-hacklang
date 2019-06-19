@@ -15,14 +15,12 @@ use GraphQL\Validator\ValidationContext;
 
 class DefaultValuesOfCorrectType extends AbstractValidationRule
 {
-    public static function badValueForDefaultArgMessage($varName, $type, $value, $verboseErrors = null)
-   : @string {
+    public static function badValueForDefaultArgMessage(string $varName, string $type, string $value, ?array<string> $verboseErrors = null):@string {
         $message = $verboseErrors ? ("\n" . \implode("\n", $verboseErrors)) : '';
         return "Variable \$$varName has invalid default value: $value.$message";
     }
 
-    public static function defaultForNonNullArgMessage($varName, $type, $guessType)
-   : @string {
+    public static function defaultForNonNullArgMessage(string $varName, string $type, string $guessType):@string {
         return "Variable \$$varName of type $type " .
         "is required and will never use the default value. " .
         "Perhaps you meant to use type $guessType.";

@@ -169,7 +169,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
         ]);
     }
 
-    private function defaultForNonNullArg($varName, $typeName, $guessTypeName, $line, $column)
+    private function defaultForNonNullArg(string $varName, string $typeName, string $guessTypeName, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             DefaultValuesOfCorrectType::defaultForNonNullArgMessage($varName, $typeName, $guessTypeName),
@@ -177,7 +177,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
         );
     }
 
-    private function badValue($varName, $typeName, $val, $line, $column, $errors = null)
+    private function badValue(string $varName, string $typeName, string $val, int $line, int $column, ?array<string> $errors = null):array<string, mixed>
     {
         $realErrors = !$errors ? ["Expected type \"$typeName\", found $val."] : $errors;
 

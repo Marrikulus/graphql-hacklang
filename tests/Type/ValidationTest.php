@@ -16,31 +16,31 @@ use GraphQL\Utils\Utils;
 
 class ValidationTest extends \PHPUnit_Framework_TestCase
 {
-    public $SomeScalarType;
+    public ?CustomScalarType $SomeScalarType;
 
-    public $SomeObjectType;
+    public ?ObjectType $SomeObjectType;
 
-    public $ObjectWithIsTypeOf;
+    public ?ObjectType $ObjectWithIsTypeOf;
 
-    public $SomeUnionType;
+    public ?UnionType $SomeUnionType;
 
-    public $SomeInterfaceType;
+    public ?InterfaceType $SomeInterfaceType;
 
-    public $SomeEnumType;
+    public ?EnumType $SomeEnumType;
 
-    public $SomeInputObjectType;
+    public ?InputObjectType $SomeInputObjectType;
 
-    public $outputTypes;
+    public ?array<GraphQlType> $outputTypes;
 
-    public $notOutputTypes;
+    public ?array<mixed> $notOutputTypes;
 
-    public $inputTypes;
+    public ?array<GraphQlType> $inputTypes;
 
-    public $notInputTypes;
+    public ?array<mixed> $notInputTypes;
 
-    public $String;
+    public ?string $String;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->String = 'TestString';
 
@@ -126,7 +126,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         Warning::suppress(Warning::WARNING_NOT_A_TYPE);
     }
 
-    public function tearDown()
+    public function tearDown():void
     {
         parent::tearDown();
         Warning::enable(Warning::WARNING_NOT_A_TYPE);
@@ -533,7 +533,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     public function testWarnsAboutAnObjectTypeWithReservedNamedFields():void
     {
         $lastMessage = null;
-        Warning::setWarningHandler(function($message) use (&$lastMessage) {
+        Warning::setWarningHandler(function($message, $warningId) use (&$lastMessage) {
             $lastMessage = $message;
         });
 
@@ -1601,7 +1601,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $type->assertValid();
     }
 
-    public function invalidEnumValueName()
+    public function invalidEnumValueName():array<array<string>>
     {
         return [
             ['#value', 'SomeEnum has value with invalid name: "#value" (Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "#value" does not.)'],
@@ -1626,7 +1626,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $enum->assertValid();
     }
 
-    private function enumValue($name)
+    private function enumValue(string $name):EnumType
     {
         return new EnumType([
             'name' => 'SomeEnum',
@@ -1640,7 +1640,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
      * @it rejects an Enum type with incorrectly named values
      * @dataProvider invalidEnumValueName
      */
-    public function testRejectsAnEnumTypeWithIncorrectlyNamedValues($name, $expectedMessage)
+    public function testRejectsAnEnumTypeWithIncorrectlyNamedValues(string $name, string $expectedMessage):void
     {
         $enum = $this->enumValue($name);
 
@@ -1986,7 +1986,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             try {
                 GraphQlType::listOf($type);
             } catch (\Exception $e) {
-                throw new \Exception("Expection thrown for type $type: {$e->getMessage()}", null, $e);
+                throw new \Exception("Expection thrown for type $type: {$e->getMessage()}", 0, $e);
             }
         }
     }
@@ -2042,7 +2042,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
             try {
                 GraphQlType::nonNull($type);
             } catch (\Exception $e) {
-                throw new \Exception("Exception thrown for type $type: " . $e->getMessage(), null, $e);
+                throw new \Exception("Exception thrown for type $type: " . $e->getMessage(), 0, $e);
             }
         }
     }
@@ -2680,7 +2680,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    private function assertEachCallableThrows($closures, $expectedError)
+    private function assertEachCallableThrows(array<(function():GraphQlType)> $closures, string $expectedError):void
     {
         foreach ($closures as $index => $factory) {
             try {
@@ -2692,7 +2692,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    private function assertWarnsOnce($closures, $expectedError)
+    private function assertWarnsOnce(array<(function():GraphQlType)> $closures, string $expectedError):void
     {
         $warned = false;
 
@@ -2712,7 +2712,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    private function schemaWithFieldType($type)
+    private function schemaWithFieldType(GraphQlType $type):Schema
     {
         return new Schema([
             'query' => new ObjectType([
@@ -2723,7 +2723,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function schemaWithInputObject($inputObjectType)
+    private function schemaWithInputObject(GraphQlType $inputObjectType):Schema
     {
         return new Schema([
             'query' => new ObjectType([
@@ -2740,7 +2740,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function schemaWithObjectFieldOfType($fieldType)
+    private function schemaWithObjectFieldOfType(?GraphQlType $fieldType):Schema
     {
         $BadObjectType = new ObjectType([
             'name' => 'BadObject',
@@ -2760,7 +2760,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function schemaWithObjectWithFieldResolver($resolveValue)
+    private function schemaWithObjectWithFieldResolver(mixed $resolveValue):Schema
     {
         $BadResolverType = new ObjectType([
             'name' => 'BadResolver',
@@ -2782,7 +2782,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function schemaWithObjectImplementingType($implementedType)
+    private function schemaWithObjectImplementingType(GraphQlType $implementedType):Schema
     {
         $BadObjectType = new ObjectType([
             'name' => 'BadObject',
@@ -2801,23 +2801,23 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function withModifiers($types)
+    private function withModifiers(array<GraphQlType> $types):array<GraphQlType>
     {
         return \array_merge(
             $types,
-            Utils::map($types, function ($type) {
+            Utils::map($types, function ($type, $key) {
                 return GraphQlType::listOf($type);
             }),
-            Utils::map($types, function ($type) {
+            Utils::map($types, function ($type, $key) {
                 return GraphQlType::nonNull($type);
             }),
-            Utils::map($types, function ($type) {
+            Utils::map($types, function ($type, $key) {
                 return GraphQlType::nonNull(GraphQlType::listOf($type));
             })
         );
     }
 
-    private function schemaWithUnionOfType($type)
+    private function schemaWithUnionOfType(GraphQlType $type):Schema
     {
         $BadUnionType = new UnionType([
             'name' => 'BadUnion',
@@ -2835,7 +2835,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function schemaWithInterfaceFieldOfType($fieldType)
+    private function schemaWithInterfaceFieldOfType(?GraphQlType $fieldType):Schema
     {
         $BadInterfaceType = new InterfaceType([
             'name' => 'BadInterface',
@@ -2866,7 +2866,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function schemaWithArgOfType($argType)
+    private function schemaWithArgOfType(?GraphQlType $argType):Schema
     {
         $BadObjectType = new ObjectType([
             'name' => 'BadObject',
@@ -2890,7 +2890,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function schemaWithInputFieldOfType($inputFieldType)
+    private function schemaWithInputFieldOfType(?GraphQlType $inputFieldType):Schema
     {
         $BadInputObjectType = new InputObjectType([
             'name' => 'BadInputObject',

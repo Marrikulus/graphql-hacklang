@@ -164,7 +164,7 @@ class NoUnusedFragmentsTest extends TestCase
         ]);
     }
 
-    private function unusedFrag($fragName, $line, $column)
+    private function unusedFrag(string $fragName, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             NoUnusedFragments::unusedFragMessage($fragName),

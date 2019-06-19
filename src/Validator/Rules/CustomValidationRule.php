@@ -6,11 +6,13 @@ namespace GraphQL\Validator\Rules;
 use GraphQL\Error\Error;
 use GraphQL\Validator\ValidationContext;
 
+type VisitorFn = (function(ValidationContext):array);
+
 class CustomValidationRule extends AbstractValidationRule
 {
-    private $visitorFn;
+    private VisitorFn $visitorFn;
 
-    public function __construct($name, callable $visitorFn)
+    public function __construct(string $name, VisitorFn $visitorFn)
     {
         $this->name = $name;
         $this->visitorFn = $visitorFn;

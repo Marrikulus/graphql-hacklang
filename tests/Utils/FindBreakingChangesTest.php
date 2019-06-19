@@ -18,9 +18,9 @@ use GraphQL\Utils\FindBreakingChanges;
 class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
 {
 
-    private $queryType;
+    private ObjectType $queryType;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->queryType = new ObjectType([
             'name' => 'Query',

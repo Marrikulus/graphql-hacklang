@@ -17,12 +17,12 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
 {
     // Describe: Type System Printer
 
-    private function printForTest($schema)
+    private function printForTest(Schema $schema):string
     {
         return "\n" . SchemaPrinter::doPrint($schema);
     }
 
-    private function printSingleFieldSchema($fieldConfig)
+    private function printSingleFieldSchema(array<string, mixed> $fieldConfig):string
     {
         $root = new ObjectType([
             'name' => 'Root',

@@ -60,7 +60,7 @@ class NoNull extends GraphQlType implements WrappingType, OutputType, InputType
     /**
      * @return string
      */
-    public function toString()
+    public function toString():string
     {
         return $this->getWrappedType()->toString() . '!';
     }

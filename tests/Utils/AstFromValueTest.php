@@ -53,7 +53,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
         AST::astFromValue(123.5, GraphQlType::int());
     }
 
-    public function testConvertsIntValuesToASTsCannotRepresentNon32bitsInteger()
+    public function testConvertsIntValuesToASTsCannotRepresentNon32bitsInteger():void
     {
         $this->setExpectedException(\Exception::class, 'Int cannot represent non 32-bit signed integer value: 1.0E+40');
         AST::astFromValue(1e40, GraphQlType::int()); // Note: js version will produce 1e+40, both values are valid GraphQL floats
@@ -212,7 +212,7 @@ class AstFromValueTest extends \PHPUnit_Framework_TestCase
     /**
      * @return EnumType
      */
-    private function myEnum()
+    private function myEnum():EnumType
     {
         return new EnumType([
             'name' => 'MyEnum',

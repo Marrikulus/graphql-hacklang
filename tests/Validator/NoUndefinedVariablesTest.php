@@ -352,11 +352,12 @@ class NoUndefinedVariablesTest extends TestCase
     }
 
 
-    private function undefVar($varName, $line, $column, $opName = null, $l2 = null, $c2 = null)
+    private function undefVar(string $varName, int $line, int $column, ?string $opName = null, ?int $l2 = null, ?int $c2 = null):array<string, mixed>
     {
         $locs = [new SourceLocation($line, $column)];
 
-        if ($l2 && $c2) {
+        if ($l2 !== null && $c2 !== null)
+        {
             $locs[] = new SourceLocation($l2, $c2);
         }
 

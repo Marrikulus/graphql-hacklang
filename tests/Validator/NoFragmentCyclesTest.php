@@ -279,7 +279,7 @@ class NoFragmentCyclesTest extends TestCase
         ]);
     }
 
-    private function cycleError($fargment, $spreadNames, $line, $column)
+    private function cycleError(string $fargment, array<string> $spreadNames, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             NoFragmentCycles::cycleErrorMessage($fargment, $spreadNames),

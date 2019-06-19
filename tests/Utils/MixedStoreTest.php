@@ -13,12 +13,12 @@ class MixedStoreTest extends \PHPUnit_Framework_TestCase
      */
     private $mixedStore;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->mixedStore = new MixedStore();
     }
 
-    public function getPossibleValues()
+    public function getPossibleValues():array<mixed>
     {
         return [
             null,
@@ -97,7 +97,7 @@ class MixedStoreTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    private function assertAcceptsKeyValue($key, $value)
+    private function assertAcceptsKeyValue(mixed $key, mixed $value):void
     {
         $err = 'Failed assertion that MixedStore accepts key ' .
             Utils::printSafe($key) . ' with value ' .  Utils::printSafe($value);
@@ -111,7 +111,7 @@ class MixedStoreTest extends \PHPUnit_Framework_TestCase
         $this->assertProvidesArrayAccess($key, $value);
     }
 
-    private function assertProvidesArrayAccess($key, $value)
+    private function assertProvidesArrayAccess(mixed $key, mixed $value):void
     {
         $err = 'Failed assertion that MixedStore provides array access for key ' .
             Utils::printSafe($key) . ' with value ' .  Utils::printSafe($value);

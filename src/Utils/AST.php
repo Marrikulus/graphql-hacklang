@@ -292,7 +292,7 @@ class AST
      * @return array|null|\stdClass
      * @throws \Exception
      */
-    public static function valueFromAST(Node $valueNode, InputType $type, $variables = null):mixed
+    public static function valueFromAST(?Node $valueNode, GraphQlType $type, $variables = null):mixed
     {
         $undefined = Utils::undefined();
 

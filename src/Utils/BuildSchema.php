@@ -33,6 +33,8 @@ use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Introspection;
 
+type TypeConfigDecoratorFn = (function():array<string, mixed>);
+
 /**
  * Build instance of `GraphQL\Type\Schema` out of type language definition (string or parsed AST)
  * See [section in docs](type-system/type-language.md) for details.
@@ -82,7 +84,7 @@ class BuildSchema
      * @return Schema
      * @throws Error
      */
-    public static function buildAST(DocumentNode $ast, ?callable $typeConfigDecorator = null):Schema
+    public static function buildAST(DocumentNode $ast, ?TypeConfigDecoratorFn $typeConfigDecorator = null):Schema
     {
         $builder = new self($ast, $typeConfigDecorator);
         return $builder->buildSchema();
@@ -91,10 +93,10 @@ class BuildSchema
     private $ast;
     private $innerTypeMap;
     private $nodeMap;
-    private $typeConfigDecorator;
+    private ?TypeConfigDecoratorFn $typeConfigDecorator;
     private $loadedTypeDefs;
 
-    public function __construct(DocumentNode $ast, ?callable $typeConfigDecorator = null)
+    public function __construct(DocumentNode $ast, ?TypeConfigDecoratorFn $typeConfigDecorator = null)
     {
         $this->ast = $ast;
         $this->typeConfigDecorator = $typeConfigDecorator;
@@ -315,7 +317,7 @@ class BuildSchema
         return $type;
     }
 
-    private function typeDefNamed($typeName)
+    private function typeDefNamed(string $typeName)
     {
         if (isset($this->innerTypeMap[$typeName])) {
             return $this->innerTypeMap[$typeName];
@@ -361,7 +363,7 @@ class BuildSchema
         return $innerTypeDef;
     }
 
-    private function makeSchemaDefConfig($def)
+    private function makeSchemaDefConfig($def):array<string, mixed>
     {
         if (!$def) {
             throw new Error('def must be defined.');
@@ -384,13 +386,13 @@ class BuildSchema
         }
     }
 
-    private function makeSchemaDef($def, ?array $config = null)
+    private function makeSchemaDef($def, ?array<string, mixed> $config = null)
     {
         if (!$def) {
             throw new Error('def must be defined.');
         }
 
-        $config = $config ?: $this->makeSchemaDefConfig($def);
+        $config = $config ?? $this->makeSchemaDefConfig($def);
 
         switch ($def->kind) {
             case NodeKind::OBJECT_TYPE_DEFINITION:

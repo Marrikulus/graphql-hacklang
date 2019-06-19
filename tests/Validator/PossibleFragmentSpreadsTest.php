@@ -278,7 +278,7 @@ class PossibleFragmentSpreadsTest extends TestCase
         );
     }
 
-    private function error($fragName, $parentType, $fragType, $line, $column)
+    private function error(string $fragName, string $parentType, string $fragType, int $line, int $column):array<string,mixed>
     {
         return FormattedError::create(
             PossibleFragmentSpreads::typeIncompatibleSpreadMessage($fragName, $parentType, $fragType),
@@ -286,7 +286,7 @@ class PossibleFragmentSpreadsTest extends TestCase
         );
     }
 
-    private function errorAnon($parentType, $fragType, $line, $column)
+    private function errorAnon(string $parentType, string $fragType, int $line, int $column):array<string,mixed>
     {
         return FormattedError::create(
             PossibleFragmentSpreads::typeIncompatibleAnonSpreadMessage($parentType, $fragType),

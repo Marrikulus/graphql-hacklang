@@ -75,7 +75,7 @@ class KnownTypeNamesTest extends TestCase
         ]);
     }
 
-    private function unknownType($typeName, $line, $column)
+    private function unknownType(string $typeName, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             KnownTypeNames::unknownTypeMessage($typeName),

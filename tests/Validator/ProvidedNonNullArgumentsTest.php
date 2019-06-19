@@ -266,7 +266,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
         ]);
     }
 
-    private function missingFieldArg($fieldName, $argName, $typeName, $line, $column)
+    private function missingFieldArg(string $fieldName, string $argName, string $typeName, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             ProvidedNonNullArguments::missingFieldArgMessage($fieldName, $argName, $typeName),
@@ -274,7 +274,7 @@ class ProvidedNonNullArgumentsTest extends TestCase
         );
     }
 
-    private function missingDirectiveArg($directiveName, $argName, $typeName, $line, $column)
+    private function missingDirectiveArg(string $directiveName, string $argName, string $typeName, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             ProvidedNonNullArguments::missingDirectiveArgMessage($directiveName, $argName, $typeName),

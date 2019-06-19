@@ -9,7 +9,7 @@ use GraphQL\Validator\ValidationContext;
 
 class NoUnusedVariables extends AbstractValidationRule
 {
-    public static function unusedVariableMessage($varName, $opName = null)
+    public static function unusedVariableMessage(string $varName, ?string $opName = null):string
     {
         return $opName
             ? "Variable \"$$varName\" is never used in operation \"$opName\"."

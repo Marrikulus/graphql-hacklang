@@ -788,7 +788,7 @@ class OverlappingFieldsCanBeMergedTest extends TestCase
         ');
     }
 
-    private function getTestSchema()
+    private function getTestSchema():Schema
     {
         $StringBox = null;
         $IntBox = null;

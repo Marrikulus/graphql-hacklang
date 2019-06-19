@@ -12,14 +12,14 @@ use GraphQL\Utils\AST;
 
 class ValueFromAstTest extends \PHPUnit_Framework_TestCase
 {
-    private function runTestCase($type, $valueText, $expected)
+    private function runTestCase(GraphQlType $type, string $valueText, mixed $expected):void
     {
-        $this->assertEquals($expected, AST::valueFromAST(Parser::parseValue($valueText), $type));
+        $this->assertEquals($expected, AST::valueFromAST(Parser::parseValueString($valueText), $type));
     }
 
-    private function runTestCaseWithVars($variables, $type, $valueText, $expected)
+    private function runTestCaseWithVars(array<string, mixed> $variables, GraphQlType $type, string $valueText, mixed $expected):void
     {
-        $this->assertEquals($expected, AST::valueFromAST(Parser::parseValue($valueText), $type, $variables));
+        $this->assertEquals($expected, AST::valueFromAST(Parser::parseValueString($valueText), $type, $variables));
     }
 
     /**
@@ -159,11 +159,11 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
         $this->runTestCase($nonNullListOfNonNullBool, '[true, null]', $undefined);
     }
 
-    private $inputObj;
+    private ?InputObjectType $inputObj;
 
-    private function inputObj()
+    private function inputObj(): InputObjectType
     {
-        return $this->inputObj ?: $this->inputObj = new InputObjectType([
+        return $this->inputObj ?? $this->inputObj = new InputObjectType([
             'name' => 'TestInput',
             'fields' => [
                 'int' => [ 'type' => GraphQlType::int(), 'defaultValue' => 42 ],

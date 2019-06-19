@@ -100,6 +100,11 @@ class Parser
         return $value;
     }
 
+    public static function parseValueString(string $source, bool $noLocation = false):Node
+    {
+        return Parser::parseValue(new Source($source));
+    }
+
     /**
      * Given a string containing a GraphQL Type (ex. `[Int!]`), parse the AST for
      * that type.

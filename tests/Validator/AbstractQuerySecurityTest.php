@@ -31,7 +31,7 @@ abstract class AbstractQuerySecurityTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage argument must be greater or equal to 0.
      */
-    public function testMaxQueryDepthMustBeGreaterOrEqualTo0()
+    public function testMaxQueryDepthMustBeGreaterOrEqualTo0():void
     {
         $this->getRule(-1);
     }
@@ -41,7 +41,7 @@ abstract class AbstractQuerySecurityTest extends \PHPUnit_Framework_TestCase
         return FormattedError::create($this->getErrorMessage($max, $count), $locations);
     }
 
-    protected function assertDocumentValidator(string $queryString, int $max, array<array<string,mixed>> $expectedErrors = [])
+    protected function assertDocumentValidator(string $queryString, int $max, array<array<string,mixed>> $expectedErrors = []):array<Error>
     {
         $errors = DocumentValidator::validate(
             QuerySecuritySchema::buildSchema(),

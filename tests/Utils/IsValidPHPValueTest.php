@@ -120,13 +120,14 @@ class IsValidPHPValueTest extends \PHPUnit_Framework_TestCase
         $this->expectErrorResult($result, 1);
     }
 
-    private function expectNoErrors($result)
+    private function expectNoErrors(mixed $result):void
     {
         $this->assertInternalType('array', $result);
         $this->assertEquals([], $result);
     }
 
-    private function expectErrorResult($result, $size) {
+    private function expectErrorResult(mixed $result, int $size):void
+    {
         $this->assertInternalType('array', $result);
         $this->assertEquals($size, \count($result));
     }

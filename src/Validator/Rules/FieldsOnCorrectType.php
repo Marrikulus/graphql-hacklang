@@ -10,7 +10,7 @@ use GraphQL\Validator\ValidationContext;
 
 class FieldsOnCorrectType extends AbstractValidationRule
 {
-    public static function undefinedFieldMessage($field, $type, array $suggestedTypes = [])
+    public static function undefinedFieldMessage(string $field, string $type, array<string> $suggestedTypes = []):string
     {
         $message = 'Cannot query field "' . $field . '" on type "' . $type.'".';
 

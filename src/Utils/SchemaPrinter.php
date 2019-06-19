@@ -24,7 +24,7 @@ class SchemaPrinter
      * @param Schema $schema
      * @return string
      */
-    public static function doPrint(Schema $schema)
+    public static function doPrint(Schema $schema):string
     {
         return self::printFilteredSchema($schema, function($n) {
             return !self::isSpecDirective($n);
@@ -36,7 +36,7 @@ class SchemaPrinter
      * @param Schema $schema
      * @return string
      */
-    public static function printIntrosepctionSchema(Schema $schema)
+    public static function printIntrosepctionSchema(Schema $schema):string
     {
         return self::printFilteredSchema($schema, [__CLASS__, 'isSpecDirective'], [__CLASS__, 'isIntrospectionType']);
     }
@@ -71,7 +71,7 @@ class SchemaPrinter
         );
     }
 
-    private static function printFilteredSchema(Schema $schema, $directiveFilter, $typeFilter)
+    private static function printFilteredSchema(Schema $schema, $directiveFilter, $typeFilter):string
     {
         $directives = \array_filter($schema->getDirectives(), function($directive) use ($directiveFilter) {
             return $directiveFilter($directive->name);

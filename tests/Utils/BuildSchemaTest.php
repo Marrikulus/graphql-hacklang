@@ -17,7 +17,7 @@ class BuildSchemaTest extends \PHPUnit_Framework_TestCase
 {
     // Describe: Schema Builder
 
-    private function cycleOutput($body)
+    private function cycleOutput(string $body):string
     {
         $ast = Parser::parse($body);
         $schema = BuildSchema::buildAST($ast);

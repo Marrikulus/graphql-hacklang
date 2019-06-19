@@ -92,7 +92,7 @@ class DocumentValidator
         DocumentNode $ast,
         ?array<AbstractValidationRule> $rules = null,
         ?TypeInfo $typeInfo = null
-    )
+    ):array<Error>
     {
         if (null === $rules) {
             $rules = static::allRules();

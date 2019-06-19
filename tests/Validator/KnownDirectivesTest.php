@@ -116,7 +116,7 @@ class KnownDirectivesTest extends TestCase
         ]);
     }
 
-    private function unknownDirective($directiveName, $line, $column)
+    private function unknownDirective(string $directiveName, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             KnownDirectives::unknownDirectiveMessage($directiveName),
@@ -124,7 +124,7 @@ class KnownDirectivesTest extends TestCase
         );
     }
 
-    public function misplacedDirective($directiveName, $placement, $line, $column)
+    public function misplacedDirective(string $directiveName, string $placement, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             KnownDirectives::misplacedDirectiveMessage($directiveName, $placement),

@@ -62,7 +62,7 @@ class KnownFragmentNamesTest extends TestCase
         ]);
     }
 
-    private function undefFrag($fragName, $line, $column)
+    private function undefFrag(string $fragName, int $line, int $column):array<string, mixed>
     {
         return FormattedError::create(
             KnownFragmentNames::unknownFragmentMessage($fragName),
