@@ -5,6 +5,7 @@ namespace GraphQL\Tests\Executor;
 require_once __DIR__ . '/TestClasses.php';
 
 use GraphQL\Executor\ExecutionResult;
+use function Facebook\FBExpect\expect;
 use GraphQL\Executor\Executor;
 use GraphQL\GraphQL;
 use GraphQL\Language\Parser;
@@ -14,7 +15,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 
-class AbstractTest extends \PHPUnit_Framework_TestCase
+class AbstractTest extends \Facebook\HackTest\HackTest
 {
     // Execute: Handles execution of abstract types
 
@@ -89,7 +90,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $result = Executor::execute($schema, Parser::parse($query));
-        $this->assertEquals($expected, $result);
+        expect($result)->toBePHPEqual($expected);
     }
 
     /**
@@ -155,7 +156,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
             ]
         ]);
 
-        $this->assertEquals($expected, Executor::execute($schema, Parser::parse($query)));
+        expect(Executor::execute($schema, Parser::parse($query)))->toBePHPEqual($expected);
     }
 
     /**
@@ -257,9 +258,9 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 'path' => ['pets', 2]
             ]]
         ];
-        $actual = GraphQL::executeAndReturnResult($schema, $query)->toArray(true);
+        $actual = GraphQL::executeAndReturnResult($schema, $query)->toArray(1);
 
-        $this->assertArraySubset($expected, $actual);
+        expect($actual)->toInclude($expected);
     }
 
     /**
@@ -337,7 +338,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
           }
         }';
 
-        $result = GraphQL::executeAndReturnResult($schema, $query)->toArray(true);
+        $result = GraphQL::executeAndReturnResult($schema, $query)->toArray(1);
         $expected = [
             'data' => [
                 'pets' => [
@@ -354,7 +355,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
                 'path' => ['pets', 2]
             ]]
         ];
-        $this->assertArraySubset($expected, $result);
+        expect($result)->toInclude($expected);
     }
 
     /**
@@ -424,14 +425,14 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
 
         $result = GraphQL::execute($schema, $query);
 
-        $this->assertEquals([
+        expect($result)->toBePHPEqual([
             'data' => [
                 'pets' => [
                     ['name' => 'Odie', 'woofs' => true],
                     ['name' => 'Garfield', 'meows' => false]
                 ]
             ]
-        ], $result);
+        ]);
     }
 
     public function testHintsOnConflictingTypeInstancesInResolveType():void
@@ -481,12 +482,11 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
 
         $result = Executor::execute($schema, Parser::parse($query), ['node' => ['a' => 'value']]);
 
-        $this->assertEquals(
+        expect($result->errors[0]->getMessage())
+            ->toBePHPEqual(
             'Schema must contain unique named types but contains multiple types named "Test". '.
             'Make sure that `resolveType` function of abstract type "Node" returns the same type instance '.
             'as referenced anywhere else within the schema '.
-            '(see http://webonyx.github.io/graphql-php/type-system/#type-registry).',
-            $result->errors[0]->getMessage()
-        );
+            '(see http://webonyx.github.io/graphql-php/type-system/#type-registry).');
     }
 }

@@ -5,6 +5,7 @@ namespace GraphQL\Tests\Executor;
 require_once __DIR__ . '/TestClasses.php';
 
 use GraphQL\Error\InvariantViolation;
+use function Facebook\FBExpect\expect;
 use GraphQL\Executor\Executor;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
@@ -12,7 +13,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 
-class VariablesTest extends \PHPUnit_Framework_TestCase
+class VariablesTest extends \Facebook\HackTest\HackTest
 {
     // Execute: Handles inputs
     // Handles objects and nullability
@@ -35,7 +36,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
             'fieldWithObjectInput' => '{"a":"foo","b":["bar"],"c":"baz"}'
           ]
         ];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+        expect(Executor::execute($this->schema(), $ast)->toArray())->toBePHPEqual($expected);
 
         // properly parses single value to list:
         $doc = '
@@ -46,7 +47,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $ast = Parser::parse($doc);
         $expected = ['data' => ['fieldWithObjectInput' => '{"a":"foo","b":["bar"],"c":"baz"}']];
 
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+        expect(Executor::execute($this->schema(), $ast)->toArray())->toBePHPEqual($expected);
 
         // properly parses null value to null
         $doc = '
@@ -57,7 +58,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $ast = Parser::parse($doc);
         $expected = ['data' => ['fieldWithObjectInput' => '{"a":null,"b":null,"c":"C","d":null}']];
 
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+        expect(Executor::execute($this->schema(), $ast)->toArray())->toBePHPEqual($expected);
 
         // properly parses null value in list
         $doc = '
@@ -68,7 +69,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $ast = Parser::parse($doc);
         $expected = ['data' => ['fieldWithObjectInput' => '{"b":["A",null,"C"],"c":"C"}']];
 
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+        expect(Executor::execute($this->schema(), $ast)->toArray())->toBePHPEqual($expected);
 
         // does not use incorrect value
         $doc = '
@@ -87,7 +88,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 'path' => ['fieldWithObjectInput']
             ]]
         ];
-        $this->assertArraySubset($expected, $result);
+        expect($result)->toInclude($expected);
 
         // properly runs parseLiteral on complex scalar types
         $doc = '
@@ -96,10 +97,8 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         }
         ';
         $ast = Parser::parse($doc);
-        $this->assertEquals(
-            ['data' => ['fieldWithObjectInput' => '{"c":"foo","d":"DeserializedValue"}']],
-            Executor::execute($this->schema(), $ast)->toArray()
-        );
+        expect(Executor::execute($this->schema(), $ast)->toArray())
+            ->toBePHPEqual(['data' => ['fieldWithObjectInput' => '{"c":"foo","d":"DeserializedValue"}']]);
     }
 
     /**
@@ -117,10 +116,8 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $params = ['input' => ['a' => 'foo', 'b' => ['bar'], 'c' => 'baz']];
         $schema = $this->schema();
 
-        $this->assertEquals(
-            ['data' => ['fieldWithObjectInput' => '{"a":"foo","b":["bar"],"c":"baz"}']],
-            Executor::execute($schema, $ast, null, null, $params)->toArray()
-        );
+        expect(Executor::execute($schema, $ast, null, null, $params)->toArray())
+            ->toBePHPEqual(['data' => ['fieldWithObjectInput' => '{"a":"foo","b":["bar"],"c":"baz"}']]);
 
         // uses default value when not provided:
         $withDefaultsNode = Parser::parse('
@@ -133,14 +130,12 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $expected = [
             'data' => ['fieldWithObjectInput' => '{"a":"foo","b":["bar"],"c":"baz"}']
         ];
-        $this->assertEquals($expected, $result);
+        expect($result)->toBePHPEqual($expected);
 
         // properly parses single value to array:
         $params = ['input' => ['a' => 'foo', 'b' => 'bar', 'c' => 'baz']];
-        $this->assertEquals(
-            ['data' => ['fieldWithObjectInput' => '{"a":"foo","b":["bar"],"c":"baz"}']],
-            Executor::execute($schema, $ast, null, null, $params)->toArray()
-        );
+        expect(Executor::execute($schema, $ast, null, null, $params)->toArray())
+            ->toBePHPEqual(['data' => ['fieldWithObjectInput' => '{"a":"foo","b":["bar"],"c":"baz"}']]);
 
         // executes with complex scalar input:
         $params = [ 'input' => [ 'c' => 'foo', 'd' => 'SerializedValue' ] ];
@@ -150,7 +145,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
             'fieldWithObjectInput' => '{"c":"foo","d":"DeserializedValue"}'
           ]
         ];
-        $this->assertEquals($expected, $result);
+        expect($result)->toBePHPEqual($expected);
 
         // errors on null for nested non-null:
         $params = ['input' => ['a' => 'foo', 'b' => 'bar', 'c' => null]];
@@ -166,7 +161,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
 
         // errors on incorrect type:
         $params = [ 'input' => 'foo bar' ];
@@ -182,7 +177,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
 
         // errors on omission of nested non-null:
         $params = ['input' => ['a' => 'foo', 'b' => 'bar']];
@@ -199,7 +194,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
 
         // errors on deep nested errors and with many errors
         $nestedDoc = '
@@ -223,7 +218,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
 
 
         // errors on addition of unknown input field
@@ -240,7 +235,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     // Describe: Handles nullable scalars
@@ -260,7 +255,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
             'data' => ['fieldWithNullableStringInput' => null]
         ];
 
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+        expect(Executor::execute($this->schema(), $ast)->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -276,7 +271,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $ast = Parser::parse($doc);
         $expected = ['data' => ['fieldWithNullableStringInput' => null]];
 
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+        expect(Executor::execute($this->schema(), $ast)->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -291,7 +286,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
       ';
         $ast = Parser::parse($doc);
         $expected = ['data' => ['fieldWithNullableStringInput' => null]];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+        expect(Executor::execute($this->schema(), $ast)->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -307,7 +302,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $ast = Parser::parse($doc);
         $expected = ['data' => ['fieldWithNullableStringInput' => null]];
 
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, ['value' => null])->toArray());
+        expect(Executor::execute($this->schema(), $ast, null, ['value' => null])->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -322,7 +317,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         ';
         $ast = Parser::parse($doc);
         $expected = ['data' => ['fieldWithNullableStringInput' => '"a"']];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, null, ['value' => 'a'])->toArray());
+        expect(Executor::execute($this->schema(), $ast, null, null, ['value' => 'a'])->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -337,7 +332,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         ';
         $ast = Parser::parse($doc);
         $expected = ['data' => ['fieldWithNullableStringInput' => '"a"']];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+        expect(Executor::execute($this->schema(), $ast)->toArray())->toBePHPEqual($expected);
     }
 
 
@@ -357,7 +352,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $expected = [
             'data' => ['fieldWithNonNullableStringInput' => '"default"']
         ];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+        expect(Executor::execute($this->schema(), $ast)->toArray())->toBePHPEqual($expected);
 
     }
 
@@ -383,7 +378,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -409,7 +404,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -424,7 +419,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         ';
         $ast = Parser::parse($doc);
         $expected = ['data' => ['fieldWithNonNullableStringInput' => '"a"']];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, null, ['value' => 'a'])->toArray());
+        expect(Executor::execute($this->schema(), $ast, null, null, ['value' => 'a'])->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -440,7 +435,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $ast = Parser::parse($doc);
         $expected = ['data' => ['fieldWithNonNullableStringInput' => '"a"']];
 
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+        expect(Executor::execute($this->schema(), $ast)->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -463,7 +458,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 'category' => 'graphql',
             ]]
         ];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+        expect(Executor::execute($this->schema(), $ast)->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -492,7 +487,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
             ]]
         ];
 
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, null, $variables)->toArray());
+        expect(Executor::execute($this->schema(), $ast, null, null, $variables)->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -535,7 +530,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 'category' => 'graphql',
             ]]
         ];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast)->toArray());
+        expect(Executor::execute($this->schema(), $ast)->toArray())->toBePHPEqual($expected);
     }
 
     // Describe: Handles lists and nullability
@@ -553,7 +548,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $ast = Parser::parse($doc);
         $expected = ['data' => ['list' => null]];
 
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, ['input' => null])->toArray());
+        expect(Executor::execute($this->schema(), $ast, null, ['input' => null])->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -568,7 +563,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         ';
         $ast = Parser::parse($doc);
         $expected = ['data' => ['list' => '["A"]']];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, null, ['input' => ['A']])->toArray());
+        expect(Executor::execute($this->schema(), $ast, null, null, ['input' => ['A']])->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -583,7 +578,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         ';
         $ast = Parser::parse($doc);
         $expected = ['data' => ['list' => '["A",null,"B"]']];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, null, ['input' => ['A',null,'B']])->toArray());
+        expect(Executor::execute($this->schema(), $ast, null, null, ['input' => ['A',null,'B']])->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -609,7 +604,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -624,7 +619,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         ';
         $ast = Parser::parse($doc);
         $expected = ['data' => ['nnList' => '["A"]']];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, null, ['input' => 'A'])->toArray());
+        expect(Executor::execute($this->schema(), $ast, null, null, ['input' => 'A'])->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -640,7 +635,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $ast = Parser::parse($doc);
         $expected = ['data' => ['nnList' => '["A",null,"B"]']];
 
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, null, ['input' => ['A',null,'B']])->toArray());
+        expect(Executor::execute($this->schema(), $ast, null, null, ['input' => ['A',null,'B']])->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -655,7 +650,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         ';
         $ast = Parser::parse($doc);
         $expected = ['data' => ['listNN' => null]];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, ['input' => null])->toArray());
+        expect(Executor::execute($this->schema(), $ast, null, ['input' => null])->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -671,7 +666,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         $ast = Parser::parse($doc);
         $expected = ['data' => ['listNN' => '["A"]']];
 
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, null, ['input' => 'A'])->toArray());
+        expect(Executor::execute($this->schema(), $ast, null, null, ['input' => 'A'])->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -697,7 +692,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -723,7 +718,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -738,7 +733,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         ';
         $ast = Parser::parse($doc);
         $expected = ['data' => ['nnListNN' => '["A"]']];
-        $this->assertEquals($expected, Executor::execute($this->schema(), $ast, null, null, ['input' => ['A']])->toArray());
+        expect(Executor::execute($this->schema(), $ast, null, null, ['input' => ['A']])->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -764,7 +759,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -791,7 +786,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -819,7 +814,7 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     // Describe: Execute: Uses argument default values
@@ -832,10 +827,8 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
         fieldWithDefaultArgumentValue
         }');
 
-        $this->assertEquals(
-            ['data' => ['fieldWithDefaultArgumentValue' => '"Hello World"']],
-            Executor::execute($this->schema(), $ast)->toArray()
-        );
+        expect(Executor::execute($this->schema(), $ast)->toArray())
+            ->toBePHPEqual(['data' => ['fieldWithDefaultArgumentValue' => '"Hello World"']]);
     }
 
     /**
@@ -847,10 +840,8 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
             fieldWithDefaultArgumentValue(input: $optional)
         }');
 
-        $this->assertEquals(
-            ['data' => ['fieldWithDefaultArgumentValue' => '"Hello World"']],
-            Executor::execute($this->schema(), $ast)->toArray()
-        );
+        expect(Executor::execute($this->schema(), $ast)->toArray())
+            ->toBePHPEqual(['data' => ['fieldWithDefaultArgumentValue' => '"Hello World"']]);
     }
 
     /**
@@ -874,10 +865,8 @@ class VariablesTest extends \PHPUnit_Framework_TestCase
             ]]
         ];
 
-        $this->assertEquals(
-            $expected,
-            Executor::execute($this->schema(), $ast)->toArray()
-        );
+        expect(Executor::execute($this->schema(), $ast)->toArray())
+            ->toBePHPEqual($expected);
     }
 
 

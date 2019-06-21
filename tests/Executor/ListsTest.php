@@ -13,7 +13,7 @@ use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 
-class ListsTest extends \PHPUnit_Framework_TestCase
+class ListsTest extends \Facebook\HackTest\HackTest
 {
     // Describe: Execute: Handles list nullability
 
@@ -686,6 +686,6 @@ class ListsTest extends \PHPUnit_Framework_TestCase
         $ast = Parser::parse('{ nest { test } }');
 
         $result = Executor::execute($schema, $ast, $data);
-        $this->assertArraySubset($expected, $result->toArray($debug));
+        expect($result->toArray((int)$debug))->toInclude($expected);
     }
 }

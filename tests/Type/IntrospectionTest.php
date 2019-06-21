@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Type;
 
 use GraphQL\Error\FormattedError;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\SourceLocation;
 use GraphQL\Schema;
 use GraphQL\GraphQL;
@@ -13,7 +14,7 @@ use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Introspection;
 use GraphQL\Validator\Rules\ProvidedNonNullArguments;
 
-class IntrospectionTest extends \PHPUnit_Framework_TestCase
+class IntrospectionTest extends \Facebook\HackTest\HackTest
 {
     // Describe: Introspection
 
@@ -1066,7 +1067,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
         $actual = GraphQL::execute($emptySchema, $request);
 
         // $this->assertEquals($expected, $actual);
-        $this->assertArraySubset($expected, $actual);
+        expect($actual)->toInclude($expected);
     }
 
     /**
@@ -1168,7 +1169,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
         $result = GraphQL::execute($schema, $request);
         $result = $result['data']['__schema']['types'];
         // $this->assertEquals($expectedFragment, $result[1]);
-        $this->assertContains($expectedFragment, $result);
+        expect($result)->toContain($expectedFragment);
     }
 
     /**
@@ -1201,7 +1202,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
             ]
         ]];
 
-        $this->assertEquals($expected, GraphQL::execute($schema, $request));
+        expect(GraphQL::execute($schema, $request))->toBePHPEqual($expected);
     }
 
     /**
@@ -1256,7 +1257,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, GraphQL::execute($schema, $request));
+        expect(GraphQL::execute($schema, $request))->toBePHPEqual($expected);
     }
 
     /**
@@ -1321,7 +1322,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expected, GraphQL::execute($schema, $request));
+        expect(GraphQL::execute($schema, $request))->toBePHPEqual($expected);
     }
 
     /**
@@ -1385,7 +1386,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, GraphQL::execute($schema, $request));
+        expect(GraphQL::execute($schema, $request))->toBePHPEqual($expected);
     }
 
     /**
@@ -1448,7 +1449,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, GraphQL::execute($schema, $request));
+        expect(GraphQL::execute($schema, $request))->toBePHPEqual($expected);
     }
 
     /**
@@ -1480,7 +1481,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
                 )
             ]
         ];
-        $this->assertArraySubset($expected, GraphQL::execute($schema, $request));
+        expect(GraphQL::execute($schema, $request))->toInclude($expected);
     }
 
     /**
@@ -1540,7 +1541,7 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, GraphQL::execute($schema, $request));
+        expect(GraphQL::execute($schema, $request))->toBePHPEqual($expected);
     }
 
     /**
@@ -1616,6 +1617,6 @@ class IntrospectionTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expected, GraphQL::execute($schema, $request));
+        expect(GraphQL::execute($schema, $request))->toBePHPEqual($expected);
     }
 }

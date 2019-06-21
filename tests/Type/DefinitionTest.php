@@ -5,18 +5,19 @@ namespace GraphQL\Tests\Type;
 require_once __DIR__ . '/TestClasses.php';
 
 use GraphQL\Type\Definition\CustomScalarType;
+use function Facebook\FBExpect\expect;
 use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\NoNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Utils\Utils;
 
-class DefinitionTest extends \PHPUnit_Framework_TestCase
+class DefinitionTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @var ObjectType
@@ -73,7 +74,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
      */
     public $inputObjectType;
 
-    public function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         $this->objectType = new ObjectType([
             'name' => 'Object',
@@ -158,39 +159,39 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'query' => $this->blogQuery
         ]);
 
-        $this->assertSame($blogSchema->getQueryType(), $this->blogQuery);
+        expect($this->blogQuery)->toBeSame($blogSchema->getQueryType());
 
         $articleField = $this->blogQuery->getField('article');
-        $this->assertSame($articleField->getType(), $this->blogArticle);
-        $this->assertSame($articleField->getType()->name, 'Article');
-        $this->assertSame($articleField->name, 'article');
+        expect($this->blogArticle)->toBeSame($articleField->getType());
+        expect('Article')->toBeSame($articleField->getType()->name);
+        expect('article')->toBeSame($articleField->name);
 
         /** @var ObjectType $articleFieldType */
         $articleFieldType = $articleField->getType();
         $titleField = $articleFieldType->getField('title');
 
-        $this->assertInstanceOf('GraphQL\Type\Definition\FieldDefinition', $titleField);
-        $this->assertSame('title', $titleField->name);
-        $this->assertSame(GraphQlType::string(), $titleField->getType());
+        expect($titleField)->toBeInstanceOf('GraphQL\Type\Definition\FieldDefinition');
+        expect($titleField->name)->toBeSame('title');
+        expect($titleField->getType())->toBeSame(GraphQlType::string());
 
         $authorField = $articleFieldType->getField('author');
-        $this->assertInstanceOf('GraphQL\Type\Definition\FieldDefinition', $authorField);
+        expect($authorField)->toBeInstanceOf('GraphQL\Type\Definition\FieldDefinition');
 
         /** @var ObjectType $authorFieldType */
         $authorFieldType = $authorField->getType();
-        $this->assertSame($this->blogAuthor, $authorFieldType);
+        expect($authorFieldType)->toBeSame($this->blogAuthor);
 
         $recentArticleField = $authorFieldType->getField('recentArticle');
-        $this->assertInstanceOf('GraphQL\Type\Definition\FieldDefinition', $recentArticleField);
-        $this->assertSame($this->blogArticle, $recentArticleField->getType());
+        expect($recentArticleField)->toBeInstanceOf('GraphQL\Type\Definition\FieldDefinition');
+        expect($recentArticleField->getType())->toBeSame($this->blogArticle);
 
         $feedField = $this->blogQuery->getField('feed');
-        $this->assertInstanceOf('GraphQL\Type\Definition\FieldDefinition', $feedField);
+        expect($feedField)->toBeInstanceOf('GraphQL\Type\Definition\FieldDefinition');
 
         /** @var ListOfType $feedFieldType */
         $feedFieldType = $feedField->getType();
-        $this->assertInstanceOf('GraphQL\Type\Definition\ListOfType', $feedFieldType);
-        $this->assertSame($this->blogArticle, $feedFieldType->getWrappedType());
+        expect($feedFieldType)->toBeInstanceOf('GraphQL\Type\Definition\ListOfType');
+        expect($feedFieldType->getWrappedType())->toBeSame($this->blogArticle);
     }
 
     /**
@@ -203,13 +204,13 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'mutation' => $this->blogMutation
         ]);
 
-        $this->assertSame($this->blogMutation, $schema->getMutationType());
+        expect($schema->getMutationType())->toBeSame($this->blogMutation);
         $writeMutation = $this->blogMutation->getField('writeArticle');
 
-        $this->assertInstanceOf('GraphQL\Type\Definition\FieldDefinition', $writeMutation);
-        $this->assertSame($this->blogArticle, $writeMutation->getType());
-        $this->assertSame('Article', $writeMutation->getType()->name);
-        $this->assertSame('writeArticle', $writeMutation->name);
+        expect($writeMutation)->toBeInstanceOf('GraphQL\Type\Definition\FieldDefinition');
+        expect($writeMutation->getType())->toBeSame($this->blogArticle);
+        expect($writeMutation->getType()->name)->toBeSame('Article');
+        expect($writeMutation->name)->toBeSame('writeArticle');
     }
 
     /**
@@ -222,12 +223,12 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'subscription' => $this->blogSubscription
         ]);
 
-        $this->assertEquals($this->blogSubscription, $schema->getSubscriptionType());
+        expect($schema->getSubscriptionType())->toBePHPEqual($this->blogSubscription);
 
         $sub = $this->blogSubscription->getField('articleSubscribe');
-        $this->assertEquals($sub->getType(), $this->blogArticle);
-        $this->assertEquals($sub->getType()->name, 'Article');
-        $this->assertEquals($sub->name, 'articleSubscribe');
+        expect($this->blogArticle)->toBePHPEqual($sub->getType());
+        expect('Article')->toBePHPEqual($sub->getType()->name);
+        expect('articleSubscribe')->toBePHPEqual($sub->name);
     }
 
     /**
@@ -244,15 +245,15 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 
         $value = $enumTypeWithDeprecatedValue->getValues()[0];
 
-        $this->assertArraySubset([
+        expect((array) $value)->toInclude([
             'name' => 'foo',
             'description' => null,
             'deprecationReason' => 'Just because',
             'value' => 'foo',
             'astNode' => null
-        ], (array) $value);
+        ]);
 
-        $this->assertEquals(true, $value->isDeprecated());
+        expect($value->isDeprecated())->toBePHPEqual(true);
     }
 
     /**
@@ -287,9 +288,9 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 
         $actual = $EnumTypeWithNullishValue->getValues();
 
-        $this->assertEquals(\count($expected), \count($actual));
-        $this->assertArraySubset($expected[0], (array)$actual[0]);
-        $this->assertArraySubset($expected[1], (array)$actual[1]);
+        expect(\count($actual))->toBePHPEqual(\count($expected));
+        expect((array)$actual[0])->toInclude($expected[0]);
+        expect((array)$actual[1])->toInclude($expected[1]);
     }
 
     /**
@@ -309,11 +310,11 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 
         $field = $TypeWithDeprecatedField->getField('bar');
 
-        $this->assertEquals(GraphQlType::string(), $field->getType());
-        $this->assertEquals(true, $field->isDeprecated());
-        $this->assertEquals('A terrible reason', $field->deprecationReason);
-        $this->assertEquals('bar', $field->name);
-        $this->assertEquals([], $field->args);
+        expect($field->getType())->toBePHPEqual(GraphQlType::string());
+        expect($field->isDeprecated())->toBePHPEqual(true);
+        expect($field->deprecationReason)->toBePHPEqual('A terrible reason');
+        expect($field->name)->toBePHPEqual('bar');
+        expect($field->args)->toBePHPEqual([]);
     }
 
     /**
@@ -343,7 +344,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'query' => $this->blogQuery,
             'mutation' => $someMutation
         ]);
-        $this->assertSame($nestedInputObject, $schema->getType('NestedInputObject'));
+        expect($schema->getType('NestedInputObject'))->toBeSame($nestedInputObject);
     }
 
     /**
@@ -376,7 +377,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             ]),
             'types' => [$someSubtype]
         ]);
-        $this->assertSame($someSubtype, $schema->getType('SomeSubtype'));
+        expect($schema->getType('SomeSubtype'))->toBeSame($someSubtype);
     }
 
     /**
@@ -412,7 +413,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'types' => [$someSubtype]
         ]);
 
-        $this->assertSame($someSubtype, $schema->getType('SomeSubtype'));
+        expect($schema->getType('SomeSubtype'))->toBeSame($someSubtype);
     }
 
     /**
@@ -420,20 +421,20 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
      */
     public function testStringifiesSimpleTypes():void
     {
-        $this->assertSame('Int', (string) GraphQlType::int());
-        $this->assertSame('Article', (string) $this->blogArticle);
+        expect((string) GraphQlType::int())->toBeSame('Int');
+        expect((string) $this->blogArticle)->toBeSame('Article');
 
-        $this->assertSame('Interface', (string) $this->interfaceType);
-        $this->assertSame('Union', (string) $this->unionType);
-        $this->assertSame('Enum', (string) $this->enumType);
-        $this->assertSame('InputObject', (string) $this->inputObjectType);
-        $this->assertSame('Object', (string) $this->objectType);
+        expect((string) $this->interfaceType)->toBeSame('Interface');
+        expect((string) $this->unionType)->toBeSame('Union');
+        expect((string) $this->enumType)->toBeSame('Enum');
+        expect((string) $this->inputObjectType)->toBeSame('InputObject');
+        expect((string) $this->objectType)->toBeSame('Object');
 
-        $this->assertSame('Int!', (string) new NonNull(GraphQlType::int()));
-        $this->assertSame('[Int]', (string) new ListOfType(GraphQlType::int()));
-        $this->assertSame('[Int]!', (string) new NonNull(new ListOfType(GraphQlType::int())));
-        $this->assertSame('[Int!]', (string) new ListOfType(new NonNull(GraphQlType::int())));
-        $this->assertSame('[[Int]]', (string) new ListOfType(new ListOfType(GraphQlType::int())));
+        expect((string) new NoNull(GraphQlType::int()))->toBeSame('Int!');
+        expect((string) new ListOfType(GraphQlType::int()))->toBeSame('[Int]');
+        expect((string) new NoNull(new ListOfType(GraphQlType::int())))->toBeSame('[Int]!');
+        expect((string) new ListOfType(new NoNull(GraphQlType::int())))->toBeSame('[Int!]');
+        expect((string) new ListOfType(new ListOfType(GraphQlType::int())))->toBeSame('[[Int]]');
     }
 
     /**
@@ -451,7 +452,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         ];
 
         foreach ($expected as $index => $entry) {
-            $this->assertSame($entry[1], GraphQlType::isInputType($entry[0]), "Type {$entry[0]} was detected incorrectly");
+            expect(GraphQlType::isInputType($entry[0]))->toBeSame($entry[1], "Type {$entry[0]} was detected incorrectly");
         }
     }
 
@@ -470,7 +471,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         ];
 
         foreach ($expected as $index => $entry) {
-            $this->assertSame($entry[1], GraphQlType::isOutputType($entry[0]), "Type {$entry[0]} was detected incorrectly");
+            expect(GraphQlType::isOutputType($entry[0]))->toBeSame($entry[1], "Type {$entry[0]} was detected incorrectly");
         }
     }
 
@@ -480,7 +481,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     public function testProhibitsNonNullNesting():void
     {
         $this->setExpectedException('\Exception');
-        new NonNull(new NonNull(GraphQlType::int()));
+        new NoNull(new NoNull(GraphQlType::int()));
     }
 
     /**
@@ -492,7 +493,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 
         $badUnionTypes = [
             $int,
-            new NonNull($int),
+            new NoNull($int),
             new ListOfType($int),
             $this->interfaceType,
             $this->unionType,
@@ -506,10 +507,8 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
                 $union->assertValid();
                 $this->fail('Expected exception not thrown');
             } catch (\Exception $e) {
-                $this->assertSame(
-                    'BadUnion may only contain Object types, it cannot contain: ' . Utils::printSafe($type) . '.',
-                    $e->getMessage()
-                );
+                expect($e->getMessage())
+                    ->toBeSame('BadUnion may only contain Object types, it cannot contain: ' . Utils::printSafe($type) . '.');
             }
         }
     }
@@ -525,8 +524,8 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $types = $union->getTypes();
-        $this->assertEquals(1, \count($types));
-        $this->assertSame($this->objectType, $types[0]);
+        expect(\count($types))->toBePHPEqual(1);
+        expect($types[0])->toBeSame($this->objectType);
     }
 
     public function testAllowsRecursiveDefinitions():void
@@ -545,7 +544,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $user = new ObjectType([
             'name' => 'User',
             'fields' => function() use (&$blog, &$called) {
-                $this->assertNotNull($blog, 'Blog type is expected to be defined at this point, but it is null');
+                expect($blog)->toNotBeNull('Blog type is expected to be defined at this point, but it is null');
                 $called = true;
 
                 return [
@@ -581,17 +580,17 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'types' => [$user, $blog]
         ]);
 
-        $this->assertTrue($called);
+        expect($called)->toBeTrue();
         $schema->getType('Blog');
 
-        $this->assertEquals([$node], $blog->getInterfaces());
-        $this->assertEquals([$node], $user->getInterfaces());
+        expect($blog->getInterfaces())->toBePHPEqual([$node]);
+        expect($user->getInterfaces())->toBePHPEqual([$node]);
 
-        $this->assertNotNull($user->getField('blogs'));
-        $this->assertSame($blog, $user->getField('blogs')->getType()->getWrappedType(true));
+        expect($user->getField('blogs'))->toNotBeNull();
+        expect($user->getField('blogs')->getType()->getWrappedType(true))->toBeSame($blog);
 
-        $this->assertNotNull($blog->getField('owner'));
-        $this->assertSame($user, $blog->getField('owner')->getType()->getWrappedType(true));
+        expect($blog->getField('owner'))->toNotBeNull();
+        expect($blog->getField('owner')->getType()->getWrappedType(true))->toBeSame($user);
     }
 
     public function testInputObjectTypeAllowsRecursiveDefinitions():void
@@ -622,11 +621,11 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'mutation' => $someMutation
         ]);
 
-        $this->assertSame($inputObject, $schema->getType('InputObject'));
-        $this->assertTrue($called);
-        $this->assertEquals(\count($inputObject->getFields()), 2);
-        $this->assertSame($inputObject->getField('nested')->getType(), $inputObject);
-        $this->assertSame($someMutation->getField('mutateSomething')->getArg('input')->getType(), $inputObject);
+        expect($schema->getType('InputObject'))->toBeSame($inputObject);
+        expect($called)->toBeTrue();
+        expect(2)->toBePHPEqual(\count($inputObject->getFields()));
+        expect($inputObject)->toBeSame($inputObject->getField('nested')->getType());
+        expect($inputObject)->toBeSame($someMutation->getField('mutateSomething')->getArg('input')->getType());
     }
 
     public function testInterfaceTypeAllowsRecursiveDefinitions():void
@@ -654,11 +653,11 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'query' => $query
         ]);
 
-        $this->assertSame($interface, $schema->getType('SomeInterface'));
-        $this->assertTrue($called);
-        $this->assertEquals(\count($interface->getFields()), 2);
-        $this->assertSame($interface->getField('nested')->getType(), $interface);
-        $this->assertSame($interface->getField('value')->getType(), GraphQlType::string());
+        expect($schema->getType('SomeInterface'))->toBeSame($interface);
+        expect($called)->toBeTrue();
+        expect(2)->toBePHPEqual(\count($interface->getFields()));
+        expect($interface)->toBeSame($interface->getField('nested')->getType());
+        expect(GraphQlType::string())->toBeSame($interface->getField('value')->getType());
     }
 
     public function testAllowsShorthandFieldDefinition():void
@@ -693,27 +692,27 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $valueField = $schema->getType('SomeInterface')->getField('value');
         $nestedField = $schema->getType('SomeInterface')->getField('nested');
 
-        $this->assertEquals(GraphQlType::string(), $valueField->getType());
-        $this->assertEquals($interface, $nestedField->getType());
+        expect($valueField->getType())->toBePHPEqual(GraphQlType::string());
+        expect($nestedField->getType())->toBePHPEqual($interface);
 
         $withArg = $schema->getType('SomeInterface')->getField('withArg');
-        $this->assertEquals(GraphQlType::string(), $withArg->getType());
+        expect($withArg->getType())->toBePHPEqual(GraphQlType::string());
 
-        $this->assertEquals('arg1', $withArg->args[0]->name);
-        $this->assertEquals(GraphQlType::int(), $withArg->args[0]->getType());
+        expect($withArg->args[0]->name)->toBePHPEqual('arg1');
+        expect($withArg->args[0]->getType())->toBePHPEqual(GraphQlType::int());
 
         $testField = $schema->getType('Query')->getField('test');
-        $this->assertEquals($interface, $testField->getType());
-        $this->assertEquals('test', $testField->name);
+        expect($testField->getType())->toBePHPEqual($interface);
+        expect($testField->name)->toBePHPEqual('test');
     }
 
     public function testInfersNameFromClassname():void
     {
         $myObj = new MyCustomType();
-        $this->assertEquals('MyCustom', $myObj->name);
+        expect($myObj->name)->toBePHPEqual('MyCustom');
 
         $otherCustom = new OtherCustom();
-        $this->assertEquals('OtherCustom', $otherCustom->name);
+        expect($otherCustom->name)->toBePHPEqual('OtherCustom');
     }
 
     public function testAllowsOverridingInternalTypes():void
@@ -730,6 +729,6 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
             'types' => [$idType]
         ]);
 
-        $this->assertSame($idType, $schema->getType('ID'));
+        expect($schema->getType('ID'))->toBeSame($idType);
     }
 }

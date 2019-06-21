@@ -3,12 +3,13 @@
 namespace GraphQL\Tests\Type;
 
 use GraphQL\GraphQL;
+use function Facebook\FBExpect\expect;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\GraphQlType;
 
-class ResolveInfoTest extends \PHPUnit_Framework_TestCase
+class ResolveInfoTest extends \Facebook\HackTest\HackTest
 {
     public function testFieldSelection():void
     {
@@ -158,10 +159,10 @@ class ResolveInfoTest extends \PHPUnit_Framework_TestCase
         $schema = new Schema(['query' => $blogQuery]);
         $result = GraphQL::execute($schema, $doc);
 
-        $this->assertTrue($hasCalled);
-        $this->assertEquals(['data' => ['article' => null]], $result);
-        $this->assertEquals($expectedDefaultSelection, $actualDefaultSelection);
-        $this->assertEquals($expectedDeepSelection, $actualDeepSelection);
+        expect($hasCalled)->toBeTrue();
+        expect($result)->toBePHPEqual(['data' => ['article' => null]]);
+        expect($actualDefaultSelection)->toBePHPEqual($expectedDefaultSelection);
+        expect($actualDeepSelection)->toBePHPEqual($expectedDeepSelection);
     }
 
     public function testMergedFragmentsFieldSelection():void
@@ -316,10 +317,8 @@ class ResolveInfoTest extends \PHPUnit_Framework_TestCase
         $schema = new Schema(['query' => $blogQuery]);
         $result = GraphQL::execute($schema, $doc);
 
-        $this->assertTrue($hasCalled);
-        $this->assertEquals(['data' => ['article' => null]], $result);
-        $this->assertEquals($expectedDeepSelection, $actualDeepSelection);
+        expect($hasCalled)->toBeTrue();
+        expect($result)->toBePHPEqual(['data' => ['article' => null]]);
+        expect($actualDeepSelection)->toBePHPEqual($expectedDeepSelection);
     }
-
-
 }

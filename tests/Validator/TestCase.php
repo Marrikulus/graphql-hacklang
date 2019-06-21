@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Validator;
 
 use GraphQL\GraphQL;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\Error;
 use GraphQL\Language\Lexer;
 use GraphQL\Language\Parser;
@@ -18,7 +19,7 @@ use GraphQL\Type\Definition\UnionType;
 use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\Rules\AbstractValidationRule;
 
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \Facebook\HackTest\HackTest
 {
     /**
      * @return Schema
@@ -313,19 +314,16 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     public function expectValid(Schema $schema, array<AbstractValidationRule> $rules, string $queryString):void
     {
-        $this->assertEquals(
-            [],
-            DocumentValidator::validate($schema, Parser::parse($queryString), $rules),
-            'Should validate'
-        );
+        expect(DocumentValidator::validate($schema, Parser::parse($queryString), $rules))
+            ->toBePHPEqual([],'Should validate');
     }
 
     public function expectInvalid(Schema $schema, array<AbstractValidationRule> $rules, string $queryString, array<array<string, mixed>> $expectedErrors):array<Error>
     {
         $errors = DocumentValidator::validate($schema, Parser::parse($queryString), $rules);
 
-        $this->assertNotEmpty($errors, 'GraphQL should not validate');
-        $this->assertEquals($expectedErrors, \array_map( class_meth(Error::class, 'formatError'), $errors));
+        expect($errors)->toNotBeEmpty('GraphQL should not validate');
+        expect(\array_map( class_meth(Error::class, 'formatError'), $errors))->toBePHPEqual($expectedErrors);
 
         return $errors;
     }

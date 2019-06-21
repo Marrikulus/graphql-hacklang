@@ -3,8 +3,9 @@
 namespace GraphQL\Tests;
 
 use GraphQL\Language\Token;
+use function Facebook\FBExpect\expect;
 
-class TokenTest extends \PHPUnit_Framework_TestCase
+class TokenTest extends \Facebook\HackTest\HackTest
 {
     public function testReturnTokenOnArray():void
     {
@@ -16,6 +17,6 @@ class TokenTest extends \PHPUnit_Framework_TestCase
             'column' => 5
         ];
 
-        $this->assertEquals($expected, $token->toArray());
+        expect($token->toArray())->toBePHPEqual($expected);
     }
 }

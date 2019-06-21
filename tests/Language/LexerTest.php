@@ -3,13 +3,14 @@
 namespace GraphQL\Tests\Language;
 
 use GraphQL\Language\Lexer;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\Source;
 use GraphQL\Language\SourceLocation;
 use GraphQL\Language\Token;
 use GraphQL\Error\SyntaxError;
 use GraphQL\Utils\Utils;
 
-class LexerTest extends \PHPUnit_Framework_TestCase
+class LexerTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @it disallows uncommon control characters
@@ -18,8 +19,17 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     {
         $char = Utils::chr(0x0007);
 
-        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . \preg_quote('Syntax Error GraphQL (1:1) Cannot contain the invalid character "\u0007"', '/') . '/');
-        $this->lexOne($char);
+        try
+        {
+            $this->lexOne($char);
+        }
+        catch(SyntaxError $e)
+        {
+            expect($e->getMessage())->toMatchRegExp('/' . \preg_quote('Syntax Error GraphQL (1:1) Cannot contain the invalid character "\u0007"', '/') . '/');
+            return;
+        }
+
+        self::fail("Should have thrown an exception");
     }
 
     /**
@@ -35,7 +45,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             'value' => 'foo'
         ];
 
-        $this->assertArraySubset($expected, (array) $this->lexOne($bom . ' foo'));
+        expect((array)$this->lexOne($bom . ' foo'))->toInclude($expected);
     }
 
     /**
@@ -51,7 +61,10 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             'column' => 3,
             'value' => 'foo'
         ];
-        $this->assertArraySubset($expected, (array) $this->lexOne("\n \r\n \r  foo\n"));
+        $actual = (array)$this->lexOne("\n \r\n \r  foo\n");
+        unset($actual['prev']);
+        unset($actual['next']);
+        expect($actual)->toBeSame($expected);
     }
 
     /**
@@ -71,7 +84,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             'end' => 9,
             'value' => 'foo'
         ];
-        $this->assertArraySubset($expected, (array) $this->lexOne($example1));
+        expect((array)$this->lexOne($example1))->toInclude($expected);
 
         $example2 = '
     #comment
@@ -84,7 +97,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             'end' => 21,
             'value' => 'foo'
         ];
-        $this->assertArraySubset($expected, (array) $this->lexOne($example2));
+        expect((array)$this->lexOne($example2))->toInclude($expected);
 
         $expected = [
             'kind' => Token::NAME,
@@ -94,7 +107,7 @@ class LexerTest extends \PHPUnit_Framework_TestCase
         ];
 
         $example3 = ',,,foo,,,';
-        $this->assertArraySubset($expected, (array) $this->lexOne($example3));
+        expect((array)$this->lexOne($example3))->toInclude($expected);
     }
 
     /**
@@ -165,66 +178,75 @@ class LexerTest extends \PHPUnit_Framework_TestCase
      */
     public function testLexesStrings():void
     {
-        $this->assertArraySubset([
+        expect((array) $this->lexOne('"simple"'))
+        ->toInclude([
             'kind' => Token::STRING,
             'start' => 0,
             'end' => 8,
             'value' => 'simple'
-        ], (array) $this->lexOne('"simple"'));
+        ]);
 
 
-        $this->assertArraySubset([
+        expect((array) $this->lexOne('" white space "'))
+        ->toInclude([
             'kind' => Token::STRING,
             'start' => 0,
             'end' => 15,
             'value' => ' white space '
-        ], (array) $this->lexOne('" white space "'));
+        ]);
 
-        $this->assertArraySubset([
+        expect((array) $this->lexOne('"quote \\""'))
+        ->toInclude([
             'kind' => Token::STRING,
             'start' => 0,
             'end' => 10,
             'value' => 'quote "'
-        ], (array) $this->lexOne('"quote \\""'));
+        ]);
 
-        $this->assertArraySubset([
+        expect((array) $this->lexOne('"escaped \\\\n\\\\r\\\\b\\\\t\\\\f"'))
+        ->toInclude([
             'kind' => Token::STRING,
             'start' => 0,
             'end' => 25,
             'value' => 'escaped \n\r\b\t\f'
-        ], (array) $this->lexOne('"escaped \\\\n\\\\r\\\\b\\\\t\\\\f"'));
+        ]);
 
-        $this->assertArraySubset([
+        expect((array) $this->lexOne('"slashes \\\\ \\\\/"'))
+        ->toInclude([
             'kind' => Token::STRING,
             'start' => 0,
             'end' => 16,
             'value' => 'slashes \\ \/'
-        ], (array) $this->lexOne('"slashes \\\\ \\\\/"'));
+        ]);
 
-        $this->assertArraySubset([
+        expect((array) $this->lexOne('"unicode яуц"'))
+        ->toInclude([
             'kind' => Token::STRING,
             'start' => 0,
             'end' => 13,
             'value' => 'unicode яуц'
-        ], (array) $this->lexOne('"unicode яуц"'));
+        ]);
 
         $unicode = \json_decode('"\u1234\u5678\u90AB\uCDEF"');
-        $this->assertArraySubset([
+        expect((array) $this->lexOne('"unicode \u1234\u5678\u90AB\uCDEF"'))
+        ->toInclude([
             'kind' => Token::STRING,
             'start' => 0,
             'end' => 34,
             'value' => 'unicode ' . $unicode
-        ], (array) $this->lexOne('"unicode \u1234\u5678\u90AB\uCDEF"'));
+        ]);
 
-        $this->assertArraySubset([
+        expect((array) $this->lexOne('"\u1234\u5678\u90AB\uCDEF"'))
+        ->toInclude([
             'kind' => Token::STRING,
             'start' => 0,
             'end' => 26,
             'value' => $unicode
-        ], (array) $this->lexOne('"\u1234\u5678\u90AB\uCDEF"'));
+        ]);
     }
 
-    public function reportsUsefulErrors() {
+    public function reportsUsefulErrors():array<array<string>>
+    {
         return [
             ['"', "Syntax Error GraphQL (1:2) Unterminated string.\n\n1: \"\n    ^\n"],
             ['"no end quote', "Syntax Error GraphQL (1:14) Unterminated string.\n\n1: \"no end quote\n                ^\n"],
@@ -244,9 +266,9 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider reportsUsefulErrors
      * @it lex reports useful string errors
      */
+    <<DataProvider('reportsUsefulErrors')>>
     public function testReportsUsefulErrors($str, $expectedMessage)
     {
         $this->setExpectedException(SyntaxError::class, $expectedMessage);
@@ -258,70 +280,54 @@ class LexerTest extends \PHPUnit_Framework_TestCase
      */
     public function testLexesNumbers():void
     {
-        $this->assertArraySubset(
-            ['kind' => Token::INT, 'start' => 0, 'end' => 1, 'value' => '4'],
-            (array) $this->lexOne('4')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::FLOAT, 'start' => 0, 'end' => 5, 'value' => '4.123'],
-            (array) $this->lexOne('4.123')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::INT, 'start' => 0, 'end' => 2, 'value' => '-4'],
-            (array) $this->lexOne('-4')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::INT, 'start' => 0, 'end' => 1, 'value' => '9'],
-            (array) $this->lexOne('9')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::INT, 'start' => 0, 'end' => 1, 'value' => '0'],
-            (array) $this->lexOne('0')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::FLOAT, 'start' => 0, 'end' => 6, 'value' => '-4.123'],
-            (array) $this->lexOne('-4.123')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::FLOAT, 'start' => 0, 'end' => 5, 'value' => '0.123'],
-            (array) $this->lexOne('0.123')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::FLOAT, 'start' => 0, 'end' => 5, 'value' => '123e4'],
-            (array) $this->lexOne('123e4')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::FLOAT, 'start' => 0, 'end' => 5, 'value' => '123E4'],
-            (array) $this->lexOne('123E4')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::FLOAT, 'start' => 0, 'end' => 6, 'value' => '123e-4'],
-            (array) $this->lexOne('123e-4')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::FLOAT, 'start' => 0, 'end' => 6, 'value' => '123e+4'],
-            (array) $this->lexOne('123e+4')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::FLOAT, 'start' => 0, 'end' => 8, 'value' => '-1.123e4'],
-            (array) $this->lexOne('-1.123e4')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::FLOAT, 'start' => 0, 'end' => 8, 'value' => '-1.123E4'],
-            (array) $this->lexOne('-1.123E4')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::FLOAT, 'start' => 0, 'end' => 9, 'value' => '-1.123e-4'],
-            (array) $this->lexOne('-1.123e-4')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::FLOAT, 'start' => 0, 'end' => 9, 'value' => '-1.123e+4'],
-            (array) $this->lexOne('-1.123e+4')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::FLOAT, 'start' => 0, 'end' => 11, 'value' => '-1.123e4567'],
-            (array) $this->lexOne('-1.123e4567')
-        );
+        expect((array) $this->lexOne('4'))
+            ->toInclude(['kind' => Token::INT, 'start' => 0, 'end' => 1, 'value' => '4']);
+
+        expect((array) $this->lexOne('4.123'))
+            ->toInclude(['kind' => Token::FLOAT, 'start' => 0, 'end' => 5, 'value' => '4.123']);
+
+        expect((array) $this->lexOne('-4'))
+            ->toInclude(['kind' => Token::INT, 'start' => 0, 'end' => 2, 'value' => '-4']);
+
+        expect((array) $this->lexOne('9'))
+            ->toInclude(['kind' => Token::INT, 'start' => 0, 'end' => 1, 'value' => '9']);
+
+        expect((array) $this->lexOne('0'))
+            ->toInclude(['kind' => Token::INT, 'start' => 0, 'end' => 1, 'value' => '0']);
+
+        expect((array) $this->lexOne('-4.123'))
+            ->toInclude(['kind' => Token::FLOAT, 'start' => 0, 'end' => 6, 'value' => '-4.123']);
+
+        expect((array) $this->lexOne('0.123'))
+            ->toInclude(['kind' => Token::FLOAT, 'start' => 0, 'end' => 5, 'value' => '0.123']);
+
+        expect((array) $this->lexOne('123e4'))
+            ->toInclude(['kind' => Token::FLOAT, 'start' => 0, 'end' => 5, 'value' => '123e4']);
+
+        expect((array) $this->lexOne('123E4'))
+            ->toInclude(['kind' => Token::FLOAT, 'start' => 0, 'end' => 5, 'value' => '123E4']);
+
+        expect((array) $this->lexOne('123e-4'))
+            ->toInclude(['kind' => Token::FLOAT, 'start' => 0, 'end' => 6, 'value' => '123e-4']);
+
+        expect((array) $this->lexOne('123e+4'))
+            ->toInclude(['kind' => Token::FLOAT, 'start' => 0, 'end' => 6, 'value' => '123e+4']);
+
+        expect((array) $this->lexOne('-1.123e4'))
+            ->toInclude(['kind' => Token::FLOAT, 'start' => 0, 'end' => 8, 'value' => '-1.123e4']);
+
+        expect((array) $this->lexOne('-1.123E4'))
+            ->toInclude(['kind' => Token::FLOAT, 'start' => 0, 'end' => 8, 'value' => '-1.123E4']);
+
+        expect((array) $this->lexOne('-1.123e-4'))
+            ->toInclude(['kind' => Token::FLOAT, 'start' => 0, 'end' => 9, 'value' => '-1.123e-4']);
+
+        expect((array) $this->lexOne('-1.123e+4'))
+            ->toInclude(['kind' => Token::FLOAT, 'start' => 0, 'end' => 9, 'value' => '-1.123e+4']);
+
+        expect((array) $this->lexOne('-1.123e4567'))
+            ->toInclude(['kind' => Token::FLOAT, 'start' => 0, 'end' => 11, 'value' => '-1.123e4567']);
+
     }
 
     public function reportsUsefulNumberErrors()
@@ -339,9 +345,9 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider reportsUsefulNumberErrors
      * @it lex reports useful number errors
      */
+    <<DataProvider('reportsUsefulNumberErrors')>>
     public function testReportsUsefulNumberErrors($str, $expectedMessage)
     {
         $this->setExpectedException(SyntaxError::class, $expectedMessage);
@@ -353,58 +359,45 @@ class LexerTest extends \PHPUnit_Framework_TestCase
      */
     public function testLexesPunctuation():void
     {
-        $this->assertArraySubset(
-            ['kind' => Token::BANG, 'start' => 0, 'end' => 1, 'value' => null],
-            (array) $this->lexOne('!')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::DOLLAR, 'start' => 0, 'end' => 1, 'value' => null],
-            (array) $this->lexOne('$')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::PAREN_L, 'start' => 0, 'end' => 1, 'value' => null],
-            (array) $this->lexOne('(')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::PAREN_R, 'start' => 0, 'end' => 1, 'value' => null],
-            (array) $this->lexOne(')')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::SPREAD, 'start' => 0, 'end' => 3, 'value' => null],
-            (array) $this->lexOne('...')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::COLON, 'start' => 0, 'end' => 1, 'value' => null],
-            (array) $this->lexOne(':')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::EQUALS, 'start' => 0, 'end' => 1, 'value' => null],
-            (array) $this->lexOne('=')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::AT, 'start' => 0, 'end' => 1, 'value' => null],
-            (array) $this->lexOne('@')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::BRACKET_L, 'start' => 0, 'end' => 1, 'value' => null],
-            (array) $this->lexOne('[')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::BRACKET_R, 'start' => 0, 'end' => 1, 'value' => null],
-            (array) $this->lexOne(']')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::BRACE_L, 'start' => 0, 'end' => 1, 'value' => null],
-            (array) $this->lexOne('{')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::PIPE, 'start' => 0, 'end' => 1, 'value' => null],
-            (array) $this->lexOne('|')
-        );
-        $this->assertArraySubset(
-            ['kind' => Token::BRACE_R, 'start' => 0, 'end' => 1, 'value' => null],
-            (array) $this->lexOne('}')
-        );
+        expect((array) $this->lexOne('!'))
+        ->toInclude(['kind' => Token::BANG, 'start' => 0, 'end' => 1, 'value' => null]);
+
+        expect((array) $this->lexOne('$'))
+        ->toInclude(['kind' => Token::DOLLAR, 'start' => 0, 'end' => 1, 'value' => null]);
+
+        expect((array) $this->lexOne('('))
+        ->toInclude(['kind' => Token::PAREN_L, 'start' => 0, 'end' => 1, 'value' => null]);
+
+        expect((array) $this->lexOne(')'))
+        ->toInclude(['kind' => Token::PAREN_R, 'start' => 0, 'end' => 1, 'value' => null]);
+
+        expect((array) $this->lexOne('...'))
+        ->toInclude(['kind' => Token::SPREAD, 'start' => 0, 'end' => 3, 'value' => null]);
+
+        expect((array) $this->lexOne(':'))
+        ->toInclude(['kind' => Token::COLON, 'start' => 0, 'end' => 1, 'value' => null]);
+
+        expect((array) $this->lexOne('='))
+        ->toInclude(['kind' => Token::EQUALS, 'start' => 0, 'end' => 1, 'value' => null]);
+
+        expect((array) $this->lexOne('@'))
+        ->toInclude(['kind' => Token::AT, 'start' => 0, 'end' => 1, 'value' => null]);
+
+        expect((array) $this->lexOne('['))
+        ->toInclude(['kind' => Token::BRACKET_L, 'start' => 0, 'end' => 1, 'value' => null]);
+
+        expect((array) $this->lexOne(']'))
+        ->toInclude(['kind' => Token::BRACKET_R, 'start' => 0, 'end' => 1, 'value' => null]);
+
+        expect((array) $this->lexOne('{'))
+        ->toInclude(['kind' => Token::BRACE_L, 'start' => 0, 'end' => 1, 'value' => null]);
+
+        expect((array) $this->lexOne('|'))
+        ->toInclude(['kind' => Token::PIPE, 'start' => 0, 'end' => 1, 'value' => null]);
+
+        expect((array) $this->lexOne('}'))
+        ->toInclude(['kind' => Token::BRACE_R, 'start' => 0, 'end' => 1, 'value' => null]);
+
     }
 
     public function reportsUsefulUnknownCharErrors()
@@ -421,9 +414,9 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider reportsUsefulUnknownCharErrors
      * @it lex reports useful unknown character error
      */
+    <<DataProvider('reportsUsefulUnknownCharErrors')>>
     public function testReportsUsefulUnknownCharErrors($str, $expectedMessage)
     {
         $this->setExpectedException(SyntaxError::class, $expectedMessage);
@@ -437,7 +430,8 @@ class LexerTest extends \PHPUnit_Framework_TestCase
     {
         $q = 'a-b';
         $lexer = new Lexer(new Source($q));
-        $this->assertArraySubset(['kind' => Token::NAME, 'start' => 0, 'end' => 1, 'value' => 'a'], (array) $lexer->advance());
+        expect((array) $lexer->advance())
+            ->toInclude(['kind' => Token::NAME, 'start' => 0, 'end' => 1, 'value' => 'a']);
 
         $this->setExpectedException(SyntaxError::class, 'Syntax Error GraphQL (1:3) Invalid number, expected digit but got: "b"' . "\n\n1: a-b\n     ^\n");
         $lexer->advance();
@@ -458,38 +452,38 @@ class LexerTest extends \PHPUnit_Framework_TestCase
             $endToken = $lexer->advance();
             // Lexer advances over ignored comment tokens to make writing parsers
             // easier, but will include them in the linked list result.
-            $this->assertNotEquals('Comment', $endToken->kind);
+            expect($endToken->kind)->toNotBePHPEqual('Comment');
         } while ($endToken->kind !== '<EOF>');
 
-        $this->assertEquals(null, $startToken->prev);
-        $this->assertEquals(null, $endToken->next);
+        expect($startToken->prev)->toBePHPEqual(null);
+        expect($endToken->next)->toBePHPEqual(null);
 
         $tokens = [];
         for ($tok = $startToken; $tok; $tok = $tok->next) {
             if (!empty($tokens)) {
                 // Tokens are double-linked, prev should point to last seen token.
-                $this->assertSame($tokens[\count($tokens) - 1], $tok->prev);
+                expect($tok->prev)->toBeSame($tokens[\count($tokens) - 1]);
             }
             $tokens[] = $tok;
         }
 
-        $this->assertEquals([
+        expect(Utils::map($tokens, function ($tok) {
+            return $tok->kind;
+        }))->toBePHPEqual([
             '<SOF>',
             '{',
             'Comment',
             'Name',
             '}',
             '<EOF>'
-        ], Utils::map($tokens, function ($tok) {
-            return $tok->kind;
-        }));
+        ]);
     }
 
     /**
      * @param string $body
      * @return Token
      */
-    private function lexOne($body)
+    private function lexOne(string $body):Token
     {
         $lexer = new Lexer(new Source($body));
         return $lexer->advance();

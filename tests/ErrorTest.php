@@ -3,11 +3,12 @@
 namespace GraphQL\Tests;
 
 use GraphQL\Error\Error;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Source;
 use GraphQL\Language\SourceLocation;
 
-class ErrorTest extends \PHPUnit_Framework_TestCase
+class ErrorTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @it uses the stack of an original error
@@ -17,7 +18,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
         $prev = new \Exception("Original");
         $err = new Error('msg', null, null, null, null, $prev);
 
-        $this->assertSame($err->getPrevious(), $prev);
+        expect($prev)->toBeSame($err->getPrevious());
     }
 
     /**
@@ -32,10 +33,10 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
         $fieldNode = $ast->definitions[0]->selectionSet->selections[0];
         $e = new Error('msg', [ $fieldNode ]);
 
-        $this->assertEquals([$fieldNode], $e->nodes);
-        $this->assertEquals($source, $e->getSource());
-        $this->assertEquals([8], $e->getPositions());
-        $this->assertEquals([new SourceLocation(2, 7)], $e->getLocations());
+        expect($e->nodes)->toBePHPEqual([$fieldNode]);
+        expect($e->getSource())->toBePHPEqual($source);
+        expect($e->getPositions())->toBePHPEqual([8]);
+        expect($e->getLocations())->toBePHPEqual([new SourceLocation(2, 7)]);
     }
 
     /**
@@ -50,10 +51,10 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
         $operationNode = $ast->definitions[0];
         $e = new Error('msg', [ $operationNode ]);
 
-        $this->assertEquals([$operationNode], $e->nodes);
-        $this->assertEquals($source, $e->getSource());
-        $this->assertEquals([0], $e->getPositions());
-        $this->assertEquals([new SourceLocation(1, 1)], $e->getLocations());
+        expect($e->nodes)->toBePHPEqual([$operationNode]);
+        expect($e->getSource())->toBePHPEqual($source);
+        expect($e->getPositions())->toBePHPEqual([0]);
+        expect($e->getLocations())->toBePHPEqual([new SourceLocation(1, 1)]);
     }
 
     /**
@@ -66,10 +67,10 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
     }');
         $e = new Error('msg', null, $source, [ 10 ]);
 
-        $this->assertEquals(null, $e->nodes);
-        $this->assertEquals($source, $e->getSource());
-        $this->assertEquals([10], $e->getPositions());
-        $this->assertEquals([new SourceLocation(2, 9)], $e->getLocations());
+        expect($e->nodes)->toBePHPEqual(null);
+        expect($e->getSource())->toBePHPEqual($source);
+        expect($e->getPositions())->toBePHPEqual([10]);
+        expect($e->getLocations())->toBePHPEqual([new SourceLocation(2, 9)]);
     }
 
     /**
@@ -78,7 +79,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
     public function testSerializesToIncludeMessage():void
     {
         $e = new Error('msg');
-        $this->assertEquals(['message' => 'msg'], $e->toSerializableArray());
+        expect($e->toSerializableArray())->toBePHPEqual(['message' => 'msg']);
     }
 
     /**
@@ -89,10 +90,8 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
         $node = Parser::parse('{ field }')->definitions[0]->selectionSet->selections[0];
         $e = new Error('msg', [ $node ]);
 
-        $this->assertEquals(
-            ['message' => 'msg', 'locations' => [['line' => 1, 'column' => 3]]],
-            $e->toSerializableArray()
-        );
+        expect($e->toSerializableArray())
+            ->toBePHPEqual(['message' => 'msg', 'locations' => [['line' => 1, 'column' => 3]]]);
     }
 
     /**
@@ -108,7 +107,7 @@ class ErrorTest extends \PHPUnit_Framework_TestCase
             [ 'path', 3, 'to', 'field' ]
         );
 
-        $this->assertEquals([ 'path', 3, 'to', 'field' ], $e->path);
-        $this->assertEquals(['message' => 'msg', 'path' => [ 'path', 3, 'to', 'field' ]], $e->toSerializableArray());
+        expect($e->path)->toBePHPEqual([ 'path', 3, 'to', 'field' ]);
+        expect($e->toSerializableArray())->toBePHPEqual(['message' => 'msg', 'path' => [ 'path', 3, 'to', 'field' ]]);
     }
 }

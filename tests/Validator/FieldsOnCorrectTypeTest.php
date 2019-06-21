@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Validator;
 
 use GraphQL\Error\FormattedError;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\SourceLocation;
 use GraphQL\Validator\Rules\FieldsOnCorrectType;
 
@@ -274,7 +275,7 @@ class FieldsOnCorrectTypeTest extends TestCase
      */
     public function testWorksWithNoSuggestions():void
     {
-        $this->assertEquals('Cannot query field "T" on type "f".', FieldsOnCorrectType::undefinedFieldMessage('T', 'f', []));
+        expect(FieldsOnCorrectType::undefinedFieldMessage('T', 'f', []))->toBePHPEqual('Cannot query field "T" on type "f".');
     }
 
     /**
@@ -286,7 +287,7 @@ class FieldsOnCorrectTypeTest extends TestCase
             'However, this field exists on "A", "B". ' .
             'Perhaps you meant to use an inline fragment?';
 
-        $this->assertEquals($expected, FieldsOnCorrectType::undefinedFieldMessage('T', 'f', [ 'A', 'B' ]));
+        expect(FieldsOnCorrectType::undefinedFieldMessage('T', 'f', [ 'A', 'B' ]))->toBePHPEqual($expected);
     }
 
     /**
@@ -299,7 +300,7 @@ class FieldsOnCorrectTypeTest extends TestCase
             'and 1 other types. ' .
             'Perhaps you meant to use an inline fragment?';
 
-        $this->assertEquals($expected, FieldsOnCorrectType::undefinedFieldMessage('T', 'f', [ 'A', 'B', 'C', 'D', 'E', 'F' ]));
+        expect(FieldsOnCorrectType::undefinedFieldMessage('T', 'f', [ 'A', 'B', 'C', 'D', 'E', 'F' ]))->toBePHPEqual($expected);
     }
 
     private function undefinedField(string $field, string $type, array<string> $suggestions, int $line, int $column):array<string, mixed>

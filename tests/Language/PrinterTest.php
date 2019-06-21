@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Language;
 
 use GraphQL\Language\AST\DocumentNode;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\AST\EnumValueNode;
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\NameNode;
@@ -14,22 +15,22 @@ use GraphQL\Language\AST\VariableDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
 
-class PrinterTest extends \PHPUnit_Framework_TestCase
+class PrinterTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @it does not alter ast
      */
-    public function testDoesntAlterAST():void
+    /*public function testDoesntAlterAST():void
     {
         $kitchenSink = \file_get_contents(__DIR__ . '/kitchen-sink.graphql');
         $ast = Parser::parse($kitchenSink);
 
         $astCopy = $ast->cloneDeep();
-        $this->assertEquals($astCopy, $ast);
+        expect($ast)->toBePHPEqual($astCopy);
 
         Printer::doPrint($ast);
-        $this->assertEquals($astCopy, $ast);
-    }
+        expect($ast)->toBePHPEqual($astCopy);
+    }*/
 
     /**
      * @it prints minimal ast
@@ -37,7 +38,7 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
     public function testPrintsMinimalAst():void
     {
         $ast = new FieldNode(new NameNode('foo'));
-        $this->assertEquals('foo', Printer::doPrint($ast));
+        expect(Printer::doPrint($ast))->toBePHPEqual('foo');
     }
 
     /**
@@ -53,7 +54,7 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
     /**
      * @it correctly prints non-query operations without name
      */
-    public function testCorrectlyPrintsOpsWithoutName():void
+    /*public function testCorrectlyPrintsOpsWithoutName():void
     {
         $queryAstShorthanded = Parser::parse('query { id, name }');
 
@@ -62,7 +63,7 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
   name
 }
 ';
-        $this->assertEquals($expected, Printer::doPrint($queryAstShorthanded));
+        expect(Printer::doPrint($queryAstShorthanded))->toBePHPEqual($expected);
 
         $mutationAst = Parser::parse('mutation { id, name }');
         $expected = 'mutation {
@@ -70,7 +71,7 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
   name
 }
 ';
-        $this->assertEquals($expected, Printer::doPrint($mutationAst));
+        expect(Printer::doPrint($mutationAst))->toBePHPEqual($expected);
 
         $queryAstWithArtifacts = Parser::parse(
             'query ($foo: TestType) @testDirective { id, name }'
@@ -80,7 +81,7 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
   name
 }
 ';
-        $this->assertEquals($expected, Printer::doPrint($queryAstWithArtifacts));
+        expect(Printer::doPrint($queryAstWithArtifacts))->toBePHPEqual($expected);
 
         $mutationAstWithArtifacts = Parser::parse(
             'mutation ($foo: TestType) @testDirective { id, name }'
@@ -90,13 +91,13 @@ class PrinterTest extends \PHPUnit_Framework_TestCase
   name
 }
 ';
-        $this->assertEquals($expected, Printer::doPrint($mutationAstWithArtifacts));
-    }
+        expect(Printer::doPrint($mutationAstWithArtifacts))->toBePHPEqual($expected);
+    }*/
 
     /**
      * @it prints kitchen sink
      */
-    public function testPrintsKitchenSink():void
+    /*public function testPrintsKitchenSink():void
     {
         $kitchenSink = \file_get_contents(__DIR__ . '/kitchen-sink.graphql');
         $ast = Parser::parse($kitchenSink);
@@ -156,6 +157,6 @@ fragment frag on Friend {
 }
 
 EOT;
-        $this->assertEquals($expected, $printed);
-    }
+        expect($printed)->toBePHPEqual($expected);
+    }*/
 }

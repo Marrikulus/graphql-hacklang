@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Validator;
 
 use GraphQL\Error\Error;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\Parser;
 use GraphQL\Validator\DocumentValidator;
@@ -177,8 +178,8 @@ class QueryComplexityTest extends AbstractQuerySecurityTest
             [$otherRule, $this->getRule(1)]
         );
 
-        $this->assertEquals(1, \count($errors));
-        $this->assertSame($reportedError, $errors[0]);
+        expect(\count($errors))->toBePHPEqual(1);
+        expect($errors[0])->toBeSame($reportedError);
 
         $this->setExpectedException('GraphQL\Error\Error');
         DocumentValidator::validate(

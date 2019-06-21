@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Type;
 
 use GraphQL\Error\Error;
+use function Facebook\FBExpect\expect;
 use GraphQL\GraphQL;
 use GraphQL\Language\SourceLocation;
 use GraphQL\Schema;
@@ -11,7 +12,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Introspection;
 
-class EnumTypeTest extends \PHPUnit_Framework_TestCase
+class EnumTypeTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @var Schema
@@ -27,7 +28,7 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
 
     private $Complex2;
 
-    public function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         $ColorType = new EnumType([
             'name' => 'Color',
@@ -185,10 +186,8 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testAcceptsEnumLiteralsAsInput():void
     {
-        $this->assertEquals(
-            ['data' => ['colorInt' => 1]],
-            GraphQL::execute($this->schema, '{ colorInt(fromEnum: GREEN) }')
-        );
+        expect(GraphQL::execute($this->schema, '{ colorInt(fromEnum: GREEN) }'))
+            ->toBePHPEqual(['data' => ['colorInt' => 1]]);
     }
 
     /**
@@ -196,10 +195,8 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testEnumMayBeOutputType():void
     {
-        $this->assertEquals(
-            ['data' => ['colorEnum' => 'GREEN']],
-            GraphQL::execute($this->schema, '{ colorEnum(fromInt: 1) }')
-        );
+        expect(GraphQL::execute($this->schema, '{ colorEnum(fromInt: 1) }'))
+            ->toBePHPEqual(['data' => ['colorEnum' => 'GREEN']]);
     }
 
     /**
@@ -207,10 +204,8 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testEnumMayBeBothInputAndOutputType():void
     {
-        $this->assertEquals(
-            ['data' => ['colorEnum' => 'GREEN']],
-            GraphQL::execute($this->schema, '{ colorEnum(fromEnum: GREEN) }')
-        );
+        expect(GraphQL::execute($this->schema, '{ colorEnum(fromEnum: GREEN) }'))
+            ->toBePHPEqual(['data' => ['colorEnum' => 'GREEN']]);
     }
 
     /**
@@ -222,7 +217,7 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
             '{ colorEnum(fromEnum: "GREEN") }',
             null,
             [
-                'message' => "Argument \"fromEnum\" has invalid value \"GREEN\".\nExpected type \"Color\", found \"GREEN\".",
+                'message' => "Argument \"fromEnum\" got invalid value \"GREEN\".\nExpected type \"Color\", found \"GREEN\".",
                 'locations' => [new SourceLocation(1, 23)]
             ]
         );
@@ -251,7 +246,7 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
         $this->expectFailure(
             '{ colorEnum(fromEnum: 1) }',
             null,
-            "Argument \"fromEnum\" has invalid value 1.\nExpected type \"Color\", found 1."
+            "Argument \"fromEnum\" got invalid value 1.\nExpected type \"Color\", found 1."
         );
     }
 
@@ -263,7 +258,7 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
         $this->expectFailure(
             '{ colorEnum(fromInt: GREEN) }',
             null,
-            "Argument \"fromInt\" has invalid value GREEN.\nExpected type \"Int\", found GREEN."
+            "Argument \"fromInt\" got invalid value GREEN.\nExpected type \"Int\", found GREEN."
         );
     }
 
@@ -272,16 +267,13 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testAcceptsJSONStringAsEnumVariable():void
     {
-        $this->assertEquals(
-            ['data' => ['colorEnum' => 'BLUE']],
-            GraphQL::execute(
+        expect(GraphQL::execute(
                 $this->schema,
                 'query test($color: Color!) { colorEnum(fromEnum: $color) }',
                 null,
                 null,
                 ['color' => 'BLUE']
-            )
-        );
+            ))->toBePHPEqual(['data' => ['colorEnum' => 'BLUE']]);
     }
 
     /**
@@ -289,16 +281,13 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testAcceptsEnumLiteralsAsInputArgumentsToMutations():void
     {
-        $this->assertEquals(
-            ['data' => ['favoriteEnum' => 'GREEN']],
-            GraphQL::execute(
+        expect(GraphQL::execute(
                 $this->schema,
                 'mutation x($color: Color!) { favoriteEnum(color: $color) }',
                 null,
                 null,
                 ['color' => 'GREEN']
-            )
-        );
+            ))->toBePHPEqual(['data' => ['favoriteEnum' => 'GREEN']]);
     }
 
     /**
@@ -307,16 +296,13 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testAcceptsEnumLiteralsAsInputArgumentsToSubscriptions():void
     {
-        $this->assertEquals(
-            ['data' => ['subscribeToEnum' => 'GREEN']],
-            GraphQL::execute(
+        expect(GraphQL::execute(
                 $this->schema,
                 'subscription x($color: Color!) { subscribeToEnum(color: $color) }',
                 null,
                 null,
                 ['color' => 'GREEN']
-            )
-        );
+            ))->toBePHPEqual(['data' => ['subscribeToEnum' => 'GREEN']]);
     }
 
     /**
@@ -360,13 +346,11 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testEnumValueMayHaveAnInternalValueOf0()
     {
-        $this->assertEquals(
-            ['data' => ['colorEnum' => 'RED', 'colorInt' => 0]],
-            GraphQL::execute($this->schema, "{
+        expect(GraphQL::execute($this->schema, "{
                 colorEnum(fromEnum: RED)
                 colorInt(fromEnum: RED)
-            }")
-        );
+            }"))
+        ->toBePHPEqual(['data' => ['colorEnum' => 'RED', 'colorInt' => 0]]);
     }
 
     /**
@@ -374,13 +358,11 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
      */
     public function testEnumInputsMayBeNullable():void
     {
-        $this->assertEquals(
-            ['data' => ['colorEnum' => null, 'colorInt' => null]],
-            GraphQL::execute($this->schema, "{
+        expect(GraphQL::execute($this->schema, "{
                 colorEnum
                 colorInt
-            }")
-        );
+            }"))
+            ->toBePHPEqual(['data' => ['colorEnum' => null, 'colorInt' => null]]        );
     }
 
     /**
@@ -391,11 +373,11 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
         $ComplexEnum = $this->ComplexEnum;
         $values = $ComplexEnum->getValues();
 
-        $this->assertEquals(2, \count($values));
-        $this->assertEquals('ONE', $values[0]->name);
-        $this->assertEquals($this->Complex1, $values[0]->value);
-        $this->assertEquals('TWO', $values[1]->name);
-        $this->assertEquals($this->Complex2, $values[1]->value);
+        expect(\count($values))->toBePHPEqual(2);
+        expect($values[0]->name)->toBePHPEqual('ONE');
+        expect($values[0]->value)->toBePHPEqual($this->Complex1);
+        expect($values[1]->name)->toBePHPEqual('TWO');
+        expect($values[1]->value)->toBePHPEqual($this->Complex2);
     }
 
     /**
@@ -404,11 +386,11 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
     public function testPresentsGetValueAPIForComplexEnums():void
     {
         $oneValue = $this->ComplexEnum->getValue('ONE');
-        $this->assertEquals('ONE', $oneValue->name);
-        $this->assertEquals($this->Complex1, $oneValue->value);
+        expect($oneValue->name)->toBePHPEqual('ONE');
+        expect($oneValue->value)->toBePHPEqual($this->Complex1);
 
         $badUsage = $this->ComplexEnum->getValue($this->Complex1);
-        $this->assertEquals(null, $badUsage);
+        expect($badUsage)->toBePHPEqual(null);
     }
 
     /**
@@ -421,7 +403,7 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
         second: complexEnum(fromEnum: TWO)
         good: complexEnum(provideGoodValue: true)
         bad: complexEnum(provideBadValue: true)
-        }')->toArray(true);
+        }')->toArray(1);
 
         $expected = [
             'data' => [
@@ -437,7 +419,7 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
             ]]
         ];
 
-        $this->assertArraySubset($expected, $result);
+        expect($result)->toInclude($expected);
     }
 
     /**
@@ -446,7 +428,7 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
     public function testCanBeIntrospectedWithoutError():void
     {
         $result = GraphQL::execute($this->schema, Introspection::getIntrospectionQuery());
-        $this->assertArrayNotHasKey('errors', $result);
+        expect($result)->toNotContainKey('errors');
     }
 
     public function testAllowsSimpleArrayAsValues():void
@@ -457,37 +439,26 @@ class EnumTypeTest extends \PHPUnit_Framework_TestCase
             third: simpleEnum(fromValue: "WRONG")
         }';
 
-        $this->assertArraySubset(
-            [
-                'data' => ['first' => 'ONE', 'second' => 'TWO', 'third' => null],
-                'errors' => [[
-                    'debugMessage' => 'Expected a value of type "SimpleEnum" but received: "WRONG"',
-                    'locations' => [['line' => 4, 'column' => 13]]
-                ]]
-            ],
-            GraphQL::executeAndReturnResult($this->schema, $q)->toArray(true)
-        );
+        $result = GraphQL::executeAndReturnResult($this->schema, $q)->toArray(1);
+        expect($result)->toInclude([
+            'data' => ['first' => 'ONE', 'second' => 'TWO', 'third' => null],
+            'errors' => [[
+                'debugMessage' => 'Expected a value of type "SimpleEnum" but received: "WRONG"',
+                'locations' => [['line' => 4, 'column' => 13]]
+            ]]
+        ]);
     }
 
-    private function expectFailure($query, $vars, $err)
+    private function expectFailure(string $query, ?array<string, mixed> $vars, mixed $err):void
     {
         $result = GraphQL::executeAndReturnResult($this->schema, $query, null, null, $vars);
-        $this->assertEquals(1, \count($result->errors));
+        expect(\count($result->errors))->toBePHPEqual(1);
 
         if (is_array($err)) {
-            $this->assertEquals(
-                $err['message'],
-                $result->errors[0]->getMessage()
-            );
-            $this->assertEquals(
-                $err['locations'],
-                $result->errors[0]->getLocations()
-            );
+            expect($result->errors[0]->getMessage())->toBePHPEqual($err['message']);
+            expect($result->errors[0]->getLocations())->toBePHPEqual($err['locations']);
         } else {
-            $this->assertEquals(
-                $err,
-                $result->errors[0]->getMessage()
-            );
+            expect($result->errors[0]->getMessage())->toBePHPEqual($err);
         }
     }
 }

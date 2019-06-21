@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Type;
 
 use GraphQL\Error\InvariantViolation;
+use function Facebook\FBExpect\expect;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
@@ -11,7 +12,7 @@ use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\EagerResolution;
 use GraphQL\Type\LazyResolution;
 
-class ResolutionTest extends \PHPUnit_Framework_TestCase
+class ResolutionTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @var ObjectType
@@ -81,7 +82,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
 
     private $postCommentMutationInput;
 
-    public function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         $this->node = new InterfaceType([
             'name' => 'Node',
@@ -286,7 +287,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
             'Int' => GraphQlType::int(),
             'Boolean' => GraphQlType::boolean()
         ];
-        $this->assertEquals($expectedTypeMap, $eagerTypeResolution->getTypeMap());
+        expect($eagerTypeResolution->getTypeMap())->toBePHPEqual($expectedTypeMap);
 
         $expectedDescriptor = [
             'version' => '1.0',
@@ -299,33 +300,33 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
             ],
             'possibleTypeMap' => []
         ];
-        $this->assertEquals($expectedDescriptor, $eagerTypeResolution->getDescriptor());
+        expect($eagerTypeResolution->getDescriptor())->toBePHPEqual($expectedDescriptor);
 
-        $this->assertSame(null, $eagerTypeResolution->resolveType('User'));
-        $this->assertSame([], $eagerTypeResolution->resolvePossibleTypes($this->node));
-        $this->assertSame([], $eagerTypeResolution->resolvePossibleTypes($this->content));
-        $this->assertSame([], $eagerTypeResolution->resolvePossibleTypes($this->mention));
+        expect($eagerTypeResolution->resolveType('User'))->toBeSame(null);
+        expect($eagerTypeResolution->resolvePossibleTypes($this->node))->toBeSame([]);
+        expect($eagerTypeResolution->resolvePossibleTypes($this->content))->toBeSame([]);
+        expect($eagerTypeResolution->resolvePossibleTypes($this->mention))->toBeSame([]);
 
         $eagerTypeResolution = new EagerResolution([$this->query, $this->mutation]);
 
-        $this->assertSame($this->query, $eagerTypeResolution->resolveType('Query'));
-        $this->assertSame($this->mutation, $eagerTypeResolution->resolveType('Mutation'));
-        $this->assertSame($this->user, $eagerTypeResolution->resolveType('User'));
-        $this->assertSame($this->node, $eagerTypeResolution->resolveType('Node'));
-        $this->assertSame($this->node, $eagerTypeResolution->resolveType('Node'));
-        $this->assertSame($this->content, $eagerTypeResolution->resolveType('Content'));
-        $this->assertSame($this->comment, $eagerTypeResolution->resolveType('Comment'));
-        $this->assertSame($this->mention, $eagerTypeResolution->resolveType('Mention'));
-        $this->assertSame($this->blogStory, $eagerTypeResolution->resolveType('BlogStory'));
-        $this->assertSame($this->category, $eagerTypeResolution->resolveType('Category'));
-        $this->assertSame($this->postStoryMutation, $eagerTypeResolution->resolveType('PostStoryMutation'));
-        $this->assertSame($this->postStoryMutationInput, $eagerTypeResolution->resolveType('PostStoryMutationInput'));
-        $this->assertSame($this->postCommentMutation, $eagerTypeResolution->resolveType('PostCommentMutation'));
-        $this->assertSame($this->postCommentMutationInput, $eagerTypeResolution->resolveType('PostCommentMutationInput'));
+        expect($eagerTypeResolution->resolveType('Query'))->toBeSame($this->query);
+        expect($eagerTypeResolution->resolveType('Mutation'))->toBeSame($this->mutation);
+        expect($eagerTypeResolution->resolveType('User'))->toBeSame($this->user);
+        expect($eagerTypeResolution->resolveType('Node'))->toBeSame($this->node);
+        expect($eagerTypeResolution->resolveType('Node'))->toBeSame($this->node);
+        expect($eagerTypeResolution->resolveType('Content'))->toBeSame($this->content);
+        expect($eagerTypeResolution->resolveType('Comment'))->toBeSame($this->comment);
+        expect($eagerTypeResolution->resolveType('Mention'))->toBeSame($this->mention);
+        expect($eagerTypeResolution->resolveType('BlogStory'))->toBeSame($this->blogStory);
+        expect($eagerTypeResolution->resolveType('Category'))->toBeSame($this->category);
+        expect($eagerTypeResolution->resolveType('PostStoryMutation'))->toBeSame($this->postStoryMutation);
+        expect($eagerTypeResolution->resolveType('PostStoryMutationInput'))->toBeSame($this->postStoryMutationInput);
+        expect($eagerTypeResolution->resolveType('PostCommentMutation'))->toBeSame($this->postCommentMutation);
+        expect($eagerTypeResolution->resolveType('PostCommentMutationInput'))->toBeSame($this->postCommentMutationInput);
 
-        $this->assertEquals([$this->blogStory], $eagerTypeResolution->resolvePossibleTypes($this->content));
-        $this->assertEquals([$this->user, $this->comment, $this->category, $this->blogStory], $eagerTypeResolution->resolvePossibleTypes($this->node));
-        $this->assertEquals([$this->user, $this->category], $eagerTypeResolution->resolvePossibleTypes($this->mention));
+        expect($eagerTypeResolution->resolvePossibleTypes($this->content))->toBePHPEqual([$this->blogStory]);
+        expect($eagerTypeResolution->resolvePossibleTypes($this->node))->toBePHPEqual([$this->user, $this->comment, $this->category, $this->blogStory]);
+        expect($eagerTypeResolution->resolvePossibleTypes($this->mention))->toBePHPEqual([$this->user, $this->category]);
 
         $expectedTypeMap = [
             'Query' => $this->query,
@@ -348,7 +349,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
             'Boolean' => GraphQlType::boolean()
         ];
 
-        $this->assertEquals($expectedTypeMap, $eagerTypeResolution->getTypeMap());
+        expect($eagerTypeResolution->getTypeMap())->toBePHPEqual($expectedTypeMap);
 
         $expectedDescriptor = [
             'version' => '1.0',
@@ -389,29 +390,29 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expectedDescriptor, $eagerTypeResolution->getDescriptor());
+        expect($eagerTypeResolution->getDescriptor())->toBePHPEqual($expectedDescriptor);
 
         // Ignores duplicates and nulls in initialTypes:
         $eagerTypeResolution = new EagerResolution([null, $this->query, null, $this->query, $this->mutation, null]);
-        $this->assertEquals($expectedTypeMap, $eagerTypeResolution->getTypeMap());
-        $this->assertEquals($expectedDescriptor, $eagerTypeResolution->getDescriptor());
+        expect($eagerTypeResolution->getTypeMap())->toBePHPEqual($expectedTypeMap);
+        expect($eagerTypeResolution->getDescriptor())->toBePHPEqual($expectedDescriptor);
 
         // Those types are only part of interface
-        $this->assertEquals(null, $eagerTypeResolution->resolveType('Link'));
-        $this->assertEquals(null, $eagerTypeResolution->resolveType('Video'));
-        $this->assertEquals(null, $eagerTypeResolution->resolveType('VideoMetadata'));
+        expect($eagerTypeResolution->resolveType('Link'))->toBePHPEqual(null);
+        expect($eagerTypeResolution->resolveType('Video'))->toBePHPEqual(null);
+        expect($eagerTypeResolution->resolveType('VideoMetadata'))->toBePHPEqual(null);
 
-        $this->assertEquals([$this->blogStory], $eagerTypeResolution->resolvePossibleTypes($this->content));
-        $this->assertEquals([$this->user, $this->comment, $this->category, $this->blogStory], $eagerTypeResolution->resolvePossibleTypes($this->node));
-        $this->assertEquals([$this->user, $this->category], $eagerTypeResolution->resolvePossibleTypes($this->mention));
+        expect($eagerTypeResolution->resolvePossibleTypes($this->content))->toBePHPEqual([$this->blogStory]);
+        expect($eagerTypeResolution->resolvePossibleTypes($this->node))->toBePHPEqual([$this->user, $this->comment, $this->category, $this->blogStory]);
+        expect($eagerTypeResolution->resolvePossibleTypes($this->mention))->toBePHPEqual([$this->user, $this->category]);
 
         $eagerTypeResolution = new EagerResolution([null, $this->video, null]);
-        $this->assertEquals($this->videoMetadata, $eagerTypeResolution->resolveType('VideoMetadata'));
-        $this->assertEquals($this->video, $eagerTypeResolution->resolveType('Video'));
+        expect($eagerTypeResolution->resolveType('VideoMetadata'))->toBePHPEqual($this->videoMetadata);
+        expect($eagerTypeResolution->resolveType('Video'))->toBePHPEqual($this->video);
 
-        $this->assertEquals([$this->video], $eagerTypeResolution->resolvePossibleTypes($this->content));
-        $this->assertEquals([$this->video, $this->user, $this->comment, $this->category], $eagerTypeResolution->resolvePossibleTypes($this->node));
-        $this->assertEquals([], $eagerTypeResolution->resolvePossibleTypes($this->mention));
+        expect($eagerTypeResolution->resolvePossibleTypes($this->content))->toBePHPEqual([$this->video]);
+        expect($eagerTypeResolution->resolvePossibleTypes($this->node))->toBePHPEqual([$this->video, $this->user, $this->comment, $this->category]);
+        expect($eagerTypeResolution->resolvePossibleTypes($this->mention))->toBePHPEqual([]);
 
         $expectedTypeMap = [
             'Video' => $this->video,
@@ -427,7 +428,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
             'Int' => GraphQlType::int(),
             'Boolean' => GraphQlType::boolean()
         ];
-        $this->assertEquals($expectedTypeMap, $eagerTypeResolution->getTypeMap());
+        expect($eagerTypeResolution->getTypeMap())->toBePHPEqual($expectedTypeMap);
 
         $expectedDescriptor = [
             'version' => '1.0',
@@ -457,7 +458,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expectedDescriptor, $eagerTypeResolution->getDescriptor());
+        expect($eagerTypeResolution->getDescriptor())->toBePHPEqual($expectedDescriptor);
     }
 
     public function testLazyResolutionFollowsEagerResolution():void
@@ -471,10 +472,10 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
         };
 
         $lazy = new LazyResolution($emptyDescriptor, $typeLoader);
-        $this->assertSame($eager->resolveType('User'), $lazy->resolveType('User'));
-        $this->assertSame($eager->resolvePossibleTypes($this->node), $lazy->resolvePossibleTypes($this->node));
-        $this->assertSame($eager->resolvePossibleTypes($this->content), $lazy->resolvePossibleTypes($this->content));
-        $this->assertSame($eager->resolvePossibleTypes($this->mention), $lazy->resolvePossibleTypes($this->mention));
+        expect($lazy->resolveType('User'))->toBeSame($eager->resolveType('User'));
+        expect($lazy->resolvePossibleTypes($this->node))->toBeSame($eager->resolvePossibleTypes($this->node));
+        expect($lazy->resolvePossibleTypes($this->content))->toBeSame($eager->resolvePossibleTypes($this->content));
+        expect($lazy->resolvePossibleTypes($this->mention))->toBeSame($eager->resolvePossibleTypes($this->mention));
 
         $eager = new EagerResolution([$this->query, $this->mutation]);
 
@@ -488,43 +489,43 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
 
         $lazy = new LazyResolution($descriptor, $typeLoader);
 
-        $this->assertSame($eager->resolveType('Query'), $lazy->resolveType('Query'));
-        $this->assertSame(1, $called);
-        $this->assertSame($eager->resolveType('Mutation'), $lazy->resolveType('Mutation'));
-        $this->assertSame(2, $called);
-        $this->assertSame($eager->resolveType('User'), $lazy->resolveType('User'));
-        $this->assertSame(3, $called);
-        $this->assertSame($eager->resolveType('User'), $lazy->resolveType('User'));
-        $this->assertSame(3, $called);
-        $this->assertSame($eager->resolveType('Node'), $lazy->resolveType('Node'));
-        $this->assertSame($eager->resolveType('Node'), $lazy->resolveType('Node'));
-        $this->assertSame(4, $called);
-        $this->assertSame($eager->resolveType('Content'), $lazy->resolveType('Content'));
-        $this->assertSame($eager->resolveType('Comment'), $lazy->resolveType('Comment'));
-        $this->assertSame($eager->resolveType('Mention'), $lazy->resolveType('Mention'));
-        $this->assertSame($eager->resolveType('BlogStory'), $lazy->resolveType('BlogStory'));
-        $this->assertSame($eager->resolveType('Category'), $lazy->resolveType('Category'));
-        $this->assertSame($eager->resolveType('PostStoryMutation'), $lazy->resolveType('PostStoryMutation'));
-        $this->assertSame($eager->resolveType('PostStoryMutationInput'), $lazy->resolveType('PostStoryMutationInput'));
-        $this->assertSame($eager->resolveType('PostCommentMutation'), $lazy->resolveType('PostCommentMutation'));
-        $this->assertSame($eager->resolveType('PostCommentMutationInput'), $lazy->resolveType('PostCommentMutationInput'));
-        $this->assertSame(13, $called);
+        expect($lazy->resolveType('Query'))->toBeSame($eager->resolveType('Query'));
+        expect($called)->toBeSame(1);
+        expect($lazy->resolveType('Mutation'))->toBeSame($eager->resolveType('Mutation'));
+        expect($called)->toBeSame(2);
+        expect($lazy->resolveType('User'))->toBeSame($eager->resolveType('User'));
+        expect($called)->toBeSame(3);
+        expect($lazy->resolveType('User'))->toBeSame($eager->resolveType('User'));
+        expect($called)->toBeSame(3);
+        expect($lazy->resolveType('Node'))->toBeSame($eager->resolveType('Node'));
+        expect($lazy->resolveType('Node'))->toBeSame($eager->resolveType('Node'));
+        expect($called)->toBeSame(4);
+        expect($lazy->resolveType('Content'))->toBeSame($eager->resolveType('Content'));
+        expect($lazy->resolveType('Comment'))->toBeSame($eager->resolveType('Comment'));
+        expect($lazy->resolveType('Mention'))->toBeSame($eager->resolveType('Mention'));
+        expect($lazy->resolveType('BlogStory'))->toBeSame($eager->resolveType('BlogStory'));
+        expect($lazy->resolveType('Category'))->toBeSame($eager->resolveType('Category'));
+        expect($lazy->resolveType('PostStoryMutation'))->toBeSame($eager->resolveType('PostStoryMutation'));
+        expect($lazy->resolveType('PostStoryMutationInput'))->toBeSame($eager->resolveType('PostStoryMutationInput'));
+        expect($lazy->resolveType('PostCommentMutation'))->toBeSame($eager->resolveType('PostCommentMutation'));
+        expect($lazy->resolveType('PostCommentMutationInput'))->toBeSame($eager->resolveType('PostCommentMutationInput'));
+        expect($called)->toBeSame(13);
 
-        $this->assertEquals($eager->resolvePossibleTypes($this->content), $lazy->resolvePossibleTypes($this->content));
-        $this->assertEquals($eager->resolvePossibleTypes($this->node), $lazy->resolvePossibleTypes($this->node));
-        $this->assertEquals($eager->resolvePossibleTypes($this->mention), $lazy->resolvePossibleTypes($this->mention));
+        expect($lazy->resolvePossibleTypes($this->content))->toBePHPEqual($eager->resolvePossibleTypes($this->content));
+        expect($lazy->resolvePossibleTypes($this->node))->toBePHPEqual($eager->resolvePossibleTypes($this->node));
+        expect($lazy->resolvePossibleTypes($this->mention))->toBePHPEqual($eager->resolvePossibleTypes($this->mention));
 
         $called = 0;
         $eager = new EagerResolution([$this->video]);
         $lazy = new LazyResolution($eager->getDescriptor(), $typeLoader);
 
-        $this->assertEquals($eager->resolveType('VideoMetadata'), $lazy->resolveType('VideoMetadata'));
-        $this->assertEquals($eager->resolveType('Video'), $lazy->resolveType('Video'));
-        $this->assertEquals(2, $called);
+        expect($lazy->resolveType('VideoMetadata'))->toBePHPEqual($eager->resolveType('VideoMetadata'));
+        expect($lazy->resolveType('Video'))->toBePHPEqual($eager->resolveType('Video'));
+        expect($called)->toBePHPEqual(2);
 
-        $this->assertEquals($eager->resolvePossibleTypes($this->content), $lazy->resolvePossibleTypes($this->content));
-        $this->assertEquals($eager->resolvePossibleTypes($this->node), $lazy->resolvePossibleTypes($this->node));
-        $this->assertEquals($eager->resolvePossibleTypes($this->mention), $lazy->resolvePossibleTypes($this->mention));
+        expect($lazy->resolvePossibleTypes($this->content))->toBePHPEqual($eager->resolvePossibleTypes($this->content));
+        expect($lazy->resolvePossibleTypes($this->node))->toBePHPEqual($eager->resolvePossibleTypes($this->node));
+        expect($lazy->resolvePossibleTypes($this->mention))->toBePHPEqual($eager->resolvePossibleTypes($this->mention));
     }
 
     private function createLazy(){
@@ -556,7 +557,7 @@ class ResolutionTest extends \PHPUnit_Framework_TestCase
 
         $lazy = new LazyResolution($descriptor, $invalidTypeLoader);
         $value = $lazy->resolveType('null');
-        $this->assertEquals(null, $value);
+        expect($value)->toBePHPEqual(null);
 
         return $lazy;
     }

@@ -2,6 +2,7 @@
 namespace GraphQL\Tests\Utils;
 
 use GraphQL\GraphQL;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\ObjectTypeDefinitionNode;
@@ -13,7 +14,7 @@ use GraphQL\Utils\BuildSchema;
 use GraphQL\Utils\SchemaPrinter;
 use GraphQL\Type\Definition\Directive;
 
-class BuildSchemaTest extends \PHPUnit_Framework_TestCase
+class BuildSchemaTest extends \Facebook\HackTest\HackTest
 {
     // Describe: Schema Builder
 
@@ -37,7 +38,7 @@ class BuildSchemaTest extends \PHPUnit_Framework_TestCase
         '));
         
         $result = GraphQL::execute($schema, '{ str }', ['str' => 123]);
-        $this->assertEquals($result['data'], ['str' => 123]);
+        expect(['str' => 123])->toBePHPEqual($result['data']);
     }
 
     /**
@@ -61,7 +62,7 @@ class BuildSchemaTest extends \PHPUnit_Framework_TestCase
                 }
             ]
         );
-        $this->assertEquals($result, ['data' => ['add' => 89]]);
+        expect(['data' => ['add' => 89]])->toBePHPEqual($result);
     }
 
     /**
@@ -83,7 +84,7 @@ type HelloScalars {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -103,7 +104,7 @@ type Hello {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -138,7 +139,7 @@ type Hello {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($body, $output);
+        expect($output)->toBePHPEqual($body);
     }
 
     /**
@@ -156,10 +157,10 @@ type Hello {
 }
 ';
         $schema = BuildSchema::buildAST(Parser::parse($body));
-        $this->assertEquals(\count($schema->getDirectives()), 3);
-        $this->assertEquals($schema->getDirective('skip'), Directive::skipDirective());
-        $this->assertEquals($schema->getDirective('include'), Directive::includeDirective());
-        $this->assertEquals($schema->getDirective('deprecated'), Directive::deprecatedDirective());
+        expect(3)->toBePHPEqual(\count($schema->getDirectives()));
+        expect(Directive::skipDirective())->toBePHPEqual($schema->getDirective('skip'));
+        expect(Directive::includeDirective())->toBePHPEqual($schema->getDirective('include'));
+        expect(Directive::deprecatedDirective())->toBePHPEqual($schema->getDirective('deprecated'));
     }
 
     /**
@@ -181,10 +182,10 @@ type Hello {
 }
     ';
         $schema = BuildSchema::buildAST(Parser::parse($body));
-        $this->assertEquals(\count($schema->getDirectives()), 3);
-        $this->assertNotEquals($schema->getDirective('skip'), Directive::skipDirective());
-        $this->assertNotEquals($schema->getDirective('include'), Directive::includeDirective());
-        $this->assertNotEquals($schema->getDirective('deprecated'), Directive::deprecatedDirective());
+        expect(3)->toBePHPEqual(\count($schema->getDirectives()));
+        expect(Directive::skipDirective())->toNotBePHPEqual($schema->getDirective('skip'));
+        expect(Directive::includeDirective())->toNotBePHPEqual($schema->getDirective('include'));
+        expect(Directive::deprecatedDirective())->toNotBePHPEqual($schema->getDirective('deprecated'));
     }
 
     /**
@@ -206,7 +207,7 @@ type HelloScalars {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -225,7 +226,7 @@ type Recurse {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -249,7 +250,7 @@ type TypeTwo {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -271,7 +272,7 @@ type Hello {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -289,7 +290,7 @@ type Hello {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -311,7 +312,7 @@ interface WorldInterface {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -333,7 +334,7 @@ type OutputEnumRoot {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -356,7 +357,7 @@ type OutputEnumRoot {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -380,7 +381,7 @@ type World {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -408,7 +409,7 @@ type WorldTwo {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -428,7 +429,7 @@ type Root {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -450,7 +451,7 @@ type Root {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -468,7 +469,7 @@ type Hello {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -493,7 +494,7 @@ type Mutation {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -518,7 +519,7 @@ type Subscription {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -540,7 +541,7 @@ type Query {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -560,7 +561,7 @@ type Query {
 union Union = Concrete
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
     }
 
     /**
@@ -582,7 +583,7 @@ type Query {
 }
 ';
         $output = $this->cycleOutput($body);
-        $this->assertEquals($output, $body);
+        expect($body)->toBePHPEqual($output);
 
         $ast = Parser::parse($body);
         $schema = BuildSchema::buildAST($ast);
@@ -591,22 +592,22 @@ type Query {
         $myEnum = $schema->getType('MyEnum');
 
         $value = $myEnum->getValue('VALUE');
-        $this->assertFalse($value->isDeprecated());
+        expect($value->isDeprecated())->toBeFalse();
 
         $oldValue = $myEnum->getValue('OLD_VALUE');
-        $this->assertTrue($oldValue->isDeprecated());
-        $this->assertEquals('No longer supported', $oldValue->deprecationReason);
+        expect($oldValue->isDeprecated())->toBeTrue();
+        expect($oldValue->deprecationReason)->toBePHPEqual('No longer supported');
 
         $otherValue = $myEnum->getValue('OTHER_VALUE');
-        $this->assertTrue($otherValue->isDeprecated());
-        $this->assertEquals('Terrible reasons', $otherValue->deprecationReason);
+        expect($otherValue->isDeprecated())->toBeTrue();
+        expect($otherValue->deprecationReason)->toBePHPEqual('Terrible reasons');
 
         $rootFields = $schema->getType('Query')->getFields();
-        $this->assertEquals($rootFields['field1']->isDeprecated(), true);
-        $this->assertEquals($rootFields['field1']->deprecationReason, 'No longer supported');
+        expect(true)->toBePHPEqual($rootFields['field1']->isDeprecated());
+        expect('No longer supported')->toBePHPEqual($rootFields['field1']->deprecationReason);
 
-        $this->assertEquals($rootFields['field2']->isDeprecated(), true);
-        $this->assertEquals($rootFields['field2']->deprecationReason, 'Because I said so');
+        expect(true)->toBePHPEqual($rootFields['field2']->isDeprecated());
+        expect('Because I said so')->toBePHPEqual($rootFields['field2']->deprecationReason);
     }
 
     /**
@@ -664,16 +665,16 @@ type Query {
             Printer::doPrint($testDirective->astNode)
         ));
 
-        $this->assertEquals($restoredIDL, SchemaPrinter::doPrint($schema));
+        expect(SchemaPrinter::doPrint($schema))->toBePHPEqual($restoredIDL);
 
         $testField = $query->getField('testField');
-        $this->assertEquals('testField(testArg: TestInput): TestUnion', Printer::doPrint($testField->astNode));
-        $this->assertEquals('testArg: TestInput', Printer::doPrint($testField->args[0]->astNode));
-        $this->assertEquals('testInputField: TestEnum', Printer::doPrint($testInput->getField('testInputField')->astNode));
-        $this->assertEquals('TEST_VALUE', Printer::doPrint($testEnum->getValue('TEST_VALUE')->astNode));
-        $this->assertEquals('interfaceField: String', Printer::doPrint($testInterface->getField('interfaceField')->astNode));
-        $this->assertEquals('interfaceField: String', Printer::doPrint($testType->getField('interfaceField')->astNode));
-        $this->assertEquals('arg: Int', Printer::doPrint($testDirective->args[0]->astNode));
+        expect(Printer::doPrint($testField->astNode))->toBePHPEqual('testField(testArg: TestInput): TestUnion');
+        expect(Printer::doPrint($testField->args[0]->astNode))->toBePHPEqual('testArg: TestInput');
+        expect(Printer::doPrint($testInput->getField('testInputField')->astNode))->toBePHPEqual('testInputField: TestEnum');
+        expect(Printer::doPrint($testEnum->getValue('TEST_VALUE')->astNode))->toBePHPEqual('TEST_VALUE');
+        expect(Printer::doPrint($testInterface->getField('interfaceField')->astNode))->toBePHPEqual('interfaceField: String');
+        expect(Printer::doPrint($testType->getField('interfaceField')->astNode))->toBePHPEqual('interfaceField: String');
+        expect(Printer::doPrint($testDirective->args[0]->astNode))->toBePHPEqual('arg: Int');
     }
 
     // Describe: Failures
@@ -1025,44 +1026,46 @@ interface Hello {
 
         $schema = BuildSchema::buildAST($doc, $typeConfigDecorator);
         $schema->getTypeMap();
-        $this->assertEquals(['Query', 'Color', 'Hello'], $decorated);
+        expect($decorated)->toBePHPEqual(['Query', 'Color', 'Hello']);
 
         list($defaultConfig, $node, $allNodesMap) = $calls[0];
-        $this->assertInstanceOf(ObjectTypeDefinitionNode::class, $node);
-        $this->assertEquals('Query', $defaultConfig['name']);
-        $this->assertInstanceOf(\Closure::class, $defaultConfig['fields']);
-        $this->assertInstanceOf(\Closure::class, $defaultConfig['interfaces']);
-        $this->assertArrayHasKey('description', $defaultConfig);
-        $this->assertCount(5, $defaultConfig);
-        $this->assertEquals(\array_keys($allNodesMap), ['Query', 'Color', 'Hello']);
-        $this->assertEquals('My description of Query', $schema->getType('Query')->description);
+        expect($node)->toBeInstanceOf(ObjectTypeDefinitionNode::class);
+        expect($defaultConfig['name'])->toBePHPEqual('Query');
+        expect($defaultConfig['fields'])->toBeInstanceOf(\Closure::class);
+        expect($defaultConfig['interfaces'])->toBeInstanceOf(\Closure::class);
+        expect($defaultConfig)->toContainKey('description');
+        expect(\count($defaultConfig))->toBeSame(5);
+        expect(['Query', 'Color', 'Hello'])->toBePHPEqual(\array_keys($allNodesMap));
+        expect($schema->getType('Query')->description)->toBePHPEqual('My description of Query');
 
 
         list($defaultConfig, $node, $allNodesMap) = $calls[1];
-        $this->assertInstanceOf(EnumTypeDefinitionNode::class, $node);
-        $this->assertEquals('Color', $defaultConfig['name']);
+        expect($node)->toBeInstanceOf(EnumTypeDefinitionNode::class);
+        expect($defaultConfig['name'])->toBePHPEqual('Color');
         $enumValue = [
             'description' => '',
             'deprecationReason' => ''
         ];
-        $this->assertArraySubset([
+
+        expect($defaultConfig['values'])->toInclude([
             'RED' => $enumValue,
             'GREEN' => $enumValue,
             'BLUE' => $enumValue,
-        ], $defaultConfig['values']);
-        $this->assertCount(4, $defaultConfig); // 3 + astNode
-        $this->assertEquals(\array_keys($allNodesMap), ['Query', 'Color', 'Hello']);
-        $this->assertEquals('My description of Color', $schema->getType('Color')->description);
+        ]);
+        expect(\count($defaultConfig))->toBeSame(4); // 3 + astNode
+
+        expect(['Query', 'Color', 'Hello'])->toBePHPEqual(\array_keys($allNodesMap));
+        expect($schema->getType('Color')->description)->toBePHPEqual('My description of Color');
 
         list($defaultConfig, $node, $allNodesMap) = $calls[2];
-        $this->assertInstanceOf(InterfaceTypeDefinitionNode::class, $node);
-        $this->assertEquals('Hello', $defaultConfig['name']);
-        $this->assertInstanceOf(\Closure::class, $defaultConfig['fields']);
-        $this->assertInstanceOf(\Closure::class, $defaultConfig['resolveType']);
-        $this->assertArrayHasKey('description', $defaultConfig);
-        $this->assertCount(5, $defaultConfig);
-        $this->assertEquals(\array_keys($allNodesMap), ['Query', 'Color', 'Hello']);
-        $this->assertEquals('My description of Hello', $schema->getType('Hello')->description);
+        expect($node)->toBeInstanceOf(InterfaceTypeDefinitionNode::class);
+        expect($defaultConfig['name'])->toBePHPEqual('Hello');
+        expect($defaultConfig['fields'])->toBeInstanceOf(\Closure::class);
+        expect($defaultConfig['resolveType'])->toBeInstanceOf(\Closure::class);
+        expect($defaultConfig)->toContainKey('description');
+        expect(\count($defaultConfig))->toBeSame(5);
+        expect(['Query', 'Color', 'Hello'])->toBePHPEqual(\array_keys($allNodesMap));
+        expect($schema->getType('Hello')->description)->toBePHPEqual('My description of Hello');
     }
 
     public function testCreatesTypesLazily():void
@@ -1101,20 +1104,20 @@ type World implements Hello {
         };
 
         $schema = BuildSchema::buildAST($doc, $typeConfigDecorator);
-        $this->assertEquals(['Query'], $created);
+        expect($created)->toBePHPEqual(['Query']);
 
         $schema->getType('Color');
-        $this->assertEquals(['Query', 'Color'], $created);
+        expect($created)->toBePHPEqual(['Query', 'Color']);
 
         $schema->getType('Hello');
-        $this->assertEquals(['Query', 'Color', 'Hello'], $created);
+        expect($created)->toBePHPEqual(['Query', 'Color', 'Hello']);
 
         $types = $schema->getTypeMap();
-        $this->assertEquals(['Query', 'Color', 'Hello', 'World'], $created);
-        $this->assertArrayHasKey('Query', $types);
-        $this->assertArrayHasKey('Color', $types);
-        $this->assertArrayHasKey('Hello', $types);
-        $this->assertArrayHasKey('World', $types);
+        expect($created)->toBePHPEqual(['Query', 'Color', 'Hello', 'World']);
+        expect($types)->toContainKey('Query');
+        expect($types)->toContainKey('Color');
+        expect($types)->toContainKey('Hello');
+        expect($types)->toContainKey('World');
     }
 
     public function testScalarDescription():void
@@ -1154,6 +1157,6 @@ type Query {
                     'represent free-form human-readable text.'
             ]
         ]];
-        $this->assertEquals($expected, $result);
+        expect($result)->toBePHPEqual($expected);
     }
 }

@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Utils;
 
 use GraphQL\Language\AST\NullValueNode;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
@@ -10,16 +11,16 @@ use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Utils\Utils;
 use GraphQL\Utils\AST;
 
-class ValueFromAstTest extends \PHPUnit_Framework_TestCase
+class ValueFromAstTest extends \Facebook\HackTest\HackTest
 {
     private function runTestCase(GraphQlType $type, string $valueText, mixed $expected):void
     {
-        $this->assertEquals($expected, AST::valueFromAST(Parser::parseValueString($valueText), $type));
+        expect(AST::valueFromAST(Parser::parseValueString($valueText), $type))->toBePHPEqual($expected);
     }
 
     private function runTestCaseWithVars(array<string, mixed> $variables, GraphQlType $type, string $valueText, mixed $expected):void
     {
-        $this->assertEquals($expected, AST::valueFromAST(Parser::parseValueString($valueText), $type, $variables));
+        expect(AST::valueFromAST(Parser::parseValueString($valueText), $type, $variables))->toBePHPEqual($expected);
     }
 
     /**
@@ -27,7 +28,7 @@ class ValueFromAstTest extends \PHPUnit_Framework_TestCase
      */
     public function testRejectsEmptyInput():void
     {
-        $this->assertEquals(Utils::undefined(), AST::valueFromAST(null, GraphQlType::boolean()));
+        expect(AST::valueFromAST(null, GraphQlType::boolean()))->toBePHPEqual(Utils::undefined());
     }
 
     /**

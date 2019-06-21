@@ -3,9 +3,10 @@
 namespace GraphQL\Tests;
 
 use GraphQL\Language\Parser;
+use function Facebook\FBExpect\expect;
 use GraphQL\Validator\DocumentValidator;
 
-class StarWarsValidationTest extends \PHPUnit_Framework_TestCase
+class StarWarsValidationTest extends \Facebook\HackTest\HackTest
 {
     // Star Wars Validation Tests
     // Basic Queries
@@ -34,7 +35,7 @@ class StarWarsValidationTest extends \PHPUnit_Framework_TestCase
         }
       ';
         $errors = $this->validationErrors($query);
-        $this->assertEquals(true, empty($errors));
+        expect(empty($errors))->toBePHPEqual(true);
     }
 
     /**
@@ -50,7 +51,7 @@ class StarWarsValidationTest extends \PHPUnit_Framework_TestCase
         }
         ';
         $errors = $this->validationErrors($query);
-        $this->assertEquals(false, empty($errors));
+        expect(empty($errors))->toBePHPEqual(false);
     }
 
     /**
@@ -65,7 +66,7 @@ class StarWarsValidationTest extends \PHPUnit_Framework_TestCase
         ';
 
         $errors = $this->validationErrors($query);
-        $this->assertEquals(false, empty($errors));
+        expect(empty($errors))->toBePHPEqual(false);
     }
 
     /**
@@ -83,7 +84,7 @@ class StarWarsValidationTest extends \PHPUnit_Framework_TestCase
         }
         ';
         $errors = $this->validationErrors($query);
-        $this->assertEquals(false, empty($errors));
+        expect(empty($errors))->toBePHPEqual(false);
     }
 
     /**
@@ -100,7 +101,7 @@ class StarWarsValidationTest extends \PHPUnit_Framework_TestCase
         }
         ';
         $errors = $this->validationErrors($query);
-        $this->assertEquals(false, empty($errors));
+        expect(empty($errors))->toBePHPEqual(false);
     }
 
     /**
@@ -121,7 +122,7 @@ class StarWarsValidationTest extends \PHPUnit_Framework_TestCase
         }
         ';
         $errors = $this->validationErrors($query);
-        $this->assertEquals(true, empty($errors));
+        expect(empty($errors))->toBePHPEqual(true);
     }
 
     /**
@@ -140,7 +141,7 @@ class StarWarsValidationTest extends \PHPUnit_Framework_TestCase
         }
         ';
         $errors = $this->validationErrors($query);
-        $this->assertEquals(true, empty($errors));
+        expect(empty($errors))->toBePHPEqual(true);
     }
 
     /**

@@ -31,8 +31,8 @@ class QueryDepthTest extends AbstractQuerySecurityTest
      * @param $queryDepth
      * @param int   $maxQueryDepth
      * @param array $expectedErrors
-     * @dataProvider queryDataProvider
      */
+    <<DataProvider('queryDataProvider')>>
     public function testSimpleQueries(int $queryDepth, int $maxQueryDepth = 7, array<array<string,mixed>> $expectedErrors = []):void
     {
         $this->assertDocumentValidator($this->buildRecursiveQuery($queryDepth), $maxQueryDepth, $expectedErrors);
@@ -42,8 +42,8 @@ class QueryDepthTest extends AbstractQuerySecurityTest
      * @param $queryDepth
      * @param int   $maxQueryDepth
      * @param array $expectedErrors
-     * @dataProvider queryDataProvider
      */
+    <<DataProvider('queryDataProvider')>>
     public function testFragmentQueries(int $queryDepth, int $maxQueryDepth = 7, array<array<string,mixed>> $expectedErrors = []):void
     {
         $this->assertDocumentValidator($this->buildRecursiveUsingFragmentQuery($queryDepth), $maxQueryDepth, $expectedErrors);
@@ -53,8 +53,8 @@ class QueryDepthTest extends AbstractQuerySecurityTest
      * @param $queryDepth
      * @param int   $maxQueryDepth
      * @param array $expectedErrors
-     * @dataProvider queryDataProvider
      */
+    <<DataProvider('queryDataProvider')>>
     public function testInlineFragmentQueries(int $queryDepth, int $maxQueryDepth = 7, array<array<string,mixed>> $expectedErrors = []):void
     {
         $this->assertDocumentValidator($this->buildRecursiveUsingInlineFragmentQuery($queryDepth), $maxQueryDepth, $expectedErrors);

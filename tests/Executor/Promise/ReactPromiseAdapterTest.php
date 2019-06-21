@@ -6,6 +6,7 @@ namespace GraphQL\Tests\Executor\Promise;
 
 
 use GraphQL\Executor\Promise\Adapter\ReactPromiseAdapter;
+use function Facebook\FBExpect\expect;
 use GraphQL\Executor\Promise\Promise;
 use React\Promise\Deferred;
 use React\Promise\FulfilledPromise;
@@ -16,12 +17,12 @@ use React\Promise\RejectedPromise;
 /**
  * @group ReactPromise
  */
-class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
+class ReactPromiseAdapterTest extends \Facebook\HackTest\HackTest
 {
-    public function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         if(! \class_exists('React\Promise\Promise')) {
-            $this->markTestSkipped('react/promise package must be installed to run GraphQL\Tests\Executor\Promise\ReactPromiseAdapterTest');
+            static::markTestSkipped('react/promise package must be installed to run GraphQL\Tests\Executor\Promise\ReactPromiseAdapterTest');
         }
     }
 
@@ -29,18 +30,18 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $reactAdapter = new ReactPromiseAdapter();
 
-        $this->assertSame(true, $reactAdapter->isThenable(new ReactPromise(function() {})));
-        $this->assertSame(true, $reactAdapter->isThenable(new FulfilledPromise()));
-        $this->assertSame(true, $reactAdapter->isThenable(new RejectedPromise()));
-        $this->assertSame(true, $reactAdapter->isThenable(new LazyPromise(function() {})));
-        $this->assertSame(false, $reactAdapter->isThenable(false));
-        $this->assertSame(false, $reactAdapter->isThenable(true));
-        $this->assertSame(false, $reactAdapter->isThenable(1));
-        $this->assertSame(false, $reactAdapter->isThenable(0));
-        $this->assertSame(false, $reactAdapter->isThenable('test'));
-        $this->assertSame(false, $reactAdapter->isThenable(''));
-        $this->assertSame(false, $reactAdapter->isThenable([]));
-        $this->assertSame(false, $reactAdapter->isThenable(new \stdClass()));
+        expect($reactAdapter->isThenable(new ReactPromise(function() {})))->toBeSame(true);
+        expect($reactAdapter->isThenable(new FulfilledPromise()))->toBeSame(true);
+        expect($reactAdapter->isThenable(new RejectedPromise()))->toBeSame(true);
+        expect($reactAdapter->isThenable(new LazyPromise(function() {})))->toBeSame(true);
+        expect($reactAdapter->isThenable(false))->toBeSame(false);
+        expect($reactAdapter->isThenable(true))->toBeSame(false);
+        expect($reactAdapter->isThenable(1))->toBeSame(false);
+        expect($reactAdapter->isThenable(0))->toBeSame(false);
+        expect($reactAdapter->isThenable('test'))->toBeSame(false);
+        expect($reactAdapter->isThenable(''))->toBeSame(false);
+        expect($reactAdapter->isThenable([]))->toBeSame(false);
+        expect($reactAdapter->isThenable(new \stdClass()))->toBeSame(false);
     }
 
     public function testConvertsReactPromisesToGraphQlOnes():void
@@ -50,8 +51,8 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
 
         $promise = $reactAdapter->convertThenable($reactPromise);
 
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Promise', $promise);
-        $this->assertInstanceOf('React\Promise\FulfilledPromise', $promise->adoptedPromise);
+        expect($promise)->toBeInstanceOf('GraphQL\Executor\Promise\Promise');
+        expect($promise->adoptedPromise)->toBeInstanceOf('React\Promise\FulfilledPromise');
     }
 
     public function testThen():void
@@ -66,9 +67,9 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
             $result = $value;
         });
 
-        $this->assertSame(1, $result);
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Promise', $resultPromise);
-        $this->assertInstanceOf('React\Promise\FulfilledPromise', $resultPromise->adoptedPromise);
+        expect($result)->toBeSame(1);
+        expect($resultPromise)->toBeInstanceOf('GraphQL\Executor\Promise\Promise');
+        expect($resultPromise->adoptedPromise)->toBeInstanceOf('React\Promise\FulfilledPromise');
     }
 
     public function testCreate():void
@@ -78,8 +79,8 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
              $resolve(1);
         });
 
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Promise', $resolvedPromise);
-        $this->assertInstanceOf('React\Promise\Promise', $resolvedPromise->adoptedPromise);
+        expect($resolvedPromise)->toBeInstanceOf('GraphQL\Executor\Promise\Promise');
+        expect($resolvedPromise->adoptedPromise)->toBeInstanceOf('React\Promise\Promise');
 
         $result = null;
 
@@ -87,7 +88,7 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
            $result = $value;
         });
 
-        $this->assertSame(1, $result);
+        expect($result)->toBeSame(1);
     }
 
     public function testCreateFulfilled():void
@@ -95,8 +96,8 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
         $reactAdapter = new ReactPromiseAdapter();
         $fulfilledPromise = $reactAdapter->createFulfilled(1);
 
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Promise', $fulfilledPromise);
-        $this->assertInstanceOf('React\Promise\FulfilledPromise', $fulfilledPromise->adoptedPromise);
+        expect($fulfilledPromise)->toBeInstanceOf('GraphQL\Executor\Promise\Promise');
+        expect($fulfilledPromise->adoptedPromise)->toBeInstanceOf('React\Promise\FulfilledPromise');
 
         $result = null;
 
@@ -104,7 +105,7 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
             $result = $value;
         });
 
-        $this->assertSame(1, $result);
+        expect($result)->toBeSame(1);
     }
 
     public function testCreateRejected():void
@@ -112,8 +113,8 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
         $reactAdapter = new ReactPromiseAdapter();
         $rejectedPromise = $reactAdapter->createRejected(new \Exception('I am a bad promise'));
 
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Promise', $rejectedPromise);
-        $this->assertInstanceOf('React\Promise\RejectedPromise', $rejectedPromise->adoptedPromise);
+        expect($rejectedPromise)->toBeInstanceOf('GraphQL\Executor\Promise\Promise');
+        expect($rejectedPromise->adoptedPromise)->toBeInstanceOf('React\Promise\RejectedPromise');
 
         $exception = null;
 
@@ -121,8 +122,8 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
             $exception = $error;
         });
 
-        $this->assertInstanceOf('\Exception', $exception);
-        $this->assertEquals('I am a bad promise', $exception->getMessage());
+        expect($exception)->toBeInstanceOf('\Exception');
+        expect($exception->getMessage())->toBePHPEqual('I am a bad promise');
     }
 
     public function testAll():void
@@ -132,8 +133,8 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
 
         $allPromise = $reactAdapter->all($promises);
 
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Promise', $allPromise);
-        $this->assertInstanceOf('React\Promise\FulfilledPromise', $allPromise->adoptedPromise);
+        expect($allPromise)->toBeInstanceOf('GraphQL\Executor\Promise\Promise');
+        expect($allPromise->adoptedPromise)->toBeInstanceOf('React\Promise\FulfilledPromise');
 
         $result = null;
 
@@ -141,7 +142,7 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
            $result = $values;
         });
 
-        $this->assertSame([1, 2, 3], $result);
+        expect($result)->toBeSame([1, 2, 3]);
     }
 
     public function testAllShouldPreserveTheOrderOfTheArrayWhenResolvingAsyncPromises():void
@@ -157,6 +158,6 @@ class ReactPromiseAdapterTest extends \PHPUnit_Framework_TestCase
 
         // Resolve the async promise
         $deferred->resolve(2);
-        $this->assertSame([1, 2, 3], $result);
+        expect($result)->toBeSame([1, 2, 3]);
     }
 }

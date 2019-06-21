@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Executor;
 
 use GraphQL\Deferred;
+use function Facebook\FBExpect\expect;
 use GraphQL\Executor\ExecutionResult;
 use GraphQL\Executor\Executor;
 use GraphQL\Error\FormattedError;
@@ -12,7 +13,7 @@ use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 
-class MutationsTest extends \PHPUnit_Framework_TestCase
+class MutationsTest extends \Facebook\HackTest\HackTest
 {
     // Execute: Handles mutation execution ordering
 
@@ -59,7 +60,7 @@ class MutationsTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $mutationResult->toArray());
+        expect($mutationResult->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -117,7 +118,7 @@ class MutationsTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertArraySubset($expected, $mutationResult->toArray(true));
+        expect($mutationResult->toArray(1))->toInclude($expected);
     }
 
     private function schema()

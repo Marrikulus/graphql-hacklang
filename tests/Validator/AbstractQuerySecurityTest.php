@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Validator;
 
 use GraphQL\Error\FormattedError;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\Error;
 use GraphQL\Language\SourceLocation;
 use GraphQL\Language\Parser;
@@ -10,7 +11,7 @@ use GraphQL\Type\Introspection;
 use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\Rules\AbstractQuerySecurity;
 
-abstract class AbstractQuerySecurityTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractQuerySecurityTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @param $max
@@ -27,13 +28,11 @@ abstract class AbstractQuerySecurityTest extends \PHPUnit_Framework_TestCase
      */
     abstract protected function getErrorMessage(int $max, int $count):string;
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage argument must be greater or equal to 0.
-     */
     public function testMaxQueryDepthMustBeGreaterOrEqualTo0():void
     {
-        $this->getRule(-1);
+        expect(() ==> {
+            $this->getRule(-1);
+        })->toThrow(\InvalidArgumentException::class);
     }
 
     protected function createFormattedError(int $max, int $count, array<SourceLocation> $locations = []):array<string, mixed>
@@ -49,7 +48,7 @@ abstract class AbstractQuerySecurityTest extends \PHPUnit_Framework_TestCase
             [$this->getRule($max)]
         );
         $gotErrors = \array_map(class_meth(Error::class, 'formatError'), $errors);
-        $this->assertEquals($expectedErrors, $gotErrors, $queryString);
+        expect($gotErrors)->toBePHPEqual($expectedErrors, $queryString);
 
         return $errors;
     }

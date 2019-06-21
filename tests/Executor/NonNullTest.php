@@ -4,6 +4,7 @@
 namespace GraphQL\Tests\Executor;
 
 use GraphQL\Deferred;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\UserError;
 use GraphQL\Executor\Executor;
 use GraphQL\Error\FormattedError;
@@ -13,7 +14,7 @@ use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 
-class NonNullTest extends \PHPUnit_Framework_TestCase
+class NonNullTest extends \Facebook\HackTest\HackTest
 {
     /** @var \Exception */
     public $syncError;
@@ -31,7 +32,7 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
     public $nullingData;
     public $schema;
 
-    public function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         $this->syncError = new UserError('sync');
         $this->nonNullSyncError = new UserError('nonNullSync');
@@ -153,7 +154,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
                 )
             ]
         ];
-        $this->assertArraySubset($expected, Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray());
+        $result = Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray();
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsANullableFieldThatThrowsInAPromise():void
@@ -177,8 +179,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
                 )
             ]
         ];
-
-        $this->assertArraySubset($expected, Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray());
+        $result = Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray();
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsASynchronouslyReturnedObjectThatContainsANonNullableFieldThatThrowsSynchronously():void
@@ -201,8 +203,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
             'errors' => [
                 FormattedError::create($this->nonNullSyncError->getMessage(), [new SourceLocation(4, 11)])
             ]
-        ];
-        $this->assertArraySubset($expected, Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray());
+        ];      $result = Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray();
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsAsynchronouslyReturnedObjectThatContainsANonNullableFieldThatThrowsInAPromise():void
@@ -225,8 +227,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
                 FormattedError::create($this->nonNullPromiseError->getMessage(), [new SourceLocation(4, 11)])
             ]
         ];
-
-        $this->assertArraySubset($expected, Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray());
+        $result = Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray();
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsAnObjectReturnedInAPromiseThatContainsANonNullableFieldThatThrowsSynchronously():void
@@ -249,8 +251,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
                 FormattedError::create($this->nonNullSyncError->getMessage(), [new SourceLocation(4, 11)])
             ]
         ];
-
-        $this->assertArraySubset($expected, Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray());
+        $result = Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray();
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsAnObjectReturnedInAPromiseThatContainsANonNullableFieldThatThrowsInAPromise():void
@@ -273,8 +275,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
                 FormattedError::create($this->nonNullPromiseError->getMessage(), [new SourceLocation(4, 11)])
             ]
         ];
-
-        $this->assertArraySubset($expected, Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray());
+        $result = Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray();
+        expect($result)->toInclude($expected);
     }
 
     /**
@@ -355,8 +357,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
                 FormattedError::create($this->promiseError->getMessage(), [new SourceLocation(24, 13)]),
             ]
         ];
-
-        $this->assertArraySubset($expected, Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray());
+        $result = Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray();
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsTheFirstNullableObjectAfterAFieldThrowsInALongChainOfFieldsThatAreNonNull():void
@@ -426,8 +428,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
                 FormattedError::create($this->nonNullPromiseError->getMessage(), [new SourceLocation(41, 19)]),
             ]
         ];
-
-        $this->assertArraySubset($expected, Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray());
+        $result = Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray();
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsANullableFieldThatSynchronouslyReturnsNull():void
@@ -445,7 +447,7 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
                 'sync' => null,
             ]
         ];
-        $this->assertEquals($expected, Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray());
+        expect(Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray())->toBePHPEqual($expected);
     }
 
     public function testNullsANullableFieldThatReturnsNullInAPromise():void
@@ -463,8 +465,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
                 'promise' => null,
             ]
         ];
-
-        $this->assertArraySubset($expected, Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray());
+        $result = Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray();
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsASynchronouslyReturnedObjectThatContainsANonNullableFieldThatReturnsNullSynchronously():void
@@ -489,8 +491,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
                     'locations' => [['line' => 4, 'column' => 11]]
                 ]
             ]
-        ];
-        $this->assertArraySubset($expected, Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray(true));
+        ];      $result = Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray(1);
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsASynchronouslyReturnedObjectThatContainsANonNullableFieldThatReturnsNullInAPromise():void
@@ -517,10 +519,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset(
-            $expected,
-            Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray(true)
-        );
+        $result = Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray(1);
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsAnObjectReturnedInAPromiseThatContainsANonNullableFieldThatReturnsNullSynchronously():void
@@ -547,10 +547,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset(
-            $expected,
-            Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray(true)
-        );
+        $result = Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray(1);
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsAnObjectReturnedInAPromiseThatContainsANonNullableFieldThatReturnsNullInaAPromise():void
@@ -577,10 +575,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset(
-            $expected,
-            Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray(true)
-        );
+        $result = Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray(1);
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsAComplexTreeOfNullableFieldsThatReturnNull():void
@@ -646,7 +642,7 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
         ];
 
         $actual = Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray();
-        $this->assertEquals($expected, $actual);
+        expect($actual)->toBePHPEqual($expected);
     }
 
     public function testNullsTheFirstNullableObjectAfterAFieldReturnsNullInALongChainOfFieldsThatAreNonNull():void
@@ -717,10 +713,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset(
-            $expected,
-            Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray(true)
-        );
+        $result = Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray(1);
+        expect($result)->toInclude($expected);
     }
 
     /**
@@ -739,7 +733,7 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
             ]
         ];
         $actual = Executor::execute($this->schema, Parser::parse($doc), $this->throwingData)->toArray();
-        $this->assertArraySubset($expected, $actual);
+        expect($actual)->toInclude($expected);
     }
 
     public function testNullsTheTopLevelIfAsyncNonNullableFieldErrors():void
@@ -756,8 +750,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
                 FormattedError::create($this->nonNullPromiseError->getMessage(), [new SourceLocation(2, 17)]),
             ]
         ];
-
-        $this->assertArraySubset($expected, Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray());
+        $result = Executor::execute($this->schema, $ast, $this->throwingData, null, [], 'Q')->toArray();
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsTheTopLevelIfSyncNonNullableFieldReturnsNull():void
@@ -775,10 +769,8 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
                 ],
             ]
         ];
-        $this->assertArraySubset(
-            $expected,
-            Executor::execute($this->schema, Parser::parse($doc), $this->nullingData)->toArray(true)
-        );
+        $result = Executor::execute($this->schema, Parser::parse($doc), $this->nullingData)->toArray(1);
+        expect($result)->toInclude($expected);
     }
 
     public function testNullsTheTopLevelIfAsyncNonNullableFieldResolvesNull():void
@@ -799,9 +791,7 @@ class NonNullTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset(
-            $expected,
-            Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray(true)
-        );
+        $result = Executor::execute($this->schema, $ast, $this->nullingData, null, [], 'Q')->toArray(1);
+        expect($result)->toInclude($expected);
     }
 }

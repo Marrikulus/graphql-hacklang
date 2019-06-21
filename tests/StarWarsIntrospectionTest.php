@@ -4,8 +4,9 @@ namespace GraphQL\Tests;
 
 
 use GraphQL\GraphQL;
+use function Facebook\FBExpect\expect;
 
-class StarWarsIntrospectionTest extends \PHPUnit_Framework_TestCase
+class StarWarsIntrospectionTest extends \Facebook\HackTest\HackTest
 {
     // Star Wars Introspection Tests
     // Basic Introspection
@@ -421,6 +422,6 @@ class StarWarsIntrospectionTest extends \PHPUnit_Framework_TestCase
      */
     private function assertValidQuery($query, $expected)
     {
-        $this->assertEquals(['data' => $expected], GraphQL::execute(StarWarsSchema::build(), $query));
+        expect(GraphQL::execute(StarWarsSchema::build(), $query))->toBePHPEqual(['data' => $expected]);
     }
 }

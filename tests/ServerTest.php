@@ -3,6 +3,7 @@
 namespace GraphQL\Tests;
 
 use GraphQL\Error\Debug;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\FormattedError;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Error\SyntaxError;
@@ -17,28 +18,28 @@ use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\EagerResolution;
 use GraphQL\Validator\DocumentValidator;
 
-class ServerTest extends \PHPUnit_Framework_TestCase
+class ServerTest extends \Facebook\HackTest\HackTest
 {
     public function testDefaults():void
     {
         $server = @new Server();
-        $this->assertEquals(null, $server->getQueryType());
-        $this->assertEquals(null, $server->getMutationType());
-        $this->assertEquals(null, $server->getSubscriptionType());
-        $this->assertEquals(Directive::getInternalDirectives(), $server->getDirectives());
-        $this->assertEquals([], $server->getTypes());
-        $this->assertEquals(null, $server->getTypeResolutionStrategy());
+        expect($server->getQueryType())->toBePHPEqual(null);
+        expect($server->getMutationType())->toBePHPEqual(null);
+        expect($server->getSubscriptionType())->toBePHPEqual(null);
+        expect($server->getDirectives())->toBePHPEqual(Directive::getInternalDirectives());
+        expect($server->getTypes())->toBePHPEqual([]);
+        expect($server->getTypeResolutionStrategy())->toBePHPEqual(null);
 
-        $this->assertEquals(null, $server->getContext());
-        $this->assertEquals(null, $server->getRootValue());
-        $this->assertEquals(0, $server->getDebug());
+        expect($server->getContext())->toBePHPEqual(null);
+        expect($server->getRootValue())->toBePHPEqual(null);
+        expect($server->getDebug())->toBePHPEqual(0);
 
-        $this->assertEquals(['GraphQL\Error\FormattedError', 'createFromException'], $server->getExceptionFormatter());
-        $this->assertEquals(['GraphQL\Error\FormattedError', 'createFromPHPError'], $server->getPhpErrorFormatter());
-        $this->assertEquals(null, $server->getPromiseAdapter());
-        $this->assertEquals('Unexpected Error', $server->getUnexpectedErrorMessage());
-        $this->assertEquals(500, $server->getUnexpectedErrorStatus());
-        $this->assertEquals(DocumentValidator::allRules(), $server->getValidationRules());
+        expect($server->getExceptionFormatter())->toBePHPEqual(['GraphQL\Error\FormattedError', 'createFromException']);
+        expect($server->getPhpErrorFormatter())->toBePHPEqual(['GraphQL\Error\FormattedError', 'createFromPHPError']);
+        expect($server->getPromiseAdapter())->toBePHPEqual(null);
+        expect($server->getUnexpectedErrorMessage())->toBePHPEqual('Unexpected Error');
+        expect($server->getUnexpectedErrorStatus())->toBePHPEqual(500);
+        expect($server->getValidationRules())->toBePHPEqual(DocumentValidator::allRules());
 
         $this->setExpectedException(InvariantViolation::class, 'Schema query must be Object Type but got: NULL');
         $server->getSchema();
@@ -264,50 +265,57 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $server = Server::create()
             ->setSchema($schema);
 
-        $this->assertSame($schema, $server->getSchema());
+        expect($server->getSchema())->toBeSame($schema);
 
         $server = Server::create()
             ->setQueryType($queryType);
-        $this->assertSame($queryType, $server->getQueryType());
-        $this->assertSame($queryType, $server->getSchema()->getQueryType());
+        expect($server->getQueryType())->toBeSame($queryType);
+        expect($server->getSchema()->getQueryType())->toBeSame($queryType);
 
         $server = Server::create()
             ->setQueryType($queryType)
             ->setMutationType($mutationType);
 
-        $this->assertSame($mutationType, $server->getMutationType());
-        $this->assertSame($mutationType, $server->getSchema()->getMutationType());
+        expect($server->getMutationType())->toBeSame($mutationType);
+        expect($server->getSchema()->getMutationType())->toBeSame($mutationType);
 
         $server = Server::create()
             ->setQueryType($queryType)
             ->setSubscriptionType($subscriptionType);
 
-        $this->assertSame($subscriptionType, $server->getSubscriptionType());
-        $this->assertSame($subscriptionType, $server->getSchema()->getSubscriptionType());
+        expect($server->getSubscriptionType())->toBeSame($subscriptionType);
+        expect($server->getSchema()->getSubscriptionType())->toBeSame($subscriptionType);
 
         $server = Server::create()
             ->setQueryType($queryType)
             ->addTypes($types = [$queryType, $subscriptionType]);
 
-        $this->assertSame($types, $server->getTypes());
+        expect($server->getTypes())->toBeSame($types);
         $server->addTypes([$mutationType]);
-        $this->assertSame(\array_merge($types, [$mutationType]), $server->getTypes());
+        expect($server->getTypes())->toBeSame(\array_merge($types, [$mutationType]));
 
         $server = Server::create()
             ->setDirectives($directives = []);
 
-        $this->assertSame($directives, $server->getDirectives());
+        expect($server->getDirectives())->toBeSame($directives);
     }
 
     public function testParse():void
     {
         $server = Server::create();
         $ast = $server->parse('{q}');
-        $this->assertInstanceOf('GraphQL\Language\AST\DocumentNode', $ast);
+        expect($ast)->toBeInstanceOf('GraphQL\Language\AST\DocumentNode');
 
-        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . \preg_quote('{q', '/') . '/');
-        $server->parse('{q');
-        $this->fail('Expected exception not thrown');
+        try
+        {
+            $server->parse('{q');
+        }
+        catch(SyntaxError $e)
+        {
+            expect($e->getMessage())->toMatchRegExp('/' . \preg_quote('{q', '/') . '/');
+            return;
+        }
+        self::fail('Expected exception not thrown');
     }
 
     public function testValidate():void
@@ -318,8 +326,8 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $ast = $server->parse('{q}');
         $errors = $server->validate($ast);
 
-        $this->assertInternalType('array', $errors);
-        $this->assertNotEmpty($errors);
+        expect($errors)->toBeType('array');
+        expect($errors)->toNotBeEmpty();
 
         $this->setExpectedException(InvariantViolation::class, 'Cannot validate, schema contains errors: Schema query must be Object Type but got: NULL');
         $server = Server::create();
@@ -334,7 +342,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $server = Server::create()
             ->setPromiseAdapter($adapter1);
 
-        $this->assertSame($adapter1, $server->getPromiseAdapter());
+        expect($server->getPromiseAdapter())->toBeSame($adapter1);
         $server->setPromiseAdapter($adapter1);
 
         $this->setExpectedException(InvariantViolation::class, 'Cannot set promise adapter: Different adapter is already set');
@@ -347,7 +355,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $server = Server::create()
             ->setValidationRules($rules);
 
-        $this->assertSame($rules, $server->getValidationRules());
+        expect($server->getValidationRules())->toBeSame($rules);
     }
 
     public function testExecuteQuery():void
@@ -360,9 +368,9 @@ class ServerTest extends \PHPUnit_Framework_TestCase
                     'type' => GraphQlType::string(),
                     'resolve' => function($value, $args, $context, ResolveInfo $info) use (&$called) {
                         $called = true;
-                        $this->assertEquals(null, $context);
-                        $this->assertEquals(null, $value);
-                        $this->assertEquals(null, $info->rootValue);
+                        expect($context)->toBePHPEqual(null);
+                        expect($value)->toBePHPEqual(null);
+                        expect($info->rootValue)->toBePHPEqual(null);
                         return 'ok';
                     }
                 ]
@@ -373,9 +381,9 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->setQueryType($queryType);
 
         $result = $server->executeQuery('{field}');
-        $this->assertEquals(true, $called);
-        $this->assertInstanceOf('GraphQL\Executor\ExecutionResult', $result);
-        $this->assertEquals(['data' => ['field' => 'ok']], $result->toArray());
+        expect($called)->toBePHPEqual(true);
+        expect($result)->toBeInstanceOf('GraphQL\Executor\ExecutionResult');
+        expect($result->toArray())->toBePHPEqual(['data' => ['field' => 'ok']]);
 
         $called = false;
         $contextValue = new \stdClass();
@@ -388,9 +396,9 @@ class ServerTest extends \PHPUnit_Framework_TestCase
                     'type' => GraphQlType::string(),
                     'resolve' => function($value, $args, $context, ResolveInfo $info) use (&$called, $contextValue, $rootValue) {
                         $called = true;
-                        $this->assertSame($rootValue, $value);
-                        $this->assertSame($contextValue, $context);
-                        $this->assertEquals($rootValue, $info->rootValue);
+                        expect($value)->toBeSame($rootValue);
+                        expect($context)->toBeSame($contextValue);
+                        expect($info->rootValue)->toBePHPEqual($rootValue);
                         return 'ok';
                     }
                 ]
@@ -403,9 +411,9 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ->setContext($contextValue);
 
         $result = $server->executeQuery('{field}');
-        $this->assertEquals(true, $called);
-        $this->assertInstanceOf('GraphQL\Executor\ExecutionResult', $result);
-        $this->assertEquals(['data' => ['field' => 'ok']], $result->toArray());
+        expect($called)->toBePHPEqual(true);
+        expect($result)->toBeInstanceOf('GraphQL\Executor\ExecutionResult');
+        expect($result->toArray())->toBePHPEqual(['data' => ['field' => 'ok']]);
     }
 
     public function testDebugPhpErrors():void
@@ -434,7 +442,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $expected = [
             'data' => ['err' => 'err']
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
 
         $server->setDebug(Server::DEBUG_PHP_ERRORS);
         $result = @$server->executeQuery('{err}');
@@ -452,7 +460,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset($expected, $result->toArray());
+        expect($result->toArray())->toInclude($expected);
 
         $server->setPhpErrorFormatter(function(\ErrorException $e) {
             return ['test' => $e->getMessage()];
@@ -469,7 +477,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
 
         \PHPUnit_Framework_Error_Notice::$enabled = $prevEnabled;
     }
@@ -506,7 +514,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
                 ]],
             ]]
         ];
-        $this->assertArraySubset($expected, $result->toArray());
+        expect($result->toArray())->toInclude($expected);
 
         $server->setDebug(Server::DEBUG_EXCEPTIONS);
         $server->setExceptionFormatter(function($e) {
@@ -516,7 +524,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $result = $server->executeQuery('{withException}');
 
         $expected['errors'][0]['exception'] = ['message' => 'Error', 'trace' => []];
-        $this->assertArraySubset($expected, $result->toArray());
+        expect($result->toArray())->toInclude($expected);
 
         $server->setExceptionFormatter(function(\Exception $e) {
             return ['test' => $e->getMessage()];
@@ -524,7 +532,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
 
         $result = $server->executeQuery('{withException}');
         $expected['errors'][0]['exception'] = ['test' => 'Error'];
-        $this->assertArraySubset($expected, $result->toArray());
+        expect($result->toArray())->toInclude($expected);
     }
 
     public function testHandleRequest():void
@@ -546,18 +554,19 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         /** @var $mock Server */
         $mock->handleRequest();
 
-        $this->assertInternalType('array', $output);
-        $this->assertArraySubset(['errors' => [['message' => 'Unexpected Error']]], $output[0]);
-        $this->assertEquals(500, $output[1]);
+        expect($output)->toBeType('array');
+
+        expect($output[0])->toInclude(['errors' => [['message' => 'Unexpected Error']]]);
+        expect($output[1])->toBePHPEqual(500);
 
         $output = null;
         $mock->setUnexpectedErrorMessage($newErr = 'Hey! Something went wrong!');
         $mock->setUnexpectedErrorStatus(501);
         $mock->handleRequest();
 
-        $this->assertInternalType('array', $output);
-        $this->assertEquals(['errors' => [['message' => $newErr]]], $output[0]);
-        $this->assertEquals(501, $output[1]);
+        expect($output)->toBeType('array');
+        expect($output[0])->toBePHPEqual(['errors' => [['message' => $newErr]]]);
+        expect($output[1])->toBePHPEqual(501);
 
         $mock->setQueryType(new ObjectType([
             'name' => 'Query',
@@ -574,7 +583,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $_REQUEST = ['query' => '{err}'];
         $output = null;
         $mock->handleRequest();
-        $this->assertInternalType('array', $output);
+        expect($output)->toBeType('array');
 
         $expectedOutput = [
             ['errors' => [[
@@ -588,14 +597,14 @@ class ServerTest extends \PHPUnit_Framework_TestCase
             200
         ];
 
-        $this->assertEquals($expectedOutput, $output);
+        expect($output)->toBePHPEqual($expectedOutput);
 
         $output = null;
         $_SERVER['CONTENT_TYPE'] = 'application/json';
         $_REQUEST = [];
         $mock->handleRequest();
 
-        $this->assertInternalType('array', $output);
-        $this->assertEquals($expectedOutput, $output);
+        expect($output)->toBeType('array');
+        expect($output)->toBePHPEqual($expectedOutput);
     }
 }

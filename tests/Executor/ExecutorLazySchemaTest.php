@@ -5,6 +5,7 @@ namespace GraphQL\Tests\Executor;
 require_once __DIR__ . '/TestClasses.php';
 
 use GraphQL\Error\InvariantViolation;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\Warning;
 use GraphQL\Executor\ExecutionResult;
 use GraphQL\Executor\Executor;
@@ -16,7 +17,7 @@ use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 
-class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
+class ExecutorLazySchemaTest extends \Facebook\HackTest\HackTest
 {
     public $SomeScalarType;
 
@@ -125,19 +126,18 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
 
         Warning::suppress(Warning::WARNING_FULL_SCHEMA_SCAN);
         $result = Executor::execute($schema, Parser::parse($query));
-        $this->assertEquals($expected, $result);
+        expect($result)->toBePHPEqual($expected);
 
         Warning::enable(Warning::WARNING_FULL_SCHEMA_SCAN);
         $result = Executor::execute($schema, Parser::parse($query));
-        $this->assertEquals(1, count($result->errors));
-        $this->assertInstanceOf('PHPUnit_Framework_Error_Warning', $result->errors[0]->getPrevious());
+        expect(count($result->errors))->toBePHPEqual(1);
+        expect($result->errors[0]->getPrevious())->toBeInstanceOf('PHPUnit_Framework_Error_Warning');
 
-        $this->assertEquals(
+        expect($result->errors[0]->getMessage())->toBePHPEqual(
             'GraphQL Interface Type `Pet` returned `null` from it`s `resolveType` function for value: instance of '.
             'GraphQL\Tests\Executor\Dog. Switching to slow resolution method using `isTypeOf` of all possible '.
             'implementations. It requires full schema scan and degrades query performance significantly.  '.
-            'Make sure your `resolveType` always returns valid implementation or throws.',
-            $result->errors[0]->getMessage());
+            'Make sure your `resolveType` always returns valid implementation or throws.');
     }
 
     public function testHintsOnConflictingTypeInstancesInDefinitions():void
@@ -180,20 +180,17 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
             }
         ';
 
-        $this->assertEquals([], $calls);
+        expect($calls)->toBePHPEqual([]);
         $result = Executor::execute($schema, Parser::parse($query), ['test' => ['test' => 'value']]);
-        $this->assertEquals(['Test', 'Test'], $calls);
+        expect($calls)->toBePHPEqual(['Test', 'Test']);
 
-        $this->assertEquals(
+        expect($result->errors[0]->getMessage())
+            ->toBePHPEqual(
             'Schema must contain unique named types but contains multiple types named "Test". '.
             'Make sure that type loader returns the same instance as defined in Query.test '.
-            '(see http://webonyx.github.io/graphql-php/type-system/#type-registry).',
-            $result->errors[0]->getMessage()
-        );
-        $this->assertInstanceOf(
-            InvariantViolation::class,
-            $result->errors[0]->getPrevious()
-        );
+            '(see http://webonyx.github.io/graphql-php/type-system/#type-registry).');
+
+        expect($result->errors[0]->getPrevious())->toBeInstanceOf(InvariantViolation::class);
     }
 
     public function testSimpleQuery():void
@@ -220,8 +217,8 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
             'SomeObject',
             'SomeObject.fields'
         ];
-        $this->assertEquals($expected, $result->toArray(true));
-        $this->assertEquals($expectedExecutorCalls, $this->calls);
+        expect($result->toArray(1))->toBePHPEqual($expected);
+        expect($this->calls)->toBePHPEqual($expectedExecutorCalls);
     }
 
     public function testDeepQuery():void
@@ -249,15 +246,15 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
             'OtherObject' => true
         ];
 
-        $this->assertEquals($expected, $result->toArray(true));
-        $this->assertEquals($expectedLoadedTypes, $this->loadedTypes);
+        expect($result->toArray(1))->toBePHPEqual($expected);
+        expect($this->loadedTypes)->toBePHPEqual($expectedLoadedTypes);
 
         $expectedExecutorCalls = [
             'Query.fields',
             'SomeObject',
             'SomeObject.fields'
         ];
-        $this->assertEquals($expectedExecutorCalls, $this->calls);
+        expect($this->calls)->toBePHPEqual($expectedExecutorCalls);
     }
 
     public function testResolveUnion():void
@@ -297,8 +294,8 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
             'SomeScalar' => true,
         ];
 
-        $this->assertEquals($expected, $result->toArray(true));
-        $this->assertEquals($expectedLoadedTypes, $this->loadedTypes);
+        expect($result->toArray(1))->toBePHPEqual($expected);
+        expect($this->loadedTypes)->toBePHPEqual($expectedLoadedTypes);
 
         $expectedCalls = [
             'Query.fields',
@@ -310,7 +307,7 @@ class ExecutorLazySchemaTest extends \PHPUnit_Framework_TestCase
             'DeeperObject',
             'SomeScalar',
         ];
-        $this->assertEquals($expectedCalls, $this->calls);
+        expect($this->calls)->toBePHPEqual($expectedCalls);
     }
 
     public function loadType($name, $isExecutorCall = false)

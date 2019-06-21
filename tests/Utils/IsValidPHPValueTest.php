@@ -4,9 +4,10 @@ namespace GraphQL\Tests\Utils;
 
 
 use GraphQL\Executor\Values;
+use function Facebook\FBExpect\expect;
 use GraphQL\Type\Definition\GraphQlType;
 
-class IsValidPHPValueTest extends \PHPUnit_Framework_TestCase
+class IsValidPHPValueTest extends \Facebook\HackTest\HackTest
 {
     public function testValidIntValue():void
     {
@@ -122,13 +123,13 @@ class IsValidPHPValueTest extends \PHPUnit_Framework_TestCase
 
     private function expectNoErrors(mixed $result):void
     {
-        $this->assertInternalType('array', $result);
-        $this->assertEquals([], $result);
+        expect($result)->toBeType('array');
+        expect($result)->toBePHPEqual([]);
     }
 
     private function expectErrorResult(mixed $result, int $size):void
     {
-        $this->assertInternalType('array', $result);
-        $this->assertEquals($size, \count($result));
+        expect($result)->toBeType('array');
+        expect(\count($result))->toBePHPEqual($size);
     }
 }

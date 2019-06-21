@@ -3,34 +3,35 @@
 namespace GraphQL\Tests\Executor\Promise;
 
 use GraphQL\Deferred;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Executor\Promise\Adapter\SyncPromise;
 use GraphQL\Executor\Promise\Adapter\SyncPromiseAdapter;
 use GraphQL\Executor\Promise\Promise;
 
-class SyncPromiseAdapterTest extends \PHPUnit_Framework_TestCase
+class SyncPromiseAdapterTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @var SyncPromiseAdapter
      */
     private $promises;
 
-    public function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         $this->promises = new SyncPromiseAdapter();
     }
 
     public function testIsThenable():void
     {
-        $this->assertEquals(true, $this->promises->isThenable(new Deferred(function() {})));
-        $this->assertEquals(false, $this->promises->isThenable(false));
-        $this->assertEquals(false, $this->promises->isThenable(true));
-        $this->assertEquals(false, $this->promises->isThenable(1));
-        $this->assertEquals(false, $this->promises->isThenable(0));
-        $this->assertEquals(false, $this->promises->isThenable('test'));
-        $this->assertEquals(false, $this->promises->isThenable(''));
-        $this->assertEquals(false, $this->promises->isThenable([]));
-        $this->assertEquals(false, $this->promises->isThenable(new \stdClass()));
+        expect($this->promises->isThenable(new Deferred(function() {})))->toBePHPEqual(true);
+        expect($this->promises->isThenable(false))->toBePHPEqual(false);
+        expect($this->promises->isThenable(true))->toBePHPEqual(false);
+        expect($this->promises->isThenable(1))->toBePHPEqual(false);
+        expect($this->promises->isThenable(0))->toBePHPEqual(false);
+        expect($this->promises->isThenable('test'))->toBePHPEqual(false);
+        expect($this->promises->isThenable(''))->toBePHPEqual(false);
+        expect($this->promises->isThenable([]))->toBePHPEqual(false);
+        expect($this->promises->isThenable(new \stdClass()))->toBePHPEqual(false);
     }
 
     public function testConvert():void
@@ -38,8 +39,8 @@ class SyncPromiseAdapterTest extends \PHPUnit_Framework_TestCase
         $dfd = new Deferred(function() {});
         $result = $this->promises->convertThenable($dfd);
 
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Promise', $result);
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Adapter\SyncPromise', $result->adoptedPromise);
+        expect($result)->toBeInstanceOf('GraphQL\Executor\Promise\Promise');
+        expect($result->adoptedPromise)->toBeInstanceOf('GraphQL\Executor\Promise\Adapter\SyncPromise');
 
         $this->setExpectedException(InvariantViolation::class, 'Expected instance of GraphQL\Deferred, got (empty string)');
         $this->promises->convertThenable('');
@@ -52,16 +53,16 @@ class SyncPromiseAdapterTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->promises->then($promise);
 
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Promise', $result);
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Adapter\SyncPromise', $result->adoptedPromise);
+        expect($result)->toBeInstanceOf('GraphQL\Executor\Promise\Promise');
+        expect($result->adoptedPromise)->toBeInstanceOf('GraphQL\Executor\Promise\Adapter\SyncPromise');
     }
 
     public function testCreatePromise():void
     {
         $promise = $this->promises->create(function($resolve, $reject) {});
 
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Promise', $promise);
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Adapter\SyncPromise', $promise->adoptedPromise);
+        expect($promise)->toBeInstanceOf('GraphQL\Executor\Promise\Promise');
+        expect($promise->adoptedPromise)->toBeInstanceOf('GraphQL\Executor\Promise\Adapter\SyncPromise');
 
         $promise = $this->promises->create(function($resolve, $reject) {
             $resolve('A');
@@ -150,22 +151,22 @@ class SyncPromiseAdapterTest extends \PHPUnit_Framework_TestCase
         $all = $this->promises->all([0, $p1, $p2, $p3, $p4]);
 
         $result = $this->promises->wait($p2);
-        $this->assertEquals(2, $result);
-        $this->assertEquals(SyncPromise::PENDING, $p3->adoptedPromise->state);
-        $this->assertEquals(SyncPromise::PENDING, $all->adoptedPromise->state);
-        $this->assertEquals([1, 2], $called);
+        expect($result)->toBePHPEqual(2);
+        expect($p3->adoptedPromise->state)->toBePHPEqual(SyncPromise::PENDING);
+        expect($all->adoptedPromise->state)->toBePHPEqual(SyncPromise::PENDING);
+        expect($called)->toBePHPEqual([1, 2]);
 
         $expectedResult = [0,1,2,3,4];
         $result = $this->promises->wait($all);
-        $this->assertEquals($expectedResult, $result);
-        $this->assertEquals([1, 2, 3, 4], $called);
+        expect($result)->toBePHPEqual($expectedResult);
+        expect($called)->toBePHPEqual([1, 2, 3, 4]);
         $this->assertValidPromise($all, null, [0,1,2,3,4], SyncPromise::FULFILLED);
     }
 
     private function assertValidPromise($promise, $expectedNextReason, $expectedNextValue, $expectedNextState)
     {
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Promise', $promise);
-        $this->assertInstanceOf('GraphQL\Executor\Promise\Adapter\SyncPromise', $promise->adoptedPromise);
+        expect($promise)->toBeInstanceOf('GraphQL\Executor\Promise\Promise');
+        expect($promise->adoptedPromise)->toBeInstanceOf('GraphQL\Executor\Promise\Adapter\SyncPromise');
 
         $actualNextValue = null;
         $actualNextReason = null;
@@ -183,18 +184,18 @@ class SyncPromiseAdapterTest extends \PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertSame($onFulfilledCalled, false);
-        $this->assertSame($onRejectedCalled, false);
+        expect(false)->toBeSame($onFulfilledCalled);
+        expect(false)->toBeSame($onRejectedCalled);
 
         SyncPromise::runQueue();
 
         if ($expectedNextState !== SyncPromise::PENDING) {
-            $this->assertSame(!$expectedNextReason, $onFulfilledCalled);
-            $this->assertSame(!!$expectedNextReason, $onRejectedCalled);
+            expect($onFulfilledCalled)->toBeSame(!$expectedNextReason);
+            expect($onRejectedCalled)->toBeSame(!!$expectedNextReason);
         }
 
-        $this->assertSame($expectedNextValue, $actualNextValue);
-        $this->assertSame($expectedNextReason, $actualNextReason);
-        $this->assertSame($expectedNextState, $promise->adoptedPromise->state);
+        expect($actualNextValue)->toBeSame($expectedNextValue);
+        expect($actualNextReason)->toBeSame($expectedNextReason);
+        expect($promise->adoptedPromise->state)->toBeSame($expectedNextState);
     }
 }

@@ -7,6 +7,7 @@
 namespace GraphQL\Tests\Utils;
 
 use GraphQL\Type\Definition\EnumType;
+use function Facebook\FBExpect\expect;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
@@ -15,12 +16,12 @@ use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\FindBreakingChanges;
 
-class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
+class FindBreakingChangesTest extends \Facebook\HackTest\HackTest
 {
 
     private ObjectType $queryType;
 
-    public function setUp():void
+    public async function beforeEachTestAsync():Awaitable<void>
     {
         $this->queryType = new ObjectType([
             'name' => 'Query',
@@ -64,11 +65,10 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
 
-        $this->assertEquals(['type' => FindBreakingChanges::BREAKING_CHANGE_TYPE_REMOVED, 'description' => 'Type1 was removed.'],
-            FindBreakingChanges::findRemovedTypes($oldSchema, $newSchema)[0]
-        );
+        expect(FindBreakingChanges::findRemovedTypes($oldSchema, $newSchema)[0])
+            ->toBePHPEqual(['type' => FindBreakingChanges::BREAKING_CHANGE_TYPE_REMOVED, 'description' => 'Type1 was removed.']);
 
-        $this->assertEquals([], FindBreakingChanges::findRemovedTypes($oldSchema, $oldSchema));
+        expect(FindBreakingChanges::findRemovedTypes($oldSchema, $oldSchema))->toBePHPEqual([]);
     }
 
     public function testShouldDetectTypeChanges():void
@@ -110,10 +110,8 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
 
-        $this->assertEquals(
-            ['type' => FindBreakingChanges::BREAKING_CHANGE_TYPE_CHANGED, 'description' => 'Type1 changed from an Interface type to a Union type.'],
-            FindBreakingChanges::findTypesThatChangedKind($oldSchema, $newSchema)[0]
-        );
+        expect(FindBreakingChanges::findTypesThatChangedKind($oldSchema, $newSchema)[0])
+            ->toBePHPEqual(['type' => FindBreakingChanges::BREAKING_CHANGE_TYPE_CHANGED, 'description' => 'Type1 changed from an Interface type to a Union type.']);
     }
 
     public function testShouldDetectFieldChangesAndDeletions():void
@@ -260,7 +258,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
 
-        $this->assertEquals($expectedFieldChanges, FindBreakingChanges::findFieldsThatChangedType($oldSchema, $newSchema));
+        expect(FindBreakingChanges::findFieldsThatChangedType($oldSchema, $newSchema))->toBePHPEqual($expectedFieldChanges);
     }
 
 
@@ -430,7 +428,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ],
         ];
 
-        $this->assertEquals($expectedFieldChanges, FindBreakingChanges::findFieldsThatChangedType($oldSchema, $newSchema));
+        expect(FindBreakingChanges::findFieldsThatChangedType($oldSchema, $newSchema))->toBePHPEqual($expectedFieldChanges);
     }
 
     public function testDetectsNonNullFieldAddedToInputType():void
@@ -469,13 +467,11 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
 
-        $this->assertEquals(
-            [
+        expect(FindBreakingChanges::findFieldsThatChangedType($oldSchema, $newSchema)[0])
+            ->toBePHPEqual([
                 'type' => FindBreakingChanges::BREAKING_CHANGE_NON_NULL_INPUT_FIELD_ADDED,
                 'description' => 'A non-null field requiredField on input type InputType1 was added.'
-            ],
-            FindBreakingChanges::findFieldsThatChangedType($oldSchema, $newSchema)[0]
-        );
+            ]);
     }
 
     public function testDetectsIfTypeWasRemovedFromUnion():void
@@ -541,13 +537,11 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
 
-        $this->assertEquals(
-            [
+        expect(FindBreakingChanges::findTypesRemovedFromUnions($oldSchema, $newSchema)[0])
+            ->toBePHPEqual([
                 'type' => FindBreakingChanges::BREAKING_CHANGE_TYPE_REMOVED_FROM_UNION,
                 'description' => 'Type2 was removed from union type UnionType1.'
-            ],
-            FindBreakingChanges::findTypesRemovedFromUnions($oldSchema, $newSchema)[0]
-        );
+            ]);
     }
 
     public function testDetectsValuesRemovedFromEnum():void
@@ -587,13 +581,11 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
 
-        $this->assertEquals(
-            [
+        expect(FindBreakingChanges::findValuesRemovedFromEnums($oldSchema, $newSchema)[0])
+            ->toBePHPEqual([
                 'type' => FindBreakingChanges::BREAKING_CHANGE_VALUE_REMOVED_FROM_ENUM,
                 'description' => 'VALUE1 was removed from enum type EnumType1.'
-            ],
-            FindBreakingChanges::findValuesRemovedFromEnums($oldSchema, $newSchema)[0]
-        );
+            ]);
     }
 
     public function testDetectsRemovalOfFieldArgument():void
@@ -686,7 +678,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expectedChanges, FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges']);
+        expect(FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges'])->toBePHPEqual($expectedChanges);
     }
 
     public function testDetectsFieldArgumentTypeChange():void
@@ -813,7 +805,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ],
         ];
 
-        $this->assertEquals($expectedChanges, FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges']);
+        expect(FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges'])->toBePHPEqual($expectedChanges);
     }
 
     public function testDetectsAdditionOfFieldArg():void
@@ -857,12 +849,11 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
 
-        $this->assertEquals(
-            [
+        expect(FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges'][0])
+            ->toBePHPEqual([
                 'type' => FindBreakingChanges::BREAKING_CHANGE_NON_NULL_ARG_ADDED,
                 'description' => 'A non-null arg newRequiredArg on Type1->field1 was added.'
-            ],
-            FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges'][0]);
+            ]);
     }
 
     public function testDoesNotFlagArgsWithSameTypeSignature():void
@@ -924,7 +915,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
 
-        $this->assertEquals([], FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges']);
+        expect(FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges'])->toBePHPEqual([]);
     }
 
     public function testArgsThatMoveAwayFromNonNull():void
@@ -969,7 +960,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
 
-        $this->assertEquals([], FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges']);
+        expect(FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['breakingChanges'])->toBePHPEqual([]);
     }
 
     public function testDetectsRemovalOfInterfaces():void
@@ -1013,12 +1004,11 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
 
-        $this->assertEquals(
-            [
+        expect(FindBreakingChanges::findInterfacesRemovedFromObjectTypes($oldSchema, $newSchema)[0])
+            ->toBePHPEqual([
                 'type' => FindBreakingChanges::BREAKING_CHANGE_INTERFACE_REMOVED_FROM_OBJECT,
                 'description' => 'Type1 no longer implements interface Interface1.'
-            ],
-            FindBreakingChanges::findInterfacesRemovedFromObjectTypes($oldSchema, $newSchema)[0]);
+            ]);
     }
 
     public function testDetectsAllBreakingChanges():void
@@ -1227,7 +1217,7 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expectedBreakingChanges, FindBreakingChanges::findBreakingChanges($oldSchema, $newSchema));
+        expect(FindBreakingChanges::findBreakingChanges($oldSchema, $newSchema))->toBePHPEqual($expectedBreakingChanges);
     }
 
     // findDangerousChanges tests below here
@@ -1278,13 +1268,11 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ]
         ]);
 
-        $this->assertEquals(
-            [
+        expect(FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['dangerousChanges'][0])
+            ->toBePHPEqual([
                 'type' => FindBreakingChanges::DANGEROUS_CHANGE_ARG_DEFAULT_VALUE,
                 'description' => 'Type1->field1 arg name has changed defaultValue'
-            ],
-            FindBreakingChanges::findArgChanges($oldSchema, $newSchema)['dangerousChanges'][0]
-        );
+            ]);
     }
 
     public function testDetectsEnumValueAdditions():void
@@ -1319,13 +1307,11 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ]
         ]);
 
-        $this->assertEquals(
-            [
+        expect(FindBreakingChanges::findValuesAddedToEnums($oldSchema, $newSchema)[0])
+            ->toBePHPEqual([
                 'type' => FindBreakingChanges::DANGEROUS_CHANGE_VALUE_ADDED_TO_ENUM,
                 'description' => 'VALUE2 was added to enum type EnumType1'
-            ],
-            FindBreakingChanges::findValuesAddedToEnums($oldSchema, $newSchema)[0]
-        );
+            ]);
     }
 
     public function testDetectsAdditionsToUnionType():void
@@ -1379,13 +1365,11 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ]
         ]);
 
-        $this->assertEquals(
-            [
+        expect(FindBreakingChanges::findTypesAddedToUnions($oldSchema, $newSchema)[0])
+            ->toBePHPEqual([
                 'type' => FindBreakingChanges::DANGEROUS_CHANGE_TYPE_ADDED_TO_UNION,
                 'description' => 'Type2 was added to union type UnionType1'
-            ],
-            FindBreakingChanges::findTypesAddedToUnions($oldSchema, $newSchema)[0]
-        );
+            ]);
     }
 
     public function testFindsAllDangerousChanges():void
@@ -1497,6 +1481,6 @@ class FindBreakingChangesTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expectedDangerousChanges, FindBreakingChanges::findDangerousChanges($oldSchema, $newSchema));
+        expect(FindBreakingChanges::findDangerousChanges($oldSchema, $newSchema))->toBePHPEqual($expectedDangerousChanges);
     }
 }

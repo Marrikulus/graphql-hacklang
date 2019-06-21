@@ -3,12 +3,12 @@
 namespace GraphQL\Tests\Language;
 
 use GraphQL\Error\InvariantViolation;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeKind;
-use GraphQL\Language\AST\NodeList;
 use GraphQL\Language\AST\SelectionSetNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\Parser;
@@ -17,7 +17,7 @@ use GraphQL\Language\SourceLocation;
 use GraphQL\Error\SyntaxError;
 use GraphQL\Utils\Utils;
 
-class ParserTest extends \PHPUnit_Framework_TestCase
+class ParserTest extends \Facebook\HackTest\HackTest
 {
 
     public function parseProvidesUsefulErrors()
@@ -34,23 +34,23 @@ fragment MissingOn Type
     }
 
     /**
-     * @dataProvider parseProvidesUsefulErrors
      * @it parse provides useful errors
      */
+    <<DataProvider('parseProvidesUsefulErrors')>>
     public function testParseProvidesUsefulErrors($str, $expectedMessage, $expectedPositions = null, $expectedLocations = null)
     {
         try {
             Parser::parse($str);
             $this->fail('Expected exception not thrown');
         } catch (SyntaxError $e) {
-            $this->assertEquals($expectedMessage, $e->getMessage());
+            expect($e->getMessage())->toBePHPEqual($expectedMessage);
 
             if ($expectedPositions) {
-                $this->assertEquals($expectedPositions, $e->getPositions());
+                expect($e->getPositions())->toBePHPEqual($expectedPositions);
             }
 
             if ($expectedLocations) {
-                $this->assertEquals($expectedLocations, $e->getLocations());
+                expect($e->getLocations())->toBePHPEqual($expectedLocations);
             }
         }
     }
@@ -113,29 +113,29 @@ fragment MissingOn Type
         { field(arg: "Has a $char multi-byte character.") }
 HEREDOC;
 
-        $result = Parser::parse($query, ['noLocation' => true]);
+        $result = Parser::parse($query, true);
 
         $expected = new SelectionSetNode(
-            new NodeList([
-                0 => new FieldNode(
+            [
+                new FieldNode(
                     new NameNode('field', null),
                     null,
-                    new NodeList([
-                        0 => new ArgumentNode(
+                    [
+                        new ArgumentNode(
                             new NameNode('arg', null),
                             new StringValueNode("Has a $char multi-byte character.", null),
                             null
                         )
-                    ]),
-                    new NodeList([]),
+                    ],
+                    [],
                     null,
                     null
                 )
-            ]),
+            ],
             null
         );
 
-        $this->assertEquals($expected, $result->definitions[0]->selectionSet);
+        expect($result->definitions[0]->selectionSet)->toBePHPEqual($expected);
     }
 
     /**
@@ -146,7 +146,7 @@ HEREDOC;
         // Following should not throw:
         $kitchenSink = \file_get_contents(__DIR__ . '/kitchen-sink.graphql');
         $result = Parser::parse($kitchenSink);
-        $this->assertNotEmpty($result);
+        expect($result)->toNotBeEmpty();
     }
 
     /**
@@ -178,7 +178,7 @@ fragment $fragmentName on Type {
   $keyword($keyword: \$$keyword) @$keyword($keyword: $keyword)
 }
 ");
-            $this->assertNotEmpty($result);
+            expect($result)->toNotBeEmpty();
         }
     }
 
@@ -334,7 +334,7 @@ fragment $fragmentName on Type {
             ]
         ];
 
-        $this->assertEquals($expected, $this->nodeToArray($result));
+        expect($this->nodeToArray($result))->toBePHPEqual($expected);
     }
 
     /**
@@ -343,9 +343,9 @@ fragment $fragmentName on Type {
     public function testAllowsParsingWithoutSourceLocationInformation():void
     {
         $source = new Source('{ id }');
-        $result = Parser::parseSource($source, ['noLocation' => true]);
+        $result = Parser::parseSource($source, true);
 
-        $this->assertEquals(null, $result->loc);
+        expect($result->loc)->toBePHPEqual(null);
     }
 
     /**
@@ -355,7 +355,7 @@ fragment $fragmentName on Type {
     {
         $source = new Source('{ id }');
         $result = Parser::parseSource($source);
-        $this->assertEquals(['start' => 0, 'end' => '6'], TestUtils::locationToArray($result->loc));
+        expect(TestUtils::locationToArray($result->loc))->toBePHPEqual(['start' => 0, 'end' => '6']);
     }
 
     /**
@@ -365,7 +365,7 @@ fragment $fragmentName on Type {
     {
         $source = new Source('{ id }');
         $result = Parser::parseSource($source);
-        $this->assertEquals($source, $result->loc->source);
+        expect($result->loc->source)->toBePHPEqual($source);
     }
 
     /**
@@ -375,8 +375,8 @@ fragment $fragmentName on Type {
     {
         $source = new Source('{ id }');
         $result = Parser::parseSource($source);
-        $this->assertEquals('<SOF>', $result->loc->startToken->kind);
-        $this->assertEquals('<EOF>', $result->loc->endToken->kind);
+        expect($result->loc->startToken->kind)->toBePHPEqual('<SOF>');
+        expect($result->loc->endToken->kind)->toBePHPEqual('<EOF>');
     }
 
     // Describe: parseValue
@@ -386,10 +386,10 @@ fragment $fragmentName on Type {
      */
     public function testParsesNullValues():void
     {
-        $this->assertEquals([
+        expect($this->nodeToArray(Parser::parseValue(new Source('null'))))->toBePHPEqual([
             'kind' => NodeKind::NULL,
             'loc' => ['start' => 0, 'end' => 4]
-        ], $this->nodeToArray(Parser::parseValue(new Source('null'))));
+        ]);
     }
 
     /**
@@ -397,7 +397,7 @@ fragment $fragmentName on Type {
      */
     public function testParsesListValues():void
     {
-        $this->assertEquals([
+        expect($this->nodeToArray(Parser::parseValue(new Source('[123 "abc"]'))))->toBePHPEqual([
             'kind' => NodeKind::LST,
             'loc' => ['start' => 0, 'end' => 11],
             'values' => [
@@ -412,7 +412,7 @@ fragment $fragmentName on Type {
                     'value' => 'abc'
                 ]
             ]
-        ], $this->nodeToArray(Parser::parseValue(new Source('[123 "abc"]'))));
+        ]);
     }
 
     // Describe: parseType
@@ -422,7 +422,7 @@ fragment $fragmentName on Type {
      */
     public function testParsesWellKnownTypes():void
     {
-        $this->assertEquals([
+        expect($this->nodeToArray(Parser::parseType(new Source('String'))))->toBePHPEqual([
             'kind' => NodeKind::NAMED_TYPE,
             'loc' => ['start' => 0, 'end' => 6],
             'name' => [
@@ -430,7 +430,7 @@ fragment $fragmentName on Type {
                 'loc' => ['start' => 0, 'end' => 6],
                 'value' => 'String'
             ]
-        ], $this->nodeToArray(Parser::parseType(new Source('String'))));
+        ]);
     }
 
     /**
@@ -438,7 +438,7 @@ fragment $fragmentName on Type {
      */
     public function testParsesCustomTypes():void
     {
-        $this->assertEquals([
+        expect($this->nodeToArray(Parser::parseType(new Source('MyType'))))->toBePHPEqual([
             'kind' => NodeKind::NAMED_TYPE,
             'loc' => ['start' => 0, 'end' => 6],
             'name' => [
@@ -446,7 +446,7 @@ fragment $fragmentName on Type {
                 'loc' => ['start' => 0, 'end' => 6],
                 'value' => 'MyType'
             ]
-        ], $this->nodeToArray(Parser::parseType(new Source('MyType'))));
+        ]);
     }
 
     /**
@@ -454,7 +454,7 @@ fragment $fragmentName on Type {
      */
     public function testParsesListTypes():void
     {
-        $this->assertEquals([
+        expect($this->nodeToArray(Parser::parseType(new Source('[MyType]'))))->toBePHPEqual([
             'kind' => NodeKind::LIST_TYPE,
             'loc' => ['start' => 0, 'end' => 8],
             'type' => [
@@ -466,7 +466,7 @@ fragment $fragmentName on Type {
                     'value' => 'MyType'
                 ]
             ]
-        ], $this->nodeToArray(Parser::parseType(new Source('[MyType]'))));
+        ]);
     }
 
     /**
@@ -474,7 +474,7 @@ fragment $fragmentName on Type {
      */
     public function testParsesNonNullTypes():void
     {
-        $this->assertEquals([
+        expect($this->nodeToArray(Parser::parseType(new Source('MyType!'))))->toBePHPEqual([
             'kind' => NodeKind::NON_NULL_TYPE,
             'loc' => ['start' => 0, 'end' => 7],
             'type' => [
@@ -486,7 +486,7 @@ fragment $fragmentName on Type {
                     'value' => 'MyType'
                 ]
             ]
-        ], $this->nodeToArray(Parser::parseType(new Source('MyType!'))));
+        ]);
     }
 
     /**
@@ -494,7 +494,7 @@ fragment $fragmentName on Type {
      */
     public function testParsesNestedTypes():void
     {
-        $this->assertEquals([
+        expect($this->nodeToArray(Parser::parseType(new Source('[MyType!]'))))->toBePHPEqual([
             'kind' => NodeKind::LIST_TYPE,
             'loc' => ['start' => 0, 'end' => 9],
             'type' => [
@@ -510,7 +510,7 @@ fragment $fragmentName on Type {
                     ]
                 ]
             ]
-        ], $this->nodeToArray(Parser::parseType(new Source('[MyType!]'))));
+        ]);
     }
 
     /**

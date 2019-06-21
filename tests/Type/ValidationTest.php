@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Type;
 
 use GraphQL\Error\InvariantViolation;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\Warning;
 use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\CustomScalarType;
@@ -14,7 +15,7 @@ use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Utils\Utils;
 
-class ValidationTest extends \PHPUnit_Framework_TestCase
+class ValidationTest extends \Facebook\HackTest\HackTest
 {
     public ?CustomScalarType $SomeScalarType;
 
@@ -40,7 +41,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
 
     public ?string $String;
 
-    public function setUp():void
+    public async function beforeEachTestAsync():Awaitable<void>
     {
         $this->String = 'TestString';
 
@@ -126,9 +127,8 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         Warning::suppress(Warning::WARNING_NOT_A_TYPE);
     }
 
-    public function tearDown():void
+    public async function afterEachTestAsync():Awaitable<void>
     {
-        parent::tearDown();
         Warning::enable(Warning::WARNING_NOT_A_TYPE);
     }
 
@@ -546,10 +546,9 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
 
         $schema->assertValid();
 
-        $this->assertEquals(
+        expect($lastMessage)->toBePHPEqual(
             'Name "__notPartOfIntrospection" must not begin with "__", which is reserved by GraphQL introspection. '.
-            'In a future release of graphql this will become an exception',
-            $lastMessage
+            'In a future release of graphql this will become an exception'
         );
         Warning::setWarningHandler(null);
     }
@@ -1638,8 +1637,8 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @it rejects an Enum type with incorrectly named values
-     * @dataProvider invalidEnumValueName
      */
+    <<DataProvider('invalidEnumValueName')>>
     public function testRejectsAnEnumTypeWithIncorrectlyNamedValues(string $name, string $expectedMessage):void
     {
         $enum = $this->enumValue($name);
@@ -1690,10 +1689,8 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 $schema->assertValid();
                 $this->fail('Expected exception not thrown for ' . Utils::printSafe($type));
             } catch (InvariantViolation $e) {
-                $this->assertEquals(
-                    'BadObject.badField field type must be Output Type but got: ' . Utils::printSafe($type),
-                    $e->getMessage()
-                );
+                expect($e->getMessage())
+                    ->toBePHPEqual('BadObject.badField field type must be Output Type but got: ' . Utils::printSafe($type));
             }
         }
     }
@@ -1776,10 +1773,8 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 $schema->assertValid();
                 $this->fail('Exepected exception not thrown for type ' . $type);
             } catch (InvariantViolation $e) {
-                $this->assertEquals(
-                    'BadObject may only implement Interface types, it cannot implement ' . $type . '.',
-                    $e->getMessage()
-                );
+                expect($e->getMessage())
+                    ->toBePHPEqual('BadObject may only implement Interface types, it cannot implement ' . $type . '.');
             }
         }
     }
@@ -1814,10 +1809,8 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 $schema->assertValid();
                 $this->fail('Expected exception not thrown for type: ' . $type);
             } catch (InvariantViolation $e) {
-                $this->assertEquals(
-                    'BadUnion may only contain Object types, it cannot contain: ' . $type . '.',
-                    $e->getMessage()
-                );
+                expect($e->getMessage())
+                    ->toBePHPEqual('BadUnion may only contain Object types, it cannot contain: ' . $type . '.');
             }
         }
 
@@ -1865,10 +1858,8 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 $schema->assertValid();
                 $this->fail('Expected exception not thrown for type ' . $type);
             } catch (InvariantViolation $e) {
-                $this->assertEquals(
-                    'BadInterface.badField field type must be Output Type but got: ' . Utils::printSafe($type),
-                    $e->getMessage()
-                );
+                expect($e->getMessage())
+                    ->toBePHPEqual('BadInterface.badField field type must be Output Type but got: ' . Utils::printSafe($type));
             }
         }
     }
@@ -1909,10 +1900,8 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 $schema->assertValid();
                 $this->fail('Expected exception not thrown for type ' . $type);
             } catch (InvariantViolation $e) {
-                $this->assertEquals(
-                    'BadObject.badField(badArg): argument type must be Input Type but got: ' . Utils::printSafe($type),
-                    $e->getMessage()
-                );
+                expect($e->getMessage())
+                    ->toBePHPEqual('BadObject.badField(badArg): argument type must be Input Type but got: ' . Utils::printSafe($type));
             }
         }
     }
@@ -1956,10 +1945,8 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 $schema->assertValid();
                 $this->fail('Expected exception not thrown for type ' . $type);
             } catch (InvariantViolation $e) {
-                $this->assertEquals(
-                    "BadInputObject.badField field type must be Input Type but got: " . Utils::printSafe($type) . ".",
-                    $e->getMessage()
-                );
+                expect($e->getMessage())
+                    ->toBePHPEqual("BadInputObject.badField field type must be Input Type but got: " . Utils::printSafe($type) . ".");
             }
         }
     }
@@ -2011,10 +1998,8 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 GraphQlType::listOf($type);
                 $this->fail("Expected exception not thrown for: " . Utils::printSafe($type));
             } catch (InvariantViolation $e) {
-                $this->assertEquals(
-                    'Can only create List of a GraphQLType but got: ' . Utils::printSafe($type),
-                    $e->getMessage()
-                );
+                expect($e->getMessage())
+                    ->toBePHPEqual('Can only create List of a GraphQLType but got: ' . Utils::printSafe($type));
             }
         }
     }
@@ -2068,10 +2053,8 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 GraphQlType::nonNull($type);
                 $this->fail("Expected exception not thrown for: " . Utils::printSafe($type));
             } catch (InvariantViolation $e) {
-                $this->assertEquals(
-                    'Can only create NonNull of a Nullable GraphQLType but got: ' . Utils::printSafe($type),
-                    $e->getMessage()
-                );
+                expect($e->getMessage())
+                    ->toBePHPEqual('Can only create NoNull of a Nullable GraphQLType but got: ' . Utils::printSafe($type));
             }
         }
     }
@@ -2687,7 +2670,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 $factory();
                 $this->fail('Expected exception not thrown for entry ' . $index);
             } catch (InvariantViolation $e) {
-                $this->assertEquals($expectedError, $e->getMessage(), 'Error in callable #' . $index);
+                expect($e->getMessage())->toBePHPEqual($expectedError, 'Error in callable #' . $index);
             }
         }
     }
@@ -2703,7 +2686,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                     $this->fail('Expected exception not thrown for entry ' . $index);
                 } catch (\PHPUnit_Framework_Error_Warning $e) {
                     $warned = true;
-                    $this->assertEquals($expectedError, $e->getMessage(), 'Error in callable #' . $index);
+                    expect($e->getMessage())->toBePHPEqual($expectedError, 'Error in callable #' . $index);
                 }
             } else {
                 // Should not throw
@@ -2740,7 +2723,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function schemaWithObjectFieldOfType(?GraphQlType $fieldType):Schema
+    private function schemaWithObjectFieldOfType(mixed $fieldType):Schema
     {
         $BadObjectType = new ObjectType([
             'name' => 'BadObject',
@@ -2835,7 +2818,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function schemaWithInterfaceFieldOfType(?GraphQlType $fieldType):Schema
+    private function schemaWithInterfaceFieldOfType(mixed $fieldType):Schema
     {
         $BadInterfaceType = new InterfaceType([
             'name' => 'BadInterface',
@@ -2866,7 +2849,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function schemaWithArgOfType(?GraphQlType $argType):Schema
+    private function schemaWithArgOfType(mixed $argType):Schema
     {
         $BadObjectType = new ObjectType([
             'name' => 'BadObject',
@@ -2890,7 +2873,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    private function schemaWithInputFieldOfType(?GraphQlType $inputFieldType):Schema
+    private function schemaWithInputFieldOfType(mixed $inputFieldType):Schema
     {
         $BadInputObjectType = new InputObjectType([
             'name' => 'BadInputObject',

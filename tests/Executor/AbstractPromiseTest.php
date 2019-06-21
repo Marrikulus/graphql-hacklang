@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Executor;
 
 use GraphQL\Deferred;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\UserError;
 use GraphQL\Error\Warning;
 use GraphQL\GraphQL;
@@ -14,7 +15,7 @@ use GraphQL\Type\Definition\UnionType;
 
 require_once __DIR__ . '/TestClasses.php';
 
-class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
+class AbstractPromiseTest extends \Facebook\HackTest\HackTest
 {
     // DESCRIBE: Execute: Handles execution of abstract types with promises
 
@@ -101,7 +102,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expected, $result);
+        expect($result)->toBePHPEqual($expected);
     }
 
     /**
@@ -197,7 +198,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset($expected, $result);
+        expect($result)->toInclude($expected);
     }
 
     /**
@@ -275,7 +276,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expected, $result);
+        expect($result)->toBePHPEqual($expected);
     }
 
     /**
@@ -362,7 +363,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
       }
     }';
 
-        $result = GraphQL::executeAndReturnResult($schema, $query)->toArray(true);
+        $result = GraphQL::executeAndReturnResult($schema, $query)->toArray(1);
 
         $expected = [
             'data' => [
@@ -381,7 +382,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset($expected, $result);
+        expect($result)->toInclude($expected);
     }
 
     /**
@@ -463,7 +464,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
       }
     }';
 
-        $result = GraphQL::executeAndReturnResult($schema, $query)->toArray(true);
+        $result = GraphQL::executeAndReturnResult($schema, $query)->toArray(1);
 
         $expected = [
             'data' => [
@@ -482,7 +483,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset($expected, $result);
+        expect($result)->toInclude($expected);
     }
 
     /**
@@ -567,7 +568,7 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result);
+        expect($result)->toBePHPEqual($expected);
     }
 
     /**
@@ -656,6 +657,6 @@ class AbstractPromiseTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset($expected, $result);
+        expect($result)->toInclude($expected);
     }
 }

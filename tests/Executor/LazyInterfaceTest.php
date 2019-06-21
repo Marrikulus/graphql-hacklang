@@ -8,13 +8,14 @@
 namespace GraphQL\Tests\Executor;
 
 use GraphQL\Executor\Executor;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\Parser;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 
-class LazyInterfaceTest extends \PHPUnit_Framework_TestCase
+class LazyInterfaceTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @var Schema
@@ -34,7 +35,7 @@ class LazyInterfaceTest extends \PHPUnit_Framework_TestCase
     /**
      * Setup schema
      */
-    protected function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         $query = new ObjectType([
             'name' => 'query',
@@ -122,6 +123,6 @@ class LazyInterfaceTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expected, Executor::execute($this->schema, Parser::parse($request))->toArray());
+        expect(Executor::execute($this->schema, Parser::parse($request))->toArray())->toBePHPEqual($expected);
     }
 }

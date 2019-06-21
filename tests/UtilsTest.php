@@ -4,7 +4,7 @@ namespace GraphQL\Tests;
 
 use GraphQL\Utils\Utils;
 
-class UtilsTest extends \PHPUnit_Framework_TestCase
+class UtilsTest extends \Facebook\HackTest\HackTest
 {
     public function testAssignThrowsExceptionOnMissingRequiredKey():void
     {

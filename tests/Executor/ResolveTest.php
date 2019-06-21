@@ -3,13 +3,14 @@
 namespace GraphQL\Tests\Executor;
 
 use GraphQL\GraphQL;
+use function Facebook\FBExpect\expect;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 
 require_once __DIR__ . '/TestClasses.php';
 
-class ResolveTest extends \PHPUnit_Framework_TestCase
+class ResolveTest extends \Facebook\HackTest\HackTest
 {
     // Execute: resolve function
 
@@ -36,10 +37,8 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
             'test' => 'testValue'
         ];
 
-        $this->assertEquals(
-            ['data' => ['test' => 'testValue']],
-            GraphQL::execute($schema, '{ test }', $source)
-        );
+        expect(GraphQL::execute($schema, '{ test }', $source))
+            ->toBePHPEqual(['data' => ['test' => 'testValue']]);
     }
 
     /**
@@ -55,10 +54,8 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
                 return $_secret;
             }
         ];
-        $this->assertEquals(
-            ['data' => ['test' => $_secret]],
-            GraphQL::execute($schema, '{ test }', $source)
-        );
+        expect(GraphQL::execute($schema, '{ test }', $source))
+            ->toBePHPEqual(['data' => ['test' => $_secret]]);
     }
 
     /**
@@ -76,7 +73,7 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
         $source = new Adder(700);
 
         $result = GraphQL::execute($schema, '{ test(addend1: 80) }', $source, ['addend2' => 9]);
-        $this->assertEquals(['data' => ['test' => 789]], $result);
+        expect($result)->toBePHPEqual(['data' => ['test' => 789]]);
     }
 
     /**
@@ -95,24 +92,15 @@ class ResolveTest extends \PHPUnit_Framework_TestCase
             }
         ]);
 
-        $this->assertEquals(
-            ['data' => ['test' => '[null,[]]']],
-            GraphQL::execute($schema, '{ test }')
-        );
+        expect(GraphQL::execute($schema, '{ test }'))->toBePHPEqual(['data' => ['test' => '[null,[]]']]);
 
-        $this->assertEquals(
-            ['data' => ['test' => '["Source!",[]]']],
-            GraphQL::execute($schema, '{ test }', 'Source!')
-        );
+        expect(GraphQL::execute($schema, '{ test }', 'Source!'))
+            ->toBePHPEqual(['data' => ['test' => '["Source!",[]]']]);
 
-        $this->assertEquals(
-            ['data' => ['test' => '["Source!",{"aStr":"String!"}]']],
-            GraphQL::execute($schema, '{ test(aStr: "String!") }', 'Source!')
-        );
+        expect(GraphQL::execute($schema, '{ test(aStr: "String!") }', 'Source!'))
+            ->toBePHPEqual(['data' => ['test' => '["Source!",{"aStr":"String!"}]']]);
 
-        $this->assertEquals(
-            ['data' => ['test' => '["Source!",{"aStr":"String!","aInt":-123}]']],
-            GraphQL::execute($schema, '{ test(aInt: -123, aStr: "String!") }', 'Source!')
-        );
+        expect(GraphQL::execute($schema, '{ test(aInt: -123, aStr: "String!") }', 'Source!'))
+            ->toBePHPEqual(['data' => ['test' => '["Source!",{"aStr":"String!","aInt":-123}]']]);
     }
 }

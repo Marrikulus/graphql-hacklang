@@ -3,8 +3,9 @@
 namespace GraphQL\Tests\Executor\Promise;
 
 use GraphQL\Executor\Promise\Adapter\SyncPromise;
+use function Facebook\FBExpect\expect;
 
-class SyncPromiseTest extends \PHPUnit_Framework_TestCase
+class SyncPromiseTest extends \Facebook\HackTest\HackTest
 {
     public function getFulfilledPromiseResolveData()
     {
@@ -31,9 +32,7 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @dataProvider getFulfilledPromiseResolveData
-     */
+    <<DataProvider('getFulfilledPromiseResolveData')>>
     public function testFulfilledPromiseCannotChangeValue(
         $resolvedValue,
         $onFulfilled,
@@ -43,18 +42,16 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
     )
     {
         $promise = new SyncPromise();
-        $this->assertEquals(SyncPromise::PENDING, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
 
         $promise->resolve($resolvedValue);
-        $this->assertEquals(SyncPromise::FULFILLED, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::FULFILLED);
 
         $this->setExpectedException(\Exception::class, 'Cannot change value of fulfilled promise');
         $promise->resolve($resolvedValue . '-other-value');
     }
 
-    /**
-     * @dataProvider getFulfilledPromiseResolveData
-     */
+    <<DataProvider('getFulfilledPromiseResolveData')>>
     public function testFulfilledPromiseCannotBeRejected(
         $resolvedValue,
         $onFulfilled,
@@ -64,18 +61,16 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
     )
     {
         $promise = new SyncPromise();
-        $this->assertEquals(SyncPromise::PENDING, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
 
         $promise->resolve($resolvedValue);
-        $this->assertEquals(SyncPromise::FULFILLED, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::FULFILLED);
 
         $this->setExpectedException(\Exception::class, 'Cannot reject fulfilled promise');
         $promise->reject(new \Exception('anything'));
     }
 
-    /**
-     * @dataProvider getFulfilledPromiseResolveData
-     */
+    <<DataProvider('getFulfilledPromiseResolveData')>>
     public function testFulfilledPromise(
         $resolvedValue,
         $onFulfilled,
@@ -85,13 +80,13 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
     )
     {
         $promise = new SyncPromise();
-        $this->assertEquals(SyncPromise::PENDING, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
 
         $promise->resolve($resolvedValue);
-        $this->assertEquals(SyncPromise::FULFILLED, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::FULFILLED);
 
         $nextPromise = $promise->then(null, function() {});
-        $this->assertSame($promise, $nextPromise);
+        expect($nextPromise)->toBeSame($promise);
 
         $onRejectedCalled = false;
         $nextPromise = $promise->then($onFulfilled, function () use (&$onRejectedCalled) {
@@ -99,12 +94,12 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
         });
 
         if ($onFulfilled) {
-            $this->assertNotSame($promise, $nextPromise);
-            $this->assertEquals(SyncPromise::PENDING, $nextPromise->state);
+            expect($nextPromise)->toNotBeSame($promise);
+            expect($nextPromise->state)->toBePHPEqual(SyncPromise::PENDING);
         } else {
-            $this->assertEquals(SyncPromise::FULFILLED, $nextPromise->state);
+            expect($nextPromise->state)->toBePHPEqual(SyncPromise::FULFILLED);
         }
-        $this->assertEquals(false, $onRejectedCalled);
+        expect($onRejectedCalled)->toBePHPEqual(false);
 
         $this->assertValidPromise($nextPromise, $expectedNextReason, $expectedNextValue, $expectedNextState);
 
@@ -112,7 +107,7 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
         $nextPromise3 = $promise->then($onFulfilled);
 
         if ($onFulfilled) {
-            $this->assertNotSame($nextPromise, $nextPromise2);
+            expect($nextPromise2)->toNotBeSame($nextPromise);
         }
 
         SyncPromise::runQueue();
@@ -146,9 +141,7 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @dataProvider getRejectedPromiseData
-     */
+    <<DataProvider('getRejectedPromiseData')>>
     public function testRejectedPromiseCannotChangeReason(
         $rejectedReason,
         $onRejected,
@@ -158,19 +151,17 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
     )
     {
         $promise = new SyncPromise();
-        $this->assertEquals(SyncPromise::PENDING, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
 
         $promise->reject($rejectedReason);
-        $this->assertEquals(SyncPromise::REJECTED, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::REJECTED);
 
         $this->setExpectedException(\Exception::class, 'Cannot change rejection reason');
         $promise->reject(new \Exception('other-reason'));
 
     }
 
-    /**
-     * @dataProvider getRejectedPromiseData
-     */
+    <<DataProvider('getRejectedPromiseData')>>
     public function testRejectedPromiseCannotBeResolved(
         $rejectedReason,
         $onRejected,
@@ -180,18 +171,16 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
     )
     {
         $promise = new SyncPromise();
-        $this->assertEquals(SyncPromise::PENDING, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
 
         $promise->reject($rejectedReason);
-        $this->assertEquals(SyncPromise::REJECTED, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::REJECTED);
 
         $this->setExpectedException(\Exception::class, 'Cannot resolve rejected promise');
         $promise->resolve('anything');
     }
 
-    /**
-     * @dataProvider getRejectedPromiseData
-     */
+    <<DataProvider('getRejectedPromiseData')>>
     public function testRejectedPromise(
         $rejectedReason,
         $onRejected,
@@ -201,27 +190,27 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
     )
     {
         $promise = new SyncPromise();
-        $this->assertEquals(SyncPromise::PENDING, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
 
         $promise->reject($rejectedReason);
-        $this->assertEquals(SyncPromise::REJECTED, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::REJECTED);
 
         try {
             $promise->reject(new \Exception('other-reason'));
             $this->fail('Expected exception not thrown');
         } catch (\Exception $e) {
-            $this->assertEquals('Cannot change rejection reason', $e->getMessage());
+            expect($e->getMessage())->toBePHPEqual('Cannot change rejection reason');
         }
 
         try {
             $promise->resolve('anything');
             $this->fail('Expected exception not thrown');
         } catch (\Exception $e) {
-            $this->assertEquals('Cannot resolve rejected promise', $e->getMessage());
+            expect($e->getMessage())->toBePHPEqual('Cannot resolve rejected promise');
         }
 
         $nextPromise = $promise->then(function() {}, null);
-        $this->assertSame($promise, $nextPromise);
+        expect($nextPromise)->toBeSame($promise);
 
         $onFulfilledCalled = false;
         $nextPromise = $promise->then(
@@ -232,19 +221,19 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
         );
 
         if ($onRejected) {
-            $this->assertNotSame($promise, $nextPromise);
-            $this->assertEquals(SyncPromise::PENDING, $nextPromise->state);
+            expect($nextPromise)->toNotBeSame($promise);
+            expect($nextPromise->state)->toBePHPEqual(SyncPromise::PENDING);
         } else {
-            $this->assertEquals(SyncPromise::REJECTED, $nextPromise->state);
+            expect($nextPromise->state)->toBePHPEqual(SyncPromise::REJECTED);
         }
-        $this->assertEquals(false, $onFulfilledCalled);
+        expect($onFulfilledCalled)->toBePHPEqual(false);
         $this->assertValidPromise($nextPromise, $expectedNextReason, $expectedNextValue, $expectedNextState);
 
         $nextPromise2 = $promise->then(null, $onRejected);
         $nextPromise3 = $promise->then(null, $onRejected);
 
         if ($onRejected) {
-            $this->assertNotSame($nextPromise, $nextPromise2);
+            expect($nextPromise2)->toNotBeSame($nextPromise);
         }
 
         SyncPromise::runQueue();
@@ -256,26 +245,26 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
     public function testPendingPromise():void
     {
         $promise = new SyncPromise();
-        $this->assertEquals(SyncPromise::PENDING, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
 
         try {
             $promise->resolve($promise);
             $this->fail('Expected exception not thrown');
         } catch (\Exception $e) {
-            $this->assertEquals('Cannot resolve promise with self', $e->getMessage());
-            $this->assertEquals(SyncPromise::PENDING, $promise->state);
+            expect($e->getMessage())->toBePHPEqual('Cannot resolve promise with self');
+            expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
         }
 
         // Try to resolve with other promise (must resolve when other promise resolves)
         $otherPromise = new SyncPromise();
         $promise->resolve($otherPromise);
 
-        $this->assertEquals(SyncPromise::PENDING, $promise->state);
-        $this->assertEquals(SyncPromise::PENDING, $otherPromise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
+        expect($otherPromise->state)->toBePHPEqual(SyncPromise::PENDING);
 
         $otherPromise->resolve('the value');
-        $this->assertEquals(SyncPromise::FULFILLED, $otherPromise->state);
-        $this->assertEquals(SyncPromise::PENDING, $promise->state);
+        expect($otherPromise->state)->toBePHPEqual(SyncPromise::FULFILLED);
+        expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
         $this->assertValidPromise($promise, null, 'the value', SyncPromise::FULFILLED);
 
         $promise = new SyncPromise();
@@ -285,7 +274,7 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
 
         // Test rejections
         $promise = new SyncPromise();
-        $this->assertEquals(SyncPromise::PENDING, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
 
         try {
             $promise->reject('a');
@@ -293,9 +282,9 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
         } catch (\PHPUnit_Framework_AssertionFailedError $e) {
             throw $e;
         } catch (\Throwable $e) {
-            $this->assertEquals(SyncPromise::PENDING, $promise->state);
+            expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
         } catch (\Exception $e) {
-            $this->assertEquals(SyncPromise::PENDING, $promise->state);
+            expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
         }
 
         $promise->reject(new \Exception("Rejected Reason"));
@@ -317,12 +306,12 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
     public function testPendingPromiseThen():void
     {
         $promise = new SyncPromise();
-        $this->assertEquals(SyncPromise::PENDING, $promise->state);
+        expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
 
         $nextPromise = $promise->then();
-        $this->assertNotSame($promise, $nextPromise);
-        $this->assertEquals(SyncPromise::PENDING, $promise->state);
-        $this->assertEquals(SyncPromise::PENDING, $nextPromise->state);
+        expect($nextPromise)->toNotBeSame($promise);
+        expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
+        expect($nextPromise->state)->toBePHPEqual(SyncPromise::PENDING);
 
         // Make sure that it queues derivative promises until resolution:
         $onFulfilledCount = 0;
@@ -340,23 +329,23 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
         $nextPromise3 = $promise->then($onFulfilled, $onRejected);
         $nextPromise4 = $promise->then($onFulfilled, $onRejected);
 
-        $this->assertEquals(SyncPromise::getQueue()->count(), 0);
-        $this->assertEquals($onFulfilledCount, 0);
-        $this->assertEquals($onRejectedCount, 0);
+        expect(0)->toBePHPEqual(SyncPromise::getQueue()->count());
+        expect(0)->toBePHPEqual($onFulfilledCount);
+        expect(0)->toBePHPEqual($onRejectedCount);
         $promise->resolve(1);
 
-        $this->assertEquals(SyncPromise::getQueue()->count(), 4);
-        $this->assertEquals($onFulfilledCount, 0);
-        $this->assertEquals($onRejectedCount, 0);
-        $this->assertEquals(SyncPromise::PENDING, $nextPromise->state);
-        $this->assertEquals(SyncPromise::PENDING, $nextPromise2->state);
-        $this->assertEquals(SyncPromise::PENDING, $nextPromise3->state);
-        $this->assertEquals(SyncPromise::PENDING, $nextPromise4->state);
+        expect(4)->toBePHPEqual(SyncPromise::getQueue()->count());
+        expect(0)->toBePHPEqual($onFulfilledCount);
+        expect(0)->toBePHPEqual($onRejectedCount);
+        expect($nextPromise->state)->toBePHPEqual(SyncPromise::PENDING);
+        expect($nextPromise2->state)->toBePHPEqual(SyncPromise::PENDING);
+        expect($nextPromise3->state)->toBePHPEqual(SyncPromise::PENDING);
+        expect($nextPromise4->state)->toBePHPEqual(SyncPromise::PENDING);
 
         SyncPromise::runQueue();
-        $this->assertEquals(SyncPromise::getQueue()->count(), 0);
-        $this->assertEquals($onFulfilledCount, 3);
-        $this->assertEquals($onRejectedCount, 0);
+        expect(0)->toBePHPEqual(SyncPromise::getQueue()->count());
+        expect(3)->toBePHPEqual($onFulfilledCount);
+        expect(0)->toBePHPEqual($onRejectedCount);
         $this->assertValidPromise($nextPromise, null, 1, SyncPromise::FULFILLED);
         $this->assertValidPromise($nextPromise2, null, 1, SyncPromise::FULFILLED);
         $this->assertValidPromise($nextPromise3, null, 2, SyncPromise::FULFILLED);
@@ -381,16 +370,16 @@ class SyncPromiseTest extends \PHPUnit_Framework_TestCase
             }
         );
 
-        $this->assertEquals($onFulfilledCalled, false);
-        $this->assertEquals($onRejectedCalled, false);
+        expect(false)->toBePHPEqual($onFulfilledCalled);
+        expect(false)->toBePHPEqual($onRejectedCalled);
 
         SyncPromise::runQueue();
 
-        $this->assertEquals(!$expectedNextReason, $onFulfilledCalled);
-        $this->assertEquals(!!$expectedNextReason, $onRejectedCalled);
+        expect($onFulfilledCalled)->toBePHPEqual(!$expectedNextReason);
+        expect($onRejectedCalled)->toBePHPEqual(!!$expectedNextReason);
 
-        $this->assertEquals($expectedNextValue, $actualNextValue);
-        $this->assertEquals($expectedNextReason, $actualNextReason);
-        $this->assertEquals($expectedNextState, $promise->state);
+        expect($actualNextValue)->toBePHPEqual($expectedNextValue);
+        expect($actualNextReason)->toBePHPEqual($expectedNextReason);
+        expect($promise->state)->toBePHPEqual($expectedNextState);
     }
 }

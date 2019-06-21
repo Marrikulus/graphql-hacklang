@@ -4,13 +4,14 @@ namespace GraphQL\Tests\Type;
 
 
 use GraphQL\Error\InvariantViolation;
+use function Facebook\FBExpect\expect;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Schema;
 
-class TypeLoaderTest extends \PHPUnit_Framework_TestCase
+class TypeLoaderTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @var ObjectType
@@ -57,7 +58,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
      */
     private $calls;
 
-    public function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         $this->calls = [];
 
@@ -193,15 +194,15 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
             'Mutation.fields',
             'BlogStory.fields',
         ];
-        $this->assertEquals($expected, $this->calls);
+        expect($this->calls)->toBePHPEqual($expected);
 
-        $this->assertSame($this->query, $schema->getType('Query'));
-        $this->assertSame($this->mutation, $schema->getType('Mutation'));
-        $this->assertSame($this->node, $schema->getType('Node'));
-        $this->assertSame($this->content, $schema->getType('Content'));
-        $this->assertSame($this->blogStory, $schema->getType('BlogStory'));
-        $this->assertSame($this->postStoryMutation, $schema->getType('PostStoryMutation'));
-        $this->assertSame($this->postStoryMutationInput, $schema->getType('PostStoryMutationInput'));
+        expect($schema->getType('Query'))->toBeSame($this->query);
+        expect($schema->getType('Mutation'))->toBeSame($this->mutation);
+        expect($schema->getType('Node'))->toBeSame($this->node);
+        expect($schema->getType('Content'))->toBeSame($this->content);
+        expect($schema->getType('BlogStory'))->toBeSame($this->blogStory);
+        expect($schema->getType('PostStoryMutation'))->toBeSame($this->postStoryMutation);
+        expect($schema->getType('PostStoryMutationInput'))->toBeSame($this->postStoryMutationInput);
 
         $expectedTypeMap = [
             'Query' => $this->query,
@@ -213,7 +214,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
             'PostStoryMutationInput' => $this->postStoryMutationInput,
         ];
 
-        $this->assertArraySubset($expectedTypeMap, $schema->getTypeMap());
+        expect($schema->getTypeMap())->toInclude($expectedTypeMap);
     }
 
     public function testWorksWithTypeLoader():void
@@ -223,23 +224,23 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
             'mutation' => $this->mutation,
             'typeLoader' => $this->typeLoader
         ]);
-        $this->assertEquals([], $this->calls);
+        expect($this->calls)->toBePHPEqual([]);
 
         $node = $schema->getType('Node');
-        $this->assertSame($this->node, $node);
-        $this->assertEquals(['Node'], $this->calls);
+        expect($node)->toBeSame($this->node);
+        expect($this->calls)->toBePHPEqual(['Node']);
 
         $content = $schema->getType('Content');
-        $this->assertSame($this->content, $content);
-        $this->assertEquals(['Node', 'Content'], $this->calls);
+        expect($content)->toBeSame($this->content);
+        expect($this->calls)->toBePHPEqual(['Node', 'Content']);
 
         $input = $schema->getType('PostStoryMutationInput');
-        $this->assertSame($this->postStoryMutationInput, $input);
-        $this->assertEquals(['Node', 'Content', 'PostStoryMutationInput'], $this->calls);
+        expect($input)->toBeSame($this->postStoryMutationInput);
+        expect($this->calls)->toBePHPEqual(['Node', 'Content', 'PostStoryMutationInput']);
 
         $result = $schema->isPossibleType($this->node, $this->blogStory);
-        $this->assertTrue($result);
-        $this->assertEquals(['Node', 'Content', 'PostStoryMutationInput'], $this->calls);
+        expect($result)->toBeTrue();
+        expect($this->calls)->toBePHPEqual(['Node', 'Content', 'PostStoryMutationInput']);
     }
 
     public function testOnlyCallsLoaderOnce():void
@@ -250,10 +251,10 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $schema->getType('Node');
-        $this->assertEquals(['Node'], $this->calls);
+        expect($this->calls)->toBePHPEqual(['Node']);
 
         $schema->getType('Node');
-        $this->assertEquals(['Node'], $this->calls);
+        expect($this->calls)->toBePHPEqual(['Node']);
     }
 
     public function testFailsOnNonExistentType():void
@@ -335,10 +336,10 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
             'typeLoader' => $this->typeLoader
         ]);
 
-        $this->assertSame($withoutLoader->getQueryType(), $withLoader->getQueryType());
-        $this->assertSame($withoutLoader->getMutationType(), $withLoader->getMutationType());
-        $this->assertSame($withoutLoader->getType('BlogStory'), $withLoader->getType('BlogStory'));
-        $this->assertSame($withoutLoader->getDirectives(), $withLoader->getDirectives());
+        expect($withLoader->getQueryType())->toBeSame($withoutLoader->getQueryType());
+        expect($withLoader->getMutationType())->toBeSame($withoutLoader->getMutationType());
+        expect($withLoader->getType('BlogStory'))->toBeSame($withoutLoader->getType('BlogStory'));
+        expect($withLoader->getDirectives())->toBeSame($withoutLoader->getDirectives());
     }
 
     public function testSkipsLoaderForInternalTypes():void
@@ -350,7 +351,7 @@ class TypeLoaderTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $type = $schema->getType('ID');
-        $this->assertSame(GraphQlType::id(), $type);
-        $this->assertEquals([], $this->calls);
+        expect($type)->toBeSame(GraphQlType::id());
+        expect($this->calls)->toBePHPEqual([]);
     }
 }

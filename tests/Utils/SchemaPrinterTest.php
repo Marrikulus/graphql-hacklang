@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Utils;
 
 use GraphQL\GraphQL;
+use function Facebook\FBExpect\expect;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\InputObjectType;
@@ -13,7 +14,7 @@ use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Utils\SchemaPrinter;
 
-class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
+class SchemaPrinterTest extends \Facebook\HackTest\HackTest
 {
     // Describe: Type System Printer
 
@@ -41,7 +42,7 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::string()
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -49,7 +50,7 @@ schema {
 type Root {
   singleField: String
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -60,7 +61,7 @@ type Root {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::listOf(GraphQlType::string())
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -68,7 +69,7 @@ schema {
 type Root {
   singleField: [String]
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -79,7 +80,7 @@ type Root {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::nonNull(GraphQlType::string())
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -87,7 +88,7 @@ schema {
 type Root {
   singleField: String!
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -98,7 +99,7 @@ type Root {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::string()))
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -106,7 +107,7 @@ schema {
 type Root {
   singleField: [String]!
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -117,7 +118,7 @@ type Root {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::string()))
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -125,7 +126,7 @@ schema {
 type Root {
   singleField: [String!]
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -136,7 +137,7 @@ type Root {
         $output = $this->printSingleFieldSchema([
             'type' => GraphQlType::nonNull(GraphQlType::listOf(GraphQlType::nonNull(GraphQlType::string())))
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -144,7 +145,7 @@ schema {
 type Root {
   singleField: [String!]!
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -164,7 +165,7 @@ type Root {
 
         $schema = new Schema(['query' => $root]);
         $output = $this->printForTest($schema);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -176,7 +177,7 @@ type Foo {
 type Root {
   foo: Foo
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -188,7 +189,7 @@ type Root {
             'type' => GraphQlType::string(),
             'args' => ['argOne' => ['type' => GraphQlType::int()]]
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -196,7 +197,7 @@ schema {
 type Root {
   singleField(argOne: Int): String
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -208,7 +209,7 @@ type Root {
             'type' => GraphQlType::string(),
             'args' => ['argOne' => ['type' => GraphQlType::int(), 'defaultValue' => 2]]
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -216,7 +217,7 @@ schema {
 type Root {
   singleField(argOne: Int = 2): String
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -228,7 +229,7 @@ type Root {
             'type' => GraphQlType::string(),
             'args' => ['argOne' => ['type' => GraphQlType::int(), 'defaultValue' => null]]
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -236,7 +237,7 @@ schema {
 type Root {
   singleField(argOne: Int = null): String
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -248,7 +249,7 @@ type Root {
             'type' => GraphQlType::string(),
             'args' => ['argOne' => ['type' => GraphQlType::nonNull(GraphQlType::int())]]
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -256,7 +257,7 @@ schema {
 type Root {
   singleField(argOne: Int!): String
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -271,7 +272,7 @@ type Root {
                 'argTwo' => ['type' => GraphQlType::string()]
             ]
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -279,7 +280,7 @@ schema {
 type Root {
   singleField(argOne: Int, argTwo: String): String
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -295,7 +296,7 @@ type Root {
                 'argThree' => ['type' => GraphQlType::boolean()]
             ]
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -303,7 +304,7 @@ schema {
 type Root {
   singleField(argOne: Int = 1, argTwo: String, argThree: Boolean): String
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -319,7 +320,7 @@ type Root {
                 'argThree' => ['type' => GraphQlType::boolean()]
             ]
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -327,7 +328,7 @@ schema {
 type Root {
   singleField(argOne: Int, argTwo: String = "foo", argThree: Boolean): String
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -343,7 +344,7 @@ type Root {
                 'argThree' => ['type' => GraphQlType::boolean(), 'defaultValue' => false]
             ]
         ]);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -351,7 +352,7 @@ schema {
 type Root {
   singleField(argOne: Int, argTwo: String, argThree: Boolean = false): String
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -381,7 +382,7 @@ type Root {
             'types' => [$barType]
         ]);
         $output = $this->printForTest($schema);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -397,7 +398,7 @@ interface Foo {
 type Root {
   bar: Bar
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -436,7 +437,7 @@ type Root {
             'types' => [$barType]
         ]);
         $output = $this->printForTest($schema);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -457,7 +458,7 @@ interface Foo {
 type Root {
   bar: Bar
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -497,7 +498,7 @@ type Root {
 
         $schema = new Schema(['query' => $root]);
         $output = $this->printForTest($schema);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -518,7 +519,7 @@ type Root {
 }
 
 union SingleUnion = Foo
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -543,7 +544,7 @@ union SingleUnion = Foo
 
         $schema = new Schema(['query' => $root]);
         $output = $this->printForTest($schema);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -555,7 +556,7 @@ input InputType {
 type Root {
   str(argOne: InputType): String
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -579,7 +580,7 @@ type Root {
 
         $schema = new Schema(['query' => $root]);
         $output = $this->printForTest($schema);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -589,7 +590,7 @@ scalar Odd
 type Root {
   odd: Odd
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -615,7 +616,7 @@ type Root {
 
         $schema = new Schema(['query' => $root]);
         $output = $this->printForTest($schema);
-        $this->assertEquals($output, '
+        expect('
 schema {
   query: Root
 }
@@ -629,7 +630,7 @@ enum RGB {
 type Root {
   rgb: RGB
 }
-');
+')->toBePHPEqual($output);
     }
 
     /**
@@ -846,6 +847,6 @@ enum __TypeKind {
 }
 
 EOT;
-        $this->assertEquals($output, $introspectionSchema);
+        expect($introspectionSchema)->toBePHPEqual($output);
     }
 }

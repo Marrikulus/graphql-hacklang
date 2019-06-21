@@ -3,13 +3,14 @@
 namespace Utils;
 
 use GraphQL\Type\Definition\InputObjectType;
+use function Facebook\FBExpect\expect;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Utils\TypeInfo;
 
-class ExtractTypesTest extends \PHPUnit_Framework_TestCase
+class ExtractTypesTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @var ObjectType
@@ -79,7 +80,7 @@ class ExtractTypesTest extends \PHPUnit_Framework_TestCase
 
     private InputObjectType $postCommentMutationInput;
 
-    public function setUp():void
+    public async function beforeEachTestAsync():Awaitable<void>
     {
         $this->node = new InterfaceType([
             'name' => 'Node',
@@ -287,7 +288,7 @@ class ExtractTypesTest extends \PHPUnit_Framework_TestCase
         ];
 
         $actualTypeMap = TypeInfo::extractTypes($this->query);
-        $this->assertEquals($expectedTypeMap, $actualTypeMap);
+        expect($actualTypeMap)->toBePHPEqual($expectedTypeMap);
     }
 
     public function testExtractTypesFromMutation():void
@@ -309,7 +310,7 @@ class ExtractTypesTest extends \PHPUnit_Framework_TestCase
         ];
 
         $actualTypeMap = TypeInfo::extractTypes($this->mutation);
-        $this->assertEquals($expectedTypeMap, $actualTypeMap);
+        expect($actualTypeMap)->toBePHPEqual($expectedTypeMap);
     }
 
     public function testThrowsOnMultipleTypesWithSameName():void

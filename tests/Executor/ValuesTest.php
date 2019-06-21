@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Executor;
 
 use GraphQL\Executor\Values;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
@@ -11,14 +12,13 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Schema;
 
-class ValuesTest extends \PHPUnit_Framework_TestCase {
+class ValuesTest extends \Facebook\HackTest\HackTest {
 
   public function testGetIDVariableValues():void
   {
       $this->expectInputVariablesMatchOutputVariables(['idInput' => '123456789']);
-      $this->assertEquals(
+      expect(self::runTestCase(['idInput' => 123456789]))->toBePHPEqual(
           ['idInput' => '123456789'],
-          self::runTestCase(['idInput' => 123456789]),
           'Integer ID was not converted to string'
       );
   }
@@ -138,9 +138,8 @@ class ValuesTest extends \PHPUnit_Framework_TestCase {
 
   private function expectInputVariablesMatchOutputVariables($variables)
   {
-      $this->assertEquals(
+      expect(self::runTestCase($variables))->toBePHPEqual(
           $variables,
-          self::runTestCase($variables),
           'Output variables did not match input variables' . \PHP_EOL . \var_export($variables, true) . \PHP_EOL
       );
   }

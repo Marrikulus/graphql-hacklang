@@ -4,8 +4,9 @@ namespace GraphQL\Tests;
 
 
 use GraphQL\GraphQL;
+use function Facebook\FBExpect\expect;
 
-class StarWarsQueryTest extends \PHPUnit_Framework_TestCase
+class StarWarsQueryTest extends \Facebook\HackTest\HackTest
 {
     // Star Wars Query Tests
     // Basic Queries
@@ -383,7 +384,7 @@ class StarWarsQueryTest extends \PHPUnit_Framework_TestCase
      */
     private function assertValidQuery(string $query, $expected):void
     {
-        $this->assertEquals(['data' => $expected], GraphQL::execute(StarWarsSchema::build(), $query));
+        expect(GraphQL::execute(StarWarsSchema::build(), $query))->toBePHPEqual(['data' => $expected]);
     }
 
     /**
@@ -391,6 +392,6 @@ class StarWarsQueryTest extends \PHPUnit_Framework_TestCase
      */
     private function assertValidQueryWithParams(string $query, $params, $expected):void
     {
-        $this->assertEquals(['data' => $expected], GraphQL::execute(StarWarsSchema::build(), $query, null, null, $params));
+        expect(GraphQL::execute(StarWarsSchema::build(), $query, null, null, $params))->toBePHPEqual(['data' => $expected]);
     }
 }

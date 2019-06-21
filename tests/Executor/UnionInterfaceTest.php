@@ -5,6 +5,7 @@ namespace GraphQL\Tests\Executor;
 require_once __DIR__ . '/TestClasses.php';
 
 use GraphQL\Error\Warning;
+use function Facebook\FBExpect\expect;
 use GraphQL\Executor\Executor;
 use GraphQL\GraphQL;
 use GraphQL\Language\Parser;
@@ -15,7 +16,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 
-class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
+class UnionInterfaceTest extends \Facebook\HackTest\HackTest
 {
     public $schema;
     public $garfield;
@@ -23,7 +24,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
     public $liz;
     public $john;
 
-    public function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         $NamedType = new InterfaceType([
             'name' => 'Named',
@@ -156,7 +157,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, Executor::execute($this->schema, $ast)->toArray());
+        expect(Executor::execute($this->schema, $ast)->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -188,7 +189,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expected, Executor::execute($this->schema, $ast, $this->john)->toArray());
+        expect(Executor::execute($this->schema, $ast, $this->john)->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -225,7 +226,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
 
             ]
         ];
-        $this->assertEquals($expected, Executor::execute($this->schema, $ast, $this->john)->toArray());
+        expect(Executor::execute($this->schema, $ast, $this->john)->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -258,7 +259,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
         ];
 
         Warning::suppress(Warning::WARNING_FULL_SCHEMA_SCAN);
-        $this->assertEquals($expected, Executor::execute($this->schema, $ast, $this->john)->toArray());
+        expect(Executor::execute($this->schema, $ast, $this->john)->toArray())->toBePHPEqual($expected);
         Warning::enable(Warning::WARNING_FULL_SCHEMA_SCAN);
     }
 
@@ -296,7 +297,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
         ];
 
         Warning::suppress(Warning::WARNING_FULL_SCHEMA_SCAN);
-        $this->assertEquals($expected, Executor::execute($this->schema, $ast, $this->john)->toArray());
+        expect(Executor::execute($this->schema, $ast, $this->john)->toArray())->toBePHPEqual($expected);
         Warning::enable(Warning::WARNING_FULL_SCHEMA_SCAN);
     }
 
@@ -353,7 +354,7 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
         ];
 
         Warning::suppress(Warning::WARNING_FULL_SCHEMA_SCAN);
-        $this->assertEquals($expected, Executor::execute($this->schema, $ast, $this->john)->toArray());
+        expect(Executor::execute($this->schema, $ast, $this->john)->toArray())->toBePHPEqual($expected);
         Warning::enable(Warning::WARNING_FULL_SCHEMA_SCAN);
     }
 
@@ -399,12 +400,10 @@ class UnionInterfaceTest extends \PHPUnit_Framework_TestCase
 
         $ast = Parser::parse('{ name, friends { name } }');
 
-        $this->assertEquals(
-            ['data' => ['name' => 'John', 'friends' => [['name' => 'Liz']]]],
-            GraphQL::execute($schema2, $ast, $john2, $context)
-        );
-        $this->assertSame($context, $encounteredContext);
-        $this->assertSame($schema2, $encounteredSchema);
-        $this->assertSame($john2, $encounteredRootValue);
+        expect(GraphQL::execute($schema2, $ast, $john2, $context))
+            ->toBePHPEqual(['data' => ['name' => 'John', 'friends' => [['name' => 'Liz']]]]);
+        expect($encounteredContext)->toBeSame($context);
+        expect($encounteredSchema)->toBeSame($schema2);
+        expect($encounteredRootValue)->toBeSame($john2);
     }
 }

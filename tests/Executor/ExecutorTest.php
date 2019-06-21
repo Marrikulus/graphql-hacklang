@@ -5,6 +5,7 @@ namespace GraphQL\Tests\Executor;
 require_once __DIR__ . '/TestClasses.php';
 
 use GraphQL\Deferred;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\Error;
 use GraphQL\Error\UserError;
 use GraphQL\Executor\Executor;
@@ -16,9 +17,9 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\GraphQlType;
 
-class ExecutorTest extends \PHPUnit_Framework_TestCase
+class ExecutorTest extends \Facebook\HackTest\HackTest
 {
-    public function tearDown()
+    public async function afterEachTestAsync(): Awaitable<void>
     {
         Executor::setPromiseAdapter(null);
     }
@@ -160,7 +161,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         ]);
         $schema = new Schema(['query' => $dataType]);
 
-        $this->assertEquals($expected, Executor::execute($schema, $ast, $data, null, ['size' => 100], 'Example')->toArray());
+        expect(Executor::execute($schema, $ast, $data, null, ['size' => 100], 'Example')->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -221,7 +222,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expected, Executor::execute($schema, $ast)->toArray());
+        expect(Executor::execute($schema, $ast)->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -251,7 +252,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
         Executor::execute($schema, $ast, $rootValue, null, [ 'var' => '123' ]);
 
-        $this->assertEquals([
+        expect(\array_keys((array) $info))->toBePHPEqual([
             'fieldName',
             'fieldASTs',
             'fieldNodes',
@@ -263,18 +264,18 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'rootValue',
             'operation',
             'variableValues',
-        ], \array_keys((array) $info));
+        ]);
 
-        $this->assertEquals('test', $info->fieldName);
-        $this->assertEquals(1, \count($info->fieldNodes));
-        $this->assertSame($ast->definitions[0]->selectionSet->selections[0], $info->fieldNodes[0]);
-        $this->assertSame(GraphQlType::string(), $info->returnType);
-        $this->assertSame($schema->getQueryType(), $info->parentType);
-        $this->assertEquals(['result'], $info->path);
-        $this->assertSame($schema, $info->schema);
-        $this->assertSame($rootValue, $info->rootValue);
-        $this->assertEquals($ast->definitions[0], $info->operation);
-        $this->assertEquals(['var' => '123'], $info->variableValues);
+        expect($info->fieldName)->toBePHPEqual('test');
+        expect(\count($info->fieldNodes))->toBePHPEqual(1);
+        expect($info->fieldNodes[0])->toBeSame($ast->definitions[0]->selectionSet->selections[0]);
+        expect($info->returnType)->toBeSame(GraphQlType::string());
+        expect($info->parentType)->toBeSame($schema->getQueryType());
+        expect($info->path)->toBePHPEqual(['result']);
+        expect($info->schema)->toBeSame($schema);
+        expect($info->rootValue)->toBeSame($rootValue);
+        expect($info->operation)->toBePHPEqual($ast->definitions[0]);
+        expect($info->variableValues)->toBePHPEqual(['var' => '123']);
     }
 
     /**
@@ -299,7 +300,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                     'a' => [
                         'type' => GraphQlType::string(),
                         'resolve' => function ($context) use ($doc, &$gotHere) {
-                            $this->assertEquals('thing', $context['contextThing']);
+                            expect($context['contextThing'])->toBePHPEqual('thing');
                             $gotHere = true;
                         }
                     ]
@@ -308,7 +309,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         ]);
 
         Executor::execute($schema, $ast, $data, null, [], 'Example');
-        $this->assertEquals(true, $gotHere);
+        expect($gotHere)->toBePHPEqual(true);
     }
 
     /**
@@ -336,8 +337,8 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                         ],
                         'type' => GraphQlType::string(),
                         'resolve' => function ($_, $args) use (&$gotHere) {
-                            $this->assertEquals(123, $args['numArg']);
-                            $this->assertEquals('foo', $args['stringArg']);
+                            expect($args['numArg'])->toBePHPEqual(123);
+                            expect($args['stringArg'])->toBePHPEqual('foo');
                             $gotHere = true;
                         }
                     ]
@@ -345,7 +346,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
         Executor::execute($schema, $docAst, null, null, [], 'Example');
-        $this->assertSame($gotHere, true);
+        expect(true)->toBeSame($gotHere);
     }
 
     /**
@@ -523,7 +524,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
         $result = Executor::execute($schema, $docAst, $data)->toArray();
 
-        $this->assertArraySubset($expected, $result);
+        expect($result)->toInclude($expected);
     }
 
     /**
@@ -545,7 +546,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
         $ex = Executor::execute($schema, $ast, $data);
 
-        $this->assertEquals(['data' => ['a' => 'b']], $ex->toArray());
+        expect($ex->toArray())->toBePHPEqual(['data' => ['a' => 'b']]);
     }
 
     /**
@@ -566,7 +567,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ex = Executor::execute($schema, $ast, $data);
-        $this->assertEquals(['data' => ['a' => 'b']], $ex->toArray());
+        expect($ex->toArray())->toBePHPEqual(['data' => ['a' => 'b']]);
     }
 
     /**
@@ -587,7 +588,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $result = Executor::execute($schema, $ast, $data, null, null, 'OtherExample');
-        $this->assertEquals(['data' => ['second' => 'b']], $result->toArray());
+        expect($result->toArray())->toBePHPEqual(['data' => ['second' => 'b']]);
     }
 
     /**
@@ -616,7 +617,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset($expected, $result->toArray());
+        expect($result->toArray())->toInclude($expected);
     }
 
     /**
@@ -646,7 +647,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset($expected, $result->toArray());
+        expect($result->toArray())->toInclude($expected);
     }
 
     /**
@@ -684,7 +685,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
         ];
 
-        $this->assertArraySubset($expected, $result->toArray());
+        expect($result->toArray())->toInclude($expected);
     }
 
     /**
@@ -711,7 +712,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $queryResult = Executor::execute($schema, $ast, $data, null, [], 'Q');
-        $this->assertEquals(['data' => ['a' => 'b']], $queryResult->toArray());
+        expect($queryResult->toArray())->toBePHPEqual(['data' => ['a' => 'b']]);
     }
 
     /**
@@ -737,7 +738,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
         $mutationResult = Executor::execute($schema, $ast, $data, null, [], 'M');
-        $this->assertEquals(['data' => ['c' => 'd']], $mutationResult->toArray());
+        expect($mutationResult->toArray())->toBePHPEqual(['data' => ['c' => 'd']]);
     }
 
     /**
@@ -764,7 +765,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $subscriptionResult = Executor::execute($schema, $ast, $data, null, [], 'S');
-        $this->assertEquals(['data' => ['a' => 'b']], $subscriptionResult->toArray());
+        expect($subscriptionResult->toArray())->toBePHPEqual(['data' => ['a' => 'b']]);
     }
 
     public function testCorrectFieldOrderingDespiteExecutionOrder():void
@@ -818,7 +819,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expected, Executor::execute($schema, $ast, $data)->toArray());
+        expect(Executor::execute($schema, $ast, $data)->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -850,7 +851,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $queryResult = Executor::execute($schema, $ast, $data, null, [], 'Q');
-        $this->assertEquals(['data' => ['a' => 'b']], $queryResult->toArray());
+        expect($queryResult->toArray())->toBePHPEqual(['data' => ['a' => 'b']]);
     }
 
     /**
@@ -877,7 +878,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ])
         ]);
         $mutationResult = Executor::execute($schema, $ast);
-        $this->assertEquals(['data' => []], $mutationResult->toArray());
+        expect($mutationResult->toArray())->toBePHPEqual(['data' => []]);
     }
 
     /**
@@ -912,7 +913,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -950,19 +951,19 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
         ];
         $result = Executor::execute($schema, $query, $value);
 
-        $this->assertEquals([
+        expect($result->data)->toBePHPEqual([
             'specials' => [
                 ['value' => 'foo'],
                 null
             ]
-        ], $result->data);
+        ]);
 
-        $this->assertEquals(1, \count($result->errors));
-        $this->assertEquals([
+        expect(\count($result->errors))->toBePHPEqual(1);
+        expect($result->errors[0]->toSerializableArray())->toBePHPEqual([
             'message' => 'Expected value of type "SpecialType" but got: instance of GraphQL\Tests\Executor\NotSpecial.',
             'locations' => [['line' => 1, 'column' => 3]],
             'path' => ['specials', 1]
-        ], $result->errors[0]->toSerializableArray());
+        ]);
     }
 
     /**
@@ -997,7 +998,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertArraySubset($expected, $result->toArray());
+        expect($result->toArray())->toInclude($expected);
     }
 
     /**
@@ -1035,7 +1036,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             'data' => ['foo' => 'foo']
         ];
 
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     public function testSubstitutesArgumentWithDefaultValue():void
@@ -1076,7 +1077,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     /**
@@ -1147,7 +1148,7 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
 
         $result = Executor::execute($schema, $query, $data, null);
 
-        $this->assertEquals([
+        expect($result->toArray())->toBePHPEqual([
             'data' => [
                 'ab' => [
                     ['id' => '1'],
@@ -1156,6 +1157,6 @@ class ExecutorTest extends \PHPUnit_Framework_TestCase
                     new \stdClass()
                 ]
             ]
-        ], $result->toArray());
+        ]);
     }
 }

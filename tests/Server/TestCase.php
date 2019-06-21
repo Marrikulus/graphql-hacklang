@@ -9,7 +9,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Schema;
 
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \Facebook\HackTest\HackTest
 {
     protected function buildSchema()
     {

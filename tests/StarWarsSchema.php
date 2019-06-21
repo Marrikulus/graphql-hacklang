@@ -15,7 +15,6 @@ namespace GraphQL\Tests;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InterfaceType;
-use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\GraphQlType;
@@ -150,7 +149,7 @@ class StarWarsSchema
             'description' => 'A humanoid creature in the Star Wars universe.',
             'fields' => [
                 'id' => [
-                    'type' => new NonNull(GraphQlType::string()),
+                    'type' => GraphQlType::nonNull(GraphQlType::string()),
                     'description' => 'The id of the human.',
                 ],
                 'name' => [

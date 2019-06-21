@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Language;
 
 use GraphQL\Language\AST\DocumentNode;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\Node;
@@ -17,7 +18,7 @@ use GraphQL\Tests\Validator\TestCase;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Utils\TypeInfo;
 
-class VisitorTest extends \PHPUnit_Framework_TestCase
+class VisitorTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @it allows editing a node both on enter and on leave
@@ -33,9 +34,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
                     $selectionSet = $node->selectionSet;
 
                     $newNode = clone $node;
-                    $newNode->selectionSet = new SelectionSetNode([
-                        'selections' => []
-                    ]);
+                    $newNode->selectionSet = new SelectionSetNode([]);
                     $newNode->didEnter = true;
                     return $newNode;
                 },
@@ -48,13 +47,13 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             ]
         ]);
 
-        $this->assertNotEquals($ast, $editedAst);
+        expect($editedAst)->toNotBePHPEqual($ast);
 
         $expected = $ast->cloneDeep();
         $expected->definitions[0]->didEnter = true;
         $expected->definitions[0]->didLeave = true;
 
-        $this->assertEquals($expected, $editedAst);
+        expect($editedAst)->toBePHPEqual($expected);
     }
 
     /**
@@ -62,7 +61,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
      */
     public function testAllowsEditingRootNodeOnEnterAndLeave():void
     {
-        $ast = Parser::parse('{ a, b, c { a, b, c } }', [ 'noLocation' => true ]);
+        $ast = Parser::parse('{ a, b, c { a, b, c } }', true);
         $definitions = $ast->definitions;
 
         $editedAst = Visitor::visit($ast, [
@@ -81,13 +80,13 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             ]
         ]);
 
-        $this->assertNotEquals($ast, $editedAst);
+        expect($editedAst)->toNotBePHPEqual($ast);
 
         $tmp = $ast->cloneDeep();
         $tmp->didEnter = true;
         $tmp->didLeave = true;
 
-        $this->assertEquals($tmp, $editedAst);
+        expect($editedAst)->toBePHPEqual($tmp);
     }
 
     /**
@@ -95,7 +94,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
      */
     public function testAllowsForEditingOnEnter():void
     {
-        $ast = Parser::parse('{ a, b, c { a, b, c } }', ['noLocation' => true]);
+        $ast = Parser::parse('{ a, b, c { a, b, c } }', true);
         $editedAst = Visitor::visit($ast, [
             'enter' => function($node) {
                 if ($node instanceof FieldNode && $node->name->value === 'b') {
@@ -104,14 +103,8 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             }
         ]);
 
-        $this->assertEquals(
-            Parser::parse('{ a, b, c { a, b, c } }', ['noLocation' => true]),
-            $ast
-        );
-        $this->assertEquals(
-            Parser::parse('{ a,    c { a,    c } }', ['noLocation' => true]),
-            $editedAst
-        );
+        expect($ast)->toBePHPEqual(Parser::parse('{ a, b, c { a, b, c } }', true));
+        expect($editedAst)->toBePHPEqual(Parser::parse('{ a,    c { a,    c } }', true));
     }
 
     /**
@@ -119,7 +112,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
      */
     public function testAllowsForEditingOnLeave():void
     {
-        $ast = Parser::parse('{ a, b, c { a, b, c } }', ['noLocation' => true]);
+        $ast = Parser::parse('{ a, b, c { a, b, c } }', true);
         $editedAst = Visitor::visit($ast, [
             'leave' => function($node) {
                 if ($node instanceof FieldNode && $node->name->value === 'b') {
@@ -128,15 +121,9 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             }
         ]);
 
-        $this->assertEquals(
-            Parser::parse('{ a, b, c { a, b, c } }', ['noLocation' => true]),
-            $ast
-        );
+        expect($ast)->toBePHPEqual(Parser::parse('{ a, b, c { a, b, c } }', true));
 
-        $this->assertEquals(
-            Parser::parse('{ a,    c { a,    c } }', ['noLocation' => true]),
-            $editedAst
-        );
+        expect($editedAst)->toBePHPEqual(Parser::parse('{ a,    c { a,    c } }', true));
     }
 
     /**
@@ -144,11 +131,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
      */
     public function testVisitsEditedNode():void
     {
-        $addedField = new FieldNode(array(
-            'name' => new NameNode(array(
-                'value' => '__typename'
-            ))
-        ));
+        $addedField = new FieldNode(new NameNode('__typename'));
 
         $didVisitAddedField = false;
 
@@ -157,11 +140,13 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
         Visitor::visit($ast, [
             'enter' => function($node) use ($addedField, &$didVisitAddedField) {
                 if ($node instanceof FieldNode && $node->name->value === 'a') {
-                    return new FieldNode([
-                        'selectionSet' => new SelectionSetNode(array(
-                            'selections' => NodeList::create([$addedField])->merge($node->selectionSet->selections)
-                        ))
-                    ]);
+                    return new FieldNode(
+                        new NameNode("foo"),
+                        null,
+                        [],
+                        [],
+                        new SelectionSetNode(array_merge([$addedField], $node->selectionSet->selections))
+                    );
                 }
                 if ($node === $addedField) {
                     $didVisitAddedField = true;
@@ -169,7 +154,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             }
         ]);
 
-        $this->assertTrue($didVisitAddedField);
+        expect($didVisitAddedField)->toBeTrue();
     }
 
     /**
@@ -210,7 +195,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             [ 'leave', 'Document', null ]
         ];
 
-        $this->assertEquals($expected, $visited);
+        expect($visited)->toBePHPEqual($expected);
     }
 
     /**
@@ -249,7 +234,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             [ 'enter', 'Name', 'x' ]
         ];
 
-        $this->assertEquals($expected, $visited);
+        expect($visited)->toBePHPEqual($expected);
     }
 
     /**
@@ -273,7 +258,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             }
         ]);
 
-        $this->assertEquals($visited, [
+        expect([
             [ 'enter', 'Document', null ],
             [ 'enter', 'OperationDefinition', null ],
             [ 'enter', 'SelectionSet', null ],
@@ -288,7 +273,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             [ 'enter', 'Field', null ],
             [ 'enter', 'Name', 'x' ],
             [ 'leave', 'Name', 'x' ]
-        ]);
+        ])->toBePHPEqual($visited);
     }
 
     /**
@@ -324,7 +309,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             [ 'leave', 'SelectionSet', null ],
         ];
 
-        $this->assertEquals($expected, $visited);
+        expect($visited)->toBePHPEqual($expected);
     }
 
     /**
@@ -654,7 +639,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             [ 'leave', 'Document', null, null ]
         ];
 
-        $this->assertEquals($expected, $visited);
+        expect($visited)->toBePHPEqual($expected);
     }
 
     // Describe: visitInParallel
@@ -684,7 +669,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             ]
         ]));
 
-        $this->assertEquals([
+        expect($visited)->toBePHPEqual([
             [ 'enter', 'Document', null ],
             [ 'enter', 'OperationDefinition', null ],
             [ 'enter', 'SelectionSet', null ],
@@ -700,7 +685,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             [ 'leave', 'SelectionSet', null ],
             [ 'leave', 'OperationDefinition', null ],
             [ 'leave', 'Document', null ],
-        ], $visited);
+        ]);
     }
 
     /**
@@ -736,7 +721,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
         ]
         ]));
 
-        $this->assertEquals([
+        expect($visited)->toBePHPEqual([
             [ 'no-a', 'enter', 'Document', null ],
             [ 'no-b', 'enter', 'Document', null ],
             [ 'no-a', 'enter', 'OperationDefinition', null ],
@@ -771,7 +756,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             [ 'no-b', 'leave', 'OperationDefinition', null ],
             [ 'no-a', 'leave', 'Document', null ],
             [ 'no-b', 'leave', 'Document', null ],
-        ], $visited);
+        ]);
     }
 
     /**
@@ -795,7 +780,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             }
         ] ]));
 
-        $this->assertEquals([
+        expect($visited)->toBePHPEqual([
             [ 'enter', 'Document', null ],
             [ 'enter', 'OperationDefinition', null ],
             [ 'enter', 'SelectionSet', null ],
@@ -809,7 +794,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             [ 'enter', 'SelectionSet', null ],
             [ 'enter', 'Field', null ],
             [ 'enter', 'Name', 'x' ]
-        ], $visited);
+        ]);
     }
 
     /**
@@ -847,7 +832,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
         ],
         ]));
 
-        $this->assertEquals([
+        expect($visited)->toBePHPEqual([
             [ 'break-a', 'enter', 'Document', null ],
             [ 'break-b', 'enter', 'Document', null ],
             [ 'break-a', 'enter', 'OperationDefinition', null ],
@@ -868,7 +853,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             [ 'break-b', 'leave', 'Field', null ],
             [ 'break-b', 'enter', 'Field', null ],
             [ 'break-b', 'enter', 'Name', 'b' ]
-        ], $visited);
+        ]);
     }
 
     /**
@@ -892,7 +877,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             }
         ] ]));
 
-        $this->assertEquals([
+        expect($visited)->toBePHPEqual([
             [ 'enter', 'Document', null ],
             [ 'enter', 'OperationDefinition', null ],
             [ 'enter', 'SelectionSet', null ],
@@ -907,7 +892,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             [ 'enter', 'Field', null ],
             [ 'enter', 'Name', 'x' ],
             [ 'leave', 'Name', 'x' ]
-        ], $visited);
+        ]);
     }
 
     /**
@@ -943,7 +928,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             ],
         ]));
 
-        $this->assertEquals([
+        expect($visited)->toBePHPEqual([
             [ 'break-a', 'enter', 'Document', null ],
             [ 'break-b', 'enter', 'Document', null ],
             [ 'break-a', 'enter', 'OperationDefinition', null ],
@@ -980,7 +965,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             [ 'break-b', 'leave', 'Field', null ],
             [ 'break-b', 'leave', 'SelectionSet', null ],
             [ 'break-b', 'leave', 'Field', null ]
-        ], $visited);
+        ]);
     }
 
     /**
@@ -990,7 +975,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     {
         $visited = [];
 
-        $ast = Parser::parse('{ a, b, c { a, b, c } }', ['noLocation' => true]);
+        $ast = Parser::parse('{ a, b, c { a, b, c } }', true);
         $editedAst = Visitor::visit($ast, Visitor::visitInParallel([
             [
                 'enter' => function ($node) use (&$visited) {
@@ -1009,17 +994,15 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             ],
         ]));
 
-        $this->assertEquals(
-            Parser::parse('{ a, b, c { a, b, c } }', ['noLocation' => true]),
-            $ast
-        );
+        expect(            $ast
+)->toBePHPEqual(
+            Parser::parse('{ a, b, c { a, b, c } }', true)        );
 
-        $this->assertEquals(
-            Parser::parse('{ a,    c { a,    c } }', ['noLocation' => true]),
-            $editedAst
-        );
+        expect(            $editedAst
+)->toBePHPEqual(
+            Parser::parse('{ a,    c { a,    c } }', true)        );
 
-        $this->assertEquals([
+        expect($visited)->toBePHPEqual([
             ['enter', 'Document', null],
             ['enter', 'OperationDefinition', null],
             ['enter', 'SelectionSet', null],
@@ -1044,7 +1027,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             ['leave', 'SelectionSet', null],
             ['leave', 'OperationDefinition', null],
             ['leave', 'Document', null]
-        ], $visited);
+        ]);
     }
 
     /**
@@ -1054,7 +1037,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
     {
         $visited = [];
 
-        $ast = Parser::parse('{ a, b, c { a, b, c } }', ['noLocation' => true]);
+        $ast = Parser::parse('{ a, b, c { a, b, c } }', true);
         $editedAst = Visitor::visit($ast, Visitor::visitInParallel([
             [
                 'leave' => function ($node) use (&$visited) {
@@ -1073,17 +1056,15 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             ],
         ]));
 
-        $this->assertEquals(
-            Parser::parse('{ a, b, c { a, b, c } }', ['noLocation' => true]),
-            $ast
-        );
+        expect(            $ast
+)->toBePHPEqual(
+            Parser::parse('{ a, b, c { a, b, c } }', true)        );
 
-        $this->assertEquals(
-            Parser::parse('{ a,    c { a,    c } }', ['noLocation' => true]),
-            $editedAst
-        );
+        expect(            $editedAst
+)->toBePHPEqual(
+            Parser::parse('{ a,    c { a,    c } }', true)        );
 
-        $this->assertEquals([
+        expect($visited)->toBePHPEqual([
             ['enter', 'Document', null],
             ['enter', 'OperationDefinition', null],
             ['enter', 'SelectionSet', null],
@@ -1114,7 +1095,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             ['leave', 'SelectionSet', null],
             ['leave', 'OperationDefinition', null],
             ['leave', 'Document', null]
-        ], $visited);
+        ]);
     }
 
     // Describe: visitWithTypeInfo
@@ -1158,7 +1139,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             }
         ]));
 
-        $this->assertEquals([
+        expect($visited)->toBePHPEqual([
             ['enter', 'Document', null, null, null, null],
             ['enter', 'OperationDefinition', null, null, 'QueryRoot', null],
             ['enter', 'SelectionSet', null, 'QueryRoot', 'QueryRoot', null],
@@ -1195,7 +1176,7 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             ['leave', 'SelectionSet', null, 'QueryRoot', 'QueryRoot', null],
             ['leave', 'OperationDefinition', null, null, 'QueryRoot', null],
             ['leave', 'Document', null, null, null, null]
-        ], $visited);
+        ]);
     }
 
     /**
@@ -1229,20 +1210,14 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
                     !$node->selectionSet &&
                     GraphQlType::isCompositeType(GraphQlType::getNamedType($type))
                 ) {
-                    return new FieldNode([
-                        'alias' => $node->alias,
-                        'name' => $node->name,
-                        'arguments' => $node->arguments,
-                        'directives' => $node->directives,
-                        'selectionSet' => new SelectionSetNode([
-                            'kind' => 'SelectionSet',
-                            'selections' => [
-                                new FieldNode([
-                                    'name' => new NameNode(['value' => '__typename'])
-                                ])
-                            ]
-                        ])
-                    ]);
+                    return new FieldNode(
+                        $node->name,
+                        $node->alias,
+                        $node->arguments,
+                        $node->directives,
+                        new SelectionSetNode([
+                            new FieldNode(new NameNode('__typename'))
+                        ]));
                 }
             },
             'leave' => function ($node) use ($typeInfo, &$visited) {
@@ -1260,15 +1235,15 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             }
         ]));
 
-        $this->assertEquals(Printer::doPrint(Parser::parse(
+        expect(Printer::doPrint($ast))->toBePHPEqual(Printer::doPrint(Parser::parse(
             '{ human(id: 4) { name, pets }, alien }'
-        )), Printer::doPrint($ast));
+        )));
 
-        $this->assertEquals(Printer::doPrint(Parser::parse(
+        expect(Printer::doPrint($editedAst))->toBePHPEqual(Printer::doPrint(Parser::parse(
             '{ human(id: 4) { name, pets { __typename } }, alien { __typename } }'
-        )), Printer::doPrint($editedAst));
+        )));
 
-        $this->assertEquals([
+        expect($visited)->toBePHPEqual([
             ['enter', 'Document', null, null, null, null],
             ['enter', 'OperationDefinition', null, null, 'QueryRoot', null],
             ['enter', 'SelectionSet', null, 'QueryRoot', 'QueryRoot', null],
@@ -1311,6 +1286,6 @@ class VisitorTest extends \PHPUnit_Framework_TestCase
             ['leave', 'SelectionSet', null, 'QueryRoot', 'QueryRoot', null],
             ['leave', 'OperationDefinition', null, null, 'QueryRoot', null],
             ['leave', 'Document', null, null, null, null]
-        ], $visited);
+        ]);
     }
 }

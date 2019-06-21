@@ -3,11 +3,12 @@
 namespace GraphQL\Tests;
 
 use GraphQL\Language\AST\NameNode;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\AST\ScalarTypeDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Printer;
 
-class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
+class SchemaPrinterTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @it prints minimal ast
@@ -17,7 +18,7 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
         $ast = new ScalarTypeDefinitionNode(
             new NameNode(['value' => 'foo'])
         );
-        $this->assertEquals('scalar foo', Printer::doPrint($ast));
+        expect(Printer::doPrint($ast))->toBePHPEqual('scalar foo');
     }
 
     /**
@@ -42,7 +43,7 @@ class SchemaPrinterTest extends \PHPUnit_Framework_TestCase
         $astCopy = $ast->cloneDeep();
         Printer::doPrint($ast);
 
-        $this->assertEquals($astCopy, $ast);
+        expect($ast)->toBePHPEqual($astCopy);
     }
 
     public function testPrintsKitchenSink():void
@@ -123,6 +124,6 @@ directive @include(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 
 directive @include2(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 ';
-        $this->assertEquals($expected, $printed);
+        expect($printed)->toBePHPEqual($expected);
     }
 }

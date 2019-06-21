@@ -3,12 +3,13 @@
 namespace GraphQL\Tests\Executor;
 
 use GraphQL\Executor\Executor;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\Parser;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 
-class DirectivesTest extends \PHPUnit_Framework_TestCase
+class DirectivesTest extends \Facebook\HackTest\HackTest
 {
     // Describe: Execute: handles directives
 
@@ -18,7 +19,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
      */
     public function testWorksWithoutDirectives():void
     {
-        $this->assertEquals(['data' => ['a' => 'a', 'b' => 'b']], $this->executeTestQuery('{ a, b }'));
+        expect($this->executeTestQuery('{ a, b }'))->toBePHPEqual(['data' => ['a' => 'a', 'b' => 'b']]);
     }
 
     /**
@@ -27,16 +28,16 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
     public function testWorksOnScalars():void
     {
         // if true includes scalar
-        $this->assertEquals(['data' => ['a' => 'a', 'b' => 'b']], $this->executeTestQuery('{ a, b @include(if: true) }'));
+        expect($this->executeTestQuery('{ a, b @include(if: true) }'))->toBePHPEqual(['data' => ['a' => 'a', 'b' => 'b']]);
 
         // if false omits on scalar
-        $this->assertEquals(['data' => ['a' => 'a']], $this->executeTestQuery('{ a, b @include(if: false) }'));
+        expect($this->executeTestQuery('{ a, b @include(if: false) }'))->toBePHPEqual(['data' => ['a' => 'a']]);
 
         // unless false includes scalar
-        $this->assertEquals(['data' => ['a' => 'a', 'b' => 'b']], $this->executeTestQuery('{ a, b @skip(if: false) }'));
+        expect($this->executeTestQuery('{ a, b @skip(if: false) }'))->toBePHPEqual(['data' => ['a' => 'a', 'b' => 'b']]);
 
         // unless true omits scalar
-        $this->assertEquals(['data' => ['a' => 'a']], $this->executeTestQuery('{ a, b @skip(if: true) }'));
+        expect($this->executeTestQuery('{ a, b @skip(if: true) }'))->toBePHPEqual(['data' => ['a' => 'a']]);
     }
 
     /**
@@ -54,7 +55,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
           b
         }
         ';
-        $this->assertEquals(['data' => ['a' => 'a']], $this->executeTestQuery($q));
+        expect($this->executeTestQuery($q))->toBePHPEqual(['data' => ['a' => 'a']]);
 
         // if true includes fragment spread
         $q = '
@@ -66,7 +67,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
           b
         }
         ';
-        $this->assertEquals(['data' => ['a' => 'a', 'b' => 'b']], $this->executeTestQuery($q));
+        expect($this->executeTestQuery($q))->toBePHPEqual(['data' => ['a' => 'a', 'b' => 'b']]);
 
         // unless false includes fragment spread
         $q = '
@@ -78,7 +79,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
           b
         }
         ';
-        $this->assertEquals(['data' => ['a' => 'a', 'b' => 'b']], $this->executeTestQuery($q));
+        expect($this->executeTestQuery($q))->toBePHPEqual(['data' => ['a' => 'a', 'b' => 'b']]);
 
         // unless true omits fragment spread
         $q = '
@@ -90,7 +91,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
           b
         }
         ';
-        $this->assertEquals(['data' => ['a' => 'a']], $this->executeTestQuery($q));
+        expect($this->executeTestQuery($q))->toBePHPEqual(['data' => ['a' => 'a']]);
     }
 
     /**
@@ -107,7 +108,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
           }
         }
         ';
-        $this->assertEquals(['data' => ['a' => 'a']], $this->executeTestQuery($q));
+        expect($this->executeTestQuery($q))->toBePHPEqual(['data' => ['a' => 'a']]);
 
         // if true includes inline fragment
         $q = '
@@ -118,7 +119,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
           }
         }
         ';
-        $this->assertEquals(['data' => ['a' => 'a', 'b' => 'b']], $this->executeTestQuery($q));
+        expect($this->executeTestQuery($q))->toBePHPEqual(['data' => ['a' => 'a', 'b' => 'b']]);
 
         // unless false includes inline fragment
         $q = '
@@ -129,7 +130,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
           }
         }
         ';
-        $this->assertEquals(['data' => ['a' => 'a', 'b' => 'b']], $this->executeTestQuery($q));
+        expect($this->executeTestQuery($q))->toBePHPEqual(['data' => ['a' => 'a', 'b' => 'b']]);
 
         // unless true includes inline fragment
         $q = '
@@ -140,7 +141,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
           }
         }
         ';
-        $this->assertEquals(['data' => ['a' => 'a']], $this->executeTestQuery($q));
+        expect($this->executeTestQuery($q))->toBePHPEqual(['data' => ['a' => 'a']]);
     }
 
     /**
@@ -157,7 +158,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
           }
         }
         ';
-        $this->assertEquals(['data' => ['a' => 'a']], $this->executeTestQuery($q));
+        expect($this->executeTestQuery($q))->toBePHPEqual(['data' => ['a' => 'a']]);
 
         // if true includes anonymous inline fragment
         $q = '
@@ -168,7 +169,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
           }
         }
         ';
-        $this->assertEquals(['data' => ['a' => 'a', 'b' => 'b']], $this->executeTestQuery($q));
+        expect($this->executeTestQuery($q))->toBePHPEqual(['data' => ['a' => 'a', 'b' => 'b']]);
 
         // unless false includes anonymous inline fragment
         $q = '
@@ -179,7 +180,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
           }
         }
         ';
-        $this->assertEquals(['data' => ['a' => 'a', 'b' => 'b']], $this->executeTestQuery($q));
+        expect($this->executeTestQuery($q))->toBePHPEqual(['data' => ['a' => 'a', 'b' => 'b']]);
 
         // unless true includes anonymous inline fragment
         $q = '
@@ -190,7 +191,7 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
           }
         }
         ';
-        $this->assertEquals(['data' => ['a' => 'a']], $this->executeTestQuery($q));
+        expect($this->executeTestQuery($q))->toBePHPEqual(['data' => ['a' => 'a']]);
     }
 
     /**
@@ -199,22 +200,16 @@ class DirectivesTest extends \PHPUnit_Framework_TestCase
     public function testWorksWithSkipAndIncludeDirectives():void
     {
         // include and no skip
-        $this->assertEquals(
-            ['data' => ['a' => 'a', 'b' => 'b']],
-            $this->executeTestQuery('{ a, b @include(if: true) @skip(if: false) }')
-        );
+        expect($this->executeTestQuery('{ a, b @include(if: true) @skip(if: false) }'))
+            ->toBePHPEqual(['data' => ['a' => 'a', 'b' => 'b']]);
 
         // include and skip
-        $this->assertEquals(
-            ['data' => ['a' => 'a']],
-            $this->executeTestQuery('{ a, b @include(if: true) @skip(if: true) }')
-        );
+        expect($this->executeTestQuery('{ a, b @include(if: true) @skip(if: true) }'))
+            ->toBePHPEqual(['data' => ['a' => 'a']]);
 
         // no include or skip
-        $this->assertEquals(
-            ['data' => ['a' => 'a']],
-            $this->executeTestQuery('{ a, b @include(if: false) @skip(if: false) }')
-        );
+        expect($this->executeTestQuery('{ a, b @include(if: false) @skip(if: false) }'))
+            ->toBePHPEqual(['data' => ['a' => 'a']]);
     }
 
 

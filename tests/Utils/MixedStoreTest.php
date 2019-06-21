@@ -4,16 +4,17 @@ namespace GraphQL\Tests\Utils;
 
 
 use GraphQL\Utils\Utils;
+use function Facebook\FBExpect\expect;
 use GraphQL\Utils\MixedStore;
 
-class MixedStoreTest extends \PHPUnit_Framework_TestCase
+class MixedStoreTest extends \Facebook\HackTest\HackTest
 {
     /**
      * @var MixedStore
      */
     private $mixedStore;
 
-    public function setUp():void
+    public async function beforeEachTestAsync():Awaitable<void>
     {
         $this->mixedStore = new MixedStore();
     }
@@ -102,12 +103,12 @@ class MixedStoreTest extends \PHPUnit_Framework_TestCase
         $err = 'Failed assertion that MixedStore accepts key ' .
             Utils::printSafe($key) . ' with value ' .  Utils::printSafe($value);
 
-        $this->assertFalse($this->mixedStore->offsetExists($key), $err);
+        expect($this->mixedStore->offsetExists($key))->toBeFalse($err);
         $this->mixedStore->offsetSet($key, $value);
-        $this->assertTrue($this->mixedStore->offsetExists($key), $err);
-        $this->assertSame($value, $this->mixedStore->offsetGet($key), $err);
+        expect($this->mixedStore->offsetExists($key))->toBeTrue($err);
+        expect($this->mixedStore->offsetGet($key))->toBeSame($value, $err);
         $this->mixedStore->offsetUnset($key);
-        $this->assertFalse($this->mixedStore->offsetExists($key), $err);
+        expect($this->mixedStore->offsetExists($key))->toBeFalse($err);
         $this->assertProvidesArrayAccess($key, $value);
     }
 
@@ -116,12 +117,12 @@ class MixedStoreTest extends \PHPUnit_Framework_TestCase
         $err = 'Failed assertion that MixedStore provides array access for key ' .
             Utils::printSafe($key) . ' with value ' .  Utils::printSafe($value);
 
-        $this->assertFalse(isset($this->mixedStore[$key]), $err);
+        expect(isset($this->mixedStore[$key]))->toBeFalse($err);
         $this->mixedStore[$key] = $value;
-        $this->assertTrue(isset($this->mixedStore[$key]), $err);
-        $this->assertEquals(!empty($value), !empty($this->mixedStore[$key]), $err);
-        $this->assertSame($value, $this->mixedStore[$key], $err);
+        expect(isset($this->mixedStore[$key]))->toBeTrue($err);
+        expect(!empty($this->mixedStore[$key]))->toBePHPEqual(!empty($value), $err);
+        expect($this->mixedStore[$key])->toBeSame($value, $err);
         unset($this->mixedStore[$key]);
-        $this->assertFalse(isset($this->mixedStore[$key]), $err);
+        expect(isset($this->mixedStore[$key]))->toBeFalse($err);
     }
 }

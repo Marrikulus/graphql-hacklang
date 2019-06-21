@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Server;
 
 use GraphQL\Error\Error;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Server\Helper;
 use GraphQL\Server\OperationParams;
@@ -10,7 +11,7 @@ use GraphQL\Server\RequestError;
 use GraphQL\Tests\Server\Psr7\PsrRequestStub;
 use GraphQL\Tests\Server\Psr7\PsrStreamStub;
 
-class RequestParsingTest extends \PHPUnit_Framework_TestCase
+class RequestParsingTest extends \Facebook\HackTest\HackTest
 {
     public function testParsesGraphqlRequest():void
     {
@@ -22,7 +23,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
 
         foreach ($parsed as $source => $parsedBody) {
             $this->assertValidOperationParams($parsedBody, $query, null, null, null, $source);
-            $this->assertFalse($parsedBody->isReadOnly(), $source);
+            expect($parsedBody->isReadOnly())->toBeFalse($source);
         }
     }
 
@@ -44,7 +45,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
 
         foreach ($parsed as $method => $parsedBody) {
             $this->assertValidOperationParams($parsedBody, $query, null, $variables, $operation, $method);
-            $this->assertFalse($parsedBody->isReadOnly(), $method);
+            expect($parsedBody->isReadOnly())->toBeFalse($method);
         }
     }
 
@@ -66,7 +67,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
 
         foreach ($parsed as $method => $parsedBody) {
             $this->assertValidOperationParams($parsedBody, $query, null, $variables, $operation, $method);
-            $this->assertTrue($parsedBody->isReadonly(), $method);
+            expect($parsedBody->isReadonly())->toBeTrue($method);
         }
     }
 
@@ -87,7 +88,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
         ];
         foreach ($parsed as $method => $parsedBody) {
             $this->assertValidOperationParams($parsedBody, $query, null, $variables, $operation, $method);
-            $this->assertFalse($parsedBody->isReadOnly(), $method);
+            expect($parsedBody->isReadOnly())->toBeFalse($method);
         }
     }
 
@@ -108,7 +109,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
         ];
         foreach ($parsed as $method => $parsedBody) {
             $this->assertValidOperationParams($parsedBody, $query, null, $variables, $operation, $method);
-            $this->assertFalse($parsedBody->isReadOnly(), $method);
+            expect($parsedBody->isReadOnly())->toBeFalse($method);
         }
     }
 
@@ -129,7 +130,7 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
         ];
         foreach ($parsed as $method => $parsedBody) {
             $this->assertValidOperationParams($parsedBody, $query, null, $variables, $operation, $method);
-            $this->assertFalse($parsedBody->isReadOnly(), $method);
+            expect($parsedBody->isReadOnly())->toBeFalse($method);
         }
     }
 
@@ -152,8 +153,8 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
             'psr' => $this->parsePsrRequest('application/json', \json_encode($body))
         ];
         foreach ($parsed as $method => $parsedBody) {
-            $this->assertInternalType('array', $parsedBody, $method);
-            $this->assertCount(2, $parsedBody, $method);
+            expect($parsedBody)->toBeType('array',$method);
+            expect(\count($parsedBody))->toBeSame(2, $method);
             $this->assertValidOperationParams($parsedBody[0], $body[0]['query'], null, $body[0]['variables'], $body[0]['operation'], $method);
             $this->assertValidOperationParams($parsedBody[1], null, $body[1]['queryId'], $body[1]['variables'], $body[1]['operation'], $method);
         }
@@ -182,10 +183,8 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
             $this->fail('Expected exception not thrown');
         } catch (InvariantViolation $e) {
             // Expecting parsing exception to be thrown somewhere else:
-            $this->assertEquals(
-                'PSR-7 request is expected to provide parsed body for "application/json" requests but got null',
-                $e->getMessage()
-            );
+            expect($e->getMessage())
+                ->toBePHPEqual('PSR-7 request is expected to provide parsed body for "application/json" requests but got null');
         }
     }
 
@@ -364,13 +363,13 @@ class RequestParsingTest extends \PHPUnit_Framework_TestCase
      * @param array $variables
      * @param string $operation
      */
-    private function assertValidOperationParams($params, $query, $queryId = null, $variables = null, $operation = null, $message = '')
+    private function assertValidOperationParams($params, $query, $queryId = null, $variables = null, $operation = null, string $message = ''):void
     {
-        $this->assertInstanceOf(OperationParams::class, $params, $message);
+        expect($params)->toBeInstanceOf(OperationParams::class, $message);
 
-        $this->assertSame($query, $params->query, $message);
-        $this->assertSame($queryId, $params->queryId, $message);
-        $this->assertSame($variables, $params->variables, $message);
-        $this->assertSame($operation, $params->operation, $message);
+        expect($params->query)->toBeSame($query, $message);
+        expect($params->queryId)->toBeSame($queryId, $message);
+        expect($params->variables)->toBeSame($variables, $message);
+        expect($params->operation)->toBeSame($operation, $message);
     }
 }

@@ -3,10 +3,11 @@
 namespace GraphQL\Tests\Language;
 
 use GraphQL\Error\SyntaxError;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\Parser;
 
-class SchemaParserTest extends \PHPUnit_Framework_TestCase
+class SchemaParserTest extends \Facebook\HackTest\HackTest
 {
     // Describe: Schema Parser
 
@@ -43,7 +44,7 @@ type Hello {
             ],
             'loc' => $loc(0, 31)
         ];
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -85,7 +86,7 @@ extend type Hello {
             ],
             'loc' => $loc(0, 39)
         ];
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -128,7 +129,7 @@ type Hello {
             'loc' => $loc(0,32)
         ];
 
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -158,7 +159,7 @@ type Hello {
             'loc' => $loc(0,31)
         ];
 
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -189,7 +190,7 @@ type Hello {
             'loc' => $loc(0, 33)
         ];
 
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -216,7 +217,7 @@ type Hello {
             'loc' => $loc(0, 20)
         ];
 
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -246,7 +247,7 @@ type Hello {
             'loc' => $loc(0, 22)
         ];
 
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -281,7 +282,7 @@ interface Hello {
             ],
             'loc' => $loc(0,36)
         ];
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -326,7 +327,7 @@ type Hello {
             'loc' => $loc(0, 46)
         ];
 
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -370,7 +371,7 @@ type Hello {
             ],
             'loc' => $loc(0, 53)
         ];
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -415,7 +416,7 @@ type Hello {
             'loc' => $loc(0, 49)
         ];
 
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -466,7 +467,7 @@ type Hello {
             'loc' => $loc(0, 61)
         ];
 
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -492,7 +493,7 @@ type Hello {
             'loc' => $loc(0, 19)
         ];
 
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -521,7 +522,7 @@ type Hello {
             ],
             'loc' => $loc(0, 22)
         ];
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
 
@@ -549,7 +550,7 @@ type Hello {
             ],
             'loc' => ['start' => 0, 'end' => 24],
         ];
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -558,8 +559,17 @@ type Hello {
     public function testUnionFailsWithNoTypes():void
     {
         $body = 'union Hello = |';
-        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . \preg_quote('Syntax Error GraphQL (1:16) Expected Name, found <EOF>', '/') . '/');
-        Parser::parse($body);
+        try
+        {
+            Parser::parse($body);
+        }
+        catch(SyntaxError $e)
+        {
+            expect($e->getMessage())->toMatchRegExp('/' . \preg_quote('Syntax Error GraphQL (1:16) Expected Name, found <EOF>', '/') . '/');
+            return;
+        }
+
+        self::fail("Should have thrown an exception");
     }
 
     /**
@@ -568,8 +578,17 @@ type Hello {
     public function testUnionFailsWithLeadingDoublePipe():void
     {
         $body = 'union Hello = || Wo | Rld';
-        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . \preg_quote('Syntax Error GraphQL (1:16) Expected Name, found |', '/') . '/');
-        Parser::parse($body);
+        try
+        {
+            Parser::parse($body);
+        }
+        catch(SyntaxError $e)
+        {
+            expect($e->getMessage())->toMatchRegExp('/' . \preg_quote('Syntax Error GraphQL (1:16) Expected Name, found |', '/') . '/');
+            return;
+        }
+
+        self::fail("Should have thrown an exception");
     }
 
     /**
@@ -578,8 +597,17 @@ type Hello {
     public function testUnionFailsWithDoublePipe():void
     {
         $body = 'union Hello = Wo || Rld';
-        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . \preg_quote('Syntax Error GraphQL (1:19) Expected Name, found |', '/') . '/');
-        Parser::parse($body);
+        try
+        {
+            Parser::parse($body);
+        }
+        catch(SyntaxError $e)
+        {
+            expect($e->getMessage())->toMatchRegExp('/' . \preg_quote('Syntax Error GraphQL (1:19) Expected Name, found |', '/') . '/');
+            return;
+        }
+
+        self::fail("Should have thrown an exception");
     }
 
     /**
@@ -588,8 +616,17 @@ type Hello {
     public function testUnionFailsWithTrailingPipe():void
     {
         $body = 'union Hello = | Wo | Rld |';
-        $this->setExpectedExceptionRegExp(SyntaxError::class, '/' . \preg_quote('Syntax Error GraphQL (1:27) Expected Name, found <EOF>', '/') . '/');
-        Parser::parse($body);
+        try
+        {
+            Parser::parse($body);
+        }
+        catch(SyntaxError $e)
+        {
+            expect($e->getMessage())->toMatchRegExp('/' . \preg_quote('Syntax Error GraphQL (1:27) Expected Name, found <EOF>', '/') . '/');
+            return;
+        }
+
+        self::fail("Should have thrown an exception");
     }
 
     /**
@@ -613,7 +650,7 @@ type Hello {
             ],
             'loc' => $loc(0, 12)
         ];
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -649,7 +686,7 @@ input Hello {
             ],
             'loc' => $loc(0, 32)
         ];
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     /**
@@ -703,7 +740,7 @@ type Hello {
             ],
             'loc' => $loc(0, 149)
         ];
-        $this->assertEquals($expected, TestUtils::nodeToArray($doc));
+        expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
     private function typeNode($name, $loc)

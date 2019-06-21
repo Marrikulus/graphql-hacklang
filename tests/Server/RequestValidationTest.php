@@ -3,9 +3,10 @@
 namespace GraphQL\Tests\Server;
 
 use GraphQL\Server\Helper;
+use function Facebook\FBExpect\expect;
 use GraphQL\Server\OperationParams;
 
-class RequestValidationTest extends \PHPUnit_Framework_TestCase
+class RequestValidationTest extends \Facebook\HackTest\HackTest
 {
     public function testSimpleRequestShouldValidate():void
     {
@@ -148,7 +149,7 @@ class RequestValidationTest extends \PHPUnit_Framework_TestCase
         $helper = new Helper();
         $errors = $helper->validateOperationParams($parsedRequest);
         if (!empty($errors[0])) {
-            $this->assertEquals($expectedMessage, $errors[0]->getMessage());
+            expect($errors[0]->getMessage())->toBePHPEqual($expectedMessage);
         } else {
             $this->fail('Expected error not returned');
         }

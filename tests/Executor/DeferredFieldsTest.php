@@ -4,6 +4,7 @@ namespace GraphQL\Tests\Executor;
 
 
 use GraphQL\Deferred;
+use function Facebook\FBExpect\expect;
 use GraphQL\Executor\Executor;
 use GraphQL\Language\Parser;
 use GraphQL\Schema;
@@ -12,7 +13,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Utils\Utils;
 
-class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
+class DeferredFieldsTest extends \Facebook\HackTest\HackTest
 {
     private $userType;
 
@@ -30,7 +31,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
 
     private $queryType;
 
-    public function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         $this->storyDataSource = [
             ['id' => 1, 'authorId' => 1, 'title' => 'Story #1', 'categoryIds' => [2, 3]],
@@ -176,8 +177,6 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ]);
-
-        parent::setUp();
     }
 
     public function testDeferredFields():void
@@ -226,7 +225,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
         ];
 
         $result = Executor::execute($schema, $query);
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
 
         $expectedPath = [
             ['topStories'],
@@ -269,7 +268,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
             ['featuredCategory', 'stories', 2, 'author', 'name'],
             ['featuredCategory', 'stories', 3, 'author', 'name'],
         ];
-        $this->assertEquals($expectedPath, $this->path);
+        expect($this->path)->toBePHPEqual($expectedPath);
     }
 
     public function testNestedDeferredFields():void
@@ -311,7 +310,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
         ];
 
         $result = Executor::execute($schema, $query);
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
 
         $expectedPath = [
             ['categories'],
@@ -346,7 +345,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
             ['categories', 1, 'topStory', 'author', 'bestFriend', 'name'],
             ['categories', 2, 'topStory', 'author', 'bestFriend', 'name'],
         ];
-        $this->assertEquals($expectedPath, $this->path);
+        expect($this->path)->toBePHPEqual($expectedPath);
     }
 
     public function testComplexRecursiveDeferredFields():void
@@ -457,7 +456,7 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
 
         $expectedPath = [
             ['nest'],
@@ -493,6 +492,6 @@ class DeferredFieldsTest extends \PHPUnit_Framework_TestCase
             ['!dfd for: ', ['deferredNest', 'deferredNest', 'deferred']],
         ];
 
-        $this->assertEquals($expectedPath, $this->path);
+        expect($this->path)->toBePHPEqual($expectedPath);
     }
 }

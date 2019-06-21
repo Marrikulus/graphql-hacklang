@@ -3,12 +3,13 @@
 namespace GraphQL\Tests\Executor;
 
 use GraphQL\Executor\Executor;
+use function Facebook\FBExpect\expect;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 
-class ExecutorSchemaTest extends \PHPUnit_Framework_TestCase
+class ExecutorSchemaTest extends \Facebook\HackTest\HackTest
 {
     // Execute: Handles execution with a complex schema
 
@@ -173,7 +174,7 @@ class ExecutorSchemaTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $this->assertEquals($expected, Executor::execute($BlogSchema, Parser::parse($request))->toArray());
+        expect(Executor::execute($BlogSchema, Parser::parse($request))->toArray())->toBePHPEqual($expected);
     }
 
     private function article($id)

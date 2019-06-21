@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Server;
 
 use GraphQL\Executor\ExecutionResult;
+use function Facebook\FBExpect\expect;
 use GraphQL\Server\Helper;
 use GraphQL\Server\ServerConfig;
 use GraphQL\Server\StandardServer;
@@ -16,7 +17,7 @@ class StandardServerTest extends TestCase
      */
     private $config;
 
-    public function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         $schema = $this->buildSchema();
         $this->config = ServerConfig::create()
@@ -39,7 +40,7 @@ class StandardServerTest extends TestCase
             ]
         ];
 
-        $this->assertEquals($expected, $result->toArray(true));
+        expect($result->toArray(true))->toBePHPEqual($expected);
     }
 
     public function testSimplePsrRequestExecution():void
@@ -62,14 +63,14 @@ class StandardServerTest extends TestCase
     {
         $server = new StandardServer($this->config);
         $result = $server->executePsrRequest($psrRequest);
-        $this->assertInstanceOf(ExecutionResult::class, $result);
+        expect($result)->toBeInstanceOf(ExecutionResult::class);
         return $result;
     }
 
     private function assertPsrRequestEquals($expected, $request)
     {
         $result = $this->executePsrRequest($request);
-        $this->assertArraySubset($expected, $result->toArray(true));
+        expect($result->toArray(1))->toInclude($expected);
         return $result;
     }
 

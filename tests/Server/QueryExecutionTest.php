@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Server;
 
 use GraphQL\Deferred;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\Debug;
 use GraphQL\Error\Error;
 use GraphQL\Error\InvariantViolation;
@@ -25,7 +26,7 @@ class QueryExecutionTest extends TestCase
      */
     private $config;
 
-    public function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         $schema = $this->buildSchema();
         $this->config = ServerConfig::create()
@@ -50,12 +51,10 @@ class QueryExecutionTest extends TestCase
         $query = '{f1';
 
         $result = $this->executeQuery($query);
-        $this->assertSame(null, $result->data);
-        $this->assertCount(1, $result->errors);
-        $this->assertContains(
-            'Syntax Error GraphQL (1:4) Expected Name, found <EOF>',
-            $result->errors[0]->getMessage()
-        );
+        expect($result->data)->toBeSame(null);
+        expect(\count($result->errors))->toBeSame(1);
+        expect($result->errors[0]->getMessage())
+            ->toContain('Syntax Error GraphQL (1:4) Expected Name, found <EOF>');
     }
 
     public function testDebugExceptions():void
@@ -85,7 +84,7 @@ class QueryExecutionTest extends TestCase
         ];
 
         $result = $this->executeQuery($query)->toArray();
-        $this->assertArraySubset($expected, $result);
+        expect($result)->toInclude($expected);
     }
 
     public function testPassesRootValueAndContext():void
@@ -103,9 +102,9 @@ class QueryExecutionTest extends TestCase
         }
         ';
 
-        $this->assertTrue(!isset($context->testedRootValue));
+        expect(!isset($context->testedRootValue))->toBeTrue();
         $this->executeQuery($query);
-        $this->assertSame($rootValue, $context->testedRootValue);
+        expect($context->testedRootValue)->toBeSame($rootValue);
     }
 
     public function testPassesVariables():void
@@ -153,7 +152,7 @@ class QueryExecutionTest extends TestCase
             'data' => []
         ];
         $this->assertQueryResultEquals($expected, $query);
-        $this->assertTrue($called);
+        expect($called)->toBeTrue();
     }
 
     public function testAllowsValidationRulesAsClosure():void
@@ -169,12 +168,12 @@ class QueryExecutionTest extends TestCase
             return [];
         });
 
-        $this->assertFalse($called);
+        expect($called)->toBeFalse();
         $this->executeQuery('{f1}');
-        $this->assertTrue($called);
-        $this->assertInstanceOf(OperationParams::class, $params);
-        $this->assertInstanceOf(DocumentNode::class, $doc);
-        $this->assertEquals('query', $operationType);
+        expect($called)->toBeTrue();
+        expect($params)->toBeInstanceOf(OperationParams::class);
+        expect($doc)->toBeInstanceOf(DocumentNode::class);
+        expect($operationType)->toBePHPEqual('query');
     }
 
     public function testAllowsDifferentValidationRulesDependingOnOperation():void
@@ -200,15 +199,15 @@ class QueryExecutionTest extends TestCase
 
         $expected = ['data' => ['f1' => 'f1']];
         $this->assertQueryResultEquals($expected, $q1);
-        $this->assertTrue($called1);
-        $this->assertFalse($called2);
+        expect($called1)->toBeTrue();
+        expect($called2)->toBeFalse();
 
         $called1 = false;
         $called2 = false;
         $expected = ['errors' => [['message' => 'This is the error we are looking for!']]];
         $this->assertQueryResultEquals($expected, $q2);
-        $this->assertFalse($called1);
-        $this->assertTrue($called2);
+        expect($called1)->toBeFalse();
+        expect($called2)->toBeTrue();
     }
 
     public function testAllowsSkippingValidation():void
@@ -231,7 +230,7 @@ class QueryExecutionTest extends TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     public function testBatchedQueriesAreDisabledByDefault():void
@@ -266,8 +265,8 @@ class QueryExecutionTest extends TestCase
             ],
         ];
 
-        $this->assertEquals($expected[0], $result[0]->toArray());
-        $this->assertEquals($expected[1], $result[1]->toArray());
+        expect($result[0]->toArray())->toBePHPEqual($expected[0]);
+        expect($result[1]->toArray())->toBePHPEqual($expected[1]);
     }
 
     public function testMutationsAreNotAllowedInReadonlyMode():void
@@ -284,7 +283,7 @@ class QueryExecutionTest extends TestCase
         ];
 
         $result = $this->executeQuery($mutation, null, true);
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     public function testAllowsPersistentQueries():void
@@ -292,30 +291,30 @@ class QueryExecutionTest extends TestCase
         $called = false;
         $this->config->setPersistentQueryLoader(function($queryId, OperationParams $params) use (&$called) {
             $called = true;
-            $this->assertEquals('some-id', $queryId);
+            expect($queryId)->toBePHPEqual('some-id');
             return '{f1}';
         });
 
         $result = $this->executePersistedQuery('some-id');
-        $this->assertTrue($called);
+        expect($called)->toBeTrue();
 
         $expected = [
             'data' => [
                 'f1' => 'f1'
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
 
         // Make sure it allows returning document node:
         $called = false;
         $this->config->setPersistentQueryLoader(function($queryId, OperationParams $params) use (&$called) {
             $called = true;
-            $this->assertEquals('some-id', $queryId);
+            expect($queryId)->toBePHPEqual('some-id');
             return Parser::parse('{f1}');
         });
         $result = $this->executePersistedQuery('some-id');
-        $this->assertTrue($called);
-        $this->assertEquals($expected, $result->toArray());
+        expect($called)->toBeTrue();
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     public function testProhibitsInvalidPersistedQueryLoader():void
@@ -346,7 +345,7 @@ class QueryExecutionTest extends TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
 
     }
 
@@ -372,7 +371,7 @@ class QueryExecutionTest extends TestCase
         $expected = [
             'data' => []
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
 
         $result = $this->executePersistedQuery('some-other-id');
         $expected = [
@@ -384,7 +383,7 @@ class QueryExecutionTest extends TestCase
                 ]
             ]
         ];
-        $this->assertEquals($expected, $result->toArray());
+        expect($result->toArray())->toBePHPEqual($expected);
     }
 
     public function testProhibitsUnexpectedValidationRules():void
@@ -444,9 +443,9 @@ class QueryExecutionTest extends TestCase
             ]
         ];
 
-        $this->assertArraySubset($expected[0], $result[0]->toArray());
-        $this->assertArraySubset($expected[1], $result[1]->toArray());
-        $this->assertArraySubset($expected[2], $result[2]->toArray());
+        expect($result[0]->toArray())->toInclude($expected[0]);
+        expect($result[1]->toArray())->toInclude($expected[1]);
+        expect($result[2]->toArray())->toInclude($expected[2]);
     }
 
     public function testDeferredsAreSharedAmongAllBatchedQueries():void
@@ -488,7 +487,7 @@ class QueryExecutionTest extends TestCase
             'load: 2',
             'load: 3',
         ];
-        $this->assertEquals($expectedCalls, $calls);
+        expect($calls)->toBePHPEqual($expectedCalls);
 
         $expected = [
             [
@@ -508,9 +507,9 @@ class QueryExecutionTest extends TestCase
             ],
         ];
 
-        $this->assertEquals($expected[0], $result[0]->toArray());
-        $this->assertEquals($expected[1], $result[1]->toArray());
-        $this->assertEquals($expected[2], $result[2]->toArray());
+        expect($result[0]->toArray())->toBePHPEqual($expected[0]);
+        expect($result[1]->toArray())->toBePHPEqual($expected[1]);
+        expect($result[2]->toArray())->toBePHPEqual($expected[2]);
     }
 
     public function testValidatesParamsBeforeExecution():void
@@ -518,20 +517,16 @@ class QueryExecutionTest extends TestCase
         $op = OperationParams::create(['queryBad' => '{f1}']);
         $helper = new Helper();
         $result = $helper->executeOperation($this->config, $op);
-        $this->assertInstanceOf(ExecutionResult::class, $result);
+        expect($result)->toBeInstanceOf(ExecutionResult::class);
 
-        $this->assertEquals(null, $result->data);
-        $this->assertCount(1, $result->errors);
+        expect($result->data)->toBePHPEqual(null);
+        expect(\count($result->errors))->toBeSame(1);
 
-        $this->assertEquals(
-            'GraphQL Request must include at least one of those two parameters: "query" or "queryId"',
-            $result->errors[0]->getMessage()
-        );
+        expect($result->errors[0]->getMessage())
+            ->toBePHPEqual('GraphQL Request must include at least one of those two parameters: "query" or "queryId"');
 
-        $this->assertInstanceOf(
-            RequestError::class,
-            $result->errors[0]->getPrevious()
-        );
+        expect($result->errors[0]->getPrevious())
+            ->toBeInstanceOf(RequestError::class);
     }
 
     public function testAllowsContextAsClosure():void
@@ -546,12 +541,12 @@ class QueryExecutionTest extends TestCase
             $operationType = $o;
         });
 
-        $this->assertFalse($called);
+        expect($called)->toBeFalse();
         $this->executeQuery('{f1}');
-        $this->assertTrue($called);
-        $this->assertInstanceOf(OperationParams::class, $params);
-        $this->assertInstanceOf(DocumentNode::class, $doc);
-        $this->assertEquals('query', $operationType);
+        expect($called)->toBeTrue();
+        expect($params)->toBeInstanceOf(OperationParams::class);
+        expect($doc)->toBeInstanceOf(DocumentNode::class);
+        expect($operationType)->toBePHPEqual('query');
     }
 
     public function testAllowsRootValueAsClosure():void
@@ -566,12 +561,12 @@ class QueryExecutionTest extends TestCase
             $operationType = $o;
         });
 
-        $this->assertFalse($called);
+        expect($called)->toBeFalse();
         $this->executeQuery('{f1}');
-        $this->assertTrue($called);
-        $this->assertInstanceOf(OperationParams::class, $params);
-        $this->assertInstanceOf(DocumentNode::class, $doc);
-        $this->assertEquals('query', $operationType);
+        expect($called)->toBeTrue();
+        expect($params)->toBeInstanceOf(OperationParams::class);
+        expect($doc)->toBeInstanceOf(DocumentNode::class);
+        expect($operationType)->toBePHPEqual('query');
     }
 
     public function testAppliesErrorFormatter():void
@@ -585,16 +580,16 @@ class QueryExecutionTest extends TestCase
         });
 
         $result = $this->executeQuery('{fieldWithException}');
-        $this->assertFalse($called);
+        expect($called)->toBeFalse();
         $formatted = $result->toArray();
         $expected = [
             'errors' => [
                 ['test' => 'formatted']
             ]
         ];
-        $this->assertTrue($called);
-        $this->assertArraySubset($expected, $formatted);
-        $this->assertInstanceOf(Error::class, $error);
+        expect($called)->toBeTrue();
+        expect($formatted)->toInclude($expected);
+        expect($error)->toBeInstanceOf(Error::class);
 
         // Assert debugging still works even with custom formatter
         $formatted = $result->toArray(Debug::INCLUDE_TRACE);
@@ -606,7 +601,7 @@ class QueryExecutionTest extends TestCase
                 ]
             ]
         ];
-        $this->assertArraySubset($expected, $formatted);
+        expect($formatted)->toInclude($expected);
     }
 
     public function testAppliesErrorsHandler():void
@@ -625,19 +620,19 @@ class QueryExecutionTest extends TestCase
 
         $result = $this->executeQuery('{fieldWithException,test: fieldWithException}');
 
-        $this->assertFalse($called);
+        expect($called)->toBeFalse();
         $formatted = $result->toArray();
         $expected = [
             'errors' => [
                 ['test' => 'handled']
             ]
         ];
-        $this->assertTrue($called);
-        $this->assertArraySubset($expected, $formatted);
-        $this->assertInternalType('array', $errors);
-        $this->assertCount(2, $errors);
-        $this->assertInternalType('callable', $formatter);
-        $this->assertArraySubset($expected, $formatted);
+        expect($called)->toBeTrue();
+        expect($formatted)->toInclude($expected);
+        expect($errors)->toBeType('array');
+        expect(\count($errors))->toBeSame(2);
+        expect($formatter)->toBeType('callable');
+        expect($formatted)->toInclude($expected);
     }
 
     private function executePersistedQuery($queryId, $variables = null)
@@ -645,7 +640,7 @@ class QueryExecutionTest extends TestCase
         $op = OperationParams::create(['queryId' => $queryId, 'variables' => $variables]);
         $helper = new Helper();
         $result = $helper->executeOperation($this->config, $op);
-        $this->assertInstanceOf(ExecutionResult::class, $result);
+        expect($result)->toBeInstanceOf(ExecutionResult::class);
         return $result;
     }
 
@@ -654,7 +649,7 @@ class QueryExecutionTest extends TestCase
         $op = OperationParams::create(['query' => $query, 'variables' => $variables], $readonly);
         $helper = new Helper();
         $result = $helper->executeOperation($this->config, $op);
-        $this->assertInstanceOf(ExecutionResult::class, $result);
+        expect($result)->toBeInstanceOf(ExecutionResult::class);
         return $result;
     }
 
@@ -666,11 +661,11 @@ class QueryExecutionTest extends TestCase
         }
         $helper = new Helper();
         $result = $helper->executeBatch($this->config, $batch);
-        $this->assertInternalType('array', $result);
-        $this->assertCount(\count($qs), $result);
+        expect($result)->toBeType('array');
+        expect(\count($result))->toBeSame(\count($qs));
 
         foreach ($result as $index => $entry) {
-            $this->assertInstanceOf(ExecutionResult::class, $entry, "Result at $index is not an instance of " . ExecutionResult::class);
+            expect($entry)->toBeInstanceOf(ExecutionResult::class, "Result at $index is not an instance of " . ExecutionResult::class);
         }
         return $result;
     }
@@ -678,7 +673,7 @@ class QueryExecutionTest extends TestCase
     private function assertQueryResultEquals($expected, $query, $variables = null)
     {
         $result = $this->executeQuery($query, $variables);
-        $this->assertArraySubset($expected, $result->toArray(true));
+        expect($result->toArray(1))->toInclude($expected);
         return $result;
     }
 }

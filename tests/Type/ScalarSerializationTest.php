@@ -3,10 +3,11 @@
 namespace GraphQL\Tests\Type;
 
 use GraphQL\Error\InvariantViolation;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\GraphQlType;
 
-class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
+class ScalarSerializationTest extends \Facebook\HackTest\HackTest
 {
     // Type System: Scalar coercion
 
@@ -17,14 +18,14 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $intType = GraphQlType::int();
 
-        $this->assertSame(1, $intType->serialize(1));
-        $this->assertSame(123, $intType->serialize('123'));
-        $this->assertSame(0, $intType->serialize(0));
-        $this->assertSame(-1, $intType->serialize(-1));
-        $this->assertSame(100000, $intType->serialize(1e5));
-        $this->assertSame(0, $intType->serialize(0e5));
-        $this->assertSame(0, $intType->serialize(false));
-        $this->assertSame(1, $intType->serialize(true));
+        expect($intType->serialize(1))->toBeSame(1);
+        expect($intType->serialize('123'))->toBeSame(123);
+        expect($intType->serialize(0))->toBeSame(0);
+        expect($intType->serialize(-1))->toBeSame(-1);
+        expect($intType->serialize(1e5))->toBeSame(100000);
+        expect($intType->serialize(0e5))->toBeSame(0);
+        expect($intType->serialize(false))->toBeSame(0);
+        expect($intType->serialize(true))->toBeSame(1);
     }
 
     public function testSerializesOutputIntCannotRepresentFloat1()
@@ -113,16 +114,16 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $floatType = GraphQlType::float();
 
-        $this->assertSame(1.0, $floatType->serialize(1));
-        $this->assertSame(0.0, $floatType->serialize(0));
-        $this->assertSame(123.5, $floatType->serialize('123.5'));
-        $this->assertSame(-1.0, $floatType->serialize(-1));
-        $this->assertSame(0.1, $floatType->serialize(0.1));
-        $this->assertSame(1.1, $floatType->serialize(1.1));
-        $this->assertSame(-1.1, $floatType->serialize(-1.1));
-        $this->assertSame(-1.1, $floatType->serialize('-1.1'));
-        $this->assertSame(0.0, $floatType->serialize(false));
-        $this->assertSame(1.0, $floatType->serialize(true));
+        expect($floatType->serialize(1))->toBeSame(1.0);
+        expect($floatType->serialize(0))->toBeSame(0.0);
+        expect($floatType->serialize('123.5'))->toBeSame(123.5);
+        expect($floatType->serialize(-1))->toBeSame(-1.0);
+        expect($floatType->serialize(0.1))->toBeSame(0.1);
+        expect($floatType->serialize(1.1))->toBeSame(1.1);
+        expect($floatType->serialize(-1.1))->toBeSame(-1.1);
+        expect($floatType->serialize('-1.1'))->toBeSame(-1.1);
+        expect($floatType->serialize(false))->toBeSame(0.0);
+        expect($floatType->serialize(true))->toBeSame(1.0);
     }
 
     public function testSerializesOutputFloatCannotRepresentString():void
@@ -146,12 +147,12 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $stringType = GraphQlType::string();
 
-        $this->assertSame('string', $stringType->serialize('string'));
-        $this->assertSame('1', $stringType->serialize(1));
-        $this->assertSame('-1.1', $stringType->serialize(-1.1));
-        $this->assertSame('true', $stringType->serialize(true));
-        $this->assertSame('false', $stringType->serialize(false));
-        $this->assertSame('null', $stringType->serialize(null));
+        expect($stringType->serialize('string'))->toBeSame('string');
+        expect($stringType->serialize(1))->toBeSame('1');
+        expect($stringType->serialize(-1.1))->toBeSame('-1.1');
+        expect($stringType->serialize(true))->toBeSame('true');
+        expect($stringType->serialize(false))->toBeSame('false');
+        expect($stringType->serialize(null))->toBeSame('null');
     }
 
     public function testSerializesOutputStringsCannotRepresentArray():void
@@ -175,13 +176,13 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $boolType = GraphQlType::boolean();
 
-        $this->assertSame(true, $boolType->serialize('string'));
-        $this->assertSame(false, $boolType->serialize(''));
-        $this->assertSame(true, $boolType->serialize('1'));
-        $this->assertSame(true, $boolType->serialize(1));
-        $this->assertSame(false, $boolType->serialize(0));
-        $this->assertSame(true, $boolType->serialize(true));
-        $this->assertSame(false, $boolType->serialize(false));
+        expect($boolType->serialize('string'))->toBeSame(true);
+        expect($boolType->serialize(''))->toBeSame(false);
+        expect($boolType->serialize('1'))->toBeSame(true);
+        expect($boolType->serialize(1))->toBeSame(true);
+        expect($boolType->serialize(0))->toBeSame(false);
+        expect($boolType->serialize(true))->toBeSame(true);
+        expect($boolType->serialize(false))->toBeSame(false);
 
         // TODO: how should it behave on '0'?
     }
@@ -190,14 +191,14 @@ class ScalarSerializationTest extends \PHPUnit_Framework_TestCase
     {
         $idType = GraphQlType::id();
 
-        $this->assertSame('string', $idType->serialize('string'));
-        $this->assertSame('', $idType->serialize(''));
-        $this->assertSame('1', $idType->serialize('1'));
-        $this->assertSame('1', $idType->serialize(1));
-        $this->assertSame('0', $idType->serialize(0));
-        $this->assertSame('true', $idType->serialize(true));
-        $this->assertSame('false', $idType->serialize(false));
-        $this->assertSame('2', $idType->serialize(new ObjectIdStub(2)));
+        expect($idType->serialize('string'))->toBeSame('string');
+        expect($idType->serialize(''))->toBeSame('');
+        expect($idType->serialize('1'))->toBeSame('1');
+        expect($idType->serialize(1))->toBeSame('1');
+        expect($idType->serialize(0))->toBeSame('0');
+        expect($idType->serialize(true))->toBeSame('true');
+        expect($idType->serialize(false))->toBeSame('false');
+        expect($idType->serialize(new ObjectIdStub(2)))->toBeSame('2');
     }
 
     public function testSerializesOutputIDCannotRepresentObject():void

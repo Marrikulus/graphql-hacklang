@@ -3,6 +3,7 @@
 namespace GraphQL\Tests\Type;
 
 use GraphQL\Error\InvariantViolation;
+use function Facebook\FBExpect\expect;
 use GraphQL\Error\Warning;
 use GraphQL\Type\Definition\Config;
 use GraphQL\Type\Definition\EnumType;
@@ -12,14 +13,14 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Utils\Utils;
 
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends \Facebook\HackTest\HackTest
 {
-    public function setUp()
+    public async function beforeEachTestAsync(): Awaitable<void>
     {
         Warning::suppress(Warning::WARNING_CONFIG_DEPRECATION);
     }
 
-    public static function tearDownAfterClass()
+    public static async function afterLastTestAsync(): Awaitable<void>
     {
         Config::disableValidation();
         Warning::enable(Warning::WARNING_CONFIG_DEPRECATION);
@@ -28,11 +29,11 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testToggling():void
     {
         // Disabled by default
-        $this->assertEquals(false, Config::isValidationEnabled());
+        expect(Config::isValidationEnabled())->toBePHPEqual(false);
         Config::validate(['test' => []], ['test' => Config::STRING]); // must not throw
 
         Config::enableValidation();
-        $this->assertEquals(true, Config::isValidationEnabled());
+        expect(Config::isValidationEnabled())->toBePHPEqual(true);
 
         try {
             Config::validate(['test' => []], ['test' => Config::STRING]);
@@ -41,7 +42,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         }
 
         Config::disableValidation();
-        $this->assertEquals(false, Config::isValidationEnabled());
+        expect(Config::isValidationEnabled())->toBePHPEqual(false);
         Config::validate(['test' => []], ['test' => Config::STRING]);
     }
 
@@ -467,9 +468,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @dataProvider getValidValues
-     */
+    <<DataProvider('getValidValues')>>
     public function testValidValues($type, $validValue)
     {
         $this->expectValidationPasses(
@@ -541,9 +540,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @dataProvider getInvalidValues
-     */
+    <<DataProvider('getInvalidValues')>>
     public function testInvalidValues($type, $typeLabel, $invalidValue, $actualTypeLabel = null, $expectedFullError = null)
     {
         if (!$expectedFullError) {
@@ -596,10 +593,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             );
             $this->fail('Expected exception not thrown');
         } catch (InvariantViolation $e) {
-            $this->assertEquals(
-                $this->typeError('expecting "int" at "(Unknown Field):test", but got "string"', 'TypeName'),
-                $e->getMessage()
-            );
+            expect($e->getMessage())
+                ->toBePHPEqual($this->typeError('expecting "int" at "(Unknown Field):test", but got "string"', 'TypeName'));
         }
 
         // Should include field type in error when field name is unknown:
@@ -611,10 +606,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             );
             $this->fail('Expected exception not thrown');
         } catch (InvariantViolation $e) {
-            $this->assertEquals(
-                $this->typeError('Required keys missing: "name"  at (Unknown Field of type: String)', 'TypeName'),
-                $e->getMessage()
-            );
+            expect($e->getMessage())
+                ->toBePHPEqual($this->typeError('Required keys missing: "name"  at (Unknown Field of type: String)', 'TypeName'));
         }
 
         // Should include field name in error when field name is set:
@@ -626,10 +619,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             );
             $this->fail('Expected exception not thrown');
         } catch (InvariantViolation $e) {
-            $this->assertEquals(
-                $this->typeError('expecting "int" at "test", but got "string"', 'TypeName'),
-                $e->getMessage()
-            );
+            expect($e->getMessage())
+                ->toBePHPEqual($this->typeError('expecting "int" at "test", but got "string"', 'TypeName'));
         }
     }
 
@@ -652,10 +643,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             );
             $this->fail('Expected exception not thrown');
         } catch (\PHPUnit_Framework_Error_Warning $e) {
-            $this->assertEquals(
-                $this->typeError('Non-standard keys "test2" '),
-                $e->getMessage()
-            );
+            expect($e->getMessage())->toBePHPEqual($this->typeError('Non-standard keys "test2" '));
         }
     }
 
@@ -672,12 +660,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             Config::validate($config, $definition);
             $this->fail('Expected exception not thrown: ' . $expectedError);
         } catch (InvariantViolation $e) {
-            $this->assertEquals($expectedError, $e->getMessage());
+            expect($e->getMessage())->toBePHPEqual($expectedError);
         }
     }
 
-    private function typeError($err, $typeName = null)
+    private function typeError(string $err, ?string $typeName = null):string
     {
-        return 'Error in "'. ($typeName ?: '(Unnamed Type)') . '" type definition: ' . $err;
+        return 'Error in "'. ($typeName ?? '(Unnamed Type)') . '" type definition: ' . $err;
     }
 }
