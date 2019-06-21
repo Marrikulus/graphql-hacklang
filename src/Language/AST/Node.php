@@ -34,8 +34,10 @@ abstract class Node
 
     public function __construct(
         public ?Location $loc,
-        public string $kind = "",
-    ){ }
+        public string $kind,
+    ){
+        invariant($kind !== "", "Kind should never be empty string");
+    }
 
     /**
      * @return $this
@@ -133,16 +135,24 @@ abstract class Node
             if ($propValue === null)
                 continue;
 
-            if (is_array($propValue)) {
+            if (is_array($propValue))
+            {
                 $tmp = [];
-                foreach ($propValue as $tmp1) {
+                foreach ($propValue as $tmp1)
+                {
                     $tmp[] = $tmp1 instanceof Node ? $this->recursiveToArray($tmp1) : (array) $tmp1;
                 }
-            } else if ($propValue instanceof Node) {
+            }
+            else if ($propValue instanceof Node)
+            {
                 $tmp = $this->recursiveToArray($propValue);
-            } else if (\is_scalar($propValue) || null === $propValue) {
+            }
+            else if (\is_scalar($propValue) || null === $propValue)
+            {
                 $tmp = $propValue;
-            } else {
+            }
+            else
+            {
                 $tmp = null;
             }
 

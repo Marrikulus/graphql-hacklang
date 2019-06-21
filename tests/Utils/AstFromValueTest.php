@@ -202,7 +202,7 @@ class AstFromValueTest extends \Facebook\HackTest\HackTest
         $complexValue = $this->complexValue;
         if ($complexValue === null)
         {
-            $complexValue =  new stdClass();
+            $this->complexValue = $complexValue = new stdClass();
             $complexValue->someArbitrary = 'complexValue';
         }
         return $this->complexValue;

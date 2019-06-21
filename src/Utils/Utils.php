@@ -196,7 +196,7 @@ class Utils
      * @param callable $valFn
      * @return array
      */
-    public static function keyValMap($traversable, callback1arg $keyFn, callback1arg $valFn)
+    public static function keyValMap( $traversable, callback1arg $keyFn, callback1arg $valFn)
     {
         $map = [];
         foreach ($traversable as $item) {
@@ -227,13 +227,12 @@ class Utils
      * @param mixed $sprintfParam2 ...
      * @throws InvariantViolation
      */
-    public static function invariant($test, string $message = '')
+    public static function invariant($test, string $message = '', mixed ... $args)
     {
         if (!$test) {
-            if (\func_num_args() > 2) {
-                $args = \func_get_args();
-                \array_shift(&$args);
-                $message = \call_user_func_array('sprintf', $args);
+            if (\count($args) > 0)
+            {
+                $message = \call_user_func_array('sprintf', array_merge([$message], $args));
             }
             throw new InvariantViolation($message);
         }
@@ -391,8 +390,9 @@ class Utils
         if ($encoding !== 'UCS-4BE') {
             $char = \mb_convert_encoding($char, 'UCS-4BE', $encoding);
         }
-        list($_, $ord) = \unpack('N', $char);
-        return $ord;
+        $list = \unpack('N', $char);
+        /*list($a, $ord) = $list;*/
+        return $list[1];
     }
 
     /**

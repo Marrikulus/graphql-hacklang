@@ -58,11 +58,6 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
         $this->config = $config ?? [];
     }
 
-    public function __toString():string
-    {
-        return "UnionType";
-    }
-
     /**
      * @return ObjectType[]
      */
@@ -80,16 +75,17 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
         if (null === $this->types)
         {
             $types = null;
-            if (\array_key_exists('types', $this->config) && $this->config['types'] === null)
+            if (\array_key_exists('types', $this->config) && $this->config['types'] !== null)
             {
-                $types = null;
-            }
-            else if (\is_callable($this->config['types']))
-            {
-                /* HH_FIXME[4009]*/
-                $types = call_user_func($this->config['types']);
-            } else {
-                $types = $this->config['types'];
+                if (\is_callable($this->config['types']))
+                {
+                    /* HH_FIXME[4009]*/
+                    $types = call_user_func($this->config['types']);
+                }
+                else
+                {
+                    $types = $this->config['types'];
+                }
             }
 
             Utils::invariant(is_array($types), "%s types must be an Array or a callable which returns an Array.", $this->name);
@@ -168,7 +164,7 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
 
         $includedTypeNames = [];
         foreach ($types as $objType) {
-            invariant(
+            Utils::invariant(
                 $objType instanceof ObjectType,
                 "%s may only contain Object types, it cannot contain: %s.",
                 $this->name,

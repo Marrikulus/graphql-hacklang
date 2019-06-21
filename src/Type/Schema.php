@@ -131,7 +131,7 @@ class Schema
                 $this->resolvedTypes[$type->name] = $type;
             }
         }
-        $this->resolvedTypes += GraphQlType::getInternalTypes() + Introspection::getTypes();
+        $this->resolvedTypes = array_merge($this->resolvedTypes, GraphQlType::getInternalTypes(), Introspection::getTypes());
 
         if (!$this->config->typeLoader) {
             // Perform full scan of the schema
@@ -188,7 +188,7 @@ class Schema
      * This operation requires full schema scan. Do not use in production environment.
      *
      * @api
-     * @return Type[]
+     * @return GraphQlType[]
      */
     public function getTypeMap():array<GraphQlType>
     {
@@ -204,9 +204,9 @@ class Schema
      *
      * @api
      * @param string $name
-     * @return Type
+     * @return GraphQlType
      */
-    public function getType($name):GraphQlType
+    public function getType($name):?GraphQlType
     {
         if (!isset($this->resolvedTypes[$name])) {
             $this->resolvedTypes[$name] = $this->loadType($name);

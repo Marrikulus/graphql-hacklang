@@ -5,6 +5,7 @@ namespace GraphQL\Tests\Type;
 use GraphQL\Error\InvariantViolation;
 use function Facebook\FBExpect\expect;
 use GraphQL\Error\Warning;
+use GraphQL\Error\HackWarningException;
 use GraphQL\Type\Definition\Config;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
@@ -636,15 +637,23 @@ class ConfigTest extends \Facebook\HackTest\HackTest
 
         Config::enableValidation(false);
 
+        \set_error_handler(
+            function($errno, $errstr, $errfile, $errline){
+                throw new HackWarningException($errstr, $errno, 0, $errfile, $errline);
+            },
+            E_WARNING | E_USER_WARNING
+        );
+
         try {
             Config::validate(
                 ['test' => 'value', 'test2' => 'value'],
                 ['test' => Config::STRING]
             );
             $this->fail('Expected exception not thrown');
-        } catch (\PHPUnit_Framework_Error_Warning $e) {
+        } catch (HackWarningException $e) {
             expect($e->getMessage())->toBePHPEqual($this->typeError('Non-standard keys "test2" '));
         }
+        \restore_error_handler();
     }
 
     private function expectValidationPasses($config, $definition)

@@ -519,8 +519,8 @@ class Executor
      *
      * @param ObjectType $runtimeType
      * @param SelectionSetNode $selectionSet
-     * @param $fields
-     * @param $visitedFragmentNames
+     * @param \ArrayObject $fields
+     * @param \ArrayObject $visitedFragmentNames
      *
      * @return \ArrayObject
      */
@@ -835,7 +835,7 @@ class Executor
      * location information.
      *
      * @param GraphQlType $returnType
-     * @param $fieldNodes
+     * @param \ArrayObject $fieldNodes
      * @param ResolveInfo $info
      * @param $path
      * @param $result
@@ -844,7 +844,7 @@ class Executor
      */
     public function completeValueWithLocatedError(
         GraphQlType $returnType,
-        $fieldNodes,
+        \ArrayObject $fieldNodes,
         ResolveInfo $info,
         $path,
         $result
@@ -861,12 +861,12 @@ class Executor
             $promise = $this->getPromise($completed);
             if ($promise) {
                 return $promise->then(null, function ($error) use ($fieldNodes, $path) {
-                    return $this->exeContext->promises->createRejected(Error::createLocatedError($error, $fieldNodes, $path));
+                    return $this->exeContext->promises->createRejected(Error::createLocatedError($error, $fieldNodes->getArrayCopy(), $path));
                 });
             }
             return $completed;
         } catch (\Exception $error) {
-            throw Error::createLocatedError($error, $fieldNodes, $path);
+            throw Error::createLocatedError($error, $fieldNodes->getArrayCopy(), $path);
         }
     }
 
@@ -999,15 +999,21 @@ class Executor
         $fieldName = $info->fieldName;
         $property = null;
 
-        //if (is_array($source) || $source instanceof \ArrayAccess) {
-        //    if (isset($source[$fieldName])) {
-        //        $property = $source[$fieldName];
-        //    }
-        //} else if (is_object($source)) {
-        //    if (isset($source->{$fieldName})) {
-        //        $property = $source->{$fieldName};
-        //    }
-        //}
+        if (is_array($source) || $source instanceof \ArrayAccess)
+        {
+           if (isset($source[$fieldName]))
+           {
+               $property = $source[$fieldName];
+           }
+        }
+        else if (is_object($source))
+        {
+           if (isset($source->{$fieldName}))
+           {
+               $property = $source->{$fieldName};
+           }
+        }
+
         /* HH_FIXME[4009]*/
         return $property instanceof \Closure ? $property($source, $args, $context, $info) : $property;
     }
@@ -1031,9 +1037,9 @@ class Executor
     {
         static $schemaMetaFieldDef, $typeMetaFieldDef, $typeNameMetaFieldDef;
 
-        $schemaMetaFieldDef = $schemaMetaFieldDef ?: Introspection::schemaMetaFieldDef();
-        $typeMetaFieldDef = $typeMetaFieldDef ?: Introspection::typeMetaFieldDef();
-        $typeNameMetaFieldDef = $typeNameMetaFieldDef ?: Introspection::typeNameMetaFieldDef();
+        $schemaMetaFieldDef = $schemaMetaFieldDef ?? Introspection::schemaMetaFieldDef();
+        $typeMetaFieldDef = $typeMetaFieldDef ?? Introspection::typeMetaFieldDef();
+        $typeNameMetaFieldDef = $typeNameMetaFieldDef ?? Introspection::typeNameMetaFieldDef();
 
         if ($fieldName === $schemaMetaFieldDef->name && $schema->getQueryType() === $parentType) {
             return $schemaMetaFieldDef;
@@ -1277,7 +1283,7 @@ class Executor
     {
         return new Error(
             'Expected value of type "' . $returnType->name . '" but got: ' . Utils::printSafe($result) . '.',
-            $fieldNodes
+            $fieldNodes->getArrayCopy()
         );
     }
 
@@ -1293,7 +1299,7 @@ class Executor
      */
     private function collectAndExecuteSubfields(
         ObjectType $returnType,
-        array<FieldNode> $fieldNodes,
+        /*array<FieldNode>*/\ArrayObject $fieldNodes,
         ResolveInfo $info,
         $path,
         &$result

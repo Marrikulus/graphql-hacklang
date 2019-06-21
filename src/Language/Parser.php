@@ -67,7 +67,8 @@ class Parser
     public static function parseSource(Source $source, bool $noLocation = false):DocumentNode
     {
         $parser = new Parser($source, $noLocation);
-        return $parser->parseDocument();
+        $document = $parser->parseDocument();
+        return $document;
     }
 
     public static function parse(string $source, bool $noLocation = false):DocumentNode
@@ -153,7 +154,7 @@ class Parser
      */
     public function loc(Token $startToken):?Location
     {
-        if ($this->lexer->noLocation)
+        if (!$this->lexer->noLocation)
         {
             return new Location($startToken, $this->lexer->lastToken, $this->lexer->source);
         }
@@ -855,8 +856,10 @@ class Parser
     public function parseTypeSystemDefinition():Node
     {
         $value = $this->lexer->token->value;
-        if ($this->peek(Token::NAME) && $value !== null) {
-            switch ($value) {
+        if ($this->peek(Token::NAME) && $value !== null)
+        {
+            switch ($value)
+            {
                 case 'schema': return $this->parseSchemaDefinition();
                 case 'scalar': return $this->parseScalarTypeDefinition();
                 case 'type': return $this->parseObjectTypeDefinition();

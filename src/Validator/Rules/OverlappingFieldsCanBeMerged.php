@@ -332,7 +332,7 @@ class OverlappingFieldsCanBeMerged extends AbstractValidationRule
 
                     if (!$_astAndDefs->offsetExists($responseName))
                     {
-                        $_astAndDefs->offsetSet($responseName, new \ArrayObject())
+                        $_astAndDefs->offsetSet($responseName, new \ArrayObject());
                     }
                     $_astAndDefs->offsetGet($responseName)->append([$parentType, $selection, $fieldDef]);
                     //$_astAndDefs[$responseName][] = [$parentType, $selection, $fieldDef];

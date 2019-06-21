@@ -155,7 +155,7 @@ class AST
         }
 
         if ($value === null) {
-            return new NullValueNode([]);
+            return new NullValueNode();
         }
 
         // Convert PHP array to GraphQL list. If the GraphQLType is a list, but
@@ -170,7 +170,7 @@ class AST
                         $valuesNodes[] = $itemNode;
                     }
                 }
-                return new ListValueNode(['values' => $valuesNodes]);
+                return new ListValueNode($valuesNodes);
             }
             return AST::astFromValue($value, $itemType);
         }
@@ -208,15 +208,13 @@ class AST
                 if ($fieldExists) {
                     $fieldNode = AST::astFromValue($fieldValue, $field->getType());
 
-                    if ($fieldNode) {
-                        $fieldNodes[] = new ObjectFieldNode([
-                            'name' => new NameNode(['value' => $fieldName]),
-                            'value' => $fieldNode
-                        ]);
+                    if ($fieldNode)
+                    {
+                        $fieldNodes[] = new ObjectFieldNode( new NameNode($fieldName), $fieldNode);
                     }
                 }
             }
-            return new ObjectValueNode(['fields' => $fieldNodes]);
+            return new ObjectValueNode($fieldNodes);
         }
 
         // Since value is an internally represented value, it must be serialized
@@ -232,35 +230,40 @@ class AST
         }
 
         // Others serialize based on their corresponding PHP scalar types.
-        if ($serialized is bool) {
-            return new BooleanValueNode(['value' => $serialized]);
+        if ($serialized is bool)
+        {
+            return new BooleanValueNode($serialized);
         }
-        if ($serialized is int) {
-            return new IntValueNode(['value' => $serialized]);
+        if ($serialized is int)
+        {
+            return new IntValueNode((string)$serialized);
         }
-        if ($serialized is float) {
-            if ((int) $serialized == $serialized) {
-                return new IntValueNode(['value' => $serialized]);
+        if ($serialized is float)
+        {
+            if ((int) $serialized == $serialized)
+            {
+                return new IntValueNode((string)$serialized);
             }
-            return new FloatValueNode(['value' => $serialized]);
+            return new FloatValueNode((string)$serialized);
         }
-        if ($serialized is string) {
+        if ($serialized is string)
+        {
             // Enum types use Enum literals.
-            if ($type instanceof EnumType) {
-                return new EnumValueNode(['value' => $serialized]);
+            if ($type instanceof EnumType)
+            {
+                return new EnumValueNode($serialized);
             }
 
             // ID types can use Int literals.
             $asInt = (int) $serialized;
-            if ($type instanceof IDType && (string) $asInt === $serialized) {
-                return new IntValueNode(['value' => $serialized]);
+            if ($type instanceof IDType && (string) $asInt === $serialized)
+            {
+                return new IntValueNode($serialized);
             }
 
             // Use json_encode, which uses the same string encoding as GraphQL,
             // then remove the quotes.
-            return new StringValueNode([
-                'value' => \substr(\json_encode($serialized), 1, -1)
-            ]);
+            return new StringValueNode(\substr(\json_encode($serialized), 1, -1));
         }
 
         throw new InvariantViolation('Cannot convert value to AST: ' . Utils::printSafe($serialized));
@@ -423,11 +426,13 @@ class AST
      */
     public static function typeFromAST(Schema $schema, Node $inputTypeNode)
     {
-        if ($inputTypeNode instanceof ListTypeNode) {
+        if ($inputTypeNode instanceof ListTypeNode)
+        {
             $innerType = AST::typeFromAST($schema, $inputTypeNode->type);
             return $innerType ? new ListOfType($innerType) : null;
         }
-        if ($inputTypeNode instanceof NonNullTypeNode) {
+        if ($inputTypeNode instanceof NonNullTypeNode)
+        {
             $innerType = AST::typeFromAST($schema, $inputTypeNode->type);
             return $innerType ? new NoNull($innerType) : null;
         }
@@ -455,19 +460,23 @@ class AST
      * @api
      * @param DocumentNode $document
      * @param string $operationName
-     * @return bool
+     * @return string|null
      */
-    public static function getOperation(DocumentNode $document, ?string $operationName = null):bool
+    public static function getOperation(DocumentNode $document, ?string $operationName = null):?string
     {
-        if ($document->definitions) {
-            foreach ($document->definitions as $def) {
-                if ($def instanceof OperationDefinitionNode) {
-                    if (!$operationName || (isset($def->name->value) && $def->name->value === $operationName)) {
+        if ($document->definitions)
+        {
+            foreach ($document->definitions as $def)
+            {
+                if ($def instanceof OperationDefinitionNode)
+                {
+                    if (!$operationName || (isset($def->name->value) && $def->name->value === $operationName))
+                    {
                         return $def->operation;
                     }
                 }
             }
         }
-        return false;
+        return null;
     }
 }

@@ -57,7 +57,8 @@ class InputObjectType extends GraphQlType implements InputType
      */
     public function getFields()
     {
-        if (null === $this->fields) {
+        if (null === $this->fields)
+        {
             $this->fields = [];
             $fields = isset($this->config['fields']) ? $this->config['fields'] : [];
             $fields = \is_callable($fields) ? call_user_func($fields) : $fields;

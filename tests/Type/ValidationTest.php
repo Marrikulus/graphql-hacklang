@@ -5,6 +5,7 @@ namespace GraphQL\Tests\Type;
 use GraphQL\Error\InvariantViolation;
 use function Facebook\FBExpect\expect;
 use GraphQL\Error\Warning;
+use GraphQL\Error\HackWarningException;
 use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\EnumType;
@@ -14,6 +15,8 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Utils\Utils;
+
+
 
 class ValidationTest extends \Facebook\HackTest\HackTest
 {
@@ -39,41 +42,19 @@ class ValidationTest extends \Facebook\HackTest\HackTest
 
     public ?array<mixed> $notInputTypes;
 
+    public ?array<mixed> $notInterfaceTypes;
+
+    public ?array<mixed> $notObjectTypes;
+
+    public ?array<mixed> $types;
+
     public ?string $String;
 
     public async function beforeEachTestAsync():Awaitable<void>
     {
-        $this->String = 'TestString';
+        $String = 'TestString';
 
-        $this->SomeScalarType = new CustomScalarType([
-            'name' => 'SomeScalar',
-            'serialize' => function() {},
-            'parseValue' => function() {},
-            'parseLiteral' => function() {}
-        ]);
-
-        $this->SomeObjectType = new ObjectType([
-            'name' => 'SomeObject',
-            'fields' => [ 'f' => [ 'type' => GraphQlType::string() ] ],
-            'interfaces' => function() {return [$this->SomeInterfaceType];}
-        ]);
-
-        $this->ObjectWithIsTypeOf = new ObjectType([
-            'name' => 'ObjectWithIsTypeOf',
-            'isTypeOf' => function() {
-                return true;
-            },
-            'fields' => [ 'f' => [ 'type' => GraphQlType::string() ]]
-        ]);
-        $this->SomeUnionType = new UnionType([
-            'name' => 'SomeUnion',
-            'resolveType' => function() {
-                return null;
-            },
-            'types' => [ $this->SomeObjectType ]
-        ]);
-
-        $this->SomeInterfaceType = new InterfaceType([
+        $this->SomeInterfaceType = $SomeInterfaceType = new InterfaceType([
             'name' => 'SomeInterface',
             'resolveType' => function() {
                 return null;
@@ -81,48 +62,118 @@ class ValidationTest extends \Facebook\HackTest\HackTest
             'fields' => [ 'f' => ['type' => GraphQlType::string() ]]
         ]);
 
-        $this->SomeEnumType = new EnumType([
+        $SomeScalarType = new CustomScalarType([
+            'name' => 'SomeScalar',
+            'serialize' => function() {},
+            'parseValue' => function() {},
+            'parseLiteral' => function() {}
+        ]);
+
+        $this->SomeObjectType = $SomeObjectType = new ObjectType([
+            'name' => 'SomeObject',
+            'fields' => [ 'f' => [ 'type' => GraphQlType::string() ] ],
+            'interfaces' => function() {return [$this->SomeInterfaceType];}
+        ]);
+
+        $ObjectWithIsTypeOf = new ObjectType([
+            'name' => 'ObjectWithIsTypeOf',
+            'isTypeOf' => function() {
+                return true;
+            },
+            'fields' => [ 'f' => [ 'type' => GraphQlType::string() ]]
+        ]);
+        $SomeUnionType = new UnionType([
+            'name' => 'SomeUnion',
+            'resolveType' => function() {
+                return null;
+            },
+            'types' => [ $this->SomeObjectType ]
+        ]);
+
+        $SomeEnumType = new EnumType([
             'name' => 'SomeEnum',
             'values' => [
                 'ONLY' => []
             ]
         ]);
 
-        $this->SomeInputObjectType = new InputObjectType([
+        $SomeInputObjectType = new InputObjectType([
             'name' => 'SomeInputObject',
             'fields' => [
                 'val' => [ 'type' => GraphQlType::string(), 'defaultValue' => 'hello' ]
             ]
         ]);
 
-        $this->outputTypes = $this->withModifiers([
+        $outputTypes = $this->withModifiers([
             GraphQlType::string(),
-            $this->SomeScalarType,
-            $this->SomeEnumType,
-            $this->SomeObjectType,
-            $this->SomeUnionType,
-            $this->SomeInterfaceType
+            $SomeScalarType,
+            $SomeEnumType,
+            $SomeObjectType,
+            $SomeUnionType,
+            $SomeInterfaceType
         ]);
 
-        $this->notOutputTypes = $this->withModifiers([
-          $this->SomeInputObjectType,
+        $notOutputTypes = $this->withModifiers([
+          $SomeInputObjectType,
         ]);
-        $this->notOutputTypes[] = $this->String;
+        $notOutputTypes[] = $String;
 
-        $this->inputTypes = $this->withModifiers([
+        $inputTypes = $this->withModifiers([
             GraphQlType::string(),
-            $this->SomeScalarType,
-            $this->SomeEnumType,
-            $this->SomeInputObjectType,
+            $SomeScalarType,
+            $SomeEnumType,
+            $SomeInputObjectType,
         ]);
 
-        $this->notInputTypes = $this->withModifiers([
-            $this->SomeObjectType,
-            $this->SomeUnionType,
-            $this->SomeInterfaceType,
+        $notInputTypes = $this->withModifiers([
+            $SomeObjectType,
+            $SomeUnionType,
+            $SomeInterfaceType,
         ]);
 
-        $this->notInputTypes[] = $this->String;
+        $notInputTypes[] = $String;
+
+
+        $notInterfaceTypes = $this->withModifiers([
+            $SomeScalarType,
+            $SomeEnumType,
+            $SomeObjectType,
+            $SomeUnionType,
+            $SomeInputObjectType,
+        ]);
+
+        $notObjectTypes = $this->withModifiers([
+            $SomeScalarType,
+            $SomeEnumType,
+            $SomeInterfaceType,
+            $SomeUnionType,
+            $SomeInputObjectType,
+        ]);
+
+        $types = $this->withModifiers([
+            GraphQlType::string(),
+            $SomeScalarType,
+            $SomeObjectType,
+            $SomeUnionType,
+            $SomeInterfaceType,
+            $SomeEnumType,
+            $SomeInputObjectType,
+        ]);
+
+        $this->String               = $String;
+        $this->SomeScalarType       = $SomeScalarType;
+        $this->ObjectWithIsTypeOf   = $ObjectWithIsTypeOf;
+        $this->SomeUnionType        = $SomeUnionType;
+        $this->SomeInterfaceType    = $SomeInterfaceType;
+        $this->SomeEnumType         = $SomeEnumType;
+        $this->SomeInputObjectType  = $SomeInputObjectType;
+        $this->outputTypes          = $outputTypes;
+        $this->notOutputTypes       = $notOutputTypes;
+        $this->inputTypes           = $inputTypes;
+        $this->notInputTypes        = $notInputTypes;
+        $this->notInterfaceTypes    = $notInterfaceTypes;
+        $this->notObjectTypes       = $notObjectTypes;
+        $this->types                = $types;
 
         Warning::suppress(Warning::WARNING_NOT_A_TYPE);
     }
@@ -1654,7 +1705,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
      */
     public function testAcceptsAnOutputTypeAsNnObjectFieldType():void
     {
-        foreach ($this->outputTypes as $type) {
+        foreach ($this->outputTypes ?? [] as $type) {
             $schema = $this->schemaWithObjectFieldOfType($type);
             $schema->assertValid();
         }
@@ -1682,7 +1733,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
      */
     public function testRejectsANonOutputTypeAsAnObjectFieldType():void
     {
-        foreach ($this->notOutputTypes as $type) {
+        foreach ($this->notOutputTypes ?? [] as $type) {
             $schema = $this->schemaWithObjectFieldOfType($type);
 
             try {
@@ -1759,14 +1810,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
      */
     public function testRejectsAnObjectImplementingANonInterfaceType():void
     {
-        $notInterfaceTypes = $this->withModifiers([
-            $this->SomeScalarType,
-            $this->SomeEnumType,
-            $this->SomeObjectType,
-            $this->SomeUnionType,
-            $this->SomeInputObjectType,
-        ]);
-        foreach ($notInterfaceTypes as $type) {
+        foreach ($this->notInterfaceTypes ?? [] as $type) {
             $schema = $this->schemaWithObjectImplementingType($type);
 
             try {
@@ -1796,14 +1840,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
      */
     public function testRejectsAUnionOfANonObjectType():void
     {
-        $notObjectTypes = $this->withModifiers([
-            $this->SomeScalarType,
-            $this->SomeEnumType,
-            $this->SomeInterfaceType,
-            $this->SomeUnionType,
-            $this->SomeInputObjectType,
-        ]);
-        foreach ($notObjectTypes as $type) {
+        foreach ($this->notObjectTypes ?? [] as $type) {
             $schema = $this->schemaWithUnionOfType($type);
             try {
                 $schema->assertValid();
@@ -1825,7 +1862,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
      */
     public function testAcceptsAnOutputTypeAsAnInterfaceFieldType():void
     {
-        foreach ($this->outputTypes as $type) {
+        foreach ($this->outputTypes ?? [] as $type) {
             $schema = $this->schemaWithInterfaceFieldOfType($type);
             $schema->assertValid();
         }
@@ -1851,7 +1888,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
      */
     public function testRejectsANonOutputTypeAsAnInterfaceFieldType():void
     {
-        foreach ($this->notOutputTypes as $type) {
+        foreach ($this->notOutputTypes ?? [] as $type) {
             $schema = $this->schemaWithInterfaceFieldOfType($type);
 
             try {
@@ -1872,7 +1909,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
      */
     public function testAcceptsAnInputTypeAsAFieldArgType():void
     {
-        foreach ($this->inputTypes as $type) {
+        foreach ($this->inputTypes ?? [] as $type) {
             $schema = $this->schemaWithArgOfType($type);
             $schema->assertValid();
         }
@@ -1894,7 +1931,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
      */
     public function testRejectsANonInputTypeAsAFieldArgType():void
     {
-        foreach ($this->notInputTypes as $type) {
+        foreach ($this->notInputTypes ?? [] as $type) {
             $schema = $this->schemaWithArgOfType($type);
             try {
                 $schema->assertValid();
@@ -1914,7 +1951,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
      */
     public function testAcceptsAnInputTypeAsAnInputFieldType():void
     {
-        foreach ($this->inputTypes as $type) {
+        foreach ($this->inputTypes ?? [] as $type) {
             $schema = $this->schemaWithInputFieldOfType($type);
             $schema->assertValid();
         }
@@ -1939,7 +1976,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
      */
     public function testRejectsANonInputTypeAsAnInputFieldType():void
     {
-        foreach ($this->notInputTypes as $type) {
+        foreach ($this->notInputTypes ?? [] as $type) {
             $schema = $this->schemaWithInputFieldOfType($type);
             try {
                 $schema->assertValid();
@@ -1959,17 +1996,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
      */
     public function testAcceptsAnTypeAsItemTypeOfList():void
     {
-        $types = $this->withModifiers([
-            GraphQlType::string(),
-            $this->SomeScalarType,
-            $this->SomeObjectType,
-            $this->SomeUnionType,
-            $this->SomeInterfaceType,
-            $this->SomeEnumType,
-            $this->SomeInputObjectType,
-        ]);
-
-        foreach ($types as $type) {
+        foreach ($this->types ?? [] as $type) {
             try {
                 GraphQlType::listOf($type);
             } catch (\Exception $e) {
@@ -2678,21 +2705,29 @@ class ValidationTest extends \Facebook\HackTest\HackTest
     private function assertWarnsOnce(array<(function():GraphQlType)> $closures, string $expectedError):void
     {
         $warned = false;
+        \set_error_handler(
+            function($errno, $errstr, $errfile, $errline){
+                throw new HackWarningException($errstr, $errno, 0, $errfile, $errline);
+            },
+            E_WARNING | E_USER_WARNING
+        );
 
         foreach ($closures as $index => $factory) {
             if (!$warned) {
                 try {
                     $factory();
                     $this->fail('Expected exception not thrown for entry ' . $index);
-                } catch (\PHPUnit_Framework_Error_Warning $e) {
+                } catch (HackWarningException $e) {
                     $warned = true;
                     expect($e->getMessage())->toBePHPEqual($expectedError, 'Error in callable #' . $index);
                 }
+
             } else {
                 // Should not throw
                 $factory();
             }
         }
+        \restore_error_handler();
     }
 
     private function schemaWithFieldType(GraphQlType $type):Schema
@@ -2765,7 +2800,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
         ]);
     }
 
-    private function schemaWithObjectImplementingType(GraphQlType $implementedType):Schema
+    private function schemaWithObjectImplementingType(mixed $implementedType):Schema
     {
         $BadObjectType = new ObjectType([
             'name' => 'BadObject',
@@ -2800,7 +2835,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
         );
     }
 
-    private function schemaWithUnionOfType(GraphQlType $type):Schema
+    private function schemaWithUnionOfType(mixed $type):Schema
     {
         $BadUnionType = new UnionType([
             'name' => 'BadUnion',

@@ -93,8 +93,10 @@ class Lexer
     {
         $token = $this->lastToken = $this->token;
 
-        if ($token->kind !== Token::EOF) {
-            do {
+        if ($token->kind !== Token::EOF)
+        {
+            do
+            {
                 $token = $token->next = $this->readToken($token);
             } while ($token->kind === Token::COMMENT);
             $this->token = $token;
@@ -126,7 +128,8 @@ class Lexer
         $line = $this->line;
         $col = 1 + $position - $this->lineStart;
 
-        if ($position >= $bodyLength) {
+        if ($position >= $bodyLength)
+        {
             return new Token(Token::EOF, $bodyLength, $bodyLength, $line, $col, $prev);
         }
 
@@ -542,7 +545,7 @@ class Lexer
         $bytes = 0;
         $positionOffset = 0;
 
-        if (\strlen($this->source->body) >= $byteStreamPosition)
+        if (\strlen($this->source->body) > $byteStreamPosition)
         {
             $ord = \ord($this->source->body[$byteStreamPosition]);
 
@@ -557,7 +560,8 @@ class Lexer
             }
 
             $utf8char = '';
-            for ($pos = $byteStreamPosition; $pos < $byteStreamPosition + $bytes; $pos++) {
+            for ($pos = $byteStreamPosition; $pos < $byteStreamPosition + $bytes; $pos++)
+            {
                 $utf8char .= $this->source->body[$pos];
             }
             $positionOffset = 1;

@@ -97,7 +97,7 @@ class DocumentValidator
         if (null === $rules) {
             $rules = static::allRules();
         }
-        $typeInfo = $typeInfo ?: new TypeInfo($schema);
+        $typeInfo = $typeInfo ?? new TypeInfo($schema);
         $errors = static::visitUsingRules($schema, $typeInfo, $ast, $rules);
         return $errors;
     }
@@ -109,7 +109,7 @@ class DocumentValidator
      * @api
      * @return AbstractValidationRule[]
      */
-    public static function allRules()
+    public static function allRules():array<string, AbstractValidationRule>
     {
         if (!self::$initRules) {
             static::$rules = \array_merge(static::defaultRules(), self::securityRules(), self::$rules);
@@ -119,7 +119,7 @@ class DocumentValidator
         return self::$rules;
     }
 
-    public static function defaultRules()
+    public static function defaultRules():array<string, AbstractValidationRule>
     {
         if (null === self::$defaultRules) {
             self::$defaultRules = [
@@ -157,7 +157,7 @@ class DocumentValidator
     /**
      * @return array
      */
-    public static function securityRules()
+    public static function securityRules():array<string, AbstractValidationRule>
     {
         // This way of defining rules is deprecated
         // When custom security rule is required - it should be just added via DocumentValidator::addRule();
@@ -183,16 +183,17 @@ class DocumentValidator
      * @param string $name
      * @return AbstractValidationRule
      */
-    public static function getRule($name)
+    public static function getRule(string $name):?AbstractValidationRule
     {
         $rules = static::allRules();
 
-        if (isset($rules[$name])) {
+        if (array_key_exists($name, $rules))
+        {
             return $rules[$name];
         }
 
         $name = "GraphQL\\Validator\\Rules\\$name";
-        return isset($rules[$name]) ? $rules[$name] : null ;
+        return array_key_exists($name, $rules) ? $rules[$name] : null ;
     }
 
     /**
@@ -201,7 +202,7 @@ class DocumentValidator
      * @api
      * @param AbstractValidationRule $rule
      */
-    public static function addRule(AbstractValidationRule $rule)
+    public static function addRule(AbstractValidationRule $rule):void
     {
         self::$rules[$rule->getName()] = $rule;
     }

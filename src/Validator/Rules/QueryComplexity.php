@@ -166,7 +166,7 @@ class QueryComplexity extends AbstractQuerySecurity
             case NodeKind::INLINE_FRAGMENT:
                 /* @var InlineFragmentNode $node */
                 // node has children?
-                if ($node->selectionSet !== null) {
+                if (isset($node->selectionSet)) {
                     $complexity = $this->fieldComplexity($node, $complexity);
                 }
                 break;
@@ -222,7 +222,7 @@ class QueryComplexity extends AbstractQuerySecurity
         return $args;
     }
 
-    private function directiveExcludesField(FieldNode $node):bool
+    private function directiveExcludesField(FieldNode $node)
     {
         foreach ($node->directives as $directiveNode)
         {
@@ -241,14 +241,14 @@ class QueryComplexity extends AbstractQuerySecurity
                 $directive = Directive::includeDirective();
                 $directiveArgs = Values::getArgumentValues($directive, $directiveNode, $variableValues);
 
-                return !(bool)$directiveArgs['if'];
+                return !$directiveArgs['if'];
             }
             else
             {
                 $directive = Directive::skipDirective();
                 $directiveArgs = Values::getArgumentValues($directive, $directiveNode, $variableValues);
 
-                return (bool)$directiveArgs['if'];
+                return $directiveArgs['if'];
             }
         }
     }

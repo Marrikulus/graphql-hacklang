@@ -25,7 +25,7 @@ class DeferredFieldsTest extends \Facebook\HackTest\HackTest
 
     private $storyDataSource;
 
-    private $userDataSource;
+    private array<string, mixed> $userDataSource;
 
     private $categoryDataSource;
 

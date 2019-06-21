@@ -9,6 +9,7 @@ use GraphQL\Executor\Executor;
 use GraphQL\Error\FormattedError;
 use GraphQL\Language\Parser;
 use GraphQL\Language\SourceLocation;
+use function Facebook\FBExpect\expect;
 use GraphQL\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\GraphQlType;

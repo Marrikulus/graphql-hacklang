@@ -128,7 +128,7 @@ class Visitor
         NodeKind::OPERATION_TYPE_DEFINITION => ['type'],
         NodeKind::SCALAR_TYPE_DEFINITION => ['name', 'directives'],
         NodeKind::OBJECT_TYPE_DEFINITION => ['name', 'interfaces', 'directives', 'fields'],
-        NodeKind::FIELD_DEFINITION => ['name', 'arguments', 'type', 'directives'],
+        NodeKind::FIELD_DEFINITION => ['name', 'values', 'type', 'directives'],
         NodeKind::INPUT_VALUE_DEFINITION => ['name', 'type', 'defaultValue', 'directives'],
         NodeKind::INTERFACE_TYPE_DEFINITION => [ 'name', 'directives', 'fields' ],
         NodeKind::UNION_TYPE_DEFINITION => [ 'name', 'directives', 'types' ],
@@ -151,10 +151,10 @@ class Visitor
      */
     public static function visit($root, $visitor, $keyMap = null):mixed
     {
-        $visitorKeys = $keyMap ?: Visitor::$visitorKeys;
+        $visitorKeys = $keyMap ?? Visitor::$visitorKeys;
 
-        $stack = [];
-        $inArray = $root instanceof NodeList || is_array($root);
+        $stack = null;
+        $inArray = is_array($root);
         $keys = [$root];
         $index = -1;
         $edits = [];
@@ -168,7 +168,8 @@ class Visitor
         do
         {
             $index++;
-            $isLeaving = $index === \count($keys);
+            $keyCount = \count($keys);
+            $isLeaving = $index === $keyCount;
             $key = null;
             $node = null;
             $isEdited = $isLeaving && \count($edits) !== 0;
@@ -184,10 +185,6 @@ class Visitor
                     if ($inArray)
                     {
                         // $node = $node; // arrays are value types in PHP
-                        if ($node instanceof NodeList)
-                        {
-                            $node = clone $node;
-                        }
                     }
                     else
                     {
@@ -199,7 +196,7 @@ class Visitor
                     $editOffset = 0;
                     for ($ii = 0; $ii < \count($edits); $ii++)
                     {
-                        $editKey = (int)$edits[$ii][0];
+                        $editKey = $edits[$ii][0];
                         $editValue = $edits[$ii][1];
 
                         if ($inArray)
@@ -208,23 +205,12 @@ class Visitor
                         }
                         if ($inArray && $editValue === null)
                         {
-                            if ($node instanceof NodeList)
-                            {
-                                $node->splice($editKey, 1);
-                            }
-                            else
-                            {
-                                \array_splice(&$node, $editKey, 1);
-                            }
+                            \array_splice(&$node, $editKey, 1);
                             $editOffset++;
                         }
                         elseif($editValue !== null)
                         {
-                            if ($node instanceof NodeList)
-                            {
-                                $node->offsetSet($editKey, $editValue);
-                            }
-                            elseif(is_array($node))
+                            if(is_array($node))
                             {
                                 $node[$editKey] = $editValue;
                             }
@@ -245,13 +231,9 @@ class Visitor
             {
                 $key = $UNDEFINED;
                 $node = $newRoot;
-                if ($parent && $key)
+                if ($parent)
                 {
-                    if ($keys instanceof NodeList)
-                    {
-                        $key = $keys->offsetGet($index);
-                    }
-                    elseif(is_array($keys))
+                    if(is_array($keys))
                     {
                         $key = $keys[$index];
                     }
@@ -260,11 +242,7 @@ class Visitor
                         $key = $index;
                     }
 
-                    if ($parent instanceof NodeList)
-                    {
-                        $node = $parent->offsetGet($key);
-                    }
-                    elseif (is_array($parent))
+                    if (is_array($parent))
                     {
                         $node = $parent[$key];
                     }
@@ -286,7 +264,7 @@ class Visitor
             }
 
             $result = null;
-            if (!$node instanceof NodeList && !is_array($node))
+            if (!is_array($node))
             {
                 if (!($node instanceof Node)) {
                     throw new \Exception('Invalid AST Node: ' . \json_encode($node));
@@ -311,15 +289,21 @@ class Visitor
                             if ($result->removeNode) {
                                 $editValue = null;
                             }
-                        } else {
+                        }
+                        else
+                        {
                             $editValue = $result;
                         }
 
                         $edits[] = [$key, $editValue];
-                        if (!$isLeaving) {
-                            if ($editValue instanceof Node) {
+                        if (!$isLeaving)
+                        {
+                            if ($editValue instanceof Node)
+                            {
                                 $node = $editValue;
-                            } else {
+                            }
+                            else
+                            {
                                 \array_pop(&$path);
                                 continue;
                             }
@@ -342,12 +326,8 @@ class Visitor
                     'edits' => $edits,
                     'prev' => $stack
                 ];
-                $inArray = $node instanceof NodeList || is_array($node);
+                $inArray =  \is_array($node);
 
-                if ($node instanceof NodeList)
-                {
-                    $keys = $node;
-                }
                 if (is_array($node))
                 {
                     $keys = $node;
@@ -364,7 +344,8 @@ class Visitor
 
                 $index = -1;
                 $edits = [];
-                if ($parent) {
+                if ($parent)
+                {
                     $ancestors[] = $parent;
                 }
                 $parent = $node;
@@ -374,6 +355,7 @@ class Visitor
 
         if (\count($edits) !== 0)
         {
+            //var_dump($edits);
             $newRoot = $edits[0][1];
         }
 

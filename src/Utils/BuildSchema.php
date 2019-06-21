@@ -439,7 +439,7 @@ class BuildSchema
                 return [
                     'type' => $this->produceOutputType($field->type),
                     'description' => $this->getDescription($field),
-                    'args' => $this->makeInputValues($field->arguments),
+                    'args' => $this->makeInputValues($field->values),
                     'deprecationReason' => $this->getDeprecationReason($field),
                     'astNode' => $field
                 ];
@@ -572,7 +572,7 @@ class BuildSchema
      */
     private function getDeprecationReason($node):?string
     {
-        $deprecated = Values::getDirectiveValues(Directive::deprecatedDirective(), $node);
+        $deprecated = Values::getDirectiveValues(Directive::deprecatedDirective(), $node) ?? [];
         return \array_key_exists('reason', $deprecated) ? $deprecated['reason'] : null;
     }
 

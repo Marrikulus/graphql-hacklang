@@ -1168,7 +1168,7 @@ class IntrospectionTest extends \Facebook\HackTest\HackTest
 
         $result = GraphQL::execute($schema, $request);
         $result = $result['data']['__schema']['types'];
-        // $this->assertEquals($expectedFragment, $result[1]);
+
         expect($result)->toContain($expectedFragment);
     }
 

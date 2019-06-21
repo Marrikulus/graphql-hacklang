@@ -181,7 +181,7 @@ class Values
      */
     public static function getDirectiveValues(Directive $directiveDef, $node, $variableValues = null)
     {
-        if ($node->directives !== null && $node->directives is array)
+        if ($node->directives !== null && is_array($node->directives))
         {
             $directiveNode = Utils::find($node->directives, function(DirectiveNode $directive) use ($directiveDef) {
                 return $directive->name->value === $directiveDef->name;

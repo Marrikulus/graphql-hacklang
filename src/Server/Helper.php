@@ -244,7 +244,7 @@ class Helper
                 $doc = Parser::parse($doc);
             }
 
-            $operationType = AST::getOperation($doc, $op->operation);
+            $operationType = AST::getOperation($doc, $op->operation) ?? "";
             if ($op->isReadOnly() && $operationType !== 'query') {
                 throw new RequestError("GET supports only query operation");
             }

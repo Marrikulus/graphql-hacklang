@@ -30,13 +30,16 @@ class BuildSchemaTest extends \Facebook\HackTest\HackTest
      */
     public function testUseBuiltSchemaForLimitedExecution():void
     {
-        $schema = BuildSchema::buildAST(Parser::parse('
+        $docNode = Parser::parse('
             schema { query: Query }
             type Query {
                 str: String
             }
-        '));
-        
+        ');
+
+
+        $schema = BuildSchema::buildAST($docNode);
+
         $result = GraphQL::execute($schema, '{ str }', ['str' => 123]);
         expect(['str' => 123])->toBePHPEqual($result['data']);
     }

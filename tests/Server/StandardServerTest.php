@@ -40,7 +40,7 @@ class StandardServerTest extends TestCase
             ]
         ];
 
-        expect($result->toArray(true))->toBePHPEqual($expected);
+        expect($result->toArray(1))->toBePHPEqual($expected);
     }
 
     public function testSimplePsrRequestExecution():void
