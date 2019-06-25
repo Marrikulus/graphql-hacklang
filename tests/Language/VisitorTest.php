@@ -762,7 +762,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
     /**
      * @it allows early exit while visiting
      */
-    public function testAllowsEarlyExitWhileVisiting2()
+    public function testAllowsEarlyExitWhileVisiting2():void
     {
         $visited = [];
 
@@ -859,7 +859,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
     /**
      * @it allows early exit while leaving
      */
-    public function testAllowsEarlyExitWhileLeaving2()
+    public function testAllowsEarlyExitWhileLeaving2():void
     {
         $visited = [];
 
@@ -971,7 +971,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
     /**
      * @it allows for editing on enter
      */
-    public function testAllowsForEditingOnEnter2()
+    public function testAllowsForEditingOnEnter2():void
     {
         $visited = [];
 
@@ -994,13 +994,9 @@ class VisitorTest extends \Facebook\HackTest\HackTest
             ],
         ]));
 
-        expect(            $ast
-)->toBePHPEqual(
-            Parser::parse('{ a, b, c { a, b, c } }', true)        );
+        expect($ast)->toBePHPEqual(Parser::parse('{ a, b, c { a, b, c } }', true));
 
-        expect(            $editedAst
-)->toBePHPEqual(
-            Parser::parse('{ a,    c { a,    c } }', true)        );
+        expect($editedAst)->toBePHPEqual(Parser::parse('{ a,    c { a,    c } }', true));
 
         expect($visited)->toBePHPEqual([
             ['enter', 'Document', null],
@@ -1033,14 +1029,14 @@ class VisitorTest extends \Facebook\HackTest\HackTest
     /**
      * @it allows for editing on leave
      */
-    public function testAllowsForEditingOnLeave2()
+    public function testAllowsForEditingOnLeave2():void
     {
         $visited = [];
 
         $ast = Parser::parse('{ a, b, c { a, b, c } }', true);
         $editedAst = Visitor::visit($ast, Visitor::visitInParallel([
             [
-                'leave' => function ($node) use (&$visited) {
+                'leave' => function ($node) {
                     if ($node->kind === 'Field' && isset($node->name->value) && $node->name->value === 'b') {
                         return Visitor::removeNode();
                     }
@@ -1056,13 +1052,9 @@ class VisitorTest extends \Facebook\HackTest\HackTest
             ],
         ]));
 
-        expect(            $ast
-)->toBePHPEqual(
-            Parser::parse('{ a, b, c { a, b, c } }', true)        );
+        expect($ast)->toBePHPEqual(Parser::parse('{ a, b, c { a, b, c } }', true));
 
-        expect(            $editedAst
-)->toBePHPEqual(
-            Parser::parse('{ a,    c { a,    c } }', true)        );
+        expect($editedAst)->toBePHPEqual(Parser::parse('{ a,    c { a,    c } }', true));
 
         expect($visited)->toBePHPEqual([
             ['enter', 'Document', null],

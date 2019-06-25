@@ -17,16 +17,16 @@ class EnumTypeTest extends \Facebook\HackTest\HackTest
     /**
      * @var Schema
      */
-    private $schema;
+    private ?Schema $schema;
 
     /**
      * @var EnumType
      */
-    private $ComplexEnum;
+    private ?EnumType $ComplexEnum;
 
-    private $Complex1;
+    private mixed $Complex1;
 
-    private $Complex2;
+    private mixed $Complex2;
 
     public async function beforeEachTestAsync(): Awaitable<void>
     {

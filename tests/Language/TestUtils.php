@@ -13,7 +13,7 @@ class TestUtils
      * @param Node $node
      * @return array
      */
-    public static function nodeToArray(Node $node)
+    public static function nodeToArray(Node $node):array<string, mixed>
     {
         $result = [
             'kind' => $node->kind,
@@ -46,7 +46,7 @@ class TestUtils
      * @param Location $loc
      * @return array
      */
-    public static function locationToArray(Location $loc)
+    public static function locationToArray(Location $loc):array<string, mixed>
     {
         return [
             'start' => $loc->start,
@@ -59,7 +59,7 @@ class TestUtils
      * @param $end
      * @return array
      */
-    public static function locArray($start, $end)
+    public static function locArray(int $start, int $end):array<string, int>
     {
         return ['start' => $start, 'end' => $end];
     }

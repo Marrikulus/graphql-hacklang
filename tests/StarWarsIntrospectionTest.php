@@ -420,7 +420,7 @@ class StarWarsIntrospectionTest extends \Facebook\HackTest\HackTest
     /**
      * Helper function to test a query and the expected response.
      */
-    private function assertValidQuery($query, $expected)
+    private function assertValidQuery(string $query, array<string, mixed> $expected):void
     {
         expect(GraphQL::execute(StarWarsSchema::build(), $query))->toBePHPEqual(['data' => $expected]);
     }

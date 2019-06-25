@@ -1175,7 +1175,7 @@ class IntrospectionTest extends \Facebook\HackTest\HackTest
     /**
      * @it supports the __type root field
      */
-    public function testSupportsThe__typeRootField()
+    public function testSupportsThe__typeRootField():void
     {
 
         $TestType = new ObjectType([

@@ -1,5 +1,5 @@
-<?hh //strict
-//decl
+<?hh //partial
+
 namespace GraphQL\Tests;
 
 class StarWarsData
@@ -95,7 +95,7 @@ class StarWarsData
         ];
     }
 
-    public static function droids()
+    public static function droids():array<string,mixed>
     {
         return [
             '2000' => self::threepio(),
@@ -145,19 +145,19 @@ class StarWarsData
      * @param $id
      * @return mixed|null
      */
-    public static function getHuman($id)
+    public static function getHuman(string $id):mixed
     {
         $humans = self::humans();
-        return isset($humans[$id]) ? $humans[$id] : null;
+        return \array_key_exists($id, $humans)? $humans[$id] : null;
     }
 
     /**
      * @param $id
      * @return mixed|null
      */
-    public static function getDroid($id)
+    public static function getDroid(string $id):mixed
     {
         $droids = self::droids();
-        return isset($droids[$id]) ? $droids[$id] : null;
+        return \array_key_exists($id, $droids) ? $droids[$id] : null;
     }
 }

@@ -269,7 +269,7 @@ class LexerTest extends \Facebook\HackTest\HackTest
      * @it lex reports useful string errors
      */
     <<DataProvider('reportsUsefulErrors')>>
-    public function testReportsUsefulErrors($str, $expectedMessage)
+    public function testReportsUsefulErrors(string $str, string $expectedMessage):void
     {
         $this->setExpectedException(SyntaxError::class, $expectedMessage);
         $this->lexOne($str);
@@ -330,7 +330,7 @@ class LexerTest extends \Facebook\HackTest\HackTest
 
     }
 
-    public function reportsUsefulNumberErrors()
+    public function reportsUsefulNumberErrors():array<array<string>>
     {
         return [
             [ '00', "Syntax Error GraphQL (1:2) Invalid number, unexpected digit after 0: \"0\"\n\n1: 00\n    ^\n"],
@@ -348,7 +348,7 @@ class LexerTest extends \Facebook\HackTest\HackTest
      * @it lex reports useful number errors
      */
     <<DataProvider('reportsUsefulNumberErrors')>>
-    public function testReportsUsefulNumberErrors($str, $expectedMessage)
+    public function testReportsUsefulNumberErrors(string $str, string $expectedMessage):void
     {
         $this->setExpectedException(SyntaxError::class, $expectedMessage);
         $this->lexOne($str);
@@ -400,7 +400,7 @@ class LexerTest extends \Facebook\HackTest\HackTest
 
     }
 
-    public function reportsUsefulUnknownCharErrors()
+    public function reportsUsefulUnknownCharErrors():array<array<string>>
     {
         $unicode1 = \json_decode('"\u203B"');
         $unicode2 = \json_decode('"\u200b"');
@@ -417,7 +417,7 @@ class LexerTest extends \Facebook\HackTest\HackTest
      * @it lex reports useful unknown character error
      */
     <<DataProvider('reportsUsefulUnknownCharErrors')>>
-    public function testReportsUsefulUnknownCharErrors($str, $expectedMessage)
+    public function testReportsUsefulUnknownCharErrors(string $str, string $expectedMessage):void
     {
         $this->setExpectedException(SyntaxError::class, $expectedMessage);
         $this->lexOne($str);

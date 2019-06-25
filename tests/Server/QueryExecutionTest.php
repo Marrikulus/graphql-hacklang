@@ -1,5 +1,5 @@
-<?hh //strict
-//decl
+<?hh //partial
+
 namespace GraphQL\Tests\Server;
 
 use GraphQL\Deferred;
@@ -141,7 +141,7 @@ class QueryExecutionTest extends TestCase
         $called = false;
 
         $rules = [
-            new CustomValidationRule('SomeRule', function() use (&$called) {
+            new CustomValidationRule('SomeRule', function($context) use (&$called) {
                 $called = true;
                 return [];
             })
@@ -192,6 +192,7 @@ class QueryExecutionTest extends TestCase
                 return [
                     new CustomValidationRule('MyRule', function(ValidationContext $context) {
                         $context->reportError(new Error("This is the error we are looking for!"));
+                        return [];
                     })
                 ];
             }

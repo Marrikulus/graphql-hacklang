@@ -22,57 +22,57 @@ class DefinitionTest extends \Facebook\HackTest\HackTest
     /**
      * @var ObjectType
      */
-    public $blogImage;
+    public ?ObjectType $blogImage;
 
     /**
      * @var ObjectType
      */
-    public $blogArticle;
+    public ?ObjectType $blogArticle;
 
     /**
      * @var ObjectType
      */
-    public $blogAuthor;
+    public ?ObjectType $blogAuthor;
 
     /**
      * @var ObjectType
      */
-    public $blogMutation;
+    public ?ObjectType $blogMutation;
 
     /**
      * @var ObjectType
      */
-    public $blogQuery;
+    public ?ObjectType $blogQuery;
 
     /**
      * @var ObjectType
      */
-    public $blogSubscription;
+    public ?ObjectType $blogSubscription;
 
     /**
      * @var ObjectType
      */
-    public $objectType;
+    public ?ObjectType $objectType;
 
     /**
      * @var InterfaceType
      */
-    public $interfaceType;
+    public ?InterfaceType $interfaceType;
 
     /**
      * @var UnionType
      */
-    public $unionType;
+    public ?UnionType $unionType;
 
     /**
      * @var EnumType
      */
-    public $enumType;
+    public ?EnumType $enumType;
 
     /**
      * @var InputObjectType
      */
-    public $inputObjectType;
+    public ?InputObjectType $inputObjectType;
 
     public async function beforeEachTestAsync(): Awaitable<void>
     {
@@ -161,36 +161,36 @@ class DefinitionTest extends \Facebook\HackTest\HackTest
 
         expect($this->blogQuery)->toBeSame($blogSchema->getQueryType());
 
-        $articleField = $this->blogQuery->getField('article');
+        $articleField = $this->blogQuery?->getField('article');
         expect($this->blogArticle)->toBeSame($articleField->getType());
-        expect('Article')->toBeSame($articleField->getType()->name);
-        expect('article')->toBeSame($articleField->name);
+        expect('Article')->toBeSame($articleField?->getType()->name);
+        expect('article')->toBeSame($articleField?->name);
 
         /** @var ObjectType $articleFieldType */
         $articleFieldType = $articleField->getType();
         $titleField = $articleFieldType->getField('title');
 
-        expect($titleField)->toBeInstanceOf('GraphQL\Type\Definition\FieldDefinition');
+        expect($titleField)->toBeInstanceOf(\GraphQL\Type\Definition\FieldDefinition::class);
         expect($titleField->name)->toBeSame('title');
         expect($titleField->getType())->toBeSame(GraphQlType::string());
 
         $authorField = $articleFieldType->getField('author');
-        expect($authorField)->toBeInstanceOf('GraphQL\Type\Definition\FieldDefinition');
+        expect($authorField)->toBeInstanceOf(\GraphQL\Type\Definition\FieldDefinition::class);
 
         /** @var ObjectType $authorFieldType */
         $authorFieldType = $authorField->getType();
         expect($authorFieldType)->toBeSame($this->blogAuthor);
 
         $recentArticleField = $authorFieldType->getField('recentArticle');
-        expect($recentArticleField)->toBeInstanceOf('GraphQL\Type\Definition\FieldDefinition');
+        expect($recentArticleField)->toBeInstanceOf(\GraphQL\Type\Definition\FieldDefinition::class);
         expect($recentArticleField->getType())->toBeSame($this->blogArticle);
 
         $feedField = $this->blogQuery->getField('feed');
-        expect($feedField)->toBeInstanceOf('GraphQL\Type\Definition\FieldDefinition');
+        expect($feedField)->toBeInstanceOf(\GraphQL\Type\Definition\FieldDefinition::class);
 
         /** @var ListOfType $feedFieldType */
         $feedFieldType = $feedField->getType();
-        expect($feedFieldType)->toBeInstanceOf('GraphQL\Type\Definition\ListOfType');
+        expect($feedFieldType)->toBeInstanceOf(\GraphQL\Type\Definition\ListOfType::class);
         expect($feedFieldType->getWrappedType())->toBeSame($this->blogArticle);
     }
 
@@ -543,6 +543,7 @@ class DefinitionTest extends \Facebook\HackTest\HackTest
 
         $user = new ObjectType([
             'name' => 'User',
+            /* HH_FIXME[2087]*/
             'fields' => function() use (&$blog, &$called) {
                 expect($blog)->toNotBeNull('Blog type is expected to be defined at this point, but it is null');
                 $called = true;
@@ -598,7 +599,7 @@ class DefinitionTest extends \Facebook\HackTest\HackTest
         $called = false;
         $inputObject = new InputObjectType([
             'name' => 'InputObject',
-            'fields' => function() use (&$inputObject, &$called) {
+            'fields' => function() use ($inputObject, $called) {
                 $called = true;
                 return [
                     'value' => ['type' => GraphQlType::string()],

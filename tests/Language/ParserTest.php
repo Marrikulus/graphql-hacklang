@@ -20,7 +20,7 @@ use GraphQL\Utils\Utils;
 class ParserTest extends \Facebook\HackTest\HackTest
 {
 
-    public function parseProvidesUsefulErrors()
+    public function parseProvidesUsefulErrors():array<array<mixed>>
     {
         return [
             ['{', "Syntax Error GraphQL (1:2) Expected Name, found <EOF>\n\n1: {\n    ^\n", [1], [new SourceLocation(1, 2)]],
@@ -37,7 +37,7 @@ fragment MissingOn Type
      * @it parse provides useful errors
      */
     <<DataProvider('parseProvidesUsefulErrors')>>
-    public function testParseProvidesUsefulErrors($str, $expectedMessage, $expectedPositions = null, $expectedLocations = null)
+    public function testParseProvidesUsefulErrors(string $str, string $expectedMessage, ?array<int> $expectedPositions = null, ?array<SourceLocation> $expectedLocations = null):void
     {
         try {
             Parser::parse($str);

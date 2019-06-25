@@ -5,7 +5,7 @@ namespace GraphQL\Tests;
 use GraphQL\Language\AST\Location;
 use function Facebook\FBExpect\expect;
 use GraphQL\Language\AST\Node;
-use GraphQL\Language\AST\NodeList;
+//use GraphQL\Language\AST\NodeList;
 use GraphQL\Language\Parser;
 use GraphQL\Utils\AST;
 
@@ -52,7 +52,7 @@ class SerializationTest extends \Facebook\HackTest\HackTest
      * @param $actual
      * @param array $path
      */
-    private function assertNodesAreEqual($expected, $actual, $path = [])
+    private function assertNodesAreEqual(Node $expected, Node $actual, array<string> $path = []):void
     {
         $err = "Mismatch at AST path: " . \implode(', ', $path);
 
@@ -64,28 +64,36 @@ class SerializationTest extends \Facebook\HackTest\HackTest
         expect(\count($actualVars))->toBeSame(\count($expectedVars), $err);
         expect(\array_keys($actualVars))->toBePHPEqual(\array_keys($expectedVars), $err);
 
-        foreach ($expectedVars as $name => $expectedValue) {
+        foreach ($expectedVars as $name => $expectedValue)
+        {
             $actualValue = $actualVars[$name];
             $tmpPath = $path;
             $tmpPath[] = $name;
             $err = "Mismatch at AST path: " . \implode(', ', $tmpPath);
 
-            if ($expectedValue instanceof Node) {
+            if ($expectedValue instanceof Node)
+            {
                 $this->assertNodesAreEqual($expectedValue, $actualValue, $tmpPath);
-            } else if ($expectedValue instanceof NodeList) {
-                expect(\count($actualValue))->toBePHPEqual(\count($expectedValue), $err);
-                expect($actualValue)->toBeInstanceOf(NodeList::class, $err);
-
-                foreach ($expectedValue as $index => $listNode) {
-                    $tmpPath2 = $tmpPath;
-                    $tmpPath2 [] = $index;
-                    $this->assertNodesAreEqual($listNode, $actualValue[$index], $tmpPath2);
-                }
-            } else if ($expectedValue instanceof Location) {
+            }
+            //else if ($expectedValue instanceof NodeList)
+            //{
+            //    expect(\count($actualValue))->toBePHPEqual(\count($expectedValue), $err);
+            //    expect($actualValue)->toBeInstanceOf(NodeList::class, $err);
+            //    foreach ($expectedValue as $index => $listNode)
+            //    {
+            //        $tmpPath2 = $tmpPath;
+            //        $tmpPath2 [] = $index;
+            //        $this->assertNodesAreEqual($listNode, $actualValue[$index], $tmpPath2);
+            //    }
+            //}
+            else if ($expectedValue instanceof Location)
+            {
                 expect($actualValue)->toBeInstanceOf(Location::class, $err);
                 expect($actualValue->start)->toBeSame($expectedValue->start, $err);
                 expect($actualValue->end)->toBeSame($expectedValue->end, $err);
-            } else {
+            }
+            else
+            {
                 expect($actualValue)->toBePHPEqual($expectedValue, $err);
             }
         }

@@ -1,4 +1,4 @@
-<?hh //strict
+<?hh //partial
 //decl
 namespace GraphQL\Tests\Server;
 
@@ -180,7 +180,7 @@ class RequestParsingTest extends \Facebook\HackTest\HackTest
     {
         try {
             $this->parsePsrRequest('application/json', \json_encode(null));
-            $this->fail('Expected exception not thrown');
+            self::fail('Expected exception not thrown');
         } catch (InvariantViolation $e) {
             // Expecting parsing exception to be thrown somewhere else:
             expect($e->getMessage())

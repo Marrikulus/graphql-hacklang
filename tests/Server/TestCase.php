@@ -1,5 +1,4 @@
 <?hh //strict
-//decl
 namespace GraphQL\Tests\Server;
 
 
@@ -11,7 +10,7 @@ use GraphQL\Type\Schema;
 
 abstract class TestCase extends \Facebook\HackTest\HackTest
 {
-    protected function buildSchema()
+    protected function buildSchema():Schema
     {
         $schema = new Schema([
             'query' => new ObjectType([

@@ -20,7 +20,7 @@ class PrinterTest extends \Facebook\HackTest\HackTest
     /**
      * @it does not alter ast
      */
-    /*public function testDoesntAlterAST():void
+    public function testDoesntAlterAST():void
     {
         $kitchenSink = \file_get_contents(__DIR__ . '/kitchen-sink.graphql');
         $ast = Parser::parse($kitchenSink);
@@ -30,7 +30,7 @@ class PrinterTest extends \Facebook\HackTest\HackTest
 
         Printer::doPrint($ast);
         expect($ast)->toBePHPEqual($astCopy);
-    }*/
+    }
 
     /**
      * @it prints minimal ast
@@ -54,7 +54,7 @@ class PrinterTest extends \Facebook\HackTest\HackTest
     /**
      * @it correctly prints non-query operations without name
      */
-    /*public function testCorrectlyPrintsOpsWithoutName():void
+    public function testCorrectlyPrintsOpsWithoutName():void
     {
         $queryAstShorthanded = Parser::parse('query { id, name }');
 
@@ -92,12 +92,12 @@ class PrinterTest extends \Facebook\HackTest\HackTest
 }
 ';
         expect(Printer::doPrint($mutationAstWithArtifacts))->toBePHPEqual($expected);
-    }*/
+    }
 
     /**
      * @it prints kitchen sink
      */
-    /*public function testPrintsKitchenSink():void
+    public function testPrintsKitchenSink():void
     {
         $kitchenSink = \file_get_contents(__DIR__ . '/kitchen-sink.graphql');
         $ast = Parser::parse($kitchenSink);
@@ -158,5 +158,5 @@ fragment frag on Friend {
 
 EOT;
         expect($printed)->toBePHPEqual($expected);
-    }*/
+    }
 }

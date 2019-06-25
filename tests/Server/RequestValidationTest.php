@@ -134,24 +134,30 @@ class RequestValidationTest extends \Facebook\HackTest\HackTest
         );
     }
 
-    private function assertValid($parsedRequest)
+    private function assertValid(OperationParams $parsedRequest):void
     {
         $helper = new Helper();
         $errors = $helper->validateOperationParams($parsedRequest);
 
-        if (!empty($errors)) {
+        if (\array_key_exists(0, $errors))
+        {
             throw $errors[0];
         }
     }
 
-    private function assertInputError($parsedRequest, $expectedMessage)
+    private function assertInputError(OperationParams $parsedRequest, string $expectedMessage):void
     {
         $helper = new Helper();
         $errors = $helper->validateOperationParams($parsedRequest);
-        if (!empty($errors[0])) {
+
+
+        if (\array_key_exists(0, $errors))
+        {
             expect($errors[0]->getMessage())->toBePHPEqual($expectedMessage);
-        } else {
-            $this->fail('Expected error not returned');
+        }
+        else
+        {
+            self::fail('Expected error not returned');
         }
     }
 }

@@ -1,5 +1,4 @@
 <?hh //strict
-//decl
 namespace GraphQL\Tests\Server;
 
 use GraphQL\Executor\ExecutionResult;

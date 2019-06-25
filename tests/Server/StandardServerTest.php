@@ -1,4 +1,4 @@
-<?hh //strict
+<?hh //partial
 //decl
 namespace GraphQL\Tests\Server;
 
@@ -59,7 +59,7 @@ class StandardServerTest extends TestCase
         $this->assertPsrRequestEquals($expected, $request);
     }
 
-    private function executePsrRequest($psrRequest)
+    private function executePsrRequest(PsrRequestStub $psrRequest)
     {
         $server = new StandardServer($this->config);
         $result = $server->executePsrRequest($psrRequest);
@@ -67,14 +67,14 @@ class StandardServerTest extends TestCase
         return $result;
     }
 
-    private function assertPsrRequestEquals($expected, $request)
+    private function assertPsrRequestEquals($expected, PsrRequestStub $request)
     {
         $result = $this->executePsrRequest($request);
         expect($result->toArray(1))->toInclude($expected);
         return $result;
     }
 
-    private function preparePsrRequest($contentType, $parsedBody)
+    private function preparePsrRequest($contentType, $parsedBody):PsrRequestStub
     {
         $psrRequest = new PsrRequestStub();
         $psrRequest->headers['content-type'] = [$contentType];
@@ -83,7 +83,7 @@ class StandardServerTest extends TestCase
         return $psrRequest;
     }
 
-    private function parseRawRequest($contentType, $content, $method = 'POST')
+    private function parseRawRequest($contentType, string $content, $method = 'POST')
     {
         $_SERVER['CONTENT_TYPE'] = $contentType;
         $_SERVER['REQUEST_METHOD'] = $method;

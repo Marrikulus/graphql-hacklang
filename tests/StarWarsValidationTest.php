@@ -1,4 +1,4 @@
-<?hh //strict
+<?hh //partial
 //decl
 namespace GraphQL\Tests;
 
@@ -150,6 +150,7 @@ class StarWarsValidationTest extends \Facebook\HackTest\HackTest
     private function validationErrors(string $query):array<Error>
     {
         $ast = Parser::parse($query);
+        /* HH_FIXME[4110]*/
         return DocumentValidator::validate(StarWarsSchema::build(), $ast);
     }
 }

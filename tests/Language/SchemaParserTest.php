@@ -743,7 +743,7 @@ type Hello {
         expect(TestUtils::nodeToArray($doc))->toBePHPEqual($expected);
     }
 
-    private function typeNode($name, $loc)
+    private function typeNode(string $name, array<string, int> $loc):array<string, mixed>
     {
         return [
             'kind' => NodeKind::NAMED_TYPE,
@@ -752,7 +752,7 @@ type Hello {
         ];
     }
 
-    private function nameNode($name, $loc)
+    private function nameNode(string $name, array<string, int> $loc):array<string, mixed>
     {
         return [
             'kind' => NodeKind::NAME,
@@ -761,12 +761,12 @@ type Hello {
         ];
     }
 
-    private function fieldNode($name, $type, $loc)
+    private function fieldNode(array<string, mixed> $name, array<string, mixed> $type, array<string, int> $loc):array<string, mixed>
     {
         return $this->fieldNodeWithArgs($name, $type, [], $loc);
     }
 
-    private function fieldNodeWithArgs($name, $type, $args, $loc)
+    private function fieldNodeWithArgs(array<string, mixed> $name, array<string, mixed> $type, array<_> $args, array<string, int> $loc):array<string, mixed>
     {
         return [
             'kind' => NodeKind::FIELD_DEFINITION,
@@ -779,7 +779,7 @@ type Hello {
         ];
     }
 
-    private function enumValueNode($name, $loc)
+    private function enumValueNode(string $name, array<string, int> $loc):array<string, mixed>
     {
         return [
             'kind' => NodeKind::ENUM_VALUE_DEFINITION,
@@ -790,7 +790,7 @@ type Hello {
         ];
     }
 
-    private function inputValueNode($name, $type, $defaultValue, $loc)
+    private function inputValueNode(array<string, mixed> $name, array<string, mixed> $type, mixed $defaultValue, array<string, int> $loc):array<string, mixed>
     {
         return [
             'kind' => NodeKind::INPUT_VALUE_DEFINITION,

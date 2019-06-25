@@ -28,7 +28,7 @@ class ScalarSerializationTest extends \Facebook\HackTest\HackTest
         expect($intType->serialize(true))->toBeSame(1);
     }
 
-    public function testSerializesOutputIntCannotRepresentFloat1()
+    public function testSerializesOutputIntCannotRepresentFloat1():void
     {
         // The GraphQL specification does not allow serializing non-integer values
         // as Int to avoid accidental data loss.
@@ -37,7 +37,7 @@ class ScalarSerializationTest extends \Facebook\HackTest\HackTest
         $intType->serialize(0.1);
     }
 
-    public function testSerializesOutputIntCannotRepresentFloat2()
+    public function testSerializesOutputIntCannotRepresentFloat2():void
     {
         $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non-integer value: 1.1');
@@ -61,7 +61,7 @@ class ScalarSerializationTest extends \Facebook\HackTest\HackTest
 
     }
 
-    public function testSerializesOutputIntCannotRepresentBiggerThan32Bits()
+    public function testSerializesOutputIntCannotRepresentBiggerThan32Bits():void
     {
         // Maybe a safe PHP int, but bigger than 2^32, so not
         // representable as a GraphQL Int
@@ -71,21 +71,21 @@ class ScalarSerializationTest extends \Facebook\HackTest\HackTest
 
     }
 
-    public function testSerializesOutputIntCannotRepresentLowerThan32Bits()
+    public function testSerializesOutputIntCannotRepresentLowerThan32Bits():void
     {
         $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non 32-bit signed integer value: -9876504321');
         $intType->serialize(-9876504321);
     }
 
-    public function testSerializesOutputIntCannotRepresentBiggerThanSigned32Bits()
+    public function testSerializesOutputIntCannotRepresentBiggerThanSigned32Bits():void
     {
         $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non 32-bit signed integer value: 1.0E+100');
         $intType->serialize(1e100);
     }
 
-    public function testSerializesOutputIntCannotRepresentLowerThanSigned32Bits()
+    public function testSerializesOutputIntCannotRepresentLowerThanSigned32Bits():void
     {
         $intType = GraphQlType::int();
         $this->setExpectedException(InvariantViolation::class, 'Int cannot represent non 32-bit signed integer value: -1.0E+100');

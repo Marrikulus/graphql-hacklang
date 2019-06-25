@@ -382,7 +382,7 @@ class StarWarsQueryTest extends \Facebook\HackTest\HackTest
     /**
      * Helper function to test a query and the expected response.
      */
-    private function assertValidQuery(string $query, $expected):void
+    private function assertValidQuery(string $query, array<string, mixed> $expected):void
     {
         expect(GraphQL::execute(StarWarsSchema::build(), $query))->toBePHPEqual(['data' => $expected]);
     }
@@ -390,7 +390,7 @@ class StarWarsQueryTest extends \Facebook\HackTest\HackTest
     /**
      * Helper function to test a query with params and the expected response.
      */
-    private function assertValidQueryWithParams(string $query, $params, $expected):void
+    private function assertValidQueryWithParams(string $query, array<string, string> $params, array<string, mixed> $expected):void
     {
         expect(GraphQL::execute(StarWarsSchema::build(), $query, null, null, $params))->toBePHPEqual(['data' => $expected]);
     }

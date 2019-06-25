@@ -16,52 +16,50 @@ class TypeLoaderTest extends \Facebook\HackTest\HackTest
     /**
      * @var ObjectType
      */
-    private $query;
+    private ?ObjectType $query;
 
     /**
      * @var ObjectType
      */
-    private $mutation;
+    private ?ObjectType $mutation;
 
     /**
      * @var InterfaceType
      */
-    private $node;
+    private ?InterfaceType $node;
 
     /**
      * @var InterfaceType
      */
-    private $content;
+    private ?InterfaceType $content;
 
     /**
      * @var ObjectType
      */
-    private $blogStory;
+    private ?ObjectType $blogStory;
 
     /**
      * @var ObjectType
      */
-    private $postStoryMutation;
+    private ?ObjectType $postStoryMutation;
 
     /**
      * @var InputObjectType
      */
-    private $postStoryMutationInput;
+    private ?InputObjectType $postStoryMutationInput;
 
     /**
      * @var callable
      */
-    private $typeLoader;
+    private (function(string):mixed) $typeLoader;
 
     /**
      * @var array
      */
-    private $calls;
+    private array<string> $calls = [];
 
     public async function beforeEachTestAsync(): Awaitable<void>
     {
-        $this->calls = [];
-
         $this->node = new InterfaceType([
             'name' => 'Node',
             'fields' => function() {
@@ -145,7 +143,7 @@ class TypeLoaderTest extends \Facebook\HackTest\HackTest
             ]
         ]);
 
-        $this->typeLoader = function($name) {
+        $this->typeLoader = function(string $name):mixed {
             $this->calls[] = $name;
             $prop = \lcfirst($name);
             return isset($this->{$prop}) ? $this->{$prop} : null;

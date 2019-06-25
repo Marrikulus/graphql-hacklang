@@ -17,70 +17,70 @@ class ResolutionTest extends \Facebook\HackTest\HackTest
     /**
      * @var ObjectType
      */
-    private $query;
+    private ?ObjectType $query;
 
     /**
      * @var ObjectType
      */
-    private $mutation;
+    private ?ObjectType $mutation;
 
     /**
      * @var InterfaceType
      */
-    private $node;
+    private ?InterfaceType $node;
 
     /**
      * @var InterfaceType
      */
-    private $content;
+    private ?InterfaceType $content;
 
     /**
      * @var ObjectType
      */
-    private $blogStory;
+    private ?ObjectType $blogStory;
 
     /**
      * @var ObjectType
      */
-    private $link;
+    private ?ObjectType $link;
 
     /**
      * @var ObjectType
      */
-    private $video;
+    private ?ObjectType $video;
 
     /**
      * @var ObjectType
      */
-    private $videoMetadata;
+    private ?ObjectType $videoMetadata;
 
     /**
      * @var ObjectType
      */
-    private $comment;
+    private ?ObjectType $comment;
 
     /**
      * @var ObjectType
      */
-    private $user;
+    private ?ObjectType $user;
 
     /**
      * @var ObjectType
      */
-    private $category;
+    private ?ObjectType $category;
 
     /**
      * @var UnionType
      */
-    private $mention;
+    private ?UnionType $mention;
 
-    private $postStoryMutation;
+    private ?ObjectType $postStoryMutation;
 
-    private $postStoryMutationInput;
+    private ?InputObjectType $postStoryMutationInput;
 
-    private $postCommentMutation;
+    private ?ObjectType $postCommentMutation;
 
-    private $postCommentMutationInput;
+    private ?InputObjectType $postCommentMutationInput;
 
     public async function beforeEachTestAsync(): Awaitable<void>
     {
