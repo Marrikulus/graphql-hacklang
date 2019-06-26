@@ -44,7 +44,7 @@ class FormattedError
      * @return array
      * @throws \Throwable
      */
-    public static function createFromException(\Exception $e, bool $debug = false, ?string $internalErrorMessage = null):array<string,mixed>
+    public static function createFromException(\Exception $e, int $debug = 0, ?string $internalErrorMessage = null):array<string,mixed>
     {
         /* HH_FIXME[4105]*/
         Utils::invariant(
@@ -99,7 +99,7 @@ class FormattedError
      * @return array
      * @throws \Throwable
      */
-    public static function addDebugEntries(array<string, mixed> $formattedError, \Exception $e, bool $debug):array<string, mixed>
+    public static function addDebugEntries(array<string, mixed> $formattedError, \Exception $e, int $debug):array<string, mixed>
     {
         if (!$debug) {
             return $formattedError;
@@ -160,7 +160,7 @@ class FormattedError
      * @param $debug
      * @return callable|\Closure
      */
-    public static function prepareFormatter(?Formatter $formatter = null, bool $debug = false):Formatter
+    public static function prepareFormatter(?Formatter $formatter = null, int $debug = 0):Formatter
     {
         $formatter = $formatter ?? function($e) {
             return FormattedError::createFromException($e);

@@ -132,7 +132,7 @@ class ExecutionResult implements \JsonSerializable
             };
             $result['errors'] = $errorsHandler(
                 $this->errors,
-                FormattedError::prepareFormatter($this->errorFormatter, (bool)$debug)
+                FormattedError::prepareFormatter($this->errorFormatter, $debug)
             );
         }
 
