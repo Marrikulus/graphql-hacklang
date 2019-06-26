@@ -119,9 +119,12 @@ class Schema
         if ($config->subscription) {
             $this->resolvedTypes[$config->subscription->name] = $config->subscription;
         }
-        if (is_array($this->config->types)) {
-            foreach ($this->resolveAdditionalTypes() as $type) {
-                if (isset($this->resolvedTypes[$type->name])) {
+        if (is_array($this->config->types))
+        {
+            foreach ($this->resolveAdditionalTypes() as $type)
+            {
+                if (isset($this->resolvedTypes[$type->name]))
+                {
                     Utils::invariant(
                         $type === $this->resolvedTypes[$type->name],
                         "Schema must contain unique named types but contains multiple types named \"$type\" ".
@@ -239,19 +242,23 @@ class Schema
     {
         $types = $this->config->types ?: [];
 
-        if (\is_callable($types)) {
+        if (\is_callable($types))
+        {
             $types = $types();
         }
 
-        if (!is_array($types) && !$types instanceof \Traversable) {
+        if (!is_array($types) && !$types instanceof \Traversable)
+        {
             throw new InvariantViolation(\sprintf(
                 'Schema types callable must return array or instance of Traversable but got: %s',
                 Utils::getVariableType($types)
             ));
         }
 
-        foreach ($types as $index => $type) {
-            if (!$type instanceof GraphQlType) {
+        foreach ($types as $index => $type)
+        {
+            if (!$type instanceof GraphQlType)
+            {
                 throw new InvariantViolation(
                     'Each entry of schema types must be instance of GraphQL\Type\Definition\GraphQlType but entry at %s is %s',
                     $index,

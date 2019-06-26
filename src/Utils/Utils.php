@@ -1,5 +1,5 @@
-<?hh //strict
-//decl
+<?hh //partial
+
 namespace GraphQL\Utils;
 
 use GraphQL\Error\InvariantViolation;
@@ -28,16 +28,20 @@ class Utils
      *
      * @return array
      */
-    public static function assign($obj, array $vars, array $requiredKeys = [])
+    public static function assign<T>(T $obj, array<string, mixed> $vars, array<string> $requiredKeys = []):T
     {
-        foreach ($requiredKeys as $key) {
-            if (!isset($vars[$key])) {
+        foreach ($requiredKeys as $key)
+        {
+            if (!(\array_key_exists($key, $vars) && $vars[$key] !== null))
+            {
                 throw new InvalidArgumentException("Key {$key} is expected to be set and not to be null");
             }
         }
 
-        foreach ($vars as $key => $value) {
-            if (!\property_exists($obj, $key)) {
+        foreach ($vars as $key => $value)
+        {
+            if (!\property_exists($obj, $key))
+            {
                 $cls = \get_class($obj);
                 Warning::warn(
                     "Trying to set non-existing property '$key' on class '$cls'",
@@ -54,7 +58,7 @@ class Utils
      * @param callable $predicate
      * @return null
      */
-    public static function find($traversable, callback2arg $predicate)
+    public static function find<Tv>(array<Tv> $traversable, callback2arg $predicate):?Tv
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
@@ -72,21 +76,25 @@ class Utils
      * @return array
      * @throws \Exception
      */
-    public static function filter($traversable, callback2arg $predicate)
+    public static function filter<Tk, Tv>(array<Tk, Tv> $traversable, callback2arg $predicate):array<Tv>
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
         $result = [];
         $assoc = false;
-        foreach ($traversable as $key => $value) {
-            if (!$assoc && !($key is int)) {
+        foreach ($traversable as $key => $value)
+        {
+            if (!$assoc && !($key is int))
+            {
                 $assoc = true;
             }
-            if ($predicate($value, $key)) {
+            if ($predicate($value, $key))
+            {
                 $result[$key] = $value;
             }
         }
 
+        /* HH_FIXME[4110]*/
         return $assoc ? $result : \array_values($result);
     }
 
@@ -114,12 +122,13 @@ class Utils
      * @return array
      * @throws \Exception
      */
-    public static function mapKeyValue($traversable, (function(mixed, mixed): (mixed, mixed)) $fn)
+    public static function mapKeyValue<Tk, Tv>(array<Tk, Tv> $traversable, (function(Tv, Tk): (mixed, mixed)) $fn):array<mixed, mixed>
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
         $map = [];
-        foreach ($traversable as $key => $value) {
+        foreach ($traversable as $key => $value)
+        {
             list($newKey, $newValue) = $fn($value, $key);
             $map[$newKey] = $newValue;
         }
@@ -132,7 +141,7 @@ class Utils
      * @return array
      * @throws \Exception
      */
-    public static function keyMap($traversable, callback2arg $keyFn)
+    public static function keyMap<Tk, Tv>(array<Tk, Tv> $traversable, (function(Tv, Tk):arraykey) $keyFn):array<arraykey, Tv>
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
@@ -150,7 +159,7 @@ class Utils
      * @param $traversable
      * @param callable $fn
      */
-    public static function each($traversable, callback2arg $fn)
+    public static function each<Tk, Tv>(array<Tk, Tv> $traversable, callback2arg $fn):void
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
@@ -175,7 +184,7 @@ class Utils
      * @param callable $keyFn function($value, $key) => $newKey(s)
      * @return array
      */
-    public static function groupBy($traversable, callback2arg $keyFn)
+    public static function groupBy<Tk, Tv>(array<Tk, Tv> $traversable, callback2arg $keyFn):array<Tk, array<Tv>>
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
@@ -196,7 +205,7 @@ class Utils
      * @param callable $valFn
      * @return array
      */
-    public static function keyValMap( $traversable, callback1arg $keyFn, callback1arg $valFn)
+    public static function keyValMap<T>( array<T> $traversable, callback1arg $keyFn, callback1arg $valFn):array<mixed, mixed>
     {
         $map = [];
         foreach ($traversable as $item) {
@@ -210,7 +219,7 @@ class Utils
      * @param callable $predicate
      * @return bool
      */
-    public static function every($traversable, callback2arg $predicate)
+    public static function every<Tk, Tv>(array<Tk, Tv> $traversable, (function(Tv, Tk):bool) $predicate):bool
     {
         foreach ($traversable as $key => $value) {
             if (!$predicate($value, $key)) {
@@ -227,7 +236,7 @@ class Utils
      * @param mixed $sprintfParam2 ...
      * @throws InvariantViolation
      */
-    public static function invariant($test, string $message = '', mixed ... $args)
+    public static function invariant($test, string $message = '', mixed ... $args):void
     {
         if (!$test) {
             if (\count($args) > 0)
@@ -242,7 +251,7 @@ class Utils
      * @param $var
      * @return string
      */
-    public static function getVariableType($var)
+    public static function getVariableType(mixed $var):string
     {
         if ($var instanceof GraphQlType) {
             // FIXME: Replace with schema printer call
@@ -258,7 +267,7 @@ class Utils
      * @param mixed $var
      * @return string
      */
-    public static function printSafeJson($var)
+    public static function printSafeJson(mixed $var):string
     {
         if ($var instanceof stdClass) {
             $var = (array) $var;
@@ -306,7 +315,7 @@ class Utils
      * @param $var
      * @return string
      */
-    public static function printSafe($var)
+    public static function printSafe(mixed $var):string
     {
         if ($var instanceof GraphQlType) {
             return $var->toString();
@@ -379,7 +388,7 @@ class Utils
      * @param string $encoding
      * @return mixed
      */
-    public static function ord($char, $encoding = 'UTF-8')
+    public static function ord(string $char, string $encoding = 'UTF-8'):int
     {
         if (!$char && '0' !== $char) {
             return 0;
@@ -402,7 +411,7 @@ class Utils
      * @param $position
      * @return mixed
      */
-    public static function charCodeAt($string, $position)
+    public static function charCodeAt(string $string, int $position):mixed
     {
         $char = \mb_substr($string, $position, 1, 'UTF-8');
         return self::ord($char);
@@ -412,9 +421,10 @@ class Utils
      * @param $code
      * @return string
      */
-    public static function printCharCode($code)
+    public static function printCharCode(?int $code):string
     {
-        if (null === $code) {
+        if (null === $code)
+        {
             return '<EOF>';
         }
         return $code < 0x007F
@@ -429,7 +439,7 @@ class Utils
      * @param bool $isIntrospection
      * @throws InvariantViolation
      */
-    public static function assertValidName($name, $isIntrospection = false)
+    public static function assertValidName(mixed $name, bool $isIntrospection = false):void
     {
         $regex = '/^[_a-zA-Z][_a-zA-Z0-9]*$/';
 
@@ -463,7 +473,7 @@ class Utils
      * @param \ErrorException[] $errors
      * @return \Closure
      */
-    public static function withErrorHandling((function(): mixed) $fn, array &$errors)
+    public static function withErrorHandling((function(): mixed) $fn, array &$errors):(function(): mixed)
     {
         return function() use ($fn, &$errors) {
             // Catch custom errors (to report them in query results)

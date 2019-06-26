@@ -1,5 +1,5 @@
-<?hh //strict
-//decl
+<?hh //partial
+
 namespace GraphQL;
 
 trigger_error(

@@ -86,10 +86,11 @@ class Config
      * @param array $config
      * @param array $definition
      */
-    public static function validate(array $config, array $definition)
+    public static function validate(array $config, array $definition):void
     {
-        if (self::$enableValidation) {
-            $name = isset($config['name']) ? $config['name'] : '(Unnamed Type)';
+        if (self::$enableValidation)
+        {
+            $name = array_key_exists('name', $config)? $config['name'] ?? '(Unnamed Type)' : '(Unnamed Type)';
             self::validateMap($name, $config, $definition);
         }
     }
@@ -99,17 +100,21 @@ class Config
      * @param array $config
      * @param array $definition
      */
-    public static function validateField($typeName, array $config, array $definition)
+    public static function validateField(?string $typeName, array $config, array $definition)
     {
-        if (self::$enableValidation) {
-            if (!isset($config['name'])) {
+        if (self::$enableValidation)
+        {
+            if (!isset($config['name']))
+            {
                 $pathStr = isset($config['type'])
                     ? '(Unknown Field of type: ' . Utils::printSafe($config['type']) . ')'
                     : '(Unknown Field)';
-            } else {
+            }
+            else
+            {
                 $pathStr = '';
             }
-            self::validateMap($typeName ?: '(Unnamed Type)', $config, $definition, $pathStr);
+            self::validateMap($typeName ?? '(Unnamed Type)', $config, $definition, $pathStr);
         }
     }
 

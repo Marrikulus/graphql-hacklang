@@ -143,13 +143,13 @@ class Visitor
      * Visit the AST (see class description for details)
      *
      * @api
-     * @param NodeList | Node $root
+     * @param NodeList | Node | ArrayObject | array $root
      * @param array $visitor
      * @param array $keyMap
      * @return Node|mixed
      * @throws \Exception
      */
-    public static function visit($root, $visitor, $keyMap = null):mixed
+    public static function visit(mixed $root, array<_> $visitor, ?array<string, array<string>> $keyMap = null):mixed
     {
         $visitorKeys = $keyMap ?? Visitor::$visitorKeys;
 
@@ -405,7 +405,7 @@ class Visitor
      * @param $visitors
      * @return array
      */
-    public static function visitInParallel($visitors):array
+    public static function visitInParallel(array<_> $visitors):array
     {
         $visitorsCount = \count($visitors);
         $skipping = new \SplFixedArray($visitorsCount);
@@ -415,7 +415,7 @@ class Visitor
             {
                 for ($i = 0; $i < $visitorsCount; $i++)
                 {
-                    if (!$skipping->offsetExists($i))
+                    if ($skipping->offsetExists($i) && $skipping->offsetGet($i) === null)
                     {
                         $fn = Visitor::getVisitFn($visitors[$i], $node->kind, /* isLeaving */ false);
 
@@ -449,11 +449,10 @@ class Visitor
             'leave' => function ($node) use ($visitors, $skipping, $visitorsCount) {
                 for ($i = 0; $i < $visitorsCount; $i++)
                 {
-                    if (!$skipping->offsetExists($i))
+                    if ($skipping->offsetExists($i) && $skipping->offsetGet($i) === null)
                     {
                         $fn = Visitor::getVisitFn($visitors[$i], $node->kind, /* isLeaving */ true);
-
-                        if ($fn)
+                        if ($fn !== null)
                         {
                             $result = \call_user_func_array($fn, \func_get_args());
                             if ($result instanceof VisitorOperation)
@@ -486,7 +485,7 @@ class Visitor
      * Creates a new visitor instance which maintains a provided TypeInfo instance
      * along with visiting visitor.
      */
-    public static function visitWithTypeInfo(TypeInfo $typeInfo, $visitor):array
+    public static function visitWithTypeInfo(TypeInfo $typeInfo, array<string, _> $visitor):array
     {
         return [
             'enter' => function ($node) use ($typeInfo, $visitor) {
@@ -520,7 +519,7 @@ class Visitor
      * @param $isLeaving
      * @return null
      */
-    public static function getVisitFn($visitor, $kind, $isLeaving):?callable
+    public static function getVisitFn(array<string, _> $visitor, string $kind, bool $isLeaving):?callable
     {
         if (!$visitor) {
             return null;

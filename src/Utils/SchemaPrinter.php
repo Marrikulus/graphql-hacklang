@@ -14,6 +14,8 @@ use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\Directive;
 
+type TypeFilterFn = (function(string):bool);
+
 /**
  * Given an instance of Schema, prints it in GraphQL type language.
  */
@@ -50,17 +52,17 @@ class SchemaPrinter
         );
     }
 
-    private static function isDefinedType($typename)
+    private static function isDefinedType(string $typename):bool
     {
         return !self::isIntrospectionType($typename) && !self::isBuiltInScalar($typename);
     }
 
-    private static function isIntrospectionType($typename)
+    private static function isIntrospectionType(string $typename):bool
     {
         return \strpos($typename, '__') === 0;
     }
 
-    private static function isBuiltInScalar($typename)
+    private static function isBuiltInScalar(string $typename):bool
     {
         return (
             $typename === GraphQlType::STRING ||
@@ -71,7 +73,7 @@ class SchemaPrinter
         );
     }
 
-    private static function printFilteredSchema(Schema $schema, $directiveFilter, $typeFilter):string
+    private static function printFilteredSchema(Schema $schema, TypeFilterFn $directiveFilter, TypeFilterFn $typeFilter):string
     {
         $directives = \array_filter($schema->getDirectives(), function($directive) use ($directiveFilter) {
             return $directiveFilter($directive->name);
@@ -113,7 +115,7 @@ class SchemaPrinter
 
         return "schema {\n" . \implode("\n", $operationTypes) . "\n}";
     }
-    
+
     /**
      * GraphQL schema define root types for each type of operation. These types are
      * the same as any other type and can be named in any manner, however there is
@@ -126,7 +128,7 @@ class SchemaPrinter
      *
      * When using this naming convention, the schema description can be omitted.
      */
-    private static function isSchemaOfCommonNames(Schema $schema)
+    private static function isSchemaOfCommonNames(Schema $schema):bool
     {
         $queryType = $schema->getQueryType();
         if ($queryType && $queryType->name !== 'Query') {
@@ -146,7 +148,7 @@ class SchemaPrinter
         return true;
     }
 
-    public static function printType(GraphQlType $type)
+    public static function printType(GraphQlType $type):string
     {
         if ($type instanceof ScalarType) {
             return self::printScalar($type);
@@ -163,12 +165,12 @@ class SchemaPrinter
         return self::printInputObject($type);
     }
 
-    private static function printScalar(ScalarType $type)
+    private static function printScalar(ScalarType $type):string
     {
         return self::printDescription($type) . "scalar {$type->name}";
     }
 
-    private static function printObject(ObjectType $type)
+    private static function printObject(ObjectType $type):string
     {
         $interfaces = $type->getInterfaces();
         $implementedInterfaces = !empty($interfaces) ?
@@ -181,21 +183,21 @@ class SchemaPrinter
             "}";
     }
 
-    private static function printInterface(InterfaceType $type)
+    private static function printInterface(InterfaceType $type):string
     {
-        return self::printDescription($type) . 
+        return self::printDescription($type) .
             "interface {$type->name} {\n" .
                 self::printFields($type) . "\n" .
             "}";
     }
 
-    private static function printUnion(UnionType $type)
+    private static function printUnion(UnionType $type):string
     {
         return self::printDescription($type) .
             "union {$type->name} = " . \implode(" | ", $type->getTypes());
     }
 
-    private static function printEnum(EnumType $type)
+    private static function printEnum(EnumType $type):string
     {
         return self::printDescription($type) .
             "enum {$type->name} {\n" .
@@ -203,7 +205,7 @@ class SchemaPrinter
             "}";
     }
 
-    private static function printEnumValues($values)
+    private static function printEnumValues($values):string
     {
         return \implode("\n", \array_map(function($value, $i) {
             return self::printDescription($value, '  ', !$i) . '  ' .
@@ -211,10 +213,10 @@ class SchemaPrinter
         }, $values, \array_keys($values)));
     }
 
-    private static function printInputObject(InputObjectType $type)
+    private static function printInputObject(InputObjectType $type):string
     {
         $fields = \array_values($type->getFields());
-        return self::printDescription($type) . 
+        return self::printDescription($type) .
             "input {$type->name} {\n" .
                 \implode("\n", \array_map(function($f, $i) {
                     return self::printDescription($f, '  ', !$i) . '  ' . self::printInputValue($f);
@@ -222,7 +224,7 @@ class SchemaPrinter
             "}";
     }
 
-    private static function printFields($type)
+    private static function printFields($type):string
     {
         $fields = \array_values($type->getFields());
         return \implode("\n", \array_map(function($f, $i) {
@@ -232,7 +234,7 @@ class SchemaPrinter
             }, $fields, \array_keys($fields)));
     }
 
-    private static function printArgs($args, $indentation = '')
+    private static function printArgs($args, string $indentation = ''):string
     {
         if (\count($args) === 0) {
             return '';
@@ -249,7 +251,7 @@ class SchemaPrinter
         }, $args, \array_keys($args))) . "\n" . $indentation . ')';
     }
 
-    private static function printInputValue($arg)
+    private static function printInputValue($arg):string
     {
         $argDecl = $arg->name . ': ' . (string) $arg->getType();
         if ($arg->defaultValueExists()) {
@@ -258,14 +260,14 @@ class SchemaPrinter
         return $argDecl;
     }
 
-    private static function printDirective($directive)
+    private static function printDirective($directive):string
     {
         return self::printDescription($directive) .
             'directive @' . $directive->name . self::printArgs($directive->args) .
             ' on ' . \implode(' | ', $directive->locations);
     }
 
-    private static function printDeprecated($fieldOrEnumVal)
+    private static function printDeprecated($fieldOrEnumVal):string
     {
         $reason = $fieldOrEnumVal->deprecationReason;
         if (empty($reason)) {
@@ -278,21 +280,26 @@ class SchemaPrinter
             Printer::doPrint(AST::astFromValue($reason, GraphQlType::string())) . ')';
     }
 
-    private static function printDescription($def, $indentation = '', $firstInBlock = true)
+    private static function printDescription($def, string $indentation = '', $firstInBlock = true):string
     {
         if (!$def->description) {
             return '';
         }
         $lines = \explode("\n", $def->description);
         $description = $indentation && !$firstInBlock ? "\n" : '';
-        foreach ($lines as $line) {
-            if ($line === '') {
+        foreach ($lines as $line)
+        {
+            if ($line === '')
+            {
                 $description .= $indentation . "#\n";
-            } else {
+            }
+            else
+            {
                 // For > 120 character long lines, cut at space boundaries into sublines
                 // of ~80 chars.
                 $sublines = self::breakLine($line, 120 - \strlen($indentation));
-                foreach ($sublines as $subline) {
+                foreach ($sublines as $subline)
+                {
                     $description .= $indentation . '# ' . $subline . "\n";
                 }
             }
@@ -300,9 +307,10 @@ class SchemaPrinter
         return $description;
     }
 
-    private static function breakLine($line, $len)
+    private static function breakLine(string $line, int $len):array<string>
     {
-        if (\strlen($line) < $len + 5) {
+        if (\strlen($line) < $len + 5)
+        {
             return [$line];
         }
         \preg_match_all("/((?: |^).{15," . ($len - 40) . "}(?= |$))/", $line, &$parts);

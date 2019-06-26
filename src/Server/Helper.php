@@ -45,7 +45,7 @@ class Helper
      * @return OperationParams|OperationParams[]
      * @throws RequestError
      */
-    public function parseHttpRequest(?callable $readRawBodyFn = null)
+    public function parseHttpRequest(?(function():string) $readRawBodyFn = null)
     {
         $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
         $bodyParams = [];

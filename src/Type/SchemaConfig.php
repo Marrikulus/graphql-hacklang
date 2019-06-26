@@ -67,7 +67,7 @@ class SchemaConfig
      * @param array $options
      * @return SchemaConfig
      */
-    public static function create(array $options = [])
+    public static function create(array $options = []):SchemaConfig
     {
         $config = new SchemaConfig();
 

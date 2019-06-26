@@ -59,10 +59,10 @@ class Printer
      * Prints AST to string. Capable of printing GraphQL queries and Type definition language.
      *
      * @api
-     * @param Node $ast
+     * @param Node|NodeList|array|ArrayObject $ast
      * @return string
      */
-    public static function doPrint($ast)
+    public static function doPrint(mixed $ast):string
     {
         static $instance;
         $instance = $instance ?? new Printer();
@@ -72,7 +72,7 @@ class Printer
     protected function __construct()
     {}
 
-    public function printAST($ast)
+    public function printAST(mixed $ast):mixed
     {
         return Visitor::visit($ast, [
             'leave' => [
@@ -267,7 +267,7 @@ class Printer
      * If maybeString is not null or empty, then wrap with start and end, otherwise
      * print an empty string.
      */
-    public function wrap($start, $maybeString, @string $end = '')
+    public function wrap(string $start, ?string $maybeString, @string $end = ''):string
     {
         return $maybeString ? ($start . $maybeString . $end) : '';
     }
@@ -276,27 +276,27 @@ class Printer
      * Given array, print each item on its own line, wrapped in an
      * indented "{ }" block.
      */
-    public function block($array)
+    public function block(?array<_> $array):string
     {
         return $array && $this->length($array) ? $this->indent("{\n" . $this->join($array, "\n")) . "\n}" : '{}';
     }
 
-    public function indent($maybeString)
+    public function indent(?string $maybeString):string
     {
         return $maybeString ? \str_replace("\n", "\n  ", $maybeString) : '';
     }
 
-    public function manyList($start, $list, $separator, $end)
+    public function manyList(string $start, ?array<_> $list, string $separator, string $end):?string
     {
         return $this->length($list) === 0 ? null : ($start . $this->join($list, $separator) . $end);
     }
 
-    public function length($maybeArray)
+    public function length(?array<_> $maybeArray):int
     {
         return $maybeArray ? \count($maybeArray) : 0;
     }
 
-    public function join($maybeArray, @string $separator = '')
+    public function join(?array<_> $maybeArray, @string $separator = ''):string
     {
         return $maybeArray
             ? \implode(
