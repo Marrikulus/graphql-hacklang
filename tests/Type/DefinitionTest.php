@@ -599,7 +599,8 @@ class DefinitionTest extends \Facebook\HackTest\HackTest
         $called = false;
         $inputObject = new InputObjectType([
             'name' => 'InputObject',
-            'fields' => function() use ($inputObject, $called) {
+            /* HH_FIXME[2087]*/
+            'fields' => function() use (&$inputObject, &$called) {
                 $called = true;
                 return [
                     'value' => ['type' => GraphQlType::string()],
@@ -634,6 +635,7 @@ class DefinitionTest extends \Facebook\HackTest\HackTest
         $called = false;
         $interface = new InterfaceType([
             'name' => 'SomeInterface',
+            /* HH_FIXME[2087]*/
             'fields' => function() use (&$interface, &$called) {
                 $called = true;
                 return [
@@ -665,6 +667,7 @@ class DefinitionTest extends \Facebook\HackTest\HackTest
     {
         $interface = new InterfaceType([
             'name' => 'SomeInterface',
+            /* HH_FIXME[2087]*/
             'fields' => function() use (&$interface) {
                 return [
                     'value' => GraphQlType::string(),
