@@ -245,25 +245,25 @@ class Error extends Exception implements \JsonSerializable, ClientAware
      */
     public function getLocations():array<SourceLocation>
     {
-        if (null === $this->locations)
+        $locations = $this->locations;
+        if (null === $locations)
         {
             $positions = $this->getPositions();
             $source = $this->getSource();
 
             if ($positions && $source)
             {
-                $this->locations = \array_map(function ($pos) use ($source)
+                $locations = \array_map(function ($pos) use ($source)
                 {
                     return $source->getLocation($pos);
                 }, $positions);
             }
             else
             {
-                $this->locations = [];
+                $locations = [];
             }
         }
-
-        return $this->locations;
+        return $this->locations = $locations;
     }
 
     /**

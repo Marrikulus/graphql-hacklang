@@ -82,7 +82,7 @@ abstract class Node
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString():string
     {
         $tmp = $this->toArray(true);
         return \json_encode($tmp);
@@ -92,7 +92,7 @@ abstract class Node
      * @param bool $recursive
      * @return array
      */
-    public function toArray(bool $recursive = false)
+    public function toArray(bool $recursive = false):array<_>
     {
         if ($recursive) {
             return $this->recursiveToArray($this);
@@ -114,7 +114,7 @@ abstract class Node
      * @param Node $node
      * @return array
      */
-    private function recursiveToArray(Node $node)
+    private function recursiveToArray(Node $node):array<_>
     {
         $result = [
             'kind' => $node->kind,

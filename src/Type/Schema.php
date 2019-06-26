@@ -134,7 +134,16 @@ class Schema
                 $this->resolvedTypes[$type->name] = $type;
             }
         }
-        $this->resolvedTypes = array_merge($this->resolvedTypes, GraphQlType::getInternalTypes(), Introspection::getTypes());
+        //TODO(ingimar): have to fix IntrospectionTest::testExecutesAnIntrospectionQuery() to use the array_merge. The test is order dependant.
+        $this->resolvedTypes += GraphQlType::getInternalTypes() + Introspection::getTypes();
+
+
+        //$this->resolvedTypes = [
+        //    ...$this->resolvedTypes,
+        //    ...GraphQlType::getInternalTypes(),
+        //    ...Introspection::getTypes(),
+        //];
+        //$this->resolvedTypes = array_merge(GraphQlType::getInternalTypes(), Introspection::getTypes(), $this->resolvedTypes);
 
         if (!$this->config->typeLoader) {
             // Perform full scan of the schema
@@ -209,9 +218,10 @@ class Schema
      * @param string $name
      * @return GraphQlType
      */
-    public function getType($name):?GraphQlType
+    public function getType(string $name):?GraphQlType
     {
-        if (!isset($this->resolvedTypes[$name])) {
+        if (!array_key_exists($name, $this->resolvedTypes))
+        {
             $this->resolvedTypes[$name] = $this->loadType($name);
         }
         return $this->resolvedTypes[$name];
