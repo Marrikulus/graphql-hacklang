@@ -294,7 +294,11 @@ class Error extends Exception implements \JsonSerializable, ClientAware
             return $loc->toSerializableArray();
         },$this->getLocations());
 
-        $arr['locations'] = $locations;
+        if (count($locations) > 0)
+        {
+            $arr['locations'] = $locations;
+        }
+
         if ($this->path !== null)
         {
             $arr['path'] = $this->path;

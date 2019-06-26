@@ -217,7 +217,7 @@ class EnumTypeTest extends \Facebook\HackTest\HackTest
             '{ colorEnum(fromEnum: "GREEN") }',
             null,
             [
-                'message' => "Argument \"fromEnum\" got invalid value \"GREEN\".\nExpected type \"Color\", found \"GREEN\".",
+                'message' => "Argument \"fromEnum\" has invalid value \"GREEN\".\nExpected type \"Color\", found \"GREEN\".",
                 'locations' => [new SourceLocation(1, 23)]
             ]
         );
@@ -246,7 +246,7 @@ class EnumTypeTest extends \Facebook\HackTest\HackTest
         $this->expectFailure(
             '{ colorEnum(fromEnum: 1) }',
             null,
-            "Argument \"fromEnum\" got invalid value 1.\nExpected type \"Color\", found 1."
+            "Argument \"fromEnum\" has invalid value 1.\nExpected type \"Color\", found 1."
         );
     }
 
@@ -258,7 +258,7 @@ class EnumTypeTest extends \Facebook\HackTest\HackTest
         $this->expectFailure(
             '{ colorEnum(fromInt: GREEN) }',
             null,
-            "Argument \"fromInt\" got invalid value GREEN.\nExpected type \"Int\", found GREEN."
+            "Argument \"fromInt\" has invalid value GREEN.\nExpected type \"Int\", found GREEN."
         );
     }
 
