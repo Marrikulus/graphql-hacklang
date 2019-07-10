@@ -61,7 +61,7 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
         $spreadName = $fragmentSpread->name->value;
         $fragments = $this->getFragments();
 
-        return \isset($fragments[$spreadName]) ? $fragments[$spreadName] : null;
+        return isset($fragments[$spreadName]) ? $fragments[$spreadName] : null;
     }
 
     protected function invokeIfNeeded(ValidationContext $context, array $validators)
