@@ -38,7 +38,7 @@ class ConfigTest extends \Facebook\HackTest\HackTest
 
         try {
             Config::validate(['test' => []], ['test' => Config::STRING]);
-            $this->fail('Expected exception not thrown');
+            self::fail('Expected exception not thrown');
         } catch (\Exception $e) {
         }
 
@@ -593,7 +593,7 @@ class ConfigTest extends \Facebook\HackTest\HackTest
                 ['test' => 'notInt'],
                 ['test' => Config::INT]
             );
-            $this->fail('Expected exception not thrown');
+            self::fail('Expected exception not thrown');
         } catch (InvariantViolation $e) {
             expect($e->getMessage())
                 ->toBePHPEqual($this->typeError('expecting "int" at "(Unknown Field):test", but got "string"', 'TypeName'));
@@ -606,7 +606,7 @@ class ConfigTest extends \Facebook\HackTest\HackTest
                 ['type' => GraphQlType::string()],
                 ['name' => Config::STRING | Config::REQUIRED, 'type' => Config::OUTPUT_TYPE]
             );
-            $this->fail('Expected exception not thrown');
+            self::fail('Expected exception not thrown');
         } catch (InvariantViolation $e) {
             expect($e->getMessage())
                 ->toBePHPEqual($this->typeError('Required keys missing: "name"  at (Unknown Field of type: String)', 'TypeName'));
@@ -619,7 +619,7 @@ class ConfigTest extends \Facebook\HackTest\HackTest
                 ['name' => 'fieldName', 'test' => 'notInt'],
                 ['name' => Config::STRING, 'test' => Config::INT]
             );
-            $this->fail('Expected exception not thrown');
+            self::fail('Expected exception not thrown');
         } catch (InvariantViolation $e) {
             expect($e->getMessage())
                 ->toBePHPEqual($this->typeError('expecting "int" at "test", but got "string"', 'TypeName'));

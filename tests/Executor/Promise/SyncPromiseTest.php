@@ -197,14 +197,14 @@ class SyncPromiseTest extends \Facebook\HackTest\HackTest
 
         try {
             $promise->reject(new \Exception('other-reason'));
-            $this->fail('Expected exception not thrown');
+            self::fail('Expected exception not thrown');
         } catch (\Exception $e) {
             expect($e->getMessage())->toBePHPEqual('Cannot change rejection reason');
         }
 
         try {
             $promise->resolve('anything');
-            $this->fail('Expected exception not thrown');
+            self::fail('Expected exception not thrown');
         } catch (\Exception $e) {
             expect($e->getMessage())->toBePHPEqual('Cannot resolve rejected promise');
         }
@@ -249,7 +249,7 @@ class SyncPromiseTest extends \Facebook\HackTest\HackTest
 
         try {
             $promise->resolve($promise);
-            $this->fail('Expected exception not thrown');
+            self::fail('Expected exception not thrown');
         } catch (\Exception $e) {
             expect($e->getMessage())->toBePHPEqual('Cannot resolve promise with self');
             expect($promise->state)->toBePHPEqual(SyncPromise::PENDING);
@@ -278,7 +278,7 @@ class SyncPromiseTest extends \Facebook\HackTest\HackTest
 
         try {
             $promise->reject('a');
-            $this->fail('Expected exception not thrown');
+            self::fail('Expected exception not thrown');
         } catch (\PHPUnit_Framework_AssertionFailedError $e) {
             throw $e;
         } catch (\Throwable $e) {

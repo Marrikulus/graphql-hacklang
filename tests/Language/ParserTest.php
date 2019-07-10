@@ -41,7 +41,7 @@ fragment MissingOn Type
     {
         try {
             Parser::parse($str);
-            $this->fail('Expected exception not thrown');
+            self::fail('Expected exception not thrown');
         } catch (SyntaxError $e) {
             expect($e->getMessage())->toBePHPEqual($expectedMessage);
 

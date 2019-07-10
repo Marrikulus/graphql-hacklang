@@ -1738,7 +1738,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
 
             try {
                 $schema->assertValid();
-                $this->fail('Expected exception not thrown for ' . Utils::printSafe($type));
+                self::fail('Expected exception not thrown for ' . Utils::printSafe($type));
             } catch (InvariantViolation $e) {
                 expect($e->getMessage())
                     ->toBePHPEqual('BadObject.badField field type must be Output Type but got: ' . Utils::printSafe($type));
@@ -1815,7 +1815,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
 
             try {
                 $schema->assertValid();
-                $this->fail('Exepected exception not thrown for type ' . $type);
+                self::fail('Exepected exception not thrown for type ' . $type);
             } catch (InvariantViolation $e) {
                 expect($e->getMessage())
                     ->toBePHPEqual('BadObject may only implement Interface types, it cannot implement ' . $type . '.');
@@ -1844,7 +1844,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
             $schema = $this->schemaWithUnionOfType($type);
             try {
                 $schema->assertValid();
-                $this->fail('Expected exception not thrown for type: ' . $type);
+                self::fail('Expected exception not thrown for type: ' . $type);
             } catch (InvariantViolation $e) {
                 expect($e->getMessage())
                     ->toBePHPEqual('BadUnion may only contain Object types, it cannot contain: ' . $type . '.');
@@ -1893,7 +1893,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
 
             try {
                 $schema->assertValid();
-                $this->fail('Expected exception not thrown for type ' . $type);
+                self::fail('Expected exception not thrown for type ' . $type);
             } catch (InvariantViolation $e) {
                 expect($e->getMessage())
                     ->toBePHPEqual('BadInterface.badField field type must be Output Type but got: ' . Utils::printSafe($type));
@@ -1935,7 +1935,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
             $schema = $this->schemaWithArgOfType($type);
             try {
                 $schema->assertValid();
-                $this->fail('Expected exception not thrown for type ' . $type);
+                self::fail('Expected exception not thrown for type ' . $type);
             } catch (InvariantViolation $e) {
                 expect($e->getMessage())
                     ->toBePHPEqual('BadObject.badField(badArg): argument type must be Input Type but got: ' . Utils::printSafe($type));
@@ -1980,7 +1980,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
             $schema = $this->schemaWithInputFieldOfType($type);
             try {
                 $schema->assertValid();
-                $this->fail('Expected exception not thrown for type ' . $type);
+                self::fail('Expected exception not thrown for type ' . $type);
             } catch (InvariantViolation $e) {
                 expect($e->getMessage())
                     ->toBePHPEqual("BadInputObject.badField field type must be Input Type but got: " . Utils::printSafe($type) . ".");
@@ -2023,7 +2023,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
         foreach ($notTypes as $type) {
             try {
                 GraphQlType::listOf($type);
-                $this->fail("Expected exception not thrown for: " . Utils::printSafe($type));
+                self::fail("Expected exception not thrown for: " . Utils::printSafe($type));
             } catch (InvariantViolation $e) {
                 expect($e->getMessage())
                     ->toBePHPEqual('Can only create List of a GraphQLType but got: ' . Utils::printSafe($type));
@@ -2078,7 +2078,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
         foreach ($notNullableTypes as $type) {
             try {
                 GraphQlType::nonNull($type);
-                $this->fail("Expected exception not thrown for: " . Utils::printSafe($type));
+                self::fail("Expected exception not thrown for: " . Utils::printSafe($type));
             } catch (InvariantViolation $e) {
                 expect($e->getMessage())
                     ->toBePHPEqual('Can only create NoNull of a Nullable GraphQLType but got: ' . Utils::printSafe($type));
@@ -2695,7 +2695,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
         foreach ($closures as $index => $factory) {
             try {
                 $factory();
-                $this->fail('Expected exception not thrown for entry ' . $index);
+                self::fail('Expected exception not thrown for entry ' . $index);
             } catch (InvariantViolation $e) {
                 expect($e->getMessage())->toBePHPEqual($expectedError, 'Error in callable #' . $index);
             }
@@ -2716,7 +2716,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
             if (!$warned) {
                 try {
                     $factory();
-                    $this->fail('Expected exception not thrown for entry ' . $index);
+                    self::fail('Expected exception not thrown for entry ' . $index);
                 } catch (HackWarningException $e) {
                     $warned = true;
                     expect($e->getMessage())->toBePHPEqual($expectedError, 'Error in callable #' . $index);

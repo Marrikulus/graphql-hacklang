@@ -505,7 +505,7 @@ class DefinitionTest extends \Facebook\HackTest\HackTest
             try {
                 $union = new UnionType(['name' => 'BadUnion', 'types' => [$type]]);
                 $union->assertValid();
-                $this->fail('Expected exception not thrown');
+                self::fail('Expected exception not thrown');
             } catch (\Exception $e) {
                 expect($e->getMessage())
                     ->toBeSame('BadUnion may only contain Object types, it cannot contain: ' . Utils::printSafe($type) . '.');
