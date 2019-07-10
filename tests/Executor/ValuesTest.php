@@ -189,7 +189,7 @@ class ValuesTest extends \Facebook\HackTest\HackTest {
       $intInputDefinition = new VariableDefinitionNode(
           new VariableNode(new NameNode('intInput')),
           new NamedTypeNode(new NameNode('Int'))
-      ]);
+      );
       $stringInputDefintion = new VariableDefinitionNode(
           new VariableNode(new NameNode('stringInput')),
           new NamedTypeNode(new NameNode('String'))

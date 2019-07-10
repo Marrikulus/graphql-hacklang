@@ -479,7 +479,7 @@ class ConfigTest extends \Facebook\HackTest\HackTest
     }
 
     /* HH_FIXME[1002]*/
-    public function getInvalidValues():array<array<int, string, mixed, string, ?string>>
+    public function getInvalidValues():array<(int, string, mixed, string, string)>
     {
         return [
             // $type, $typeLabel, $invalidValue, $actualTypeLabel
