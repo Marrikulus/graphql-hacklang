@@ -1,11 +1,11 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Validator\Rules;
 
 use GraphQL\Error\Error;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Language\AST\VariableDefinitionNode;
+
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NoNull;
 use GraphQL\Utils\TypeComparators;
@@ -14,15 +14,20 @@ use GraphQL\Validator\ValidationContext;
 
 class VariablesInAllowedPosition extends AbstractValidationRule
 {
-    public static function badVarPosMessage($varName, $varType, $expectedType)
+    public static function badVarPosMessage(string $varName, $varType, $expectedType):string
     {
         return "Variable \"\$$varName\" of type \"$varType\" used in position expecting ".
         "type \"$expectedType\".";
     }
 
-    public $varDefMap;
+    public array<string, VariableDefinitionNode> $varDefMap = [];
 
-    public function getVisitor(ValidationContext $context): @array
+    /**
+     * @param ValidationContext $context
+     * @return array<string, VisitorFn| array<string, VisitorFn>>
+     */
+    /* HH_FIXME[4030]*/
+    public function getVisitor(ValidationContext $context)
     {
         return [
             NodeKind::OPERATION_DEFINITION => [
@@ -32,7 +37,8 @@ class VariablesInAllowedPosition extends AbstractValidationRule
                 'leave' => function(OperationDefinitionNode $operation) use ($context) {
                     $usages = $context->getRecursiveVariableUsages($operation);
 
-                    foreach ($usages as $usage) {
+                    foreach ($usages as $usage)
+                    {
                         $node = $usage['node'];
                         $type = $usage['type'];
                         $varName = $node->name->value;

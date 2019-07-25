@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Validator\Rules;
 
 use GraphQL\Error\Error;
@@ -7,6 +6,7 @@ use GraphQL\Language\AST\FieldNode;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Utils\Utils;
 use GraphQL\Validator\ValidationContext;
+use namespace HH\Lib\{Vec};
 
 class FieldsOnCorrectType extends AbstractValidationRule
 {
@@ -16,9 +16,10 @@ class FieldsOnCorrectType extends AbstractValidationRule
 
         $maxLength = 5;
         $count = \count($suggestedTypes);
-        if ($count > 0) {
+        if ($count > 0)
+        {
             $suggestions = \array_slice($suggestedTypes, 0, $maxLength);
-            $suggestions = Utils::map($suggestions, function($t) { return "\"$t\""; });
+            $suggestions = Vec\map($suggestions, function($t) { return "\"$t\""; });
             $suggestions = \implode(', ', $suggestions);
 
             if ($count > $maxLength) {
@@ -35,9 +36,11 @@ class FieldsOnCorrectType extends AbstractValidationRule
         return [
             NodeKind::FIELD => function(FieldNode $node) use ($context) {
                 $type = $context->getParentType();
-                if ($type) {
+                if ($type)
+                {
                     $fieldDef = $context->getFieldDef();
-                    if (!$fieldDef) {
+                    if (!$fieldDef)
+                    {
                         $context->reportError(new Error(
                             static::undefinedFieldMessage($node->name->value, $type->name),
                             [$node]

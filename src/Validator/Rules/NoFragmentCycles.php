@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 
 namespace GraphQL\Validator\Rules;
 
@@ -92,7 +91,7 @@ class NoFragmentCycles extends AbstractValidationRule
                 $context->reportError(new Error(
                     self::cycleErrorMessage(
                         $spreadName,
-                        Utils::map($cyclePath, function ($s) {
+                        Utils::map($cyclePath, function ($s, $key) {
                             return $s->name->value;
                         })
                     ),

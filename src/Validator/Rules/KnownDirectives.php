@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Validator\Rules;
 
 
@@ -12,44 +11,52 @@ use GraphQL\Type\Definition\DirectiveLocation;
 
 class KnownDirectives extends AbstractValidationRule
 {
-    public static function unknownDirectiveMessage($directiveName)
+    public static function unknownDirectiveMessage(string $directiveName):string
     {
         return "Unknown directive \"$directiveName\".";
     }
 
-    public static function misplacedDirectiveMessage($directiveName, $location)
+    public static function misplacedDirectiveMessage(string $directiveName, $location):string
     {
         return "Directive \"$directiveName\" may not be used on \"$location\".";
     }
 
+    /* HH_FIXME[4030]*/
     public function getVisitor(ValidationContext $context)
     {
         return [
-            NodeKind::DIRECTIVE => function (DirectiveNode $node, $key, $parent, $path, $ancestors) use ($context) {
+            NodeKind::DIRECTIVE => function (DirectiveNode $node, $key, $parent, $path, $ancestors) use ($context)
+            {
                 $directiveDef = null;
-                foreach ($context->getSchema()->getDirectives() as $def) {
-                    if ($def->name === $node->name->value) {
+                foreach ($context->getSchema()->getDirectives() as $def)
+                {
+                    if ($def->name === $node->name->value)
+                    {
                         $directiveDef = $def;
                         break;
                     }
                 }
 
-                if (!$directiveDef) {
+                if (!$directiveDef)
+                {
                     $context->reportError(new Error(
                         self::unknownDirectiveMessage($node->name->value),
                         [$node]
                     ));
-                    return ;
+                    return;
                 }
                 $appliedTo = $ancestors[\count($ancestors) - 1];
                 $candidateLocation = $this->getLocationForAppliedNode($appliedTo);
 
-                if (!$candidateLocation) {
+                if (!$candidateLocation)
+                {
                     $context->reportError(new Error(
-                        self::misplacedDirectiveMessage($node->name->value, $node->type),
+                        self::misplacedDirectiveMessage($node->name->value, $appliedTo->type),
                         [$node]
                     ));
-                } else if (!\in_array($candidateLocation, $directiveDef->locations)) {
+                }
+                else if (!\in_array($candidateLocation, $directiveDef->locations))
+                {
                     $context->reportError(new Error(
                         self::misplacedDirectiveMessage($node->name->value, $candidateLocation),
                         [ $node ]
@@ -59,20 +66,26 @@ class KnownDirectives extends AbstractValidationRule
         ];
     }
 
-    private function getLocationForAppliedNode(Node $appliedTo)
+    private function getLocationForAppliedNode(Node $appliedTo):?string
     {
-        switch ($appliedTo->kind) {
+        switch ($appliedTo->kind)
+        {
             case NodeKind::OPERATION_DEFINITION:
-                switch ($appliedTo->operation) {
+            if ($appliedTo instanceof OperationDefinitionNode)
+            {
+                switch ($appliedTo->operation)
+                {
                     case 'query': return DirectiveLocation::QUERY;
                     case 'mutation': return DirectiveLocation::MUTATION;
                     case 'subscription': return DirectiveLocation::SUBSCRIPTION;
                 }
-                break;
+            }break;
             case NodeKind::FIELD: return DirectiveLocation::FIELD;
             case NodeKind::FRAGMENT_SPREAD: return DirectiveLocation::FRAGMENT_SPREAD;
             case NodeKind::INLINE_FRAGMENT: return DirectiveLocation::INLINE_FRAGMENT;
             case NodeKind::FRAGMENT_DEFINITION: return DirectiveLocation::FRAGMENT_DEFINITION;
         }
+
+        return null;
     }
 }

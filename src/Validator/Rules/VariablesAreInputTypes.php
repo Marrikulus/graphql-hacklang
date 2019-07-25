@@ -1,5 +1,4 @@
 <?hh //strict
-//decl
 namespace GraphQL\Validator\Rules;
 
 
@@ -15,12 +14,13 @@ use GraphQL\Validator\ValidationContext;
 
 class VariablesAreInputTypes extends AbstractValidationRule
 {
-    public static function nonInputTypeOnVarMessage($variableName, $typeName)
+    public static function nonInputTypeOnVarMessage(string $variableName, string $typeName):string
     {
         return "Variable \"\$$variableName\" cannot be non-input type \"$typeName\".";
     }
 
-    public function getVisitor(ValidationContext $context): array
+    /* HH_FIXME[4045]*/
+    public function getVisitor(ValidationContext $context):array
     {
         return [
             NodeKind::VARIABLE_DEFINITION => function(VariableDefinitionNode $node) use ($context) {

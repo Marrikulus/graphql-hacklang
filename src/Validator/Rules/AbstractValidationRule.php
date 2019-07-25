@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Validator\Rules;
 
 use GraphQL\Validator\ValidationContext;

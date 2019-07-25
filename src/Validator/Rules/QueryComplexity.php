@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 
 namespace GraphQL\Validator\Rules;
 
@@ -19,7 +18,7 @@ use GraphQL\Validator\ValidationContext;
 
 class QueryComplexity extends AbstractQuerySecurity
 {
-    private int $maxQueryComplexity;
+    private int $maxQueryComplexity = 0;
 
     private $rawVariableValues = [];
 
@@ -97,12 +96,13 @@ class QueryComplexity extends AbstractQuerySecurity
                     'leave' => function (OperationDefinitionNode $operationDefinition) use ($context, &$complexity) {
                         $errors = $context->getErrors();
 
-                        if (empty($errors)) {
-                            $complexity = $this->fieldComplexity($operationDefinition, $complexity);
+                        if (empty($errors))
+                        {
+                            $complexity = $this->fieldComplexity($operationDefinition->getSelectionSet(), $complexity);
 
                             if ($complexity > $this->getMaxQueryComplexity()) {
                                 $context->reportError(
-                                    new Error($this->maxQueryComplexityErrorMessage($this->getMaxQueryComplexity(), $complexity))
+                                    new Error(QueryComplexity::maxQueryComplexityErrorMessage($this->getMaxQueryComplexity(), $complexity))
                                 );
                             }
                         }
@@ -112,13 +112,11 @@ class QueryComplexity extends AbstractQuerySecurity
         );
     }
 
-    private function fieldComplexity(Node $node, int $complexity = 0):int
+    private function fieldComplexity(SelectionSetNode $selectionSet, int $complexity = 0):int
     {
-        if (isset($node->selectionSet) && $node->selectionSet instanceof SelectionSetNode) {
-            foreach ($node->selectionSet->selections as $childNode)
-            {
-                $complexity = $this->nodeComplexity($childNode, $complexity);
-            }
+        foreach ($selectionSet->selections as $childNode)
+        {
+            $complexity = $this->nodeComplexity($childNode, $complexity);
         }
 
         return $complexity;
@@ -129,6 +127,8 @@ class QueryComplexity extends AbstractQuerySecurity
         switch ($node->kind)
         {
             case NodeKind::FIELD:
+            if ($node instanceof FieldNode)
+            {
                 /* @var FieldNode $node */
                 // default values
                 $args = [];
@@ -138,9 +138,10 @@ class QueryComplexity extends AbstractQuerySecurity
                 $childrenComplexity = 0;
 
                 // node has children?
-                if (isset($node->selectionSet))
+                $selectionSet = $node->selectionSet;
+                if ($selectionSet !== null)
                 {
-                    $childrenComplexity = $this->fieldComplexity($node);
+                    $childrenComplexity = $this->fieldComplexity($selectionSet);
                 }
 
                 $astFieldInfo = $this->astFieldInfo($node);
@@ -161,24 +162,32 @@ class QueryComplexity extends AbstractQuerySecurity
                 }
 
                 $complexity += \call_user_func_array($complexityFn, [$childrenComplexity, $args]);
+            }
                 break;
 
             case NodeKind::INLINE_FRAGMENT:
+            if ($node instanceof InlineFragmentNode)
+            {
                 /* @var InlineFragmentNode $node */
                 // node has children?
-                if (isset($node->selectionSet)) {
-                    $complexity = $this->fieldComplexity($node, $complexity);
+                $selectionSet = $node->selectionSet;
+                if ($selectionSet !== null)
+                {
+                    $complexity = $this->fieldComplexity($selectionSet, $complexity);
                 }
-                break;
+            }break;
 
             case NodeKind::FRAGMENT_SPREAD:
+            if ($node instanceof FragmentSpreadNode)
+            {
                 /* @var FragmentSpreadNode $node */
                 $fragment = $this->getFragment($node);
 
-                if (null !== $fragment) {
-                    $complexity = $this->fieldComplexity($fragment, $complexity);
+                if (null !== $fragment)
+                {
+                    $complexity = $this->fieldComplexity($fragment->getSelectionSet(), $complexity);
                 }
-                break;
+            }break;
         }
 
         return $complexity;

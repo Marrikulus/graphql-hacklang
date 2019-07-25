@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Validator\Rules;
 
 
@@ -15,12 +14,14 @@ use GraphQL\Validator\ValidationContext;
 
 class DefaultValuesOfCorrectType extends AbstractValidationRule
 {
-    public static function badValueForDefaultArgMessage(string $varName, mixed $type, string $value, ?array<string> $verboseErrors = null):@string {
-        $message = $verboseErrors ? ("\n" . \implode("\n", $verboseErrors)) : '';
+    public static function badValueForDefaultArgMessage(string $varName, mixed $type, string $value, ?array<string> $verboseErrors = null):@string
+    {
+        $message = $verboseErrors !== null ? ("\n" . \implode("\n", $verboseErrors)) : '';
         return "Variable \$$varName has invalid default value: $value.$message";
     }
 
-    public static function defaultForNonNullArgMessage(string $varName, mixed $type, mixed $guessType):@string {
+    public static function defaultForNonNullArgMessage(string $varName, $type, $guessType):@string
+    {
         return "Variable \$$varName of type {$type} " .
         "is required and will never use the default value. " .
         "Perhaps you meant to use type $guessType.";

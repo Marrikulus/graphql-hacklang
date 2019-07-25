@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Validator\Rules;
 
 
@@ -15,13 +14,13 @@ use GraphQL\Validator\ValidationContext;
 
 class ProvidedNonNullArguments extends AbstractValidationRule
 {
-    public static function missingFieldArgMessage($fieldName, $argName, $type)
-   : @string {
+    public static function missingFieldArgMessage(string $fieldName, string $argName, $type):@string
+    {
         return "Field \"$fieldName\" argument \"$argName\" of type \"$type\" is required but not provided.";
     }
 
-    public static function missingDirectiveArgMessage($directiveName, $argName, $type)
-   : @string {
+    public static function missingDirectiveArgMessage(string $directiveName, string $argName, $type):@string
+    {
         return "Directive \"@$directiveName\" argument \"$argName\" of type \"$type\" is required but not provided.";
     }
 
@@ -38,7 +37,8 @@ class ProvidedNonNullArguments extends AbstractValidationRule
                     $argNodes = $fieldNode->arguments ?: [];
 
                     $argNodeMap = [];
-                    foreach ($argNodes as $argNode) {
+                    foreach ($argNodes as $argNode)
+                    {
                         $argNodeMap[$argNode->name->value] = $argNodes;
                     }
                     foreach ($fieldDef->args as $argDef) {
@@ -55,18 +55,21 @@ class ProvidedNonNullArguments extends AbstractValidationRule
             NodeKind::DIRECTIVE => [
                 'leave' => function(DirectiveNode $directiveNode) use ($context) {
                     $directiveDef = $context->getDirective();
-                    if (!$directiveDef) {
+                    if (!$directiveDef)
+                    {
                         return Visitor::skipNode();
                     }
                     $argNodes = $directiveNode->arguments ?: [];
                     $argNodeMap = [];
-                    foreach ($argNodes as $argNode) {
+                    foreach ($argNodes as $argNode)
+                    {
                         $argNodeMap[$argNode->name->value] = $argNodes;
                     }
 
                     foreach ($directiveDef->args as $argDef) {
                         $argNode = isset($argNodeMap[$argDef->name]) ? $argNodeMap[$argDef->name] : null;
-                        if (!$argNode && $argDef->getType() instanceof NoNull) {
+                        if (!$argNode && $argDef->getType() instanceof NoNull)
+                        {
                             $context->reportError(new Error(
                                 self::missingDirectiveArgMessage($directiveNode->name->value, $argDef->name, $argDef->getType()),
                                 [$directiveNode]

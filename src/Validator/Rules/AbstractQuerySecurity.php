@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 
 namespace GraphQL\Validator\Rules;
 
@@ -61,7 +60,7 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
         $spreadName = $fragmentSpread->name->value;
         $fragments = $this->getFragments();
 
-        return isset($fragments[$spreadName]) ? $fragments[$spreadName] : null;
+        return \array_key_exists($spreadName, $fragments) ? $fragments[$spreadName] : null;
     }
 
     protected function invokeIfNeeded(ValidationContext $context, array $validators)
@@ -100,8 +99,11 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
         $_astAndDefs = $astAndDefs ?: new \ArrayObject();
 
         foreach ($selectionSet->selections as $selection) {
-            switch ($selection->kind) {
+            switch ($selection->kind)
+            {
                 case NodeKind::FIELD:
+                if ($selection instanceof FieldNode)
+                {
                     /* @var FieldNode $selection */
                     $fieldName = $selection->name->value;
                     $fieldDef = null;
@@ -130,8 +132,10 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
                     // create field context
                     //$_astAndDefs[$responseName][] = [$selection, $fieldDef];
                     $_astAndDefs->offsetGet($responseName)->append([$selection, $fieldDef]);
-                    break;
+                }break;
                 case NodeKind::INLINE_FRAGMENT:
+                if ($selection instanceof InlineFragmentNode)
+                {
                     /* @var InlineFragmentNode $selection */
                     $_astAndDefs = $this->collectFieldASTsAndDefs(
                         $context,
@@ -140,8 +144,10 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
                         $_visitedFragmentNames,
                         $_astAndDefs
                     );
-                    break;
+                }break;
                 case NodeKind::FRAGMENT_SPREAD:
+                if ($selection instanceof FragmentSpreadNode)
+                {
                     /* @var FragmentSpreadNode $selection */
                     $fragName = $selection->name->value;
 
@@ -161,7 +167,7 @@ abstract class AbstractQuerySecurity extends AbstractValidationRule
                             );
                         }
                     }
-                    break;
+                }break;
             }
         }
 

@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Validator\Rules;
 
 use GraphQL\Error\Error;
@@ -9,7 +8,7 @@ use GraphQL\Validator\ValidationContext;
 
 class UniqueDirectivesPerLocation extends AbstractValidationRule
 {
-    public static function duplicateDirectiveMessage($directiveName)
+    public static function duplicateDirectiveMessage(string $directiveName):string
     {
         return 'The directive "'.$directiveName.'" can only be used once at this location.';
     }
@@ -17,18 +16,23 @@ class UniqueDirectivesPerLocation extends AbstractValidationRule
     public function getVisitor(ValidationContext $context)
     {
         return [
-            'enter' => function(Node $node) use ($context) {
-                if (isset($node->directives)) {
+            'enter' => function(Node $node) use ($context)
+            {
+                if ($node instanceof HasDirectives)
+                {
                     $knownDirectives = [];
-                    foreach ($node->directives as $directive) {
+                    foreach ($node->getDirectives() as $directive) {
                         /** @var DirectiveNode $directive */
                         $directiveName = $directive->name->value;
-                        if (isset($knownDirectives[$directiveName])) {
+                        if (isset($knownDirectives[$directiveName]))
+                        {
                             $context->reportError(new Error(
                                 self::duplicateDirectiveMessage($directiveName),
                                 [$knownDirectives[$directiveName], $directive]
                             ));
-                        } else {
+                        }
+                        else
+                        {
                             $knownDirectives[$directiveName] = $directive;
                         }
                     }

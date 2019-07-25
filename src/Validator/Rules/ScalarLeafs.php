@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Validator\Rules;
 
 use GraphQL\Error\Error;
@@ -10,13 +9,13 @@ use GraphQL\Validator\ValidationContext;
 
 class ScalarLeafs extends AbstractValidationRule
 {
-    public static function noSubselectionAllowedMessage($field, $type)
-   : @string {
+    public static function noSubselectionAllowedMessage($field, $type):string
+    {
         return "Field \"$field\" of type \"$type\" must not have a sub selection.";
     }
 
-    public static function requiredSubselectionMessage($field, $type)
-   : @string {
+    public static function requiredSubselectionMessage($field, $type):string
+    {
         return "Field \"$field\" of type \"$type\" must have a sub selection.";
     }
 
@@ -25,15 +24,21 @@ class ScalarLeafs extends AbstractValidationRule
         return [
             NodeKind::FIELD => function(FieldNode $node) use ($context) {
                 $type = $context->getType();
-                if ($type) {
-                    if (GraphQlType::isLeafType(GraphQlType::getNamedType($type))) {
-                        if ($node->selectionSet) {
+                if ($type)
+                {
+                    if (GraphQlType::isLeafType(GraphQlType::getNamedType($type)))
+                    {
+                        $selectionSet = $node->selectionSet;
+                        if ($selectionSet !== null)
+                        {
                             $context->reportError(new Error(
                                 self::noSubselectionAllowedMessage($node->name->value, $type),
-                                [$node->selectionSet]
+                                [$selectionSet]
                             ));
                         }
-                    } else if (!$node->selectionSet) {
+                    }
+                    else if ($node->selectionSet === null)
+                    {
                         $context->reportError(new Error(
                             self::requiredSubselectionMessage($node->name->value, $type),
                             [$node]

@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Validator\Rules;
 
 use GraphQL\Error\Error;
@@ -17,7 +16,7 @@ class QueryDepth extends AbstractQuerySecurity
     /**
      * @var int
      */
-    private int $maxQueryDepth;
+    private int $maxQueryDepth = 0;
 
     public function __construct(int $maxQueryDepth)
     {
@@ -53,11 +52,11 @@ class QueryDepth extends AbstractQuerySecurity
             [
                 NodeKind::OPERATION_DEFINITION => [
                     'leave' => function (OperationDefinitionNode $operationDefinition) use ($context) {
-                        $maxDepth = $this->fieldDepth($operationDefinition);
+                        $maxDepth = $this->fieldDepth($operationDefinition->getSelectionSet());
 
                         if ($maxDepth > $this->getMaxQueryDepth()) {
                             $context->reportError(
-                                new Error($this->maxQueryDepthErrorMessage($this->getMaxQueryDepth(), $maxDepth))
+                                new Error(QueryDepth::maxQueryDepthErrorMessage($this->getMaxQueryDepth(), $maxDepth))
                             );
                         }
                     },
@@ -71,12 +70,11 @@ class QueryDepth extends AbstractQuerySecurity
         return $this->getMaxQueryDepth() !== static::DISABLED;
     }
 
-    private function fieldDepth($node, @int $depth = 0, @int $maxDepth = 0)
+    private function fieldDepth(SelectionSetNode $selectionSet, @int $depth = 0, @int $maxDepth = 0)
     {
-        if (isset($node->selectionSet) && $node->selectionSet instanceof SelectionSetNode) {
-            foreach ($node->selectionSet->selections as $childNode) {
-                $maxDepth = $this->nodeDepth($childNode, $depth, $maxDepth);
-            }
+        foreach ($selectionSet->selections as $childNode)
+        {
+            $maxDepth = $this->nodeDepth($childNode, $depth, $maxDepth);
         }
 
         return $maxDepth;
@@ -86,33 +84,41 @@ class QueryDepth extends AbstractQuerySecurity
     {
         switch ($node->kind) {
             case NodeKind::FIELD:
+            if ($node instanceof FieldNode)
+            {
                 /* @var FieldNode $node */
                 // node has children?
-                if (null !== $node->selectionSet) {
+                $selectionSet = $node->selectionSet;
+                if (null !== $selectionSet)
+                {
                     // update maxDepth if needed
-                    if ($depth > $maxDepth) {
+                    if ($depth > $maxDepth)
+                    {
                         $maxDepth = $depth;
                     }
-                    $maxDepth = $this->fieldDepth($node, $depth + 1, $maxDepth);
+                    $maxDepth = $this->fieldDepth($selectionSet, $depth + 1, $maxDepth);
                 }
-                break;
+            }break;
 
             case NodeKind::INLINE_FRAGMENT:
+            if ($node instanceof InlineFragmentNode)
+            {
                 /* @var InlineFragmentNode $node */
                 // node has children?
-                if (null !== $node->selectionSet) {
-                    $maxDepth = $this->fieldDepth($node, $depth, $maxDepth);
-                }
-                break;
+                $maxDepth = $this->fieldDepth($node->selectionSet, $depth, $maxDepth);
+            }break;
 
             case NodeKind::FRAGMENT_SPREAD:
+            if ($node instanceof FragmentSpreadNode)
+            {
                 /* @var FragmentSpreadNode $node */
                 $fragment = $this->getFragment($node);
 
-                if (null !== $fragment) {
-                    $maxDepth = $this->fieldDepth($fragment, $depth, $maxDepth);
+                if (null !== $fragment)
+                {
+                    $maxDepth = $this->fieldDepth($fragment->getSelectionSet(), $depth, $maxDepth);
                 }
-                break;
+            }break;
         }
 
         return $maxDepth;

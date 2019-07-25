@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Validator;
 
 use GraphQL\Error\Error;
@@ -67,13 +66,13 @@ use GraphQL\Validator\Rules\VariablesInAllowedPosition;
  * Optionally a custom TypeInfo instance may be provided. If not provided, one
  * will be created from the provided schema.
  */
-class DocumentValidator
+final class DocumentValidator
 {
-    private static $rules = [];
+    private static array<string, AbstractValidationRule> $rules = [];
 
-    private static $defaultRules;
+    private static ?array<string, AbstractValidationRule> $defaultRules;
 
-    private static $securityRules;
+    private static ?array<string, AbstractValidationRule> $securityRules;
 
     private static bool $initRules = false;
 
@@ -90,15 +89,16 @@ class DocumentValidator
     public static function validate(
         Schema $schema,
         DocumentNode $ast,
-        ?array<AbstractValidationRule> $rules = null,
+        ?array<string, AbstractValidationRule> $rules = null,
         ?TypeInfo $typeInfo = null
     ):array<Error>
     {
-        if (null === $rules) {
-            $rules = static::allRules();
+        if (null === $rules)
+        {
+            $rules = DocumentValidator::allRules();
         }
         $typeInfo = $typeInfo ?? new TypeInfo($schema);
-        $errors = static::visitUsingRules($schema, $typeInfo, $ast, $rules);
+        $errors = DocumentValidator::visitUsingRules($schema, $typeInfo, $ast, $rules);
         return $errors;
     }
 
@@ -111,7 +111,8 @@ class DocumentValidator
      */
     public static function allRules():array<string, AbstractValidationRule>
     {
-        if (!self::$initRules) {
+        if (!self::$initRules)
+        {
             static::$rules = \array_merge(static::defaultRules(), self::securityRules(), self::$rules);
             static::$initRules = true;
         }
@@ -121,7 +122,8 @@ class DocumentValidator
 
     public static function defaultRules():array<string, AbstractValidationRule>
     {
-        if (null === self::$defaultRules) {
+        if (null === self::$defaultRules)
+        {
             self::$defaultRules = [
                 UniqueOperationNames::class => new UniqueOperationNames(),
                 LoneAnonymousOperation::class => new LoneAnonymousOperation(),
@@ -236,46 +238,59 @@ class DocumentValidator
     public static function isValidLiteralValue(GraphQlType $type, $valueNode)
     {
         // A value must be provided if the type is non-null.
-        if ($type instanceof NoNull) {
-            if (!$valueNode || $valueNode instanceof NullValueNode) {
+        if ($type instanceof NoNull)
+        {
+            if (!$valueNode || $valueNode instanceof NullValueNode)
+            {
                 return [ 'Expected "' . Utils::printSafe($type) . '", found null.' ];
             }
             return static::isValidLiteralValue($type->getWrappedType(), $valueNode);
         }
 
-        if (!$valueNode || $valueNode instanceof NullValueNode) {
+        if (!$valueNode || $valueNode instanceof NullValueNode)
+        {
             return [];
         }
 
         // This function only tests literals, and assumes variables will provide
         // values of the correct type.
-        if ($valueNode instanceof VariableNode) {
+        if ($valueNode instanceof VariableNode)
+        {
             return [];
         }
 
         // Lists accept a non-list value as a list of one.
-        if ($type instanceof ListOfType) {
+        if ($type instanceof ListOfType)
+        {
             $itemType = $type->getWrappedType();
-            if ($valueNode instanceof ListValueNode) {
+            if ($valueNode instanceof ListValueNode)
+            {
                 $errors = [];
-                foreach($valueNode->values as $index => $itemNode) {
+                foreach($valueNode->values as $index => $itemNode)
+                {
                     $tmp = static::isValidLiteralValue($itemType, $itemNode);
 
-                    if ($tmp) {
-                        $errors = \array_merge($errors, Utils::map($tmp, function($error) use ($index) {
+                    if ($tmp)
+                    {
+                        $errors = \array_merge($errors, Utils::map($tmp, function($error, $_) use ($index)
+                        {
                             return "In element #$index: $error";
                         }));
                     }
                 }
                 return $errors;
-            } else {
+            }
+            else
+            {
                 return static::isValidLiteralValue($itemType, $valueNode);
             }
         }
 
         // Input objects check each defined field and look for undefined fields.
-        if ($type instanceof InputObjectType) {
-            if ($valueNode->kind !== NodeKind::OBJECT) {
+        if ($type instanceof InputObjectType)
+        {
+            if ($valueNode->kind !== NodeKind::OBJECT)
+            {
                 return [ "Expected \"{$type->name}\", found not an object." ];
             }
 
@@ -285,21 +300,25 @@ class DocumentValidator
             // Ensure every provided field is defined.
             $fieldNodes = $valueNode->fields;
 
-            foreach ($fieldNodes as $providedFieldNode) {
-                if (empty($fields[$providedFieldNode->name->value])) {
+            foreach ($fieldNodes as $providedFieldNode)
+            {
+                if (empty($fields[$providedFieldNode->name->value]))
+                {
                     $errors[] = "In field \"{$providedFieldNode->name->value}\": Unknown field.";
                 }
             }
 
             // Ensure every defined field is valid.
-            $fieldNodeMap = Utils::keyMap($fieldNodes, function($fieldNode) {return $fieldNode->name->value;});
-            foreach ($fields as $fieldName => $field) {
+            $fieldNodeMap = Utils::keyMap($fieldNodes, function($fieldNode, $_) {return $fieldNode->name->value;});
+            foreach ($fields as $fieldName => $field)
+            {
                 $result = static::isValidLiteralValue(
                     $field->getType(),
                     isset($fieldNodeMap[$fieldName]) ? $fieldNodeMap[$fieldName]->value : null
                 );
-                if ($result) {
-                    $errors = \array_merge($errors, Utils::map($result, function($error) use ($fieldName) {
+                if ($result)
+                {
+                    $errors = \array_merge($errors, Utils::map($result, function($error, $_) use ($fieldName) {
                         return "In field \"$fieldName\": $error";
                     }));
                 }
@@ -308,9 +327,11 @@ class DocumentValidator
             return $errors;
         }
 
-        if ($type instanceof LeafType) {
+        if ($type instanceof LeafType)
+        {
             // Scalars must parse to a non-null value
-            if (!$type->isValidLiteral($valueNode)) {
+            if (!$type->isValidLiteral($valueNode))
+            {
                 $printed = Printer::doPrint($valueNode);
                 return [ "Expected type \"{$type->name}\", found $printed." ];
             }
@@ -331,11 +352,11 @@ class DocumentValidator
      * @param AbstractValidationRule[] $rules
      * @return array
      */
-    public static function visitUsingRules(Schema $schema, TypeInfo $typeInfo, DocumentNode $documentNode, array<AbstractValidationRule> $rules):array<Error>
+    public static function visitUsingRules(Schema $schema, TypeInfo $typeInfo, DocumentNode $documentNode, array<string, AbstractValidationRule> $rules):array<Error>
     {
         $context = new ValidationContext($schema, $documentNode, $typeInfo);
         $visitors = [];
-        foreach ($rules as $rule) {
+        foreach ($rules as $key => $rule) {
             $visitors[] = $rule->getVisitor($context);
         }
         Visitor::visit($documentNode, Visitor::visitWithTypeInfo($typeInfo, Visitor::visitInParallel($visitors)));

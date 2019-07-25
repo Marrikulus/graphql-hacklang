@@ -1,5 +1,5 @@
-<?hh //strict
-//decl
+<?hh //partial
+
 namespace GraphQL\Validator;
 
 use GraphQL\Language\AST\FragmentSpreadNode;
@@ -20,6 +20,8 @@ use GraphQL\Type\Definition\InputType;
 use GraphQL\Type\Definition\OutputType;
 use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Utils\TypeInfo;
+
+
 
 /**
  * An instance of this class is passed as the "this" context to all validators,
@@ -51,7 +53,7 @@ class ValidationContext
     /**
      * @var FragmentDefinitionNode[]
      */
-    private $fragments;
+    private array<string, FragmentDefinitionNode> $fragments;
 
     /**
      * @var SplObjectStorage
@@ -86,6 +88,7 @@ class ValidationContext
         $this->ast = $ast;
         $this->typeInfo = $typeInfo;
         $this->errors = [];
+        $this->fragments = [];
         $this->fragmentSpreads = new SplObjectStorage();
         $this->recursivelyReferencedFragments = new SplObjectStorage();
         $this->variableUsages = new SplObjectStorage();
@@ -131,10 +134,13 @@ class ValidationContext
     public function getFragment($name)
     {
         $fragments = $this->fragments;
-        if (!$fragments) {
+        if (!$fragments)
+        {
             $fragments = [];
-            foreach ($this->getDocument()->definitions as $statement) {
-                if ($statement->kind === NodeKind::FRAGMENT_DEFINITION) {
+            foreach ($this->getDocument()->definitions as $statement)
+            {
+                if ($statement->kind === NodeKind::FRAGMENT_DEFINITION && $statement instanceof FragmentDefinitionNode)
+                {
                     $fragments[$statement->name->value] = $statement;
                 }
             }
@@ -152,7 +158,7 @@ class ValidationContext
         $spreads = isset($this->fragmentSpreads[$node]) ? $this->fragmentSpreads[$node] : null;
         if (!$spreads) {
             $spreads = [];
-            $setsToVisit = [$node->selectionSet];
+            $setsToVisit = [$node->getSelectionSet()];
             while (!empty($setsToVisit)) {
                 $set = \array_pop(&$setsToVisit);
 
