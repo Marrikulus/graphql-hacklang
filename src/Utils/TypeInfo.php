@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Utils;
 
 use GraphQL\Error\InvariantViolation;
@@ -10,6 +9,7 @@ use GraphQL\Language\AST\NamedTypeNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\NonNullTypeNode;
+use namespace GraphQL\Language\AST;
 use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\CompositeType;
 use GraphQL\Type\Definition\Directive;
@@ -26,6 +26,7 @@ use GraphQL\Type\Definition\GraphQlType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Type\Introspection;
+use namespace HH\Lib\{C};
 
 /**
  * Class TypeInfo
@@ -148,20 +149,31 @@ class TypeInfo
     {
         $name = $fieldNode->name->value;
         $schemaMeta = Introspection::schemaMetaFieldDef();
-        if ($name === $schemaMeta->name && $schema->getQueryType() === $parentType) {
+        if ($name === $schemaMeta->name && $schema->getQueryType() === $parentType)
+        {
             return $schemaMeta;
         }
 
         $typeMeta = Introspection::typeMetaFieldDef();
-        if ($name === $typeMeta->name && $schema->getQueryType() === $parentType) {
+        if ($name === $typeMeta->name && $schema->getQueryType() === $parentType)
+        {
             return $typeMeta;
         }
+
         $typeNameMeta = Introspection::typeNameMetaFieldDef();
-        if ($name === $typeNameMeta->name && $parentType instanceof CompositeType) {
+        if ($name === $typeNameMeta->name && $parentType instanceof CompositeType)
+        {
             return $typeNameMeta;
         }
-        if ($parentType instanceof ObjectType ||
-            $parentType instanceof InterfaceType) {
+
+        if ($parentType instanceof ObjectType)
+        {
+            $fields = $parentType->getFields();
+            return isset($fields[$name]) ? $fields[$name] : null;
+        }
+
+        if($parentType instanceof InterfaceType)
+        {
             $fields = $parentType->getFields();
             return isset($fields[$name]) ? $fields[$name] : null;
         }
@@ -197,12 +209,12 @@ class TypeInfo
     /**
      * @var Directive
      */
-    private $directive;
+    private ?Directive $directive;
 
     /**
      * @var FieldArgument
      */
-    private $argument;
+    private ?FieldArgument $argument;
 
     /**
      * @var mixed
@@ -258,9 +270,10 @@ class TypeInfo
     /**
      * @return FieldDefinition
      */
-    public function getFieldDef()
+    public function getFieldDef():?FieldDefinition
     {
-        if (!empty($this->fieldDefStack)) {
+        if (!empty($this->fieldDefStack))
+        {
             return $this->fieldDefStack[\count($this->fieldDefStack) - 1];
         }
         return null;
@@ -269,7 +282,7 @@ class TypeInfo
     /**
      * @return Directive|null
      */
-    public function getDirective()
+    public function getDirective():?Directive
     {
         return $this->directive;
     }
@@ -277,7 +290,7 @@ class TypeInfo
     /**
      * @return FieldArgument|null
      */
-    public function getArgument()
+    public function getArgument():?FieldArgument
     {
         return $this->argument;
     }
@@ -297,13 +310,18 @@ class TypeInfo
     {
         $schema = $this->schema;
 
-        switch ($node->kind) {
+        switch ($node->kind)
+        {
             case NodeKind::SELECTION_SET:
+            if ($node instanceof AST\SelectionSetNode)
+            {
                 $namedType = GraphQlType::getNamedType($this->getType());
                 $this->parentTypeStack[] = GraphQlType::isCompositeType($namedType) ? $namedType : null;
-                break;
+            }break;
 
             case NodeKind::FIELD:
+            if ($node instanceof AST\FieldNode)
+            {
                 $parentType = $this->getParentType();
                 $fieldDef = null;
                 if ($parentType) {
@@ -311,13 +329,17 @@ class TypeInfo
                 }
                 $this->fieldDefStack[] = $fieldDef; // push
                 $this->typeStack[] = $fieldDef ? $fieldDef->getType() : null; // push
-                break;
+            }break;
 
             case NodeKind::DIRECTIVE:
+            if ($node instanceof AST\DirectiveNode)
+            {
                 $this->directive = $schema->getDirective($node->name->value);
-                break;
+            }break;
 
             case NodeKind::OPERATION_DEFINITION:
+            if ($node instanceof AST\OperationDefinitionNode)
+            {
                 $type = null;
                 if ($node->operation === 'query') {
                     $type = $schema->getQueryType();
@@ -327,39 +349,56 @@ class TypeInfo
                     $type = $schema->getSubscriptionType();
                 }
                 $this->typeStack[] = $type; // push
-                break;
+            }break;
 
             case NodeKind::INLINE_FRAGMENT:
-            case NodeKind::FRAGMENT_DEFINITION:
+            if ($node instanceof AST\InlineFragmentNode)
+            {
                 $typeConditionNode = $node->typeCondition;
                 $outputType = $typeConditionNode ? self::typeFromAST($schema, $typeConditionNode) : $this->getType();
                 $this->typeStack[] = GraphQlType::isOutputType($outputType) ? $outputType : null; // push
-                break;
+            }break;
+            case NodeKind::FRAGMENT_DEFINITION:
+            if ($node instanceof AST\FragmentDefinitionNode)
+            {
+                $typeConditionNode = $node->typeCondition;
+                $outputType = $typeConditionNode ? self::typeFromAST($schema, $typeConditionNode) : $this->getType();
+                $this->typeStack[] = GraphQlType::isOutputType($outputType) ? $outputType : null; // push
+            }break;
 
             case NodeKind::VARIABLE_DEFINITION:
+            if ($node instanceof AST\VariableDefinitionNode)
+            {
                 $inputType = self::typeFromAST($schema, $node->type);
                 $this->inputTypeStack[] = GraphQlType::isInputType($inputType) ? $inputType : null; // push
-                break;
+            }break;
 
             case NodeKind::ARGUMENT:
-                $fieldOrDirective = $this->getDirective() ?: $this->getFieldDef();
+            if ($node instanceof AST\ArgumentNode)
+            {
+                $fieldOrDirective = $this->getDirective() ?? $this->getFieldDef();
                 $argDef = $argType = null;
-                if ($fieldOrDirective) {
-                    $argDef = Utils::find($fieldOrDirective->args, function($arg) use ($node) {return $arg->name === $node->name->value;});
+                if ($fieldOrDirective)
+                {
+                    $argDef = C\find($fieldOrDirective->args, function($arg) use ($node) {return $arg->name === $node->name->value;});
                     if ($argDef) {
                         $argType = $argDef->getType();
                     }
                 }
                 $this->argument = $argDef;
                 $this->inputTypeStack[] = $argType; // push
-                break;
+            }break;
 
             case NodeKind::LST:
+            if ($node instanceof AST\ListValueNode)
+            {
                 $listType = GraphQlType::getNullableType($this->getInputType());
                 $this->inputTypeStack[] = ($listType instanceof ListOfType ? $listType->getWrappedType() : null); // push
-                break;
+            }break;
 
             case NodeKind::OBJECT_FIELD:
+            if ($node instanceof AST\ObjectFieldNode)
+            {
                 $objectType = GraphQlType::getNamedType($this->getInputType());
                 $fieldType = null;
                 if ($objectType instanceof InputObjectType) {
@@ -368,16 +407,18 @@ class TypeInfo
                     $fieldType = $inputField ? $inputField->getType() : null;
                 }
                 $this->inputTypeStack[] = $fieldType;
-                break;
+            }break;
 
             case NodeKind::ENUM:
+            if ($node instanceof AST\EnumValueNode)
+            {
                 $enumType = GraphQlType::getNamedType($this->getInputType());
                 $enumValue = null;
                 if ($enumType instanceof EnumType) {
                     $enumValue = $enumType->getValue($node->value);
                 }
                 $this->enumValue = $enumValue;
-                break;
+            }break;
         }
     }
 

@@ -13,6 +13,8 @@ use stdClass;
 type callback1arg = (function(mixed): mixed);
 type callback2arg = (function(mixed, mixed): mixed);
 
+type Predicate<Tv, Tk> = (function(Tv, Tk): bool);
+
 class Utils
 {
     public static function undefined():stdClass
@@ -58,7 +60,7 @@ class Utils
      * @param callable $predicate
      * @return null
      */
-    public static function find<Tv>(array<Tv> $traversable, callback2arg $predicate):?Tv
+    public static function find<Tv, Tk>(array<Tk, Tv> $traversable, Predicate<Tv, Tk> $predicate):?Tv
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 
@@ -76,7 +78,7 @@ class Utils
      * @return array
      * @throws \Exception
      */
-    public static function filter<Tk, Tv>(array<Tk, Tv> $traversable, callback2arg $predicate):array<Tv>
+    public static function filter<Tk, Tv>(array<Tk, Tv> $traversable, Predicate<Tv, Tk> $predicate):array<Tv>
     {
         self::invariant(is_array($traversable) || $traversable instanceof \Traversable, __METHOD__ . ' expects array or Traversable');
 

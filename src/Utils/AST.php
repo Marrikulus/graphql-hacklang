@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //decl
 namespace GraphQL\Utils;
 
 use GraphQL\Error\InvariantViolation;
@@ -400,10 +399,12 @@ class AST
             return $coercedObj;
         }
 
-        if ($type instanceof LeafType) {
+        if ($type instanceof LeafType)
+        {
             $parsed = $type->parseLiteral($valueNode);
 
-            if (null === $parsed && !$type->isValidLiteral($valueNode)) {
+            if (null === $parsed && !$type->isValidLiteral($valueNode))
+            {
                 // Invalid values represent a failure to parse correctly, in which case
                 // no value is returned.
                 return $undefined;
@@ -424,7 +425,7 @@ class AST
      * @return Type
      * @throws InvariantViolation
      */
-    public static function typeFromAST(Schema $schema, Node $inputTypeNode)
+    public static function typeFromAST(Schema $schema, Node $inputTypeNode):?GraphQlType
     {
         if ($inputTypeNode instanceof ListTypeNode)
         {
@@ -437,7 +438,8 @@ class AST
             return $innerType ? new NoNull($innerType) : null;
         }
 
-        Utils::invariant($inputTypeNode && $inputTypeNode instanceof NamedTypeNode, 'Must be a named type');
+        Utils::invariant($inputTypeNode !== null && $inputTypeNode instanceof NamedTypeNode, 'Must be a named type');
+        invariant($inputTypeNode !== null && $inputTypeNode instanceof NamedTypeNode, 'Must be a named type');
         return $schema->getType($inputTypeNode->name->value);
     }
 
@@ -448,10 +450,10 @@ class AST
      * @param $variables
      * @return bool
      */
-    private static function isMissingVariable($valueNode, $variables):bool
+    private static function isMissingVariable(Node $valueNode, ?array<string, mixed> $variables):bool
     {
         return $valueNode instanceof VariableNode &&
-        (!$variables || !\array_key_exists($valueNode->name->value, $variables));
+        ($variables === null || !\array_key_exists($valueNode->name->value, $variables));
     }
 
     /**
@@ -470,7 +472,8 @@ class AST
             {
                 if ($def instanceof OperationDefinitionNode)
                 {
-                    if (!$operationName || (isset($def->name->value) && $def->name->value === $operationName))
+                    $nameNode = $def->name;
+                    if ($operationName === null || ($nameNode !== null && $nameNode->value === $operationName))
                     {
                         return $def->operation;
                     }

@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //decl
 namespace GraphQL\Utils;
 
 use GraphQL\Language\Printer;

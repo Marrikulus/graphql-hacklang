@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Utils;
 
 use GraphQL\Type\Schema;
@@ -19,7 +18,7 @@ class TypeComparators
      * @param GraphQlType $typeB
      * @return bool
      */
-    public static function isEqualType(GraphQlType $typeA, GraphQlType $typeB)
+    public static function isEqualType(GraphQlType $typeA, GraphQlType $typeB):bool
     {
         // Equivalent types are equal.
         if ($typeA === $typeB) {
@@ -49,7 +48,7 @@ class TypeComparators
      * @param GraphQlType $superType
      * @return bool
      */
-    public static function isTypeSubTypeOf(Schema $schema, GraphQlType $maybeSubType, GraphQlType $superType)
+    public static function isTypeSubTypeOf(Schema $schema, $maybeSubType, $superType):bool
     {
         // Equivalent type is a valid subtype
         if ($maybeSubType === $superType) {
@@ -102,7 +101,7 @@ class TypeComparators
      * @param CompositeType $typeB
      * @return bool
      */
-    public static function doTypesOverlap(Schema $schema, CompositeType $typeA, CompositeType $typeB)
+    public static function doTypesOverlap(Schema $schema, $typeA, $typeB):bool
     {
         // Equivalent types overlap
         if ($typeA === $typeB) {

@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Utils;
 
 /**
@@ -46,22 +45,22 @@ class MixedStore implements \ArrayAccess<mixed,mixed>
     /**
      * @var mixed
      */
-    private $lastArrayValue;
+    private mixed $lastArrayValue;
 
     /**
      * @var mixed
      */
-    private $nullValue;
+    private mixed $nullValue;
 
     /**
      * @var bool
      */
-    private $nullValueIsSet;
+    private bool $nullValueIsSet;
 
     /**
      * @var mixed
      */
-    private $trueValue;
+    private mixed $trueValue;
 
     /**
      * @var bool
@@ -71,7 +70,7 @@ class MixedStore implements \ArrayAccess<mixed,mixed>
     /**
      * @var mixed
      */
-    private bool $falseValue;
+    private mixed $falseValue;
 
     /**
      * @var bool
