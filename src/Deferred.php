@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL;
 
 use GraphQL\Executor\Promise\Adapter\SyncPromise;
@@ -9,27 +8,28 @@ class Deferred
     /**
      * @var \SplQueue
      */
-    private static $queue;
+    private static ?\SplQueue $queue;
 
     /**
      * @var callable
      */
-    private $callback;
+    private (function():mixed) $callback;
 
     /**
      * @var SyncPromise
      */
-    public $promise;
+    public SyncPromise $promise;
 
     public static function getQueue()
     {
-        return self::$queue ?: self::$queue = new \SplQueue();
+        return self::$queue ?? self::$queue = new \SplQueue();
     }
 
     public static function runQueue()
     {
         $q = self::$queue;
-        while ($q && !$q->isEmpty()) {
+        while ($q && !$q->isEmpty())
+        {
             /** @var self $dfd */
             $dfd = $q->dequeue();
             $dfd->run();

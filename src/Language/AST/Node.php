@@ -39,6 +39,11 @@ abstract class Node
         invariant($kind !== "", "Kind should never be empty string");
     }
 
+    public function isList(): bool
+    {
+        return false;
+    }
+
     /**
      * @return $this
      */
@@ -92,7 +97,7 @@ abstract class Node
      * @param bool $recursive
      * @return array
      */
-    public function toArray(bool $recursive = false):array<_>
+    public function toArray(bool $recursive = false):array<string, _>
     {
         if ($recursive) {
             return $this->recursiveToArray($this);
@@ -114,7 +119,7 @@ abstract class Node
      * @param Node $node
      * @return array
      */
-    private function recursiveToArray(Node $node):array<_>
+    private function recursiveToArray(Node $node):array<string, _>
     {
         $result = [
             'kind' => $node->kind,

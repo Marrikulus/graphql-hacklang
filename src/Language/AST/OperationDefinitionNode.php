@@ -1,7 +1,7 @@
 <?hh
 namespace GraphQL\Language\AST;
 
-class OperationDefinitionNode extends Node implements DefinitionNode, HasSelectionSet
+class OperationDefinitionNode extends Node implements DefinitionNode, HasSelectionSet, HasDirectives
 {
     public function __construct(
         public ?NameNode $name,
@@ -12,5 +12,15 @@ class OperationDefinitionNode extends Node implements DefinitionNode, HasSelecti
         ?Location $loc = null)
     {
         parent::__construct($loc, NodeKind::OPERATION_DEFINITION);
+    }
+
+    public function getSelectionSet():SelectionSetNode
+    {
+        return $this->selectionSet;
+    }
+
+    public function getDirectives():array<DirectiveNode>
+    {
+        return $this->directives;
     }
 }

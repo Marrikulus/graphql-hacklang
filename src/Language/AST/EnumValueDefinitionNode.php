@@ -1,7 +1,7 @@
 <?hh //strict
 namespace GraphQL\Language\AST;
 
-class EnumValueDefinitionNode extends Node
+class EnumValueDefinitionNode extends Node implements HasDirectives
 {
     public function __construct(
         public NameNode $name,
@@ -10,5 +10,10 @@ class EnumValueDefinitionNode extends Node
         ?Location $loc = null)
     {
         parent::__construct($loc, NodeKind::ENUM_VALUE_DEFINITION);
+    }
+
+    public function getDirectives():array<DirectiveNode>
+    {
+    	return $this->directives;
     }
 }

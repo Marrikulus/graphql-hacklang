@@ -4,6 +4,7 @@ namespace GraphQL\Type\Definition;
 
 interface WrappingType
 {
+	require extends GraphQlType;
     /**
      * @param bool $recurse
      * @return ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType

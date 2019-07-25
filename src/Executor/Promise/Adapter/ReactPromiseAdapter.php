@@ -1,4 +1,4 @@
-<?hh //strict
+<?hh //partial
 //decl
 namespace GraphQL\Executor\Promise\Adapter;
 

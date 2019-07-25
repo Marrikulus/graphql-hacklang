@@ -1,5 +1,4 @@
-<?hh //strict
-//partial
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
@@ -32,9 +31,11 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
      * UnionType constructor.
      * @param $config
      */
+    /* HH_FIXME[4032]*/
     public function __construct($config)
     {
-        if (!isset($config['name'])) {
+        if (!\array_key_exists('name', $config))
+        {
             $config['name'] = $this->tryInferName();
         }
 
@@ -53,8 +54,8 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
          * Object type.
          */
         $this->name = $config['name'];
-        $this->description = isset($config['description']) ? $config['description'] : null;
-        $this->astNode = isset($config['astNode']) ? $config['astNode'] : null;
+        $this->description = \array_key_exists('description', $config) ? $config['description'] : null;
+        $this->astNode = \array_key_exists('astNode', $config) ? $config['astNode'] : null;
         $this->config = $config ?? [];
     }
 
@@ -133,7 +134,7 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
      */
     public function resolveType($objectValue, $context, ResolveInfo $info)
     {
-        if (isset($this->config['resolveType']))
+        if (\array_key_exists('resolveType', $this->config))
         {
             $fn = $this->config['resolveType'];
             /* HH_FIXME[4009]*/
@@ -151,11 +152,12 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
 
         $types = $this->getTypes();
         Utils::invariant(
-            !empty($types),
+            $types !== [],
             "{$this->name} types must not be empty"
         );
 
-        if (isset($this->config['resolveType'])) {
+        if (\array_key_exists('resolveType', $this->config))
+        {
             Utils::invariant(
                 \is_callable($this->config['resolveType']),
                 "{$this->name} must provide \"resolveType\" as a function."
@@ -171,13 +173,14 @@ class UnionType extends GraphQlType implements AbstractType, OutputType, Composi
                 Utils::printSafe($objType)
             );
             Utils::invariant(
-                !isset($includedTypeNames[$objType->name]),
+                !\array_key_exists($objType->name, $includedTypeNames),
                 "{$this->name} can include {$objType->name} type only once."
             );
             $includedTypeNames[$objType->name] = true;
-            if (!isset($this->config['resolveType'])) {
+            if (!\array_key_exists('resolveType', $this->config))
+            {
                 Utils::invariant(
-                    isset($objType->config['isTypeOf']) && \is_callable($objType->config['isTypeOf']),
+                    \array_key_exists('isTypeOf', $objType->config) && \is_callable($objType->config['isTypeOf']),
                     "Union type \"{$this->name}\" does not provide a \"resolveType\" " .
                     "function and possible type \"{$objType->name}\" does not provide an " .
                     '"isTypeOf" function. There is no way to resolve this possible type ' .

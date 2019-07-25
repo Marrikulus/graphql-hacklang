@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //decl
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
@@ -50,7 +49,7 @@ class Config
      *
      * @deprecated See https://github.com/webonyx/graphql-php/issues/148 for alternatives
      */
-    public static function disableValidation()
+    public static function disableValidation():void
     {
         self::$enableValidation = false;
     }
@@ -61,7 +60,7 @@ class Config
      *
      * @deprecated See https://github.com/webonyx/graphql-php/issues/148 for alternatives
      */
-    public static function enableValidation(@bool $allowCustomOptions = true)
+    public static function enableValidation(@bool $allowCustomOptions = true):void
     {
         Warning::warnOnce(
             'GraphQL\Type\Defintion\Config is deprecated and will be removed in the next version. ' .
@@ -77,7 +76,7 @@ class Config
     /**
      * @return bool
      */
-    public static function isValidationEnabled()
+    public static function isValidationEnabled():bool
     {
         return self::$enableValidation;
     }
@@ -100,13 +99,13 @@ class Config
      * @param array $config
      * @param array $definition
      */
-    public static function validateField(?string $typeName, array $config, array $definition)
+    public static function validateField(?string $typeName, array $config, array $definition):void
     {
         if (self::$enableValidation)
         {
-            if (!isset($config['name']))
+            if (!\array_key_exists('name', $config))
             {
-                $pathStr = isset($config['type'])
+                $pathStr = \array_key_exists('type', $config)
                     ? '(Unknown Field of type: ' . Utils::printSafe($config['type']) . ')'
                     : '(Unknown Field)';
             }
@@ -182,7 +181,8 @@ class Config
         $type = Utils::getVariableType($value);
         $err = 'Error in "'.$typeName.'" type definition: expecting "%s" at "' . $pathStr . '", but got "' . $type . '"';
 
-        if ($def instanceof \stdClass) {
+        if ($def instanceof \stdClass)
+        {
             if (($def->flags & self::REQUIRED) === 0 && $value === null) {
                 return ;
             }
@@ -236,7 +236,8 @@ class Config
                 return ; // Allow nulls for non-required fields
             }
 
-            switch (true) {
+            switch (true)
+            {
                 case $def & self::ANY:
                     break;
                 case $def & self::BOOLEAN:

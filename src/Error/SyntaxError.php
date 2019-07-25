@@ -32,7 +32,7 @@ class SyntaxError extends Error
      * @param SourceLocation $location
      * @return string
      */
-    public static function highlightSourceAtLocation(Source $source, SourceLocation $location)
+    public static function highlightSourceAtLocation(Source $source, SourceLocation $location):string
     {
         $line = $location->line;
         $lineOffset = $source->locationOffset->line - 1;
@@ -64,7 +64,7 @@ class SyntaxError extends Error
             ($line < \count($lines) ? $lpad($padLen, $nextLineNum) . ': ' . $lines[$line] . "\n" : '');
     }
 
-    public static function getColumnOffset(Source $source, SourceLocation $location)
+    public static function getColumnOffset(Source $source, SourceLocation $location):int
     {
         return $location->line === 1 ? $source->locationOffset->column - 1 : 0;
     }

@@ -5,7 +5,7 @@ class DirectiveNode extends Node
 {
     public function __construct(
         public NameNode $name,
-        public array<Node> $arguments,
+        public array<ArgumentNode> $arguments,
         ?Location $loc = null)
     {
         parent::__construct($loc, NodeKind::DIRECTIVE);

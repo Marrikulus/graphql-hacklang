@@ -1,5 +1,4 @@
 <?hh //strict
-//partial
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\Error;
@@ -35,7 +34,7 @@ When expected as an input type, any string (such as `"4"`) or integer
      * @param mixed $value
      * @return string
      */
-    public function serialize($value)
+    public function serialize(mixed $value):string
     {
         if ($value === true) {
             return 'true';
@@ -56,7 +55,7 @@ When expected as an input type, any string (such as `"4"`) or integer
      * @param mixed $value
      * @return string
      */
-    public function parseValue($value)
+    public function parseValue(mixed $value):?string
     {
         return (($value is string) || ($value is int)) ? (string) $value : null;
     }
@@ -65,7 +64,7 @@ When expected as an input type, any string (such as `"4"`) or integer
      * @param $ast
      * @return null|string
      */
-    public function parseLiteral(ValueNode $ast):mixed
+    public function parseLiteral(ValueNode<_> $ast):mixed
     {
         if ($ast instanceof StringValueNode || $ast instanceof IntValueNode) {
             return $ast->getValue();

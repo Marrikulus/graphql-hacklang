@@ -110,10 +110,10 @@ class GraphQL
         PromiseAdapter $promiseAdapter,
         \GraphQL\Type\Schema $schema,
         $source,
-        $rootValue = null,
-        $context = null,
+        mixed $rootValue = null,
+        mixed $context = null,
         $variableValues = null,
-        $operationName = null,
+        ?string $operationName = null,
         ?callable $fieldResolver = null,
         ?array $validationRules = null
     )
@@ -177,10 +177,10 @@ class GraphQL
     public static function execute(
         \GraphQL\Type\Schema $schema,
         $source,
-        $rootValue = null,
-        $contextValue = null,
+        mixed $rootValue = null,
+        mixed $contextValue = null,
         $variableValues = null,
-        $operationName = null
+        ?string $operationName = null
     )
     {
         $result = self::promiseToExecute(
@@ -218,10 +218,10 @@ class GraphQL
     public static function executeAndReturnResult(
         \GraphQL\Type\Schema $schema,
         $source,
-        $rootValue = null,
-        $contextValue = null,
+        mixed $rootValue = null,
+        mixed $contextValue = null,
         $variableValues = null,
-        $operationName = null
+        ?string $operationName = null
     )
     {
         $result = self::promiseToExecute(

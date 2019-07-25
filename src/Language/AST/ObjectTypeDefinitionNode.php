@@ -1,7 +1,7 @@
 <?hh //strict
 namespace GraphQL\Language\AST;
 
-class ObjectTypeDefinitionNode extends Node implements TypeDefinitionNode
+class ObjectTypeDefinitionNode extends Node implements TypeDefinitionNode, HasDirectives
 {
     public function __construct(
         public NameNode $name,
@@ -12,5 +12,10 @@ class ObjectTypeDefinitionNode extends Node implements TypeDefinitionNode
         ?Location $loc = null)
     {
         parent::__construct($loc, NodeKind::OBJECT_TYPE_DEFINITION);
+    }
+
+    public function getDirectives():array<DirectiveNode>
+    {
+        return $this->directives;
     }
 }

@@ -14,12 +14,13 @@ class NoNull extends GraphQlType implements WrappingType, OutputType, InputType
     /**
      * @var ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType
      */
-    private $ofType;
+    private GraphQlType $ofType;
 
     /**
      * @param callable|Type $type
      * @throws \Exception
      */
+    /* HH_FIXME[4032]*/
     public function __construct($type)
     {
         if (!$type instanceof GraphQlType && !\is_callable($type)) {
@@ -45,7 +46,7 @@ class NoNull extends GraphQlType implements WrappingType, OutputType, InputType
      * @return ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType
      * @throws InvariantViolation
      */
-    public function getWrappedType(@bool $recurse = false)
+    public function getWrappedType(@bool $recurse = false):GraphQlType
     {
         $type = $this->ofType;
 

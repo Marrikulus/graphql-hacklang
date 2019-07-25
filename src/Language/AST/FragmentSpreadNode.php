@@ -1,7 +1,7 @@
 <?hh //strict
 namespace GraphQL\Language\AST;
 
-class FragmentSpreadNode extends Node implements SelectionNode
+class FragmentSpreadNode extends Node implements SelectionNode, HasDirectives
 {
     public function __construct(
         public NameNode $name,
@@ -9,5 +9,10 @@ class FragmentSpreadNode extends Node implements SelectionNode
         ?Location $loc = null)
     {
         parent::__construct($loc, NodeKind::FRAGMENT_SPREAD);
+    }
+
+    public function getDirectives():array<DirectiveNode>
+    {
+    	return $this->directives;
     }
 }

@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //decl
 namespace GraphQL\Executor\Promise\Adapter;
 
 use GraphQL\Deferred;

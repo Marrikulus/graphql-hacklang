@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Type\Definition;
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Language\AST\FieldDefinitionNode;
@@ -94,32 +93,45 @@ class FieldDefinition
 
     public static function defineFieldMap(GraphQlType $type, $fields)
     {
-        if (\is_callable($fields)) {
+        if (\is_callable($fields))
+        {
             $fields = $fields();
         }
-        if (!is_array($fields)) {
+        if (!is_array($fields))
+        {
             throw new InvariantViolation(
                 "{$type->name} fields must be an array or a callable which returns such an array."
             );
         }
         $map = [];
-        foreach ($fields as $name => $field) {
-            if (is_array($field)) {
-                if (!isset($field['name']) && ($name is string)) {
+        foreach ($fields as $name => $field)
+        {
+            if (is_array($field))
+            {
+                if (!isset($field['name']) && ($name is string))
+                {
                     $field['name'] = $name;
                 }
-                if (isset($field['args']) && !is_array($field['args'])) {
+                if (isset($field['args']) && !is_array($field['args']))
+                {
                     throw new InvariantViolation(
                         "{$type->name}.{$name} args must be an array."
                     );
                 }
                 $fieldDef = self::create($field);
-            } else if ($field instanceof FieldDefinition) {
+            }
+            else if ($field instanceof FieldDefinition)
+            {
                 $fieldDef = $field;
-            } else {
-                if (($name is string) && $field) {
+            }
+            else
+            {
+                if (($name is string) && $field)
+                {
                     $fieldDef = self::create(['name' => $name, 'type' => $field]);
-                } else {
+                }
+                else
+                {
                     throw new InvariantViolation(
                         "{$type->name}.$name field config must be an array, but got: " . Utils::printSafe($field)
                     );
@@ -243,7 +255,7 @@ class FieldDefinition
      * @param GraphQlType $parentType
      * @throws InvariantViolation
      */
-    public function assertValid(GraphQlType $parentType)
+    public function assertValid(GraphQlType $parentType):void
     {
         try {
             Utils::assertValidName($this->name);

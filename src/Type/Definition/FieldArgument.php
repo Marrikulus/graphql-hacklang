@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
@@ -57,10 +56,13 @@ class FieldArgument
     public static function createMap(array $config)
     {
         $map = [];
-        foreach ($config as $name => $argConfig) {
-            if (!is_array($argConfig)) {
+        foreach ($config as $name => $argConfig)
+        {
+            if (!is_array($argConfig))
+            {
                 $argConfig = ['type' => $argConfig];
             }
+
             $map[] = new self($argConfig + ['name' => $name]);
         }
         return $map;
@@ -106,7 +108,7 @@ class FieldArgument
     /**
      * @return bool
      */
-    public function defaultValueExists()
+    public function defaultValueExists():bool
     {
         return $this->defaultValueExists;
     }

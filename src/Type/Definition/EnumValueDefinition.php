@@ -1,5 +1,4 @@
-<?hh //strict
-//partial
+<?hh //partial
 namespace GraphQL\Type\Definition;
 use GraphQL\Language\AST\EnumValueDefinitionNode;
 use GraphQL\Utils\Utils;
@@ -13,27 +12,27 @@ class EnumValueDefinition
     /**
      * @var string
      */
-    public $name;
+    public string $name;
 
     /**
      * @var mixed
      */
-    public $value;
+    public mixed $value;
 
     /**
      * @var string|null
      */
-    public $deprecationReason;
+    public ?string $deprecationReason;
 
     /**
      * @var string|null
      */
-    public $description;
+    public ?string $description;
 
     /**
      * @var EnumValueDefinitionNode|null
      */
-    public $astNode;
+    public ?EnumValueDefinitionNode $astNode;
 
     /**
      * @var array
@@ -42,11 +41,11 @@ class EnumValueDefinition
 
     public function __construct(array $config)
     {
-        $this->name = isset($config['name']) ? $config['name'] : null;
-        $this->value = isset($config['value']) ? $config['value'] : null;
-        $this->deprecationReason = isset($config['deprecationReason']) ? $config['deprecationReason'] : null;
-        $this->description = isset($config['description']) ? $config['description'] : null;
-        $this->astNode = isset($config['astNode']) ? $config['astNode'] : null;
+        $this->name = \array_key_exists('name', $config) ? $config['name'] : null;
+        $this->value = \array_key_exists('value', $config) ? $config['value'] : null;
+        $this->deprecationReason = \array_key_exists('deprecationReason', $config) ? $config['deprecationReason'] : null;
+        $this->description = \array_key_exists('description', $config) ? $config['description'] : null;
+        $this->astNode = \array_key_exists('astNode', $config) ? $config['astNode'] : null;
 
         $this->config = $config;
     }
@@ -54,7 +53,7 @@ class EnumValueDefinition
     /**
      * @return bool
      */
-    public function isDeprecated()
+    public function isDeprecated():bool
     {
         return !!$this->deprecationReason;
     }

@@ -95,6 +95,9 @@ use GraphQL\Utils\TypeInfo;
  *       ]
  *     ]);
  */
+
+
+
 class Visitor
 {
     public static array<string, array<string>> $visitorKeys = [
@@ -149,7 +152,7 @@ class Visitor
      * @return Node|mixed
      * @throws \Exception
      */
-    public static function visit(mixed $root, array<_> $visitor, ?array<string, array<string>> $keyMap = null):mixed
+    public static function visit(mixed $root, array<string, _> $visitor, ?array<string, array<string>> $keyMap = null):mixed
     {
         $visitorKeys = $keyMap ?? Visitor::$visitorKeys;
 
@@ -231,7 +234,7 @@ class Visitor
             {
                 $key = $UNDEFINED;
                 $node = $newRoot;
-                if ($parent)
+                if ($parent !== null)
                 {
                     if(is_array($keys))
                     {
@@ -257,7 +260,7 @@ class Visitor
                     continue;
                 }
 
-                if ($parent)
+                if ($parent !== null)
                 {
                     $path[] = $key;
                 }
@@ -344,14 +347,14 @@ class Visitor
 
                 $index = -1;
                 $edits = [];
-                if ($parent)
+                if ($parent !== null)
                 {
                     $ancestors[] = $parent;
                 }
                 $parent = $node;
             }
 
-        } while ($stack);
+        } while ($stack !== null);
 
         if (\count($edits) !== 0)
         {
@@ -485,7 +488,7 @@ class Visitor
      * Creates a new visitor instance which maintains a provided TypeInfo instance
      * along with visiting visitor.
      */
-    public static function visitWithTypeInfo(TypeInfo $typeInfo, array<string, _> $visitor):array
+    public static function visitWithTypeInfo(TypeInfo $typeInfo, array<string, _> $visitor):array<string, (function(mixed):mixed)>
     {
         return [
             'enter' => function ($node) use ($typeInfo, $visitor) {
@@ -531,14 +534,18 @@ class Visitor
             return $kindVisitor;
         }
 
-        if (is_array($kindVisitor)) {
+        if (is_array($kindVisitor))
+        {
             if ($isLeaving) {
                 $kindSpecificVisitor = \array_key_exists('leave', $kindVisitor) ? $kindVisitor['leave'] : null;
-            } else {
+            }
+            else
+            {
                 $kindSpecificVisitor = \array_key_exists('enter', $kindVisitor) ? $kindVisitor['enter'] : null;
             }
 
-            if ($kindSpecificVisitor && \is_callable($kindSpecificVisitor)) {
+            if ($kindSpecificVisitor && \is_callable($kindSpecificVisitor))
+            {
                 // { Kind: { enter() {}, leave() {} } }
                 return $kindSpecificVisitor;
             }
@@ -548,14 +555,17 @@ class Visitor
         $visitor += ['leave' => null, 'enter' => null];
         $specificVisitor = $isLeaving ? $visitor['leave'] : $visitor['enter'];
 
-        if ($specificVisitor) {
-            if (\is_callable($specificVisitor)) {
+        if ($specificVisitor)
+        {
+            if (\is_callable($specificVisitor))
+            {
                 // { enter() {}, leave() {} }
                 return $specificVisitor;
             }
             $specificKindVisitor = \array_key_exists($kind, $specificVisitor) ? $specificVisitor[$kind] : null;
 
-            if (\is_callable($specificKindVisitor)) {
+            if (\is_callable($specificKindVisitor))
+            {
                 // { enter: { Kind() {} }, leave: { Kind() {} } }
                 return $specificKindVisitor;
             }

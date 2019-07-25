@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //decl
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Utils\Utils;

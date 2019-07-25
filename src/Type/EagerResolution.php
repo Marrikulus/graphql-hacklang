@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Type;
 
 use GraphQL\Type\Definition\AbstractType;
@@ -25,12 +24,12 @@ class EagerResolution implements Resolution
     /**
      * @var Type[]
      */
-    private $typeMap = [];
+    private array<string, GraphQlType> $typeMap = [];
 
     /**
      * @var array<string, ObjectType[]>
      */
-    private $implementations = [];
+    private array<string, array<ObjectType>> $implementations = [];
 
     /**
      * EagerResolution constructor.
@@ -43,12 +42,16 @@ class EagerResolution implements Resolution
             $typeMap = TypeInfo::extractTypes($type, $typeMap);
         }
 
+        /* HH_FIXME[4110]*/
         $this->typeMap = $typeMap + GraphQlType::getInternalTypes();
 
         // Keep track of all possible types for abstract types
-        foreach ($this->typeMap as $typeName => $type) {
-            if ($type instanceof ObjectType) {
-                foreach ($type->getInterfaces() as $iface) {
+        foreach ($this->typeMap as $typeName => $type)
+        {
+            if ($type instanceof ObjectType)
+            {
+                foreach ($type->getInterfaces() as $iface)
+                {
                     $this->implementations[$iface->name][] = $type;
                 }
             }
@@ -58,33 +61,35 @@ class EagerResolution implements Resolution
     /**
      * @inheritdoc
      */
-    public function resolveType($name)
+    public function resolveType(string $name):?GraphQlType
     {
-        return isset($this->typeMap[$name]) ? $this->typeMap[$name] : null;
+        return \array_key_exists($name, $this->typeMap) ? $this->typeMap[$name] : null;
     }
 
     /**
      * @inheritdoc
      */
-    public function resolvePossibleTypes(AbstractType $abstractType)
+    public function resolvePossibleTypes(AbstractType $abstractType):array<ObjectType>
     {
-        if (!isset($this->typeMap[$abstractType->name])) {
+        if (!\array_key_exists($abstractType->name, $this->typeMap))
+        {
             return [];
         }
 
-        if ($abstractType instanceof UnionType) {
+        if ($abstractType instanceof UnionType)
+        {
             return $abstractType->getTypes();
         }
 
         /** @var InterfaceType $abstractType */
         Utils::invariant($abstractType instanceof InterfaceType);
-        return isset($this->implementations[$abstractType->name]) ? $this->implementations[$abstractType->name] : [];
+        return \array_key_exists($abstractType->name, $this->implementations) ? $this->implementations[$abstractType->name] : [];
     }
 
     /**
      * @return Type[]
      */
-    public function getTypeMap()
+    public function getTypeMap():array<string, GraphQlType>
     {
         return $this->typeMap;
     }

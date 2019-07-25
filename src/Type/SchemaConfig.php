@@ -1,5 +1,4 @@
 <?hh //strict
-//decl
 namespace GraphQL\Type;
 
 use GraphQL\Language\AST\SchemaDefinitionNode;
@@ -22,12 +21,13 @@ use GraphQL\Utils\Utils;
  *     $schema = new Schema($config);
  *
  */
+type TypeLoaderFn = (function(string):GraphQlType);
+
 class SchemaConfig
 {
-    /**
-     * @var ObjectType
-     */
-    public ObjectType $query;
+    private function __construct(
+        public ObjectType $query
+    ){}
 
     /**
      * @var ObjectType
@@ -42,22 +42,23 @@ class SchemaConfig
     /**
      * @var Type[]|callable
      */
+    /* HH_FIXME[2001]*/
     public $types;
 
     /**
      * @var Directive[]
      */
-    public array<Directive> $directives;
+    public ?array<Directive> $directives;
 
     /**
      * @var callable
      */
-    public $typeLoader;
+    public ?TypeLoaderFn $typeLoader;
 
     /**
      * @var SchemaDefinitionNode
      */
-    public $astNode;
+    public ?SchemaDefinitionNode $astNode;
 
     /**
      * Converts an array of options to instance of SchemaConfig
@@ -67,87 +68,102 @@ class SchemaConfig
      * @param array $options
      * @return SchemaConfig
      */
+    /* HH_FIXME[4045]*/
     public static function create(array $options = []):SchemaConfig
     {
-        $config = new SchemaConfig();
+        $query = null;
+        if (\array_key_exists('query', $options))
+        {
+            Utils::invariant(
+                $options['query'] instanceof ObjectType,
+                'Schema query must be Object Type if provided but got: %s',
+                Utils::printSafe($options['query'])
+            );
+            $query = $options['query'];
+        }
 
-        if (!empty($options)) {
-            if (isset($options['query'])) {
-                Utils::invariant(
-                    $options['query'] instanceof ObjectType,
-                    'Schema query must be Object Type if provided but got: %s',
-                    Utils::printSafe($options['query'])
-                );
-                $config->setQuery($options['query']);
-            }
+        invariant(
+            $query instanceof ObjectType,
+            "Schema query must be Object Type but got: %s",
+            Utils::getVariableType($query)
+        );
 
-            if (isset($options['mutation'])) {
-                Utils::invariant(
-                    $options['mutation'] instanceof ObjectType,
-                    'Schema mutation must be Object Type if provided but got: %s',
-                    Utils::printSafe($options['mutation'])
-                );
-                $config->setMutation($options['mutation']);
-            }
+        $config = new SchemaConfig($query);
 
-            if (isset($options['subscription'])) {
-                Utils::invariant(
-                    $options['subscription'] instanceof ObjectType,
-                    'Schema subscription must be Object Type if provided but got: %s',
-                    Utils::printSafe($options['subscription'])
-                );
-                $config->setSubscription($options['subscription']);
-            }
+        if (\array_key_exists('mutation', $options) && $options['mutation'] !== null)
+        {
+            Utils::invariant(
+                $options['mutation'] instanceof ObjectType,
+                'Schema mutation must be Object Type if provided but got: %s',
+                Utils::printSafe($options['mutation'])
+            );
+            $config->setMutation($options['mutation']);
+        }
 
-            if (isset($options['types'])) {
-                Utils::invariant(
-                    is_array($options['types']) || \is_callable($options['types']),
-                    'Schema types must be array or callable if provided but got: %s',
-                    Utils::printSafe($options['types'])
-                );
-                $config->setTypes($options['types']);
-            }
+        if (\array_key_exists('subscription', $options) && $options['subscription'] !== null)
+                    {
+            Utils::invariant(
+                $options['subscription'] instanceof ObjectType,
+                'Schema subscription must be Object Type if provided but got: %s',
+                Utils::printSafe($options['subscription'])
+            );
+            $config->setSubscription($options['subscription']);
+        }
 
-            if (isset($options['directives'])) {
-                Utils::invariant(
-                    is_array($options['directives']),
-                    'Schema directives must be array if provided but got: %s',
-                    Utils::printSafe($options['directives'])
-                );
-                $config->setDirectives($options['directives']);
-            }
+        if (\array_key_exists('types', $options) && $options['types'] !== null)
+        {
+            Utils::invariant(
+                is_array($options['types']) || \is_callable($options['types']),
+                'Schema types must be array or callable if provided but got: %s',
+                Utils::printSafe($options['types'])
+            );
+            $config->setTypes($options['types']);
+        }
 
-            if (isset($options['typeResolution'])) {
-                \trigger_error(
-                    'Type resolution strategies are deprecated. Just pass single option `typeLoader` '.
-                    'to schema constructor instead.',
-                    \E_USER_DEPRECATED
-                );
-                if ($options['typeResolution'] instanceof Resolution && !isset($options['typeLoader'])) {
-                    $strategy = $options['typeResolution'];
-                    $options['typeLoader'] = function($name) use ($strategy) {
-                        return $strategy->resolveType($name);
-                    };
-                }
-            }
+        if (\array_key_exists('directives', $options) && $options['directives'] !== null)
+        {
+            Utils::invariant(
+                is_array($options['directives']),
+                'Schema directives must be array if provided but got: %s',
+                Utils::printSafe($options['directives'])
+            );
+            $config->setDirectives($options['directives']);
+        }
 
-            if (isset($options['typeLoader'])) {
-                Utils::invariant(
-                    \is_callable($options['typeLoader']),
-                    'Schema type loader must be callable if provided but got: %s',
-                    Utils::printSafe($options['typeLoader'])
-                );
-                $config->setTypeLoader($options['typeLoader']);
+        if (\array_key_exists('typeResolution', $options) && $options['typeResolution'] !== null)
+        {
+            \trigger_error(
+                'Type resolution strategies are deprecated. Just pass single option `typeLoader` '.
+                'to schema constructor instead.',
+                \E_USER_DEPRECATED
+            );
+            if ($options['typeResolution'] instanceof Resolution && !\array_key_exists('typeLoader', $options))
+            {
+                $strategy = $options['typeResolution'];
+                $options['typeLoader'] = function($name) use ($strategy) {
+                    return $strategy->resolveType($name);
+                };
             }
+        }
 
-            if (isset($options['astNode'])) {
-                Utils::invariant(
-                    $options['astNode'] instanceof SchemaDefinitionNode,
-                    'Schema astNode must be an instance of SchemaDefinitionNode but got: %s',
-                    Utils::printSafe($options['typeLoader'])
-                );
-                $config->setAstNode($options['astNode']);
-            }
+        if (\array_key_exists('typeLoader', $options) && $options['typeLoader'] !== null)
+        {
+            Utils::invariant(
+                \is_callable($options['typeLoader']),
+                'Schema type loader must be callable if provided but got: %s',
+                Utils::printSafe($options['typeLoader'])
+            );
+            $config->setTypeLoader($options['typeLoader']);
+        }
+
+        if (\array_key_exists('astNode', $options) && $options['astNode'] !== null)
+        {
+            Utils::invariant(
+                $options['astNode'] instanceof SchemaDefinitionNode,
+                'Schema astNode must be an instance of SchemaDefinitionNode but got: %s',
+                Utils::printSafe($options['typeLoader'])
+            );
+            $config->setAstNode($options['astNode']);
         }
 
         return $config;
@@ -156,7 +172,7 @@ class SchemaConfig
     /**
      * @return SchemaDefinitionNode
      */
-    public function getAstNode()
+    public function getAstNode():?SchemaDefinitionNode
     {
         return $this->astNode;
     }
@@ -165,7 +181,7 @@ class SchemaConfig
      * @param SchemaDefinitionNode $astNode
      * @return SchemaConfig
      */
-    public function setAstNode(SchemaDefinitionNode $astNode)
+    public function setAstNode(SchemaDefinitionNode $astNode):this
     {
         $this->astNode = $astNode;
         return $this;
@@ -209,6 +225,7 @@ class SchemaConfig
      * @param Type[]|callable $types
      * @return SchemaConfig
      */
+    /* HH_FIXME[4032]*/
     public function setTypes($types):this
     {
         $this->types = $types;
@@ -220,7 +237,7 @@ class SchemaConfig
      * @param Directive[] $directives
      * @return SchemaConfig
      */
-    public function setDirectives(array $directives):this
+    public function setDirectives(array<Directive> $directives):this
     {
         $this->directives = $directives;
         return $this;
@@ -231,7 +248,7 @@ class SchemaConfig
      * @param callable $typeLoader
      * @return SchemaConfig
      */
-    public function setTypeLoader(callable $typeLoader):this
+    public function setTypeLoader(TypeLoaderFn $typeLoader):this
     {
         $this->typeLoader = $typeLoader;
         return $this;
@@ -241,7 +258,7 @@ class SchemaConfig
      * @api
      * @return ObjectType
      */
-    public function getQuery():ObjectType
+    public function getQuery():?ObjectType
     {
         return $this->query;
     }
@@ -266,9 +283,9 @@ class SchemaConfig
 
     /**
      * @api
-     * @return Type[]
+     * @return GraphQlType[]
      */
-    public function getTypes()
+    public function getTypes():array<GraphQlType>
     {
         return $this->types ?? [];
     }
@@ -277,7 +294,7 @@ class SchemaConfig
      * @api
      * @return Directive[]
      */
-    public function getDirectives()
+    public function getDirectives():array<Directive>
     {
         return $this->directives ?? [];
     }
@@ -286,7 +303,7 @@ class SchemaConfig
      * @api
      * @return callable
      */
-    public function getTypeLoader()
+    public function getTypeLoader():?TypeLoaderFn
     {
         return $this->typeLoader;
     }

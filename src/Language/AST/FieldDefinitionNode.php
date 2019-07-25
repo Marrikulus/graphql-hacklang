@@ -1,7 +1,7 @@
 <?hh //strict
 namespace GraphQL\Language\AST;
 
-class FieldDefinitionNode extends Node
+class FieldDefinitionNode extends Node implements HasDirectives
 {
     public function __construct(
         public NameNode $name,
@@ -12,5 +12,10 @@ class FieldDefinitionNode extends Node
         ?Location $loc = null)
     {
         parent::__construct($loc, NodeKind::FIELD_DEFINITION);
+    }
+
+    public function getDirectives():array<DirectiveNode>
+    {
+        return $this->directives;
     }
 }

@@ -1,7 +1,6 @@
 <?hh //strict
 namespace GraphQL\Language\AST;
 
-
 class BooleanValueNode extends Node implements ValueNode<bool>
 {
 	public function __construct(

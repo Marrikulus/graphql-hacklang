@@ -1,11 +1,11 @@
-<?hh //strict
-//partial
+<?hh //partial
 namespace GraphQL\Executor;
 
 use GraphQL\Error\Error;
 use GraphQL\Language\AST\FragmentDefinitionNode;
 use GraphQL\Language\AST\OperationDefinitionNode;
 use GraphQL\Type\Schema;
+use GraphQL\Executor\Promise\PromiseAdapter;
 
 /**
  * Data that must be available at all points during query execution.
@@ -57,7 +57,7 @@ class ExecutionContext
      */
     public array<Error> $errors;
 
-    public $promises;
+    public PromiseAdapter $promises;
 
     public function __construct(
         Schema $schema,
@@ -68,7 +68,7 @@ class ExecutionContext
         $variables,
         ?array<Error> $errors,
         $fieldResolver,
-        $promiseAdapter
+        PromiseAdapter $promiseAdapter
     )
     {
         $this->schema = $schema;

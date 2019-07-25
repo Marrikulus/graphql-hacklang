@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Type;
 
 use GraphQL\Error\InvariantViolation;
@@ -20,38 +19,38 @@ class LazyResolution implements Resolution
     /**
      * @var array
      */
-    private $typeMap;
+    private array<string, GraphQlType> $typeMap;
 
     /**
      * @var array
      */
-    private $possibleTypeMap;
+    private array<string, array<string, ObjectType>> $possibleTypeMap;
 
     /**
      * @var callable
      */
-    private $typeLoader;
+    private (function(string):GraphQlType) $typeLoader;
 
     /**
      * List of currently loaded types
      *
      * @var Type[]
      */
-    private $loadedTypes;
+    private array<string, GraphQlType> $loadedTypes;
 
     /**
      * Map of $interfaceTypeName => $objectType[]
      *
      * @var array
      */
-    private $loadedPossibleTypes;
+    private array<string, array<ObjectType>> $loadedPossibleTypes;
 
     /**
      * LazyResolution constructor.
      * @param array $descriptor
      * @param callable $typeLoader
      */
-    public function __construct(array $descriptor, callable $typeLoader)
+    public function __construct(array $descriptor, (function(string):GraphQlType) $typeLoader)
     {
         Utils::invariant(
             isset($descriptor['typeMap'], $descriptor['possibleTypeMap'], $descriptor['version'])
@@ -70,14 +69,18 @@ class LazyResolution implements Resolution
     /**
      * @inheritdoc
      */
-    public function resolveType($name)
+    public function resolveType(string $name):?GraphQlType
     {
-        if (!isset($this->typeMap[$name])) {
+        if (!\array_key_exists($name, $this->typeMap))
+        {
             return null;
         }
-        if (!isset($this->loadedTypes[$name])) {
+
+        if (!\array_key_exists($name, $this->loadedTypes))
+        {
             $type = call_user_func($this->typeLoader, $name);
-            if (!$type instanceof GraphQlType && null !== $type) {
+            if (!$type instanceof GraphQlType && null !== $type)
+            {
                 throw new InvariantViolation(
                     "Lazy Type Resolution Error: Expecting GraphQL Type instance, but got " .
                     Utils::getVariableType($type)
@@ -92,14 +95,18 @@ class LazyResolution implements Resolution
     /**
      * @inheritdoc
      */
-    public function resolvePossibleTypes(AbstractType $type)
+    public function resolvePossibleTypes(AbstractType $type):array<ObjectType>
     {
-        if (!isset($this->possibleTypeMap[$type->name])) {
+        if (!\array_key_exists($type->name, $this->possibleTypeMap))
+        {
             return [];
         }
-        if (!isset($this->loadedPossibleTypes[$type->name])) {
+
+        if (!\array_key_exists($type->name, $this->loadedPossibleTypes))
+        {
             $tmp = [];
-            foreach ($this->possibleTypeMap[$type->name] as $typeName => $true) {
+            foreach ($this->possibleTypeMap[$type->name] as $typeName => $true)
+            {
                 $obj = $this->resolveType($typeName);
                 if (!$obj instanceof ObjectType) {
                     throw new InvariantViolation(

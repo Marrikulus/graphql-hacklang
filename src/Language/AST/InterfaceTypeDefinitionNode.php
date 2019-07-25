@@ -1,7 +1,7 @@
 <?hh
 namespace GraphQL\Language\AST;
 
-class InterfaceTypeDefinitionNode extends Node implements TypeDefinitionNode
+class InterfaceTypeDefinitionNode extends Node implements TypeDefinitionNode, HasDirectives
 {
     public function __construct(
         public NameNode $name,
@@ -11,5 +11,10 @@ class InterfaceTypeDefinitionNode extends Node implements TypeDefinitionNode
         ?Location $loc = null)
     {
         parent::__construct($loc, NodeKind::INTERFACE_TYPE_DEFINITION);
+    }
+
+    public function getDirectives():array<DirectiveNode>
+    {
+    	return $this->directives;
     }
 }

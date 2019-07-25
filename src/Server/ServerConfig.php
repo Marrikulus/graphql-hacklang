@@ -1,5 +1,4 @@
-<?hh //strict
-//partial
+<?hh //partial
 namespace GraphQL\Server;
 
 use GraphQL\Error\InvariantViolation;
@@ -46,7 +45,7 @@ class ServerConfig
     /**
      * @var Schema
      */
-    private $schema;
+    private ?Schema $schema;
 
     /**
      * @var mixed|\Closure
@@ -76,7 +75,7 @@ class ServerConfig
     /**
      * @var bool
      */
-    private $queryBatching = false;
+    private bool $queryBatching = false;
 
     /**
      * @var array|callable
@@ -259,7 +258,7 @@ class ServerConfig
     /**
      * @return Schema
      */
-    public function getSchema():Schema
+    public function getSchema():?Schema
     {
         return $this->schema;
     }

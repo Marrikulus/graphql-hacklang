@@ -1,5 +1,4 @@
-<?hh //strict
-//partial
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
@@ -183,7 +182,8 @@ class ResolveInfo
 
     public function __get($name)
     {
-        if ('fieldASTs' === $name) {
+        if ('fieldASTs' === $name)
+        {
             \trigger_error('Property ' . __CLASS__ . '->fieldASTs was renamed to ' . __CLASS__ . '->fieldNodes', \E_USER_DEPRECATED);
             return $this->fieldNodes;
         }

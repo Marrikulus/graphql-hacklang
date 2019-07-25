@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
@@ -62,7 +61,7 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
     private $interfaces;
 
     /**
-     * @var array
+     * @var array<string, InterfaceType>
      */
     private $interfaceMap;
 
@@ -87,7 +86,8 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
      */
     public function __construct(array $config)
     {
-        if (!isset($config['name'])) {
+        if (!\array_key_exists('name', $config))
+        {
             $config['name'] = $this->tryInferName();
         }
 
@@ -111,10 +111,10 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
         ]);
 
         $this->name = $config['name'];
-        $this->description = isset($config['description']) ? $config['description'] : null;
-        $this->resolveFieldFn = isset($config['resolveField']) ? $config['resolveField'] : null;
-        $this->astNode = isset($config['astNode']) ? $config['astNode'] : null;
-        $this->extensionASTNodes = isset($config['extensionASTNodes']) ? $config['extensionASTNodes'] : [];
+        $this->description = \array_key_exists('description', $config) ? $config['description'] : null;
+        $this->resolveFieldFn = \array_key_exists('resolveField', $config) ? $config['resolveField'] : null;
+        $this->astNode = \array_key_exists('astNode', $config) ? $config['astNode'] : null;
+        $this->extensionASTNodes = \array_key_exists('extensionASTNodes', $config) ? $config['extensionASTNodes'] : [];
         $this->config = $config;
     }
 
@@ -124,8 +124,9 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
      */
     public function getFields()
     {
-        if (null === $this->fields) {
-            $fields = isset($this->config['fields']) ? $this->config['fields'] : [];
+        if (null === $this->fields)
+        {
+            $fields = \array_key_exists('fields', $this->config) ? $this->config['fields'] : [];
             $this->fields = FieldDefinition::defineFieldMap($this, $fields);
         }
         return $this->fields;
@@ -136,12 +137,13 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
      * @return FieldDefinition
      * @throws \Exception
      */
-    public function getField($name)
+    public function getField(string $name)
     {
-        if (null === $this->fields) {
+        if (null === $this->fields)
+        {
             $this->getFields();
         }
-        Utils::invariant(isset($this->fields[$name]), 'Field "%s" is not defined for type "%s"', $name, $this->name);
+        Utils::invariant(\array_key_exists($name, $this->fields), 'Field "%s" is not defined for type "%s"', $name, $this->name);
         return $this->fields[$name];
     }
 
@@ -150,11 +152,13 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
      */
     public function getInterfaces()
     {
-        if (null === $this->interfaces) {
-            $interfaces = isset($this->config['interfaces']) ? $this->config['interfaces'] : [];
+        if (null === $this->interfaces)
+        {
+            $interfaces = \array_key_exists('interfaces', $this->config) ? $this->config['interfaces'] : [];
             $interfaces = \is_callable($interfaces) ? call_user_func($interfaces) : $interfaces;
 
-            if (!is_array($interfaces)) {
+            if (!is_array($interfaces))
+            {
                 throw new InvariantViolation(
                     "{$this->name} interfaces must be an Array or a callable which returns an Array."
                 );
@@ -167,9 +171,11 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
 
     private function getInterfaceMap()
     {
-        if (!$this->interfaceMap) {
+        if ($this->interfaceMap === null)
+        {
             $this->interfaceMap = [];
-            foreach ($this->getInterfaces() as $interface) {
+            foreach ($this->getInterfaces() as $interface)
+            {
                 $this->interfaceMap[$interface->name] = $interface;
             }
         }
@@ -231,7 +237,8 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
         }
 
         $implemented = [];
-        foreach ($this->getInterfaces() as $iface) {
+        foreach ($this->getInterfaces() as $iface)
+        {
             Utils::invariant(
                 $iface instanceof InterfaceType,
                 "{$this->name} may only implement Interface types, it cannot implement %s.",
@@ -242,7 +249,8 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
                 "{$this->name} may declare it implements {$iface->name} only once."
             );
             $implemented[$iface->name] = true;
-            if (!isset($iface->config['resolveType'])) {
+            if (!isset($iface->config['resolveType']))
+            {
                 Utils::invariant(
                     isset($this->config['isTypeOf']),
                     "Interface Type {$iface->name} does not provide a \"resolveType\" " .

@@ -11,18 +11,13 @@ use ArrayAccess;
  *
  * @package GraphQL\Utils
  */
-class NodeList implements IteratorAggregate<Node>, Countable, ArrayAccess<int, Node>
+final class NodeList extends Node implements IteratorAggregate<Node>, Countable
 {
-    /**
-     * @var array
-     */
-    private array<int, Node> $nodes;
-
     /**
      * @param array $nodes
      * @return static
      */
-    public static function create(array<int, Node> $nodes):NodeList
+    public static function create(array<Node> $nodes):NodeList
     {
         return new NodeList($nodes);
     }
@@ -31,46 +26,16 @@ class NodeList implements IteratorAggregate<Node>, Countable, ArrayAccess<int, N
      * NodeList constructor.
      * @param array $nodes
      */
-    public function __construct(array<int, Node> $nodes)
-    {
-        $this->nodes = $nodes;
+    <<__Override>>
+    public function __construct(
+        private array<Node> $nodes
+    ){
+         parent::__construct(null, 'list');
     }
 
-    /**
-     * @param mixed $offset
-     * @return bool
-     */
-    public function offsetExists(int $offset):bool
-    {
-        return \array_key_exists($offset, $this->nodes);
-    }
-
-    /**
-     * @param mixed $offset
-     * @return mixed
-     */
-    public function offsetGet(int $offset):Node
-    {
-        $item = $this->nodes[$offset];
-
-        return $item;
-    }
-
-    /**
-     * @param mixed $offset
-     * @param mixed $value
-     */
-    public function offsetSet(int $offset, Node $value):void
-    {
-        $this->nodes[$offset] = $value;
-    }
-
-    /**
-     * @param mixed $offset
-     */
-    public function offsetUnset(int $offset):void
-    {
-        unset($this->nodes[$offset]);
+    <<__Override>>
+    public function isList(): bool {
+        return true;
     }
 
     /**

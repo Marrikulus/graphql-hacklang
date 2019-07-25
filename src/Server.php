@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //decl
 namespace GraphQL;
 
 use GraphQL\Error\Error;
@@ -16,6 +15,7 @@ use GraphQL\Type\Resolution;
 use GraphQL\Validator\DocumentValidator;
 use GraphQL\Utils\Utils;
 
+/* HH_FIXME[1002]*/
 trigger_error(
     'GraphQL\Server is deprecated in favor of new implementation: GraphQL\Server\StandardServer and will be removed in next version',
     E_USER_DEPRECATED

@@ -1,5 +1,4 @@
-<?hh //strict
-//partial
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
@@ -23,7 +22,7 @@ abstract class GraphQlType implements \JsonSerializable
     /**
      * @var array
      */
-    private static $internalTypes;
+    private static ?array<string, GraphQlType> $internalTypes;
 
     /**
      * @var string
@@ -49,7 +48,8 @@ abstract class GraphQlType implements \JsonSerializable
      * @api
      * @return IDType
      */
-    public static function id()
+    /* HH_FIXME[4110]*/
+    public static function id():IDType
     {
         return self::getInternalType(self::ID);
     }
@@ -58,7 +58,8 @@ abstract class GraphQlType implements \JsonSerializable
      * @api
      * @return StringType
      */
-    public static function string()
+    /* HH_FIXME[4110]*/
+    public static function string():StringType
     {
         return self::getInternalType(self::STRING);
     }
@@ -67,7 +68,8 @@ abstract class GraphQlType implements \JsonSerializable
      * @api
      * @return BooleanType
      */
-    public static function boolean()
+    /* HH_FIXME[4110]*/
+    public static function boolean():BooleanType
     {
         return self::getInternalType(self::BOOLEAN);
     }
@@ -76,7 +78,8 @@ abstract class GraphQlType implements \JsonSerializable
      * @api
      * @return IntType
      */
-    public static function int()
+    /* HH_FIXME[4110]*/
+    public static function int():IntType
     {
         return self::getInternalType(self::INT);
     }
@@ -85,7 +88,8 @@ abstract class GraphQlType implements \JsonSerializable
      * @api
      * @return FloatType
      */
-    public static function float()
+    /* HH_FIXME[4110]*/
+    public static function float():FloatType
     {
         return self::getInternalType(self::FLOAT);
     }
@@ -95,7 +99,7 @@ abstract class GraphQlType implements \JsonSerializable
      * @param ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType|ListOfType|NoNull $wrappedType
      * @return ListOfType
      */
-    public static function listOf($wrappedType)
+    public static function listOf($wrappedType):ListOfType
     {
         return new ListOfType($wrappedType);
     }
@@ -105,7 +109,7 @@ abstract class GraphQlType implements \JsonSerializable
      * @param ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType|ListOfType $wrappedType
      * @return NoNull
      */
-    public static function nonNull($wrappedType)
+    public static function nonNull($wrappedType):NoNull
     {
         return new NoNull($wrappedType);
     }
@@ -114,9 +118,19 @@ abstract class GraphQlType implements \JsonSerializable
      * @param $name
      * @return array|IDType|StringType|FloatType|IntType|BooleanType
      */
-    private static function getInternalType($name = null)
+    private static function getInternalType(string $name):GraphQlType
     {
-        if (null === self::$internalTypes) {
+        $internalTypes = self::getInternalTypes();
+        return $internalTypes[$name];
+    }
+
+    /**
+     * @return Type[]
+     */
+    public static function getInternalTypes():array<string, GraphQlType>
+    {
+        if (null === self::$internalTypes)
+        {
             self::$internalTypes = [
                 self::ID => new IDType(),
                 self::STRING => new StringType(),
@@ -125,15 +139,7 @@ abstract class GraphQlType implements \JsonSerializable
                 self::BOOLEAN => new BooleanType()
             ];
         }
-        return $name ? self::$internalTypes[$name] : self::$internalTypes;
-    }
-
-    /**
-     * @return Type[]
-     */
-    public static function getInternalTypes()
-    {
-        return self::getInternalType();
+        return self::$internalTypes;
     }
 
     /**
@@ -141,7 +147,7 @@ abstract class GraphQlType implements \JsonSerializable
      * @param Type $type
      * @return bool
      */
-    public static function isInputType($type)
+    public static function isInputType(?GraphQlType $type):bool
     {
         $nakedType = self::getNamedType($type);
         return $nakedType instanceof InputType;
@@ -152,7 +158,7 @@ abstract class GraphQlType implements \JsonSerializable
      * @param Type $type
      * @return bool
      */
-    public static function isOutputType($type)
+    public static function isOutputType(?GraphQlType $type):bool
     {
         $nakedType = self::getNamedType($type);
         return $nakedType instanceof OutputType;
@@ -163,7 +169,7 @@ abstract class GraphQlType implements \JsonSerializable
      * @param $type
      * @return bool
      */
-    public static function isLeafType($type)
+    public static function isLeafType(?GraphQlType $type):bool
     {
         return $type instanceof LeafType;
     }
@@ -173,7 +179,7 @@ abstract class GraphQlType implements \JsonSerializable
      * @param Type $type
      * @return bool
      */
-    public static function isCompositeType($type)
+    public static function isCompositeType(?GraphQlType $type):bool
     {
         return $type instanceof CompositeType;
     }
@@ -183,7 +189,7 @@ abstract class GraphQlType implements \JsonSerializable
      * @param Type $type
      * @return bool
      */
-    public static function isAbstractType($type)
+    public static function isAbstractType(GraphQlType $type):bool
     {
         return $type instanceof AbstractType;
     }
@@ -203,7 +209,7 @@ abstract class GraphQlType implements \JsonSerializable
      * @param Type $type
      * @return ObjectType|InterfaceType|UnionType|ScalarType|InputObjectType|EnumType
      */
-    public static function getNamedType($type)
+    public static function getNamedType(?GraphQlType $type)
     {
         if (null === $type) {
             return null;
@@ -239,14 +245,14 @@ abstract class GraphQlType implements \JsonSerializable
     /**
      * @throws InvariantViolation
      */
-    public function assertValid()
+    public function assertValid():void
     {
     }
 
     /**
      * @return string
      */
-    public function toString()
+    public function toString():string
     {
         return $this->name;
     }
@@ -254,7 +260,7 @@ abstract class GraphQlType implements \JsonSerializable
     /**
      * @return string
      */
-    public function jsonSerialize()
+    public function jsonSerialize():string
     {
         return $this->toString();
     }

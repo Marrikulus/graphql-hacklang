@@ -1,5 +1,4 @@
-<?hh //strict
-//partial
+<?hh //partial
 namespace GraphQL\Type\Definition;
 
 /*
@@ -9,6 +8,7 @@ GraphQLUnionType;
 */
 interface AbstractType
 {
+    require extends GraphQlType;
     /**
      * Resolves concrete ObjectType for given object value
      *

@@ -1,7 +1,7 @@
 <?hh
 namespace GraphQL\Language\AST;
 
-class InputValueDefinitionNode extends Node
+class InputValueDefinitionNode extends Node implements HasDirectives
 {
     public function __construct(
         public NameNode $name,
@@ -12,5 +12,10 @@ class InputValueDefinitionNode extends Node
         ?Location $loc = null)
     {
         parent::__construct($loc,NodeKind::INPUT_VALUE_DEFINITION);
+    }
+
+    public function getDirectives():array<DirectiveNode>
+    {
+        return $this->directives;
     }
 }

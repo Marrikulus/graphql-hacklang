@@ -1,5 +1,4 @@
-<?hh //strict
-//partial
+<?hh //partial
 namespace GraphQL\Executor;
 
 use GraphQL\Error\Error;
@@ -203,7 +202,7 @@ class Executor
         foreach ($documentNode->definitions as $definition) {
             switch ($definition->kind) {
                 case NodeKind::OPERATION_DEFINITION:
-                    if (!$operationName && $operation) {
+                    if ($operationName === null && $operation) {
                         throw new Error(
                             'Must provide operation name if query contains multiple operations.'
                         );
@@ -912,7 +911,7 @@ class Executor
 
         // If result is a Promise, apply-lift over completeValue.
         if ($promise) {
-            return $promise->then(function (&$resolved) use ($returnType, $fieldNodes, $info, $path) {
+            return $promise->then(function ($resolved) use ($returnType, $fieldNodes, $info, $path) {
                 return $this->completeValue($returnType, $fieldNodes, $info, $path, &$resolved);
             });
         }
@@ -994,14 +993,14 @@ class Executor
      *
      * @return mixed|null
      */
-    public static function defaultFieldResolver(mixed $source, array<string,mixed> $args, mixed $context, ResolveInfo $info):mixed
+    public static function defaultFieldResolver(nonnull $source, array<string,mixed> $args, mixed $context, ResolveInfo $info):mixed
     {
         $fieldName = $info->fieldName;
         $property = null;
 
         if (is_array($source) || $source instanceof \ArrayAccess)
         {
-           if (isset($source[$fieldName]))
+           if (array_key_exists($fieldName, $source))
            {
                $property = $source[$fieldName];
            }
@@ -1240,7 +1239,8 @@ class Executor
 
         if (null !== $isTypeOf) {
             $promise = $this->getPromise($isTypeOf);
-            if ($promise) {
+            if ($promise)
+            {
                 return $promise->then(function($isTypeOfResult) use ($returnType, $fieldNodes, $info, $path, &$result) {
                     if (!$isTypeOfResult) {
                         throw $this->invalidReturnTypeError($returnType, $result, $fieldNodes);

@@ -14,5 +14,6 @@ export type ValueNode = VariableNode
  */
 interface ValueNode<T>
 {
+	require extends Node;
 	public function getValue():T;
 }

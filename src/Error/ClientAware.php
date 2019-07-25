@@ -18,7 +18,7 @@ interface ClientAware
      * @api
      * @return bool
      */
-    public function isClientSafe();
+    public function isClientSafe():bool;
 
     /**
      * Returns string describing a category of the error.
@@ -28,5 +28,5 @@ interface ClientAware
      * @api
      * @return string
      */
-    public function getCategory();
+    public function getCategory():string;
 }

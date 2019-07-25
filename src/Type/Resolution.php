@@ -21,7 +21,7 @@ interface Resolution
      * @param string $name
      * @return Type
      */
-    public function resolveType($name);
+    public function resolveType(string $name):?GraphQlType;
 
     /**
      * Returns instances of possible ObjectTypes for given InterfaceType or UnionType
@@ -29,5 +29,5 @@ interface Resolution
      * @param AbstractType $type
      * @return ObjectType[]
      */
-    public function resolvePossibleTypes(AbstractType $type);
+    public function resolvePossibleTypes(AbstractType $type):array<ObjectType>;
 }

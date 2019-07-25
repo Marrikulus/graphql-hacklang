@@ -1,7 +1,7 @@
 <?hh //strict
 namespace GraphQL\Language\AST;
 
-class InlineFragmentNode extends Node implements SelectionNode
+class InlineFragmentNode extends Node implements SelectionNode, HasDirectives
 {
     public function __construct(
         public ?NamedTypeNode $typeCondition,
@@ -10,5 +10,10 @@ class InlineFragmentNode extends Node implements SelectionNode
         ?Location $loc = null)
     {
         parent::__construct($loc, NodeKind::INLINE_FRAGMENT);
+    }
+
+    public function getDirectives():array<DirectiveNode>
+    {
+    	return $this->directives;
     }
 }

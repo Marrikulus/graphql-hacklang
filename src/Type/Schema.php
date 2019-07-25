@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Type;
 
 use GraphQL\Error\InvariantViolation;
@@ -16,6 +15,7 @@ use GraphQL\Type\Definition\UnionType;
 use GraphQL\Utils\TypeComparators;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Utils\Utils;
+use namespace HH\Lib\{C};
 
 /**
  * Schema Definition (see [related docs](type-system/schema.md))
@@ -44,14 +44,14 @@ class Schema
     /**
      * @var SchemaConfig
      */
-    private $config;
+    private SchemaConfig $config;
 
     /**
      * Contains currently resolved schema types
      *
      * @var Type[]
      */
-    private array<GraphQlType> $resolvedTypes = [];
+    private array<string, GraphQlType> $resolvedTypes = [];
 
     /**
      * @var array
@@ -63,7 +63,7 @@ class Schema
      *
      * @var bool
      */
-    private $fullyLoaded = false;
+    private bool $fullyLoaded = false;
 
     /**
      * Schema constructor.
@@ -73,21 +73,8 @@ class Schema
      */
     public function __construct($config)
     {
-        if (\func_num_args() > 1 || $config instanceof GraphQlType) {
-            \trigger_error(
-                'GraphQL\Schema constructor expects config object now instead of types passed as arguments. '.
-                'See https://github.com/webonyx/graphql-php/issues/36',
-                \E_USER_DEPRECATED
-            );
-            list($queryType, $mutationType, $subscriptionType) = \func_get_args() + [null, null, null];
-
-            $config = [
-                'query' => $queryType,
-                'mutation' => $mutationType,
-                'subscription' => $subscriptionType
-            ];
-        }
-        if (is_array($config)) {
+        if (is_array($config))
+        {
             $config = SchemaConfig::create($config);
         }
 
@@ -109,14 +96,21 @@ class Schema
             $config->query instanceof ObjectType,
             "Schema query must be Object Type but got: " . Utils::getVariableType($config->query)
         );
+        invariant(
+            $config->query instanceof ObjectType,
+            "Schema query must be Object Type but got: %s",
+            Utils::getVariableType($config->query)
+        );
 
         $this->config = $config;
         $this->resolvedTypes[$config->query->name] = $config->query;
 
-        if ($config->mutation) {
+        if ($config->mutation !== null)
+        {
             $this->resolvedTypes[$config->mutation->name] = $config->mutation;
         }
-        if ($config->subscription) {
+        if ($config->subscription !== null)
+        {
             $this->resolvedTypes[$config->subscription->name] = $config->subscription;
         }
         if (is_array($this->config->types))
@@ -202,7 +196,7 @@ class Schema
      * @api
      * @return GraphQlType[]
      */
-    public function getTypeMap():array<GraphQlType>
+    public function getTypeMap():array<string, GraphQlType>
     {
         if (!$this->fullyLoaded) {
             $this->resolvedTypes = $this->collectAllTypes();
@@ -248,7 +242,7 @@ class Schema
     /**
      * @return \Generator
      */
-    private function resolveAdditionalTypes()
+    private function resolveAdditionalTypes():\Generator<int, GraphQlType, void>
     {
         $types = $this->config->types ?: [];
 
@@ -269,11 +263,11 @@ class Schema
         {
             if (!$type instanceof GraphQlType)
             {
-                throw new InvariantViolation(
+                throw new InvariantViolation(\sprintf(
                     'Each entry of schema types must be instance of GraphQL\Type\Definition\GraphQlType but entry at %s is %s',
                     $index,
                     Utils::printSafe($type)
-                );
+                ));
             }
             yield $type;
         }
@@ -300,15 +294,22 @@ class Schema
      */
     private function getPossibleTypeMap()
     {
-        if ($this->possibleTypeMap === null) {
+        if ($this->possibleTypeMap === null)
+        {
             $this->possibleTypeMap = [];
-            foreach ($this->getTypeMap() as $type) {
-                if ($type instanceof ObjectType) {
-                    foreach ($type->getInterfaces() as $interface) {
+            foreach ($this->getTypeMap() as $type)
+            {
+                if ($type instanceof ObjectType)
+                {
+                    foreach ($type->getInterfaces() as $interface)
+                    {
                         $this->possibleTypeMap[$interface->name][$type->name] = $type;
                     }
-                } else if ($type instanceof UnionType) {
-                    foreach ($type->getTypes() as $innerType) {
+                }
+                else if ($type instanceof UnionType)
+                {
+                    foreach ($type->getTypes() as $innerType)
+                    {
                         $this->possibleTypeMap[$type->name][$innerType->name] = $innerType;
                     }
                 }
@@ -319,24 +320,28 @@ class Schema
 
     /**
      * @param $typeName
-     * @return Type
+     * @return GraphQlType
      */
-    private function loadType($typeName)
+    private function loadType(string $typeName):?GraphQlType
     {
         $typeLoader = $this->config->typeLoader;
 
-        if (!$typeLoader) {
-            return $this->defaultTypeLoader($typeName);
+        if (!$typeLoader)
+        {
+            $type = $this->defaultTypeLoader($typeName);
+            return $type;
         }
 
         $type = $typeLoader($typeName);
 
-        if (!$type instanceof GraphQlType) {
+        if (!$type instanceof GraphQlType)
+        {
             throw new InvariantViolation(
                 "Type loader is expected to return valid type \"$typeName\", but it returned " . Utils::printSafe($type)
             );
         }
-        if ($type->name !== $typeName) {
+        if ($type->name !== $typeName)
+        {
             throw new InvariantViolation(
                 "Type loader is expected to return type \"$typeName\", but it returned \"{$type->name}\""
             );
@@ -356,10 +361,16 @@ class Schema
      */
     public function isPossibleType(AbstractType $abstractType, ObjectType $possibleType)
     {
-        if ($abstractType instanceof InterfaceType) {
+        if ($abstractType instanceof InterfaceType)
+        {
             return $possibleType->implementsInterface($abstractType);
         }
 
+        invariant(
+            $abstractType instanceof UnionType,
+            "Expected UnionType got %s",
+            Utils::printSafe($abstractType)
+        );
         /** @var UnionType $abstractType */
         return $abstractType->isPossibleType($possibleType);
     }
@@ -370,9 +381,9 @@ class Schema
      * @api
      * @return Directive[]
      */
-    public function getDirectives()
+    public function getDirectives():array<Directive>
     {
-        return $this->config->directives ?: GraphQL::getStandardDirectives();
+        return $this->config->directives ?? GraphQL::getStandardDirectives();
     }
 
     /**
@@ -382,9 +393,10 @@ class Schema
      * @param $name
      * @return Directive
      */
-    public function getDirective($name)
+    public function getDirective(string $name):?Directive
     {
-        foreach ($this->getDirectives() as $directive) {
+        foreach ($this->getDirectives() as $directive)
+        {
             if ($directive->name === $name) {
                 return $directive;
             }
@@ -395,7 +407,7 @@ class Schema
     /**
      * @return SchemaDefinitionNode
      */
-    public function getAstNode()
+    public function getAstNode():?SchemaDefinitionNode
     {
         return $this->config->getAstNode();
     }
@@ -404,11 +416,11 @@ class Schema
      * @param $typeName
      * @return Type
      */
-    private function defaultTypeLoader($typeName)
+    private function defaultTypeLoader(string $typeName):?GraphQlType
     {
         // Default type loader simply fallbacks to collecting all types
         $typeMap = $this->getTypeMap();
-        return isset($typeMap[$typeName]) ? $typeMap[$typeName] : null;
+        return \array_key_exists($typeName, $typeMap) ? $typeMap[$typeName] : null;
     }
 
     /**
@@ -419,9 +431,10 @@ class Schema
      * @api
      * @throws InvariantViolation
      */
-    public function assertValid()
+    public function assertValid():void
     {
-        foreach ($this->config->getDirectives() as $index => $directive) {
+        foreach ($this->config->getDirectives() as $index => $directive)
+        {
             Utils::invariant(
                 $directive instanceof Directive,
                 "Each entry of \"directives\" option of Schema config must be an instance of %s but entry at position %d is %s.",
@@ -433,14 +446,17 @@ class Schema
 
         $internalTypes = GraphQlType::getInternalTypes() + Introspection::getTypes();
 
-        foreach ($this->getTypeMap() as $name => $type) {
-            if (isset($internalTypes[$name])) {
-                continue ;
+        foreach ($this->getTypeMap() as $name => $type)
+        {
+            if (\array_key_exists($name, $internalTypes))
+            {
+                continue;
             }
 
             $type->assertValid();
 
-            if ($type instanceof AbstractType) {
+            if ($type instanceof AbstractType)
+            {
                 $possibleTypes = $this->getPossibleTypes($type);
 
                 Utils::invariant(
@@ -450,14 +466,16 @@ class Schema
                     'all possible types in the schema.'
                 );
 
-            } else if ($type instanceof ObjectType) {
+            } else if ($type instanceof ObjectType)
+            {
                 foreach ($type->getInterfaces() as $iface) {
                     $this->assertImplementsIntarface($type, $iface);
                 }
             }
 
             // Make sure type loader returns the same instance as registered in other places of schema
-            if ($this->config->typeLoader) {
+            if ($this->config->typeLoader)
+            {
                 Utils::invariant(
                     $this->loadType($name) === $type,
                     "Type loader returns different instance for {$name} than field/argument definitions. ".
@@ -467,13 +485,14 @@ class Schema
         }
     }
 
-    private function assertImplementsIntarface(ObjectType $object, InterfaceType $iface)
+    private function assertImplementsIntarface(ObjectType $object, InterfaceType $iface):void
     {
         $objectFieldMap = $object->getFields();
         $ifaceFieldMap  = $iface->getFields();
 
         // Assert each interface field is implemented.
-        foreach ($ifaceFieldMap as $fieldName => $ifaceField) {
+        foreach ($ifaceFieldMap as $fieldName => $ifaceField)
+        {
 
             // Assert interface field exists on object.
             Utils::invariant(
@@ -493,11 +512,12 @@ class Schema
             );
 
             // Assert each interface field arg is implemented.
-            foreach ($ifaceField->args as $ifaceArg) {
+            foreach ($ifaceField->args as $ifaceArg)
+            {
                 $argName = $ifaceArg->name;
 
                 /** @var FieldArgument $objectArg */
-                $objectArg = Utils::find($objectField->args, function(FieldArgument $arg) use ($argName) {
+                $objectArg = C\find($objectField->args, function(FieldArgument $arg) use ($argName) {
                     return $arg->name === $argName;
                 });
 
@@ -506,6 +526,16 @@ class Schema
                     $objectArg,
                     "{$iface->name}.{$fieldName} expects argument \"{$argName}\" but ".
                     "{$object->name}.{$fieldName} does not provide it."
+                );
+
+                invariant(
+                    $objectArg !== null,
+                    "%s.%s expects argument \"%s\" but %s.%s does not provide it.",
+                    $iface->name,
+                    $fieldName,
+                    $argName,
+                    $object->name,
+                    $fieldName
                 );
 
                 // Assert interface field arg type matches object field arg type.
@@ -519,12 +549,15 @@ class Schema
                 );
 
                 // Assert additional arguments must not be required.
-                foreach ($objectField->args as $objectArg) {
+                foreach ($objectField->args as $objectArg)
+                {
                     $argName = $objectArg->name;
-                    $ifaceArg = Utils::find($ifaceField->args, function(FieldArgument $arg) use ($argName) {
+                    $ifaceArg = C\find($ifaceField->args, function(FieldArgument $arg) use ($argName)
+                    {
                         return $arg->name === $argName;
                     });
-                    if (!$ifaceArg) {
+                    if (!$ifaceArg)
+                    {
                         Utils::invariant(
                             !($objectArg->getType() instanceof NoNull),
                             "{$object->name}.{$fieldName}({$argName}:) is of required type " .

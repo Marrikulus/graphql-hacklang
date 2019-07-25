@@ -9,4 +9,5 @@ GraphQLUnionType;
 */
 interface CompositeType
 {
+	require extends GraphQlType;
 }

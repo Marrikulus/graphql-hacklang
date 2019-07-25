@@ -33,7 +33,7 @@ values as specified by
      * @param mixed $value
      * @return float|null
      */
-    public function serialize($value)
+    public function serialize(mixed $value):?float
     {
         if (is_numeric($value) || $value === true || $value === false) {
             return (float) $value;
@@ -51,7 +51,7 @@ values as specified by
      * @param mixed $value
      * @return float|null
      */
-    public function parseValue($value)
+    public function parseValue(mixed $value):?float
     {
         return (is_numeric($value) && !($value is string)) ? (float) $value : null;
     }
@@ -60,7 +60,7 @@ values as specified by
      * @param $ast
      * @return float|null
      */
-    public function parseLiteral(ValueNode<?string> $ast):mixed
+    public function parseLiteral(ValueNode<?string> $ast):?float
     {
         if ($ast instanceof FloatValueNode || $ast instanceof IntValueNode) {
             return (float) $ast->getValue();

@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //decl
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
@@ -64,26 +63,38 @@ class EnumType extends GraphQlType implements InputType, OutputType, LeafType<?s
     /**
      * @return EnumValueDefinition[]
      */
-    public function getValues()
+    public function getValues():array<EnumValueDefinition>
     {
-        if ($this->values === null) {
+        if ($this->values === null)
+        {
             $this->values = [];
             $config = $this->config;
 
-            if (isset($config['values'])) {
-                if (!is_array($config['values'])) {
+            if (isset($config['values']))
+            {
+                if (!is_array($config['values']))
+                {
                     throw new InvariantViolation("{$this->name} values must be an array");
                 }
-                foreach ($config['values'] as $name => $value) {
-                    if ($name is string) {
-                        if (!is_array($value)) {
+                foreach ($config['values'] as $name => $value)
+                {
+                    if ($name is string)
+                    {
+                        if (!is_array($value))
+                        {
                             $value = ['name' => $name, 'value' => $value];
-                        } else {
+                        }
+                        else
+                        {
                             $value += ['name' => $name, 'value' => $name];
                         }
-                    } else if (($name is int) && ($value is string)) {
+                    }
+                    else if (($name is int) && ($value is string))
+                    {
                         $value = ['name' => $value, 'value' => $value];
-                    } else {
+                    }
+                    else
+                    {
                         throw new InvariantViolation("{$this->name} values must be an array with value names as keys.");
                     }
                     $this->values[] = new EnumValueDefinition($value);
@@ -165,10 +176,12 @@ class EnumType extends GraphQlType implements InputType, OutputType, LeafType<?s
      */
     private function getValueLookup()
     {
-        if (null === $this->valueLookup) {
+        if (null === $this->valueLookup)
+        {
             $this->valueLookup = new MixedStore();
 
-            foreach ($this->getValues() as $valueName => $value) {
+            foreach ($this->getValues() as $valueName => $value)
+            {
                 $this->valueLookup->offsetSet($value->value, $value);
             }
         }

@@ -24,7 +24,6 @@ use GraphQL\Language\AST\ValueNode;
  *     }
  * }
  */
-/* HH_FIXME[4110]*/
 abstract class ScalarType<T> extends GraphQlType implements OutputType, InputType, LeafType<T>
 {
     /**

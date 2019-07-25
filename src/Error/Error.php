@@ -294,7 +294,7 @@ class Error extends Exception implements \JsonSerializable, ClientAware
             return $loc->toSerializableArray();
         },$this->getLocations());
 
-        if (count($locations) > 0)
+        if (\count($locations) > 0)
         {
             $arr['locations'] = $locations;
         }

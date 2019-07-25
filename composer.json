@@ -11,14 +11,14 @@
     "require": {
         "hhvm": "^3.30.0",
         "php": ">=5.5,<8.0-DEV",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "hhvm/hhvm-autoload": "v1.8",
+        "hhvm/hsl": "v3.30.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8",
-        "psr/http-message": "^1.0"
-    },
-    "config": {
-        "bin-dir": "bin"
+        "hhvm/hacktest": "v1.3",
+        "psr/http-message": "^1.0",
+        "hack-psr/psr7-http-message-hhi": "^1.0"
     },
     "autoload": {
         "files": [

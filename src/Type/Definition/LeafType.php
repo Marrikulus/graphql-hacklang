@@ -11,6 +11,7 @@ GraphQLEnumType;
 */
 interface LeafType<T>
 {
+    require extends GraphQlType;
     /**
      * Serializes an internal value to include in a response.
      *

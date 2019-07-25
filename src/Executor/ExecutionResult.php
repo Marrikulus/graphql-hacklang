@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Executor;
 
 use GraphQL\Error\Error;
@@ -127,7 +126,8 @@ class ExecutionResult implements \JsonSerializable
         $result = [];
 
         if (!empty($this->errors)) {
-            $errorsHandler = $this->errorsHandler ?? function(array $errors, callable $formatter) {
+            $errorsHandler = $this->errorsHandler ?? function(array $errors, (function(\Exception):array<string,mixed>) $formatter)
+            {
                 return \array_map($formatter, $errors);
             };
             $result['errors'] = $errorsHandler(

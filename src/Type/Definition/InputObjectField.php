@@ -1,5 +1,4 @@
-<?hh //strict
-//partial
+<?hh //partial
 namespace GraphQL\Type\Definition;
 use GraphQL\Language\AST\InputValueDefinitionNode;
 use GraphQL\Language\AST\Node;

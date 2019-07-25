@@ -32,7 +32,7 @@ represent free-form human-readable text.';
      * @param mixed $value
      * @return mixed|string
      */
-    public function serialize($value)
+    public function serialize(mixed $value):string
     {
         if ($value === true) {
             return 'true';
@@ -53,7 +53,7 @@ represent free-form human-readable text.';
      * @param mixed $value
      * @return string
      */
-    public function parseValue($value)
+    public function parseValue(mixed $value):?string
     {
         return ($value is string) ? $value : null;
     }

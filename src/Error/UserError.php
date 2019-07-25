@@ -14,7 +14,7 @@ class UserError extends \RuntimeException implements ClientAware
     /**
      * @return bool
      */
-    public function isClientSafe()
+    public function isClientSafe():bool
     {
         return true;
     }
@@ -22,7 +22,7 @@ class UserError extends \RuntimeException implements ClientAware
     /**
      * @return string
      */
-    public function getCategory()
+    public function getCategory():string
     {
         return 'user';
     }
