@@ -45,11 +45,11 @@ fragment MissingOn Type
         } catch (SyntaxError $e) {
             expect($e->getMessage())->toBePHPEqual($expectedMessage);
 
-            if ($expectedPositions) {
+            if ($expectedPositions !== null) {
                 expect($e->getPositions())->toBePHPEqual($expectedPositions);
             }
 
-            if ($expectedLocations) {
+            if ($expectedLocations !== null) {
                 expect($e->getLocations())->toBePHPEqual($expectedLocations);
             }
         }

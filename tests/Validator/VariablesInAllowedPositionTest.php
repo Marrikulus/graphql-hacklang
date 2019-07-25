@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL\Tests\Validator;
 
 use GraphQL\Error\FormattedError;

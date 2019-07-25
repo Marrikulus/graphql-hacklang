@@ -179,7 +179,7 @@ class DefaultValuesOfCorrectTypeTest extends TestCase
 
     private function badValue(string $varName, string $typeName, string $val, int $line, int $column, ?array<string> $errors = null):array<string, mixed>
     {
-        $realErrors = !$errors ? ["Expected type \"$typeName\", found $val."] : $errors;
+        $realErrors = $errors ?? ["Expected type \"$typeName\", found $val."];
 
         return FormattedError::create(
             DefaultValuesOfCorrectType::badValueForDefaultArgMessage($varName, $typeName, $val, $realErrors),

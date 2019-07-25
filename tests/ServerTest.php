@@ -435,8 +435,6 @@ class ServerTest extends \Facebook\HackTest\HackTest
             ->setDebug(0)
             ->setQueryType($queryType);
 
-        $prevEnabled = \PHPUnit_Framework_Error_Notice::$enabled;
-        \PHPUnit_Framework_Error_Notice::$enabled = false;
         $result = @$server->executeQuery('{err}');
 
         $expected = [
@@ -478,8 +476,6 @@ class ServerTest extends \Facebook\HackTest\HackTest
             ]
         ];
         expect($result->toArray())->toBePHPEqual($expected);
-
-        \PHPUnit_Framework_Error_Notice::$enabled = $prevEnabled;
     }
 
     public function testDebugExceptions():void

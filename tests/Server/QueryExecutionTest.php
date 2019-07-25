@@ -645,7 +645,7 @@ class QueryExecutionTest extends TestCase
         return $result;
     }
 
-    private function executeQuery($query, $variables = null, $readonly = false)
+    private function executeQuery(string $query, $variables = null, $readonly = false)
     {
         $op = OperationParams::create(['query' => $query, 'variables' => $variables], $readonly);
         $helper = new Helper();

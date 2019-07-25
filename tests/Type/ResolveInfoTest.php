@@ -26,7 +26,7 @@ class ResolveInfoTest extends \Facebook\HackTest\HackTest
 
         $author = new ObjectType([
             'name' => 'Author',
-            'fields' => function() use ($image, &$article) {
+            'fields' => function() use ($image, $article) {
                 return [
                     'id' => ['type' => GraphQlType::string()],
                     'name' => ['type' => GraphQlType::string()],
@@ -146,6 +146,7 @@ class ResolveInfoTest extends \Facebook\HackTest\HackTest
             'fields' => [
                 'article' => [
                     'type' => $article,
+                    /* HH_FIXME[2087]*/
                     'resolve' => function($value, $args, $context, ResolveInfo $info) use (&$hasCalled, &$actualDefaultSelection, &$actualDeepSelection) {
                         $hasCalled = true;
                         $actualDefaultSelection = $info->getFieldSelection();
@@ -180,7 +181,7 @@ class ResolveInfoTest extends \Facebook\HackTest\HackTest
 
         $author = new ObjectType([
             'name' => 'Author',
-            'fields' => function() use ($image, &$article) {
+            'fields' => function() use ($image, $article) {
                 return [
                     'id' => ['type' => GraphQlType::string()],
                     'name' => ['type' => GraphQlType::string()],
@@ -236,14 +237,14 @@ class ResolveInfoTest extends \Facebook\HackTest\HackTest
       fragment MyImage on Image {
         url
       }
-      
+
       fragment Replies01 on Article {
         _replies012: replies {
             body
         }
       }
       fragment Replies02 on Article {
-        _replies012: replies {            
+        _replies012: replies {
             author {
                 id
                 name
@@ -305,6 +306,7 @@ class ResolveInfoTest extends \Facebook\HackTest\HackTest
             'fields' => [
                 'article' => [
                     'type' => $article,
+                    /* HH_FIXME[2087]*/
                     'resolve' => function($value, $args, $context, ResolveInfo $info) use (&$hasCalled, &$actualDeepSelection) {
                         $hasCalled = true;
                         $actualDeepSelection = $info->getFieldSelection(5);

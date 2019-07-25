@@ -255,7 +255,7 @@ class RequestParsingTest extends \Facebook\HackTest\HackTest
      *
      * @return OperationParams|OperationParams[]
      */
-    private function parseRawRequest($contentType, $content, $method = 'POST')
+    private function parseRawRequest(string $contentType, string $content, string $method = 'POST')
     {
         $_SERVER['CONTENT_TYPE'] = $contentType;
         $_SERVER['REQUEST_METHOD'] = $method;
@@ -273,7 +273,7 @@ class RequestParsingTest extends \Facebook\HackTest\HackTest
      *
      * @return OperationParams|OperationParams[]
      */
-    private function parsePsrRequest($contentType, $content, $method = 'POST')
+    private function parsePsrRequest(string $contentType, string $content, string $method = 'POST')
     {
         $psrRequestBody = new PsrStreamStub();
         $psrRequestBody->content = $content;
@@ -363,7 +363,7 @@ class RequestParsingTest extends \Facebook\HackTest\HackTest
      * @param array $variables
      * @param string $operation
      */
-    private function assertValidOperationParams($params, $query, $queryId = null, $variables = null, $operation = null, string $message = ''):void
+    private function assertValidOperationParams($params, string $query, mixed $queryId = null, ?array<string, mixed> $variables = null, ?string $operation = null, string $message = ''):void
     {
         expect($params)->toBeInstanceOf(OperationParams::class, $message);
 

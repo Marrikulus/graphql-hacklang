@@ -16,7 +16,7 @@ class SchemaPrinterTest extends \Facebook\HackTest\HackTest
     public function testPrintsMinimalAst():void
     {
         $ast = new ScalarTypeDefinitionNode(
-            new NameNode(['value' => 'foo'])
+            new NameNode('foo')
         );
         expect(Printer::doPrint($ast))->toBePHPEqual('scalar foo');
     }

@@ -233,7 +233,7 @@ class ConfigTest extends \Facebook\HackTest\HackTest
         $this->expectValidationPasses(
             ['test' => [
                 'name1' => ['key1' => null],
-                ['name' => 'name1'],
+                '' => ['name' => 'name1'],
             ]],
             ['test' => Config::arrayOf(
                 ['name' => Config::STRING | Config::REQUIRED, 'key1' => Config::STRING],
@@ -379,7 +379,7 @@ class ConfigTest extends \Facebook\HackTest\HackTest
         $this->expectValidationPasses(
             ['test' => [
                 'some-key' => 'some-name',
-                'some-name'
+                '' => 'some-name'
             ]],
             ['test' => Config::arrayOf(
                 ['name' => Config::STRING | Config::REQUIRED],
@@ -388,84 +388,84 @@ class ConfigTest extends \Facebook\HackTest\HackTest
         );
     }
 
-    public function getValidValues():array<array<int, mixed>>
+    public function getValidValues():array<(int, mixed)>
     {
         return [
             // $type, $validValue
-            [Config::ANY, null],
-            [Config::ANY, 0],
-            [Config::ANY, ''],
-            [Config::ANY, '0'],
-            [Config::ANY, 1],
-            [Config::ANY, function() {}],
-            [Config::ANY, []],
-            [Config::ANY, new \stdClass()],
-            [Config::STRING, null],
-            [Config::STRING, ''],
-            [Config::STRING, '0'],
-            [Config::STRING, 'anything'],
-            [Config::BOOLEAN, null],
-            [Config::BOOLEAN, false],
-            [Config::BOOLEAN, true],
-            [Config::INT, null],
-            [Config::INT, 0],
-            [Config::INT, 1],
-            [Config::INT, -1],
-            [Config::INT, 5000000],
-            [Config::INT, -5000000],
-            [Config::FLOAT, null],
-            [Config::FLOAT, 0],
-            [Config::FLOAT, 0.0],
-            [Config::FLOAT, 0.1],
-            [Config::FLOAT, -12.5],
-            [Config::NUMERIC, null],
-            [Config::NUMERIC, '0'],
-            [Config::NUMERIC, 0],
-            [Config::NUMERIC, 1],
-            [Config::NUMERIC, 0.0],
-            [Config::NUMERIC, 1.0],
-            [Config::NUMERIC, -1.0],
-            [Config::NUMERIC, -1],
-            [Config::NUMERIC, 1],
-            [Config::CALLBACK, null],
-            [Config::CALLBACK, function() {}],
-            [Config::CALLBACK, [$this, 'getValidValues']],
-            [Config::SCALAR, null],
-            [Config::SCALAR, 0],
-            [Config::SCALAR, 1],
-            [Config::SCALAR, 0.0],
-            [Config::SCALAR, 1.0],
-            [Config::SCALAR, true],
-            [Config::SCALAR, false],
-            [Config::SCALAR, ''],
-            [Config::SCALAR, '0'],
-            [Config::SCALAR, 'anything'],
-            [Config::NAME, null],
-            [Config::NAME, 'CamelCaseIsOk'],
-            [Config::NAME, 'underscore_is_ok'],
-            [Config::NAME, 'numbersAreOk0123456789'],
-            [Config::INPUT_TYPE, null],
-            [Config::INPUT_TYPE, new InputObjectType(['name' => 'test', 'fields' => []])],
-            [Config::INPUT_TYPE, new EnumType(['name' => 'test2', 'values' => ['A', 'B', 'C']])],
-            [Config::INPUT_TYPE, GraphQlType::string()],
-            [Config::INPUT_TYPE, GraphQlType::int()],
-            [Config::INPUT_TYPE, GraphQlType::float()],
-            [Config::INPUT_TYPE, GraphQlType::boolean()],
-            [Config::INPUT_TYPE, GraphQlType::id()],
-            [Config::INPUT_TYPE, GraphQlType::listOf(GraphQlType::string())],
-            [Config::INPUT_TYPE, GraphQlType::nonNull(GraphQlType::string())],
-            [Config::OUTPUT_TYPE, null],
-            [Config::OUTPUT_TYPE, new ObjectType(['name' => 'test3', 'fields' => []])],
-            [Config::OUTPUT_TYPE, new EnumType(['name' => 'test4', 'values' => ['A', 'B', 'C']])],
-            [Config::OUTPUT_TYPE, GraphQlType::string()],
-            [Config::OUTPUT_TYPE, GraphQlType::int()],
-            [Config::OUTPUT_TYPE, GraphQlType::float()],
-            [Config::OUTPUT_TYPE, GraphQlType::boolean()],
-            [Config::OUTPUT_TYPE, GraphQlType::id()],
-            [Config::OBJECT_TYPE, null],
-            [Config::OBJECT_TYPE, new ObjectType(['name' => 'test6', 'fields' => []])],
-            [Config::INTERFACE_TYPE, null],
-            [Config::INTERFACE_TYPE, new InterfaceType(['name' => 'test7', 'fields' => []])],
+            tuple(Config::ANY, null),
+            tuple(Config::ANY, 0),
+            tuple(Config::ANY, ''),
+            tuple(Config::ANY, '0'),
+            tuple(Config::ANY, 1),
+            tuple(Config::ANY, function() {}),
+            tuple(Config::ANY, []),
+            tuple(Config::ANY, new \stdClass()),
+            tuple(Config::STRING, null),
+            tuple(Config::STRING, ''),
+            tuple(Config::STRING, '0'),
+            tuple(Config::STRING, 'anything'),
+            tuple(Config::BOOLEAN, null),
+            tuple(Config::BOOLEAN, false),
+            tuple(Config::BOOLEAN, true),
+            tuple(Config::INT, null),
+            tuple(Config::INT, 0),
+            tuple(Config::INT, 1),
+            tuple(Config::INT, -1),
+            tuple(Config::INT, 5000000),
+            tuple(Config::INT, -5000000),
+            tuple(Config::FLOAT, null),
+            tuple(Config::FLOAT, 0),
+            tuple(Config::FLOAT, 0.0),
+            tuple(Config::FLOAT, 0.1),
+            tuple(Config::FLOAT, -12.5),
+            tuple(Config::NUMERIC, null),
+            tuple(Config::NUMERIC, '0'),
+            tuple(Config::NUMERIC, 0),
+            tuple(Config::NUMERIC, 1),
+            tuple(Config::NUMERIC, 0.0),
+            tuple(Config::NUMERIC, 1.0),
+            tuple(Config::NUMERIC, -1.0),
+            tuple(Config::NUMERIC, -1),
+            tuple(Config::NUMERIC, 1),
+            tuple(Config::CALLBACK, null),
+            tuple(Config::CALLBACK, function() {}),
+            tuple(Config::CALLBACK, [$this, 'getValidValues']),
+            tuple(Config::SCALAR, null),
+            tuple(Config::SCALAR, 0),
+            tuple(Config::SCALAR, 1),
+            tuple(Config::SCALAR, 0.0),
+            tuple(Config::SCALAR, 1.0),
+            tuple(Config::SCALAR, true),
+            tuple(Config::SCALAR, false),
+            tuple(Config::SCALAR, ''),
+            tuple(Config::SCALAR, '0'),
+            tuple(Config::SCALAR, 'anything'),
+            tuple(Config::NAME, null),
+            tuple(Config::NAME, 'CamelCaseIsOk'),
+            tuple(Config::NAME, 'underscore_is_ok'),
+            tuple(Config::NAME, 'numbersAreOk0123456789'),
+            tuple(Config::INPUT_TYPE, null),
+            tuple(Config::INPUT_TYPE, new InputObjectType(['name' => 'test', 'fields' => []])),
+            tuple(Config::INPUT_TYPE, new EnumType(['name' => 'test2', 'values' => ['A', 'B', 'C']])),
+            tuple(Config::INPUT_TYPE, GraphQlType::string()),
+            tuple(Config::INPUT_TYPE, GraphQlType::int()),
+            tuple(Config::INPUT_TYPE, GraphQlType::float()),
+            tuple(Config::INPUT_TYPE, GraphQlType::boolean()),
+            tuple(Config::INPUT_TYPE, GraphQlType::id()),
+            tuple(Config::INPUT_TYPE, GraphQlType::listOf(GraphQlType::string())),
+            tuple(Config::INPUT_TYPE, GraphQlType::nonNull(GraphQlType::string())),
+            tuple(Config::OUTPUT_TYPE, null),
+            tuple(Config::OUTPUT_TYPE, new ObjectType(['name' => 'test3', 'fields' => []])),
+            tuple(Config::OUTPUT_TYPE, new EnumType(['name' => 'test4', 'values' => ['A', 'B', 'C']])),
+            tuple(Config::OUTPUT_TYPE, GraphQlType::string()),
+            tuple(Config::OUTPUT_TYPE, GraphQlType::int()),
+            tuple(Config::OUTPUT_TYPE, GraphQlType::float()),
+            tuple(Config::OUTPUT_TYPE, GraphQlType::boolean()),
+            tuple(Config::OUTPUT_TYPE, GraphQlType::id()),
+            tuple(Config::OBJECT_TYPE, null),
+            tuple(Config::OBJECT_TYPE, new ObjectType(['name' => 'test6', 'fields' => []])),
+            tuple(Config::INTERFACE_TYPE, null),
+            tuple(Config::INTERFACE_TYPE, new InterfaceType(['name' => 'test7', 'fields' => []])),
         ];
     }
 
@@ -479,79 +479,77 @@ class ConfigTest extends \Facebook\HackTest\HackTest
     }
 
     /* HH_FIXME[1002]*/
-    public function getInvalidValues():array<(int, string, mixed, string, string)>
+    public function getInvalidValues():array<(int, string, mixed, ?string, ?string)>
     {
         return [
             // $type, $typeLabel, $invalidValue, $actualTypeLabel
-            [Config::STRING,        'string',                       1,                          'integer',  null],
-            [Config::STRING,        'string',                       0,                          'integer',  null],
-            [Config::STRING,        'string',                       false,                      'boolean',  null],
-            [Config::STRING,        'string',                       $tmp = function() {},       Utils::getVariableType($tmp), null], // Note: can't use "Closure" as HHVM returns different string
-            [Config::STRING,        'string',                       [],                         'array',    null],
-            [Config::STRING,        'string',                       new \stdClass(),            'stdClass', null],
-            [Config::BOOLEAN,       'boolean',                      '',                         'string',   null],
-            [Config::BOOLEAN,       'boolean',                      1,                          'integer',  null],
-            [Config::BOOLEAN,       'boolean',                      $tmp = function() {},       Utils::getVariableType($tmp), null],
-            [Config::BOOLEAN,       'boolean',                      [],                         'array',    null],
-            [Config::BOOLEAN,       'boolean',                      new \stdClass(),            'stdClass', null],
-            [Config::INT,           'int',                          false,                      'boolean',  null],
-            [Config::INT,           'int',                          '',                         'string',   null],
-            [Config::INT,           'int',                          '0',                        'string',   null],
-            [Config::INT,           'int',                          '1',                        'string',   null],
-            [Config::INT,           'int',                          $tmp = function() {},       Utils::getVariableType($tmp), null],
-            [Config::INT,           'int',                          [],                         'array',    null],
-            [Config::INT,           'int',                          new \stdClass(),            'stdClass', null],
-            [Config::FLOAT,         'float',                        '',                         'string',   null],
-            [Config::FLOAT,         'float',                        '0',                        'string',   null],
-            [Config::FLOAT,         'float',                        $tmp = function() {},       Utils::getVariableType($tmp), null],
-            [Config::FLOAT,         'float',                        [],                         'array',    null],
-            [Config::FLOAT,         'float',                        new \stdClass(),            'stdClass', null],
-            [Config::NUMERIC,       'numeric',                      '',                         'string',   null],
-            [Config::NUMERIC,       'numeric',                      'tmp',                      'string',   null],
-            [Config::NUMERIC,       'numeric',                      [],                         'array',    null],
-            [Config::NUMERIC,       'numeric',                      new \stdClass(),            'stdClass', null],
-            [Config::NUMERIC,       'numeric',                      $tmp = function() {},       Utils::getVariableType($tmp), null],
-            [Config::CALLBACK,      'callable',                     1,                          'integer',  null],
-            [Config::CALLBACK,      'callable',                     '',                         'string',   null],
-            [Config::CALLBACK,      'callable',                     [],                         'array',    null],
-            [Config::CALLBACK,      'callable',                     new \stdClass(),            'stdClass', null],
-            [Config::SCALAR,        'scalar',                       [],                         'array',    null],
-            [Config::SCALAR,        'scalar',                       new \stdClass(),            'stdClass', null],
-            [Config::SCALAR,        'scalar',                       $tmp = function() {},       Utils::getVariableType($tmp), null],
-            [Config::NAME,          'name',                         5,                          'integer',  null],
-            [Config::NAME,          'name',                         $tmp = function() {},       Utils::getVariableType($tmp), null],
-            [Config::NAME,          'name',                         [],                         'array',    null],
-            [Config::NAME,          'name',                         new \stdClass(),            'stdClass', null],
-            [Config::NAME,          'name',                         '',                         null, 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "" does not.'],
-            [Config::NAME,          'name',                         '0',                        null, 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "0" does not.'],
-            [Config::NAME,          'name',                         '4abc',                     null, 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "4abc" does not.'],
-            [Config::NAME,          'name',                         'specialCharsAreBad!',      null, 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "specialCharsAreBad!" does not.'],
-            [Config::INPUT_TYPE,    'InputType definition',         new ObjectType(['name' => 'test3', 'fields' => []]), 'test3',           null],
-            [Config::INPUT_TYPE,    'InputType definition',         '',                                                 'string',           null],
-            [Config::INPUT_TYPE,    'InputType definition',         'test',                                             'string',           null],
-            [Config::INPUT_TYPE,    'InputType definition',         1,                                                  'integer',          null],
-            [Config::INPUT_TYPE,    'InputType definition',         0.5,                                                'double',           null],
-            [Config::INPUT_TYPE,    'InputType definition',         false,                                              'boolean',          null],
-            [Config::INPUT_TYPE,    'InputType definition',         [],                                                 'array',            null],
-            [Config::INPUT_TYPE,    'InputType definition',         new \stdClass(),                                    'stdClass',         null],
-            [Config::OUTPUT_TYPE,   'OutputType definition',        new InputObjectType(['name' => 'InputTypeTest']),   'InputTypeTest',    null],
-            [Config::OBJECT_TYPE,   'ObjectType definition',        '',                                                 'string',           null],
-            [Config::OBJECT_TYPE,   'ObjectType definition',        new InputObjectType(['name' => 'InputTypeTest2']),  'InputTypeTest2',   null],
-            [Config::INTERFACE_TYPE, 'InterfaceType definition',    new ObjectType(['name' => 'ObjectTypeTest']),       'ObjectTypeTest',   null],
-            [Config::INTERFACE_TYPE, 'InterfaceType definition',    'InputTypeTest2',                                   'string',           null],
+            tuple(Config::STRING,        'string',                       1,                          'integer',  null),
+            tuple(Config::STRING,        'string',                       0,                          'integer',  null),
+            tuple(Config::STRING,        'string',                       false,                      'boolean',  null),
+            tuple(Config::STRING,        'string',                       $tmp = function() {},       Utils::getVariableType($tmp), null), // Note: can't use "Closure" as HHVM returns different string
+            tuple(Config::STRING,        'string',                       [],                         'array',    null),
+            tuple(Config::STRING,        'string',                       new \stdClass(),            'stdClass', null),
+            tuple(Config::BOOLEAN,       'boolean',                      '',                         'string',   null),
+            tuple(Config::BOOLEAN,       'boolean',                      1,                          'integer',  null),
+            tuple(Config::BOOLEAN,       'boolean',                      $tmp = function() {},       Utils::getVariableType($tmp), null),
+            tuple(Config::BOOLEAN,       'boolean',                      [],                         'array',    null),
+            tuple(Config::BOOLEAN,       'boolean',                      new \stdClass(),            'stdClass', null),
+            tuple(Config::INT,           'int',                          false,                      'boolean',  null),
+            tuple(Config::INT,           'int',                          '',                         'string',   null),
+            tuple(Config::INT,           'int',                          '0',                        'string',   null),
+            tuple(Config::INT,           'int',                          '1',                        'string',   null),
+            tuple(Config::INT,           'int',                          $tmp = function() {},       Utils::getVariableType($tmp), null),
+            tuple(Config::INT,           'int',                          [],                         'array',    null),
+            tuple(Config::INT,           'int',                          new \stdClass(),            'stdClass', null),
+            tuple(Config::FLOAT,         'float',                        '',                         'string',   null),
+            tuple(Config::FLOAT,         'float',                        '0',                        'string',   null),
+            tuple(Config::FLOAT,         'float',                        $tmp = function() {},       Utils::getVariableType($tmp), null),
+            tuple(Config::FLOAT,         'float',                        [],                         'array',    null),
+            tuple(Config::FLOAT,         'float',                        new \stdClass(),            'stdClass', null),
+            tuple(Config::NUMERIC,       'numeric',                      '',                         'string',   null),
+            tuple(Config::NUMERIC,       'numeric',                      'tmp',                      'string',   null),
+            tuple(Config::NUMERIC,       'numeric',                      [],                         'array',    null),
+            tuple(Config::NUMERIC,       'numeric',                      new \stdClass(),            'stdClass', null),
+            tuple(Config::NUMERIC,       'numeric',                      $tmp = function() {},       Utils::getVariableType($tmp), null),
+            tuple(Config::CALLBACK,      'callable',                     1,                          'integer',  null),
+            tuple(Config::CALLBACK,      'callable',                     '',                         'string',   null),
+            tuple(Config::CALLBACK,      'callable',                     [],                         'array',    null),
+            tuple(Config::CALLBACK,      'callable',                     new \stdClass(),            'stdClass', null),
+            tuple(Config::SCALAR,        'scalar',                       [],                         'array',    null),
+            tuple(Config::SCALAR,        'scalar',                       new \stdClass(),            'stdClass', null),
+            tuple(Config::SCALAR,        'scalar',                       $tmp = function() {},       Utils::getVariableType($tmp), null),
+            tuple(Config::NAME,          'name',                         5,                          'integer',  null),
+            tuple(Config::NAME,          'name',                         $tmp = function() {},       Utils::getVariableType($tmp), null),
+            tuple(Config::NAME,          'name',                         [],                         'array',    null),
+            tuple(Config::NAME,          'name',                         new \stdClass(),            'stdClass', null),
+            tuple(Config::NAME,          'name',                         '',                         null, 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "" does not.'),
+            tuple(Config::NAME,          'name',                         '0',                        null, 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "0" does not.'),
+            tuple(Config::NAME,          'name',                         '4abc',                     null, 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "4abc" does not.'),
+            tuple(Config::NAME,          'name',                         'specialCharsAreBad!',      null, 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "specialCharsAreBad!" does not.'),
+            tuple(Config::INPUT_TYPE,    'InputType definition',         new ObjectType(['name' => 'test3', 'fields' => []]), 'test3',           null),
+            tuple(Config::INPUT_TYPE,    'InputType definition',         '',                                                 'string',           null),
+            tuple(Config::INPUT_TYPE,    'InputType definition',         'test',                                             'string',           null),
+            tuple(Config::INPUT_TYPE,    'InputType definition',         1,                                                  'integer',          null),
+            tuple(Config::INPUT_TYPE,    'InputType definition',         0.5,                                                'double',           null),
+            tuple(Config::INPUT_TYPE,    'InputType definition',         false,                                              'boolean',          null),
+            tuple(Config::INPUT_TYPE,    'InputType definition',         [],                                                 'array',            null),
+            tuple(Config::INPUT_TYPE,    'InputType definition',         new \stdClass(),                                    'stdClass',         null),
+            tuple(Config::OUTPUT_TYPE,   'OutputType definition',        new InputObjectType(['name' => 'InputTypeTest']),   'InputTypeTest',    null),
+            tuple(Config::OBJECT_TYPE,   'ObjectType definition',        '',                                                 'string',           null),
+            tuple(Config::OBJECT_TYPE,   'ObjectType definition',        new InputObjectType(['name' => 'InputTypeTest2']),  'InputTypeTest2',   null),
+            tuple(Config::INTERFACE_TYPE, 'InterfaceType definition',    new ObjectType(['name' => 'ObjectTypeTest']),       'ObjectTypeTest',   null),
+            tuple(Config::INTERFACE_TYPE, 'InterfaceType definition',    'InputTypeTest2',                                   'string',           null),
         ];
     }
 
     <<DataProvider('getInvalidValues')>>
-    public function testInvalidValues(int $type, string $typeLabel, mixed $invalidValue, ?string $actualTypeLabel = null, ?string $expectedFullError = null)
+    public function testInvalidValues(int $type, string $typeLabel, mixed $invalidValue, ?string $actualTypeLabel = null, ?string $expectedFullError = null):void
     {
-        if (!$expectedFullError) {
-            $expectedFullError = $this->typeError(
-                $invalidValue === null ?
-                    'Value at "test" can not be null' :
-                    'expecting "' . $typeLabel . '" at "test", but got "' . $actualTypeLabel . '"'
-            );
-        }
+        $expectedFullError ??= $this->typeError(
+            $invalidValue === null ?
+                'Value at "test" can not be null' :
+                'expecting "' . $typeLabel . '" at "test", but got "' . $actualTypeLabel . '"'
+        );
 
         $this->expectValidationThrows(
             ['test' => $invalidValue],
@@ -645,19 +643,22 @@ class ConfigTest extends \Facebook\HackTest\HackTest
             E_WARNING | E_USER_WARNING
         );
 
-        try {
+        try
+        {
             Config::validate(
                 ['test' => 'value', 'test2' => 'value'],
                 ['test' => Config::STRING]
             );
-            $this->fail('Expected exception not thrown');
-        } catch (HackWarningException $e) {
+            self::fail('Expected exception not thrown');
+        }
+        catch (HackWarningException $e)
+        {
             expect($e->getMessage())->toBePHPEqual($this->typeError('Non-standard keys "test2" '));
         }
         \restore_error_handler();
     }
 
-    private function expectValidationPasses(array<string, mixed>$config, array<string, mixed> $definition):void
+    private function expectValidationPasses(array<string, mixed> $config, array<string, mixed> $definition):void
     {
         Config::enableValidation(false);
         Config::validate($config, $definition);
@@ -666,10 +667,13 @@ class ConfigTest extends \Facebook\HackTest\HackTest
     private function expectValidationThrows(array<string, mixed> $config, array<string, mixed> $definition, string $expectedError):void
     {
         Config::enableValidation(false);
-        try {
+        try
+        {
             Config::validate($config, $definition);
-            $this->fail('Expected exception not thrown: ' . $expectedError);
-        } catch (InvariantViolation $e) {
+            self::fail('Expected exception not thrown: ' . $expectedError);
+        }
+        catch (InvariantViolation $e)
+        {
             expect($e->getMessage())->toBePHPEqual($expectedError);
         }
     }

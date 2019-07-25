@@ -19,27 +19,34 @@ use GraphQL\Type\Schema;
 
 class ExecutorLazySchemaTest extends \Facebook\HackTest\HackTest
 {
-    public $SomeScalarType;
+    public ?ObjectType          $QueryType;
+    public ?ObjectType          $SomeObjectType;
+    public ?ObjectType          $OtherObjectType;
+    public ?ObjectType          $DeeperObjectType;
+    public ?CustomScalarType    $SomeScalarType;
+    public ?UnionType           $SomeUnionType;
+    public ?InterfaceType       $SomeInterfaceType;
 
-    public $SomeObjectType;
+    // TODO: find out why unused??
+    public ?EnumType $SomeEnumType;
+    public ?InputObjectType $SomeInputObjectType;
 
-    public $OtherObjectType;
+    public array<string> $calls = [];
 
-    public $DeeperObjectType;
+    public array<string, bool> $loadedTypes = [];
 
-    public $SomeUnionType;
-
-    public $SomeInterfaceType;
-
-    public $SomeEnumType;
-
-    public $SomeInputObjectType;
-
-    public $QueryType;
-
-    public $calls = [];
-
-    public $loadedTypes = [];
+    public async function afterEachTestAsync(): Awaitable<void>
+    {
+        $this->QueryType = null;
+        $this->SomeObjectType = null;
+        $this->OtherObjectType = null;
+        $this->DeeperObjectType = null;
+        $this->SomeScalarType = null;
+        $this->SomeUnionType = null;
+        $this->SomeInterfaceType = null;
+        $this->calls = [];
+        $this->loadedTypes = [];
+    }
 
     public function testWarnsAboutSlowIsTypeOfForLazySchema():void
     {
@@ -143,6 +150,7 @@ class ExecutorLazySchemaTest extends \Facebook\HackTest\HackTest
     public function testHintsOnConflictingTypeInstancesInDefinitions():void
     {
         $calls = [];
+        /* HH_FIXME[2087]*/
         $typeLoader = function($name) use (&$calls) {
             $calls[] = $name;
             switch ($name) {
@@ -267,12 +275,12 @@ class ExecutorLazySchemaTest extends \Facebook\HackTest\HackTest
         ]);
 
         $query = '
-            { 
-                other { 
+            {
+                other {
                     union {
-                        scalar 
-                    } 
-                } 
+                        scalar
+                    }
+                }
             }
         ';
         $result = Executor::execute(
@@ -310,9 +318,10 @@ class ExecutorLazySchemaTest extends \Facebook\HackTest\HackTest
         expect($this->calls)->toBePHPEqual($expectedCalls);
     }
 
-    public function loadType($name, $isExecutorCall = false)
+    public function loadType(string $name, bool $isExecutorCall = false):?GraphQlType
     {
-        if ($isExecutorCall) {
+        if ($isExecutorCall)
+        {
             $this->calls[] = $name;
         }
         $this->loadedTypes[$name] = true;
@@ -347,7 +356,7 @@ class ExecutorLazySchemaTest extends \Facebook\HackTest\HackTest
                     }
                 ]);
             case 'OtherObject':
-                return $this->OtherObjectType ?: $this->OtherObjectType =  new ObjectType([
+                return $this->OtherObjectType ?: $this->OtherObjectType = new ObjectType([
                     'name' => 'OtherObject',
                     'fields' => function() {
                         $this->calls[] = 'OtherObject.fields';
@@ -366,7 +375,7 @@ class ExecutorLazySchemaTest extends \Facebook\HackTest\HackTest
                         ];
                     }
                 ]);
-            case 'SomeScalar';
+            case 'SomeScalar':
                 return $this->SomeScalarType ?: $this->SomeScalarType = new CustomScalarType([
                     'name' => 'SomeScalar',
                     'serialize' => function($value) {return $value;},

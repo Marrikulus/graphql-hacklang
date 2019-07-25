@@ -30,6 +30,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
         $selectionSet = null;
         $editedAst = Visitor::visit($ast, [
             NodeKind::OPERATION_DEFINITION => [
+                /* HH_FIXME[2087]*/
                 'enter' => function(OperationDefinitionNode $node) use (&$selectionSet) {
                     $selectionSet = $node->selectionSet;
 
@@ -38,6 +39,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
                     $newNode->didEnter = true;
                     return $newNode;
                 },
+                /* HH_FIXME[2087]*/
                 'leave' => function(OperationDefinitionNode $node) use (&$selectionSet) {
                     $newNode = clone $node;
                     $newNode->selectionSet = $selectionSet;
@@ -138,6 +140,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
         $ast = Parser::parse('{ a { x } }');
 
         Visitor::visit($ast, [
+            /* HH_FIXME[2087]*/
             'enter' => function($node) use ($addedField, &$didVisitAddedField) {
                 if ($node instanceof FieldNode && $node->name->value === 'a') {
                     return new FieldNode(
@@ -166,12 +169,14 @@ class VisitorTest extends \Facebook\HackTest\HackTest
         $ast = Parser::parse('{ a, b { x }, c }');
 
         Visitor::visit($ast, [
+            /* HH_FIXME[2087]*/
             'enter' => function(Node $node) use (&$visited) {
                 $visited[] = ['enter', $node->kind, isset($node->value) ? $node->value : null];
                 if ($node instanceof FieldNode && $node->name->value === 'b') {
                     return Visitor::skipNode();
                 }
             },
+            /* HH_FIXME[2087]*/
             'leave' => function (Node $node) use (&$visited) {
                 $visited[] = ['leave', $node->kind, isset($node->value) ? $node->value : null];
             }
@@ -207,12 +212,14 @@ class VisitorTest extends \Facebook\HackTest\HackTest
         $ast = Parser::parse('{ a, b { x }, c }');
 
         Visitor::visit($ast, [
+            /* HH_FIXME[2087]*/
             'enter' => function(Node $node) use (&$visited) {
                 $visited[] = ['enter', $node->kind, isset($node->value) ? $node->value : null];
                 if ($node instanceof NameNode && $node->value === 'x') {
                     return Visitor::stop();
                 }
             },
+            /* HH_FIXME[2087]*/
             'leave' => function(Node $node) use (&$visited) {
                 $visited[] = ['leave', $node->kind, isset($node->value) ? $node->value : null];
             }
@@ -246,9 +253,11 @@ class VisitorTest extends \Facebook\HackTest\HackTest
 
         $ast = Parser::parse('{ a, b { x }, c }');
         Visitor::visit($ast, [
+            /* HH_FIXME[2087]*/
             'enter' => function($node) use (&$visited) {
                 $visited[] = ['enter', $node->kind, isset($node->value) ? $node->value : null];
             },
+            /* HH_FIXME[2087]*/
             'leave' => function($node) use (&$visited) {
                 $visited[] = ['leave', $node->kind, isset($node->value) ? $node->value : null];
 
@@ -285,13 +294,16 @@ class VisitorTest extends \Facebook\HackTest\HackTest
         $ast = Parser::parse('{ a, b { x }, c }');
 
         Visitor::visit($ast, [
+            /* HH_FIXME[2087]*/
             NodeKind::NAME => function(NameNode $node) use (&$visited) {
                 $visited[] = ['enter', $node->kind, $node->value];
             },
             NodeKind::SELECTION_SET => [
+                /* HH_FIXME[2087]*/
                 'enter' => function(SelectionSetNode $node) use (&$visited) {
                     $visited[] = ['enter', $node->kind, null];
                 },
+                /* HH_FIXME[2087]*/
                 'leave' => function(SelectionSetNode $node) use (&$visited) {
                     $visited[] = ['leave', $node->kind, null];
                 }
@@ -322,10 +334,12 @@ class VisitorTest extends \Facebook\HackTest\HackTest
 
         $visited = [];
         Visitor::visit($ast, [
+            /* HH_FIXME[2087]*/
             'enter' => function(Node $node, $key, $parent) use (&$visited) {
                 $r = ['enter', $node->kind, $key, $parent instanceof Node ? $parent->kind : null];
                 $visited[] = $r;
             },
+            /* HH_FIXME[2087]*/
             'leave' => function(Node $node, $key, $parent) use (&$visited) {
                 $r = ['leave', $node->kind, $key, $parent instanceof Node ? $parent->kind : null];
                 $visited[] = $r;
@@ -655,6 +669,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
         $ast = Parser::parse('{ a, b { x }, c }');
         Visitor::visit($ast, Visitor::visitInParallel([
             [
+                /* HH_FIXME[2087]*/
                 'enter' => function($node) use (&$visited) {
                     $visited[] = [ 'enter', $node->kind, isset($node->value) ?  $node->value : null];
 
@@ -662,7 +677,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
                         return Visitor::skipNode();
                     }
                 },
-
+                /* HH_FIXME[2087]*/
                 'leave' => function($node) use (&$visited) {
                     $visited[] = ['leave', $node->kind, isset($node->value) ? $node->value : null];
                 }
@@ -698,23 +713,27 @@ class VisitorTest extends \Facebook\HackTest\HackTest
         $ast = Parser::parse('{ a { x }, b { y} }');
         Visitor::visit($ast, Visitor::visitInParallel([
         [
+            /* HH_FIXME[2087]*/
             'enter' => function($node) use (&$visited) {
                 $visited[] = ['no-a', 'enter', $node->kind, isset($node->value) ? $node->value : null];
                 if ($node->kind === 'Field' && isset($node->name->value) && $node->name->value === 'a') {
                     return Visitor::skipNode();
                 }
             },
+            /* HH_FIXME[2087]*/
             'leave' => function($node) use (&$visited) {
                 $visited[] = [ 'no-a', 'leave', $node->kind, isset($node->value) ? $node->value : null ];
             }
         ],
         [
+            /* HH_FIXME[2087]*/
             'enter' => function($node) use (&$visited) {
                 $visited[] = ['no-b', 'enter', $node->kind, isset($node->value) ? $node->value : null];
                 if ($node->kind === 'Field' && isset($node->name->value) && $node->name->value === 'b') {
                     return Visitor::skipNode();
                 }
             },
+            /* HH_FIXME[2087]*/
             'leave' => function($node) use (&$visited) {
                 $visited[] = ['no-b', 'leave', $node->kind, isset($node->value) ? $node->value : null];
             }
@@ -768,6 +787,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
 
         $ast = Parser::parse('{ a, b { x }, c }');
         Visitor::visit($ast, Visitor::visitInParallel([ [
+            /* HH_FIXME[2087]*/
             'enter' => function($node) use (&$visited) {
                 $value = isset($node->value) ? $node->value : null;
                 $visited[] = ['enter', $node->kind, $value];
@@ -775,6 +795,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
                     return Visitor::stop();
                 }
             },
+            /* HH_FIXME[2087]*/
             'leave' => function($node) use (&$visited) {
                 $visited[] = ['leave', $node->kind, isset($node->value) ? $node->value : null];
             }
@@ -807,6 +828,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
         $ast = Parser::parse('{ a { y }, b { x } }');
         Visitor::visit($ast, Visitor::visitInParallel([
         [
+            /* HH_FIXME[2087]*/
             'enter' => function($node) use (&$visited) {
                 $value = isset($node->value) ? $node->value : null;
                 $visited[] = ['break-a', 'enter', $node->kind, $value];
@@ -814,11 +836,13 @@ class VisitorTest extends \Facebook\HackTest\HackTest
                     return Visitor::stop();
                 }
             },
+            /* HH_FIXME[2087]*/
             'leave' => function($node) use (&$visited) {
                 $visited[] = [ 'break-a', 'leave', $node->kind, isset($node->value) ? $node->value : null ];
             }
         ],
         [
+            /* HH_FIXME[2087]*/
             'enter' => function($node) use (&$visited) {
                 $value = isset($node->value) ? $node->value : null;
                 $visited[] = ['break-b', 'enter', $node->kind, $value];
@@ -826,6 +850,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
                     return Visitor::stop();
                 }
             },
+            /* HH_FIXME[2087]*/
             'leave' => function($node) use (&$visited) {
                 $visited[] = ['break-b', 'leave', $node->kind, isset($node->value) ? $node->value : null];
             }
@@ -865,9 +890,11 @@ class VisitorTest extends \Facebook\HackTest\HackTest
 
         $ast = Parser::parse('{ a, b { x }, c }');
         Visitor::visit($ast, Visitor::visitInParallel([ [
+            /* HH_FIXME[2087]*/
             'enter' => function($node) use (&$visited) {
                 $visited[] = ['enter', $node->kind, isset($node->value) ? $node->value : null];
             },
+            /* HH_FIXME[2087]*/
             'leave' => function($node) use (&$visited) {
                 $value = isset($node->value) ? $node->value : null;
                 $visited[] = ['leave', $node->kind, $value];
@@ -905,9 +932,11 @@ class VisitorTest extends \Facebook\HackTest\HackTest
         $ast = Parser::parse('{ a { y }, b { x } }');
         Visitor::visit($ast, Visitor::visitInParallel([
             [
+                /* HH_FIXME[2087]*/
                 'enter' => function($node) use (&$visited) {
                     $visited[] = ['break-a', 'enter', $node->kind, isset($node->value) ? $node->value : null];
                 },
+                /* HH_FIXME[2087]*/
                 'leave' => function($node) use (&$visited) {
                     $visited[] = ['break-a', 'leave', $node->kind, isset($node->value) ? $node->value : null];
                     if ($node->kind === 'Field' && isset($node->name->value) && $node->name->value === 'a') {
@@ -916,9 +945,11 @@ class VisitorTest extends \Facebook\HackTest\HackTest
                 }
             ],
             [
+                /* HH_FIXME[2087]*/
                 'enter' => function($node) use (&$visited) {
                     $visited[] = ['break-b', 'enter', $node->kind, isset($node->value) ? $node->value : null];
                 },
+                /* HH_FIXME[2087]*/
                 'leave' => function($node) use (&$visited) {
                     $visited[] = ['break-b', 'leave', $node->kind, isset($node->value) ? $node->value : null];
                     if ($node->kind === 'Field' && isset($node->name->value) && $node->name->value === 'b') {
@@ -978,6 +1009,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
         $ast = Parser::parse('{ a, b, c { a, b, c } }', true);
         $editedAst = Visitor::visit($ast, Visitor::visitInParallel([
             [
+                /* HH_FIXME[2087]*/
                 'enter' => function ($node) use (&$visited) {
                     if ($node->kind === 'Field' && isset($node->name->value) && $node->name->value === 'b') {
                         return Visitor::removeNode();
@@ -985,9 +1017,11 @@ class VisitorTest extends \Facebook\HackTest\HackTest
                 }
             ],
             [
+                /* HH_FIXME[2087]*/
                 'enter' => function ($node) use (&$visited) {
                     $visited[] = ['enter', $node->kind, isset($node->value) ? $node->value : null];
                 },
+                /* HH_FIXME[2087]*/
                 'leave' => function ($node) use (&$visited) {
                     $visited[] = ['leave', $node->kind, isset($node->value) ? $node->value : null];
                 }
@@ -1043,9 +1077,11 @@ class VisitorTest extends \Facebook\HackTest\HackTest
                 }
             ],
             [
+                /* HH_FIXME[2087]*/
                 'enter' => function ($node) use (&$visited) {
                     $visited[] = ['enter', $node->kind, isset($node->value) ? $node->value : null];
                 },
+                /* HH_FIXME[2087]*/
                 'leave' => function ($node) use (&$visited) {
                     $visited[] = ['leave', $node->kind, isset($node->value) ? $node->value : null];
                 }
@@ -1103,6 +1139,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
 
         $ast = Parser::parse('{ human(id: 4) { name, pets { name }, unknown } }');
         Visitor::visit($ast, Visitor::visitWithTypeInfo($typeInfo, [
+            /* HH_FIXME[2087]*/
             'enter' => function ($node) use ($typeInfo, &$visited) {
                 $parentType = $typeInfo->getParentType();
                 $type = $typeInfo->getType();
@@ -1116,6 +1153,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
                     $inputType ? (string)$inputType : null
                 ];
             },
+            /* HH_FIXME[2087]*/
             'leave' => function ($node) use ($typeInfo, &$visited) {
                 $parentType = $typeInfo->getParentType();
                 $type = $typeInfo->getType();
@@ -1183,6 +1221,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
             '{ human(id: 4) { name, pets }, alien }'
         );
         $editedAst = Visitor::visit($ast, Visitor::visitWithTypeInfo($typeInfo, [
+            /* HH_FIXME[2087]*/
             'enter' => function ($node) use ($typeInfo, &$visited) {
                 $parentType = $typeInfo->getParentType();
                 $type = $typeInfo->getType();
@@ -1212,6 +1251,7 @@ class VisitorTest extends \Facebook\HackTest\HackTest
                         ]));
                 }
             },
+            /* HH_FIXME[2087]*/
             'leave' => function ($node) use ($typeInfo, &$visited) {
                 $parentType = $typeInfo->getParentType();
                 $type = $typeInfo->getType();

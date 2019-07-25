@@ -322,7 +322,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
      */
     public function testRejectsASchemaWithoutAQueryType():void
     {
-        $this->setExpectedException(InvariantViolation::class, 'Schema query must be Object Type but got: NULL');
+        $this->setExpectedException(InvariantException::class, 'Schema query must be Object Type but got: NULL');
         new Schema([]);
     }
 
@@ -584,6 +584,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
     public function testWarnsAboutAnObjectTypeWithReservedNamedFields():void
     {
         $lastMessage = null;
+        /* HH_FIXME[2087]*/
         Warning::setWarningHandler(function($message, $warningId) use (&$lastMessage) {
             $lastMessage = $message;
         });
@@ -2363,6 +2364,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
             'name' => 'AnotherInterface',
             'resolveType' => function () {
             },
+            /* HH_FIXME[2087]*/
             'fields' => function () use (&$AnotherInterface) {
                 return [
                     'field' => ['type' => $AnotherInterface]
@@ -2373,6 +2375,7 @@ class ValidationTest extends \Facebook\HackTest\HackTest
         $AnotherObject = new ObjectType([
             'name' => 'AnotherObject',
             'interfaces' => [$AnotherInterface],
+            /* HH_FIXME[2087]*/
             'fields' => function () use (&$AnotherObject) {
                 return [
                     'field' => ['type' => $AnotherObject]

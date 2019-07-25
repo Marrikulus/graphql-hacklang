@@ -25,7 +25,16 @@ abstract class TestCase extends \Facebook\HackTest\HackTest
      */
     public static function getDefaultSchema():Schema
     {
-        $FurColor = null;
+        $FurColor = new EnumType([
+            'name' => 'FurColor',
+            'values' => [
+                'BROWN' => [ 'value' => 0 ],
+                'BLACK' => [ 'value' => 1 ],
+                'TAN' => [ 'value' => 2 ],
+                'SPOTTED' => [ 'value' => 3 ],
+                'NO_FUR' => [ 'value' => null ],
+            ],
+        ]);
 
         $Being = new InterfaceType([
             'name' => 'Being',
@@ -98,7 +107,7 @@ abstract class TestCase extends \Facebook\HackTest\HackTest
         $Cat = new ObjectType([
             'name' => 'Cat',
             'isTypeOf' => function() {return true;},
-            'fields' => function() use (&$FurColor) {
+            'fields' => function() use ($FurColor) {
                 return [
                     'name' => [
                         'type' => GraphQlType::string(),
@@ -129,11 +138,11 @@ abstract class TestCase extends \Facebook\HackTest\HackTest
             ]
         ]);
 
-        $Human = null;
         $Human = new ObjectType([
             'name' => 'Human',
             'isTypeOf' => function() {return true;},
             'interfaces' => [$Being, $Intelligent],
+            /* HH_FIXME[2087]*/
             'fields' => function() use (&$Human, $Pet) {
                 return [
                     'name' => [
@@ -177,17 +186,6 @@ abstract class TestCase extends \Facebook\HackTest\HackTest
                 // not used for validation
                 return null;
             }
-        ]);
-
-        $FurColor = new EnumType([
-            'name' => 'FurColor',
-            'values' => [
-                'BROWN' => [ 'value' => 0 ],
-                'BLACK' => [ 'value' => 1 ],
-                'TAN' => [ 'value' => 2 ],
-                'SPOTTED' => [ 'value' => 3 ],
-                'NO_FUR' => [ 'value' => null ],
-            ],
         ]);
 
         $ComplexInput = new InputObjectType([

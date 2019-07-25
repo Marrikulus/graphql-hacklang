@@ -153,11 +153,11 @@ class ServerConfigTest extends \Facebook\HackTest\HackTest
     {
         $config = ServerConfig::create();
 
-        $config->setDebug(true);
-        expect($config->getDebug())->toBeSame(true);
+        $config->setDebug(1);
+        expect($config->getDebug())->toBeSame(1);
 
-        $config->setDebug(false);
-        expect($config->getDebug())->toBeSame(false);
+        $config->setDebug(0);
+        expect($config->getDebug())->toBeSame(0);
     }
 
     public function testAcceptsArray():void
@@ -173,7 +173,7 @@ class ServerConfigTest extends \Facebook\HackTest\HackTest
             'validationRules' => [function() {}],
             'fieldResolver' => function() {},
             'persistentQueryLoader' => function() {},
-            'debug' => true,
+            'debug' => 1,
             'queryBatching' => true,
         ];
 
@@ -187,7 +187,7 @@ class ServerConfigTest extends \Facebook\HackTest\HackTest
         expect($config->getValidationRules())->toBeSame($arr['validationRules']);
         expect($config->getFieldResolver())->toBeSame($arr['fieldResolver']);
         expect($config->getPersistentQueryLoader())->toBeSame($arr['persistentQueryLoader']);
-        expect($config->getDebug())->toBeSame(true);
+        expect($config->getDebug())->toBeSame(1);
         expect($config->getQueryBatching())->toBeSame(true);
     }
 
