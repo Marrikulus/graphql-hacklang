@@ -43,7 +43,7 @@ class StandardServerTest extends TestCase
         expect($result->toArray(1))->toBePHPEqual($expected);
     }
 
-    public function testSimplePsrRequestExecution():void
+    /*public function testSimplePsrRequestExecution():void
     {
         $body = [
             'query' => '{f1}'
@@ -57,7 +57,7 @@ class StandardServerTest extends TestCase
 
         $request = $this->preparePsrRequest('application/json', $body);
         $this->assertPsrRequestEquals($expected, $request);
-    }
+    }*/
 
     private function executePsrRequest(PsrRequestStub $psrRequest)
     {

@@ -13,7 +13,7 @@ use GraphQL\Tests\Server\Psr7\PsrStreamStub;
 
 class RequestParsingTest extends \Facebook\HackTest\HackTest
 {
-    public function testParsesGraphqlRequest():void
+    /*public function testParsesGraphqlRequest():void
     {
         $query = '{my query}';
         $parsed = [
@@ -246,7 +246,7 @@ class RequestParsingTest extends \Facebook\HackTest\HackTest
     {
         $this->setExpectedException(RequestError::class, 'HTTP Method "PUT" is not supported');
         $this->parsePsrRequest('application/json', \json_encode([]), "PUT");
-    }
+    }*/
 
     /**
      * @param string $contentType

@@ -58,7 +58,7 @@ class TypeLoaderTest extends \Facebook\HackTest\HackTest
      */
     private array<string> $calls = [];
 
-    public async function beforeEachTestAsync(): Awaitable<void>
+    /*public async function beforeEachTestAsync(): Awaitable<void>
     {
         $this->node = new InterfaceType([
             'name' => 'Node',
@@ -351,5 +351,5 @@ class TypeLoaderTest extends \Facebook\HackTest\HackTest
         $type = $schema->getType('ID');
         expect($type)->toBeSame(GraphQlType::id());
         expect($this->calls)->toBePHPEqual([]);
-    }
+    }*/
 }

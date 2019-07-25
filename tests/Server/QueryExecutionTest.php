@@ -33,7 +33,7 @@ class QueryExecutionTest extends TestCase
             ->setSchema($schema);
     }
 
-    public function testSimpleQueryExecution():void
+    /*public function testSimpleQueryExecution():void
     {
         $query = '{f1}';
 
@@ -634,7 +634,7 @@ class QueryExecutionTest extends TestCase
         expect(\count($errors))->toBeSame(2);
         expect($formatter)->toBeType('callable');
         expect($formatted)->toInclude($expected);
-    }
+    }*/
 
     private function executePersistedQuery($queryId, $variables = null)
     {
