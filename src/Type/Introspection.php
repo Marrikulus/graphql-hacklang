@@ -494,8 +494,22 @@ EOD;
                             'args' => [
                                 'includeDeprecated' => ['type' => GraphQlType::boolean(), 'defaultValue' => false]
                             ],
-                            'resolve' => function (GraphQlType $type, $args) {
-                                if ($type instanceof ObjectType || $type instanceof InterfaceType) {
+                            'resolve' => function (GraphQlType $type, $args)
+                            {
+                                if ($type instanceof ObjectType)
+                                {
+                                    $fields = $type->getFields();
+
+                                    if (empty($args['includeDeprecated'])) {
+                                        $fields = \array_filter($fields, function (FieldDefinition $field) {
+                                            return !$field->deprecationReason;
+                                        });
+                                    }
+                                    return \array_values($fields);
+                                }
+
+                                if ($type instanceof InterfaceType)
+                                {
                                     $fields = $type->getFields();
 
                                     if (empty($args['includeDeprecated'])) {

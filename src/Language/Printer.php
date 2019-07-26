@@ -66,7 +66,7 @@ class Printer
     {
         static $instance;
         $instance = $instance ?? new Printer();
-        return $instance->printAST($ast);
+        return (string)$instance->printAST($ast);
     }
 
     protected function __construct()
@@ -98,7 +98,7 @@ class Printer
                         : $this->join([$op, $this->join([$name, $varDefs]), $directives, $selectionSet], ' ');
                 },
                 NodeKind::VARIABLE_DEFINITION => function(VariableDefinitionNode $node) {
-                    return $node->variable . ': ' . $node->type . $this->wrap(' = ', $node->defaultValue);
+                    return $node->variable . ': ' . ((string)$node->type) . $this->wrap(' = ', (string)$node->defaultValue);
                 },
                 NodeKind::SELECTION_SET => function(SelectionSetNode $node) {
                     return $this->block($node->selections);

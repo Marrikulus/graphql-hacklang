@@ -68,11 +68,11 @@ use GraphQL\Validator\Rules\VariablesInAllowedPosition;
  */
 final class DocumentValidator
 {
-    private static array<string, AbstractValidationRule> $rules = [];
+    private static array<classname<AbstractValidationRule>, AbstractValidationRule> $rules = [];
 
-    private static ?array<string, AbstractValidationRule> $defaultRules;
+    private static ?array<classname<AbstractValidationRule>, AbstractValidationRule> $defaultRules;
 
-    private static ?array<string, AbstractValidationRule> $securityRules;
+    private static ?array<classname<AbstractValidationRule>, AbstractValidationRule> $securityRules;
 
     private static bool $initRules = false;
 
@@ -109,7 +109,7 @@ final class DocumentValidator
      * @api
      * @return AbstractValidationRule[]
      */
-    public static function allRules():array<string, AbstractValidationRule>
+    public static function allRules():array<classname<AbstractValidationRule>, AbstractValidationRule>
     {
         if (!self::$initRules)
         {
@@ -120,7 +120,7 @@ final class DocumentValidator
         return self::$rules;
     }
 
-    public static function defaultRules():array<string, AbstractValidationRule>
+    public static function defaultRules():array<classname<AbstractValidationRule>, AbstractValidationRule>
     {
         if (null === self::$defaultRules)
         {
@@ -159,13 +159,14 @@ final class DocumentValidator
     /**
      * @return array
      */
-    public static function securityRules():array<string, AbstractValidationRule>
+    public static function securityRules():array<classname<AbstractValidationRule>, AbstractValidationRule>
     {
         // This way of defining rules is deprecated
         // When custom security rule is required - it should be just added via DocumentValidator::addRule();
         // TODO: deprecate this
 
-        if (null === self::$securityRules) {
+        if (null === self::$securityRules)
+        {
             self::$securityRules = [
                 DisableIntrospection::class => new DisableIntrospection(DisableIntrospection::DISABLED), // DEFAULT DISABLED
                 QueryDepth::class => new QueryDepth(QueryDepth::DISABLED), // default disabled
@@ -185,7 +186,7 @@ final class DocumentValidator
      * @param string $name
      * @return AbstractValidationRule
      */
-    public static function getRule(string $name):?AbstractValidationRule
+    public static function getRule(classname<AbstractValidationRule> $name):?AbstractValidationRule
     {
         $rules = static::allRules();
 
@@ -194,8 +195,12 @@ final class DocumentValidator
             return $rules[$name];
         }
 
-        $name = "GraphQL\\Validator\\Rules\\$name";
-        return array_key_exists($name, $rules) ? $rules[$name] : null ;
+        //$name = "GraphQL\\Validator\\Rules\\$name";
+        //if (array_key_exists($name, $rules))
+        //{
+        //    return $rules[$name];
+        //}
+        return null;
     }
 
     /**

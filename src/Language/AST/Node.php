@@ -135,8 +135,10 @@ abstract class Node
         /* HH_FIXME[4110]*/
         foreach (\get_object_vars($node) as $prop => $propValue)
         {
-            if (isset($result[$prop]))
+            if (\array_key_exists($prop, $result))
+            {
                 continue;
+            }
 
             if ($propValue === null)
                 continue;

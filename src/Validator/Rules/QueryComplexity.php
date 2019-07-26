@@ -60,7 +60,7 @@ class QueryComplexity extends AbstractQuerySecurity
 
     public function setRawVariableValues(?array $rawVariableValues = null)
     {
-        $this->rawVariableValues = $rawVariableValues ?: [];
+        $this->rawVariableValues = $rawVariableValues ?? [];
     }
 
     public function getRawVariableValues()
