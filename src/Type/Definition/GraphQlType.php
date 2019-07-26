@@ -42,7 +42,7 @@ abstract class GraphQlType implements \JsonSerializable
     /**
      * @var array
      */
-    public array<mixed, mixed> $config;
+    public $config;
 
     /**
      * @api

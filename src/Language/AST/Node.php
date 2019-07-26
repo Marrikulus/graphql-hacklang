@@ -72,7 +72,7 @@ abstract class Node
             /* HH_FIXME[4110]*/
             foreach (\get_object_vars($cloned) as $prop => $propValue)
             {
-                /* HH_FIXME[1002]*/
+                /* HH_FIXME[2011]*/
                 $cloned->{$prop} = $this->cloneValue($propValue);
             }
         }
@@ -97,11 +97,12 @@ abstract class Node
      * @param bool $recursive
      * @return array
      */
-    public function toArray(bool $recursive = false):array<string, _>
+    public function toArray(bool $recursive = false):array<string, mixed>
     {
         if ($recursive) {
             return $this->recursiveToArray($this);
         } else {
+            /* HH_FIXME[4007]*/
             $tmp = (array) $this;
 
             if ($this->loc) {
@@ -119,7 +120,7 @@ abstract class Node
      * @param Node $node
      * @return array
      */
-    private function recursiveToArray(Node $node):array<string, _>
+    private function recursiveToArray(Node $node):array<string, mixed>
     {
         $result = [
             'kind' => $node->kind,
@@ -145,6 +146,7 @@ abstract class Node
                 $tmp = [];
                 foreach ($propValue as $tmp1)
                 {
+                    /* HH_FIXME[4007]*/
                     $tmp[] = $tmp1 instanceof Node ? $this->recursiveToArray($tmp1) : (array) $tmp1;
                 }
             }

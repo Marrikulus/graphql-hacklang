@@ -1,4 +1,4 @@
-<?hh //partial
+<?hh //decl
 namespace GraphQL\Type\Definition;
 
 use GraphQL\Error\InvariantViolation;
@@ -74,7 +74,8 @@ class FieldArgument
      */
     public function __construct(array $def)
     {
-        foreach ($def as $key => $value) {
+        foreach ($def as $key => $value)
+        {
             switch ($key) {
                 case 'type':
                     $this->type = $value;

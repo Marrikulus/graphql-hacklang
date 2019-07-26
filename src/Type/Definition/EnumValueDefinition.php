@@ -12,7 +12,7 @@ class EnumValueDefinition
     /**
      * @var string
      */
-    public string $name;
+    public ?string $name;
 
     /**
      * @var mixed

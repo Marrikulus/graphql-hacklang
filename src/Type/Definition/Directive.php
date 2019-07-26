@@ -175,6 +175,7 @@ class Directive
      * Directive constructor.
      * @param array $config
      */
+    /* HH_FIXME[3015]*/
     public function __construct(array $config)
     {
         foreach ($config as $key => $value) {

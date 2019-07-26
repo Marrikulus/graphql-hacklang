@@ -11,7 +11,7 @@ use ArrayAccess;
  *
  * @package GraphQL\Utils
  */
-final class NodeList extends Node implements IteratorAggregate<Node>, Countable
+final class NodeList extends Node implements Countable//, IteratorAggregate<Node>
 {
     /**
      * @param array $nodes
@@ -62,13 +62,13 @@ final class NodeList extends Node implements IteratorAggregate<Node>, Countable
     /**
      * @return \Generator
      */
-    public function getIterator():Iterator<Node>
+    /*public function getIterator():Iterator<Node>
     {
         $count = \count($this->nodes);
         for ($i = 0; $i < $count; $i++) {
             yield $this->offsetGet($i);
         }
-    }
+    }*/
 
     /**
      * @return int

@@ -38,12 +38,12 @@ class StandardServer
     /**
      * @var ServerConfig
      */
-    private $config;
+    private ServerConfig $config;
 
     /**
      * @var Helper
      */
-    private $helper;
+    private Helper $helper;
 
     /**
      * Converts and exception to error and sends spec-compliant HTTP 500 error.
@@ -55,11 +55,11 @@ class StandardServer
      * @param bool $debug
      * @param bool $exitWhenDone
      */
-    public static function send500Error($error, $debug = false, $exitWhenDone = false)
+    public static function send500Error(\Exception $error, bool $debug = false, bool $exitWhenDone = false)
     {
         $response = [
             'errors' => [
-                FormattedError::createFromException($error, $debug)
+                FormattedError::createFromException($error, (int)$debug)
             ]
         ];
         $helper = new Helper();

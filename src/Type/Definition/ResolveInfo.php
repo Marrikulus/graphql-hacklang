@@ -103,7 +103,7 @@ class ResolveInfo
      */
     public $variableValues;
 
-    public function __construct(array $values)
+    public function __construct($values)
     {
         Utils::assign($this, $values);
         $this->fieldASTs = $this->fieldNodes;

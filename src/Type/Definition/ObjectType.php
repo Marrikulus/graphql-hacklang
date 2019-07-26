@@ -84,7 +84,7 @@ class ObjectType extends GraphQlType implements OutputType, CompositeType
      * ObjectType constructor.
      * @param array $config
      */
-    public function __construct(array $config)
+    public function __construct($config)
     {
         if (!\array_key_exists('name', $config))
         {

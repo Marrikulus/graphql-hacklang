@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //decl
 namespace GraphQL\Language;
 
 use GraphQL\Language\AST\Node;
@@ -152,7 +151,7 @@ class Visitor
      * @return Node|mixed
      * @throws \Exception
      */
-    public static function visit(mixed $root, array<string, _> $visitor, ?array<string, array<string>> $keyMap = null):mixed
+    public static function visit(mixed $root, array<string, mixed> $visitor, ?array<string, array<string>> $keyMap = null):mixed
     {
         $visitorKeys = $keyMap ?? Visitor::$visitorKeys;
 
@@ -408,7 +407,7 @@ class Visitor
      * @param $visitors
      * @return array
      */
-    public static function visitInParallel(array<_> $visitors):array
+    public static function visitInParallel(array<mixed> $visitors)
     {
         $visitorsCount = \count($visitors);
         $skipping = new \SplFixedArray($visitorsCount);
@@ -488,7 +487,7 @@ class Visitor
      * Creates a new visitor instance which maintains a provided TypeInfo instance
      * along with visiting visitor.
      */
-    public static function visitWithTypeInfo(TypeInfo $typeInfo, array<string, _> $visitor):array<string, (function(mixed):mixed)>
+    public static function visitWithTypeInfo(TypeInfo $typeInfo, array<string, mixed> $visitor):array<string, (function(mixed):mixed)>
     {
         return [
             'enter' => function ($node) use ($typeInfo, $visitor) {
@@ -522,7 +521,7 @@ class Visitor
      * @param $isLeaving
      * @return null
      */
-    public static function getVisitFn(array<string, _> $visitor, string $kind, bool $isLeaving):?callable
+    public static function getVisitFn(array<string, mixed> $visitor, string $kind, bool $isLeaving):?callable
     {
         if (!$visitor) {
             return null;

@@ -1,5 +1,4 @@
-<?hh //strict
-//partial
+<?hh //partial
 namespace GraphQL\Executor\Promise;
 
 use GraphQL\Utils\Utils;
