@@ -27,6 +27,7 @@ use GraphQL\Utils\AST;
 use GraphQL\Utils\TypeInfo;
 use GraphQL\Utils\Utils;
 use GraphQL\Validator\DocumentValidator;
+use namespace HH\Lib\{Vec, C};
 
 class Values
 {
@@ -189,7 +190,7 @@ class Values
     {
         if ($node->directives !== null && is_array($node->directives))
         {
-            $directiveNode = Utils::find($node->directives, function(DirectiveNode $directive) use ($directiveDef) {
+            $directiveNode = C\find($node->directives, function(DirectiveNode $directive) use ($directiveDef) {
                 return $directive->name->value === $directiveDef->name;
             });
 
@@ -243,7 +244,7 @@ class Values
                 $tmp = [];
                 foreach ($value as $index => $item) {
                     $errors = self::isValidPHPValue($item, $itemType);
-                    $tmp = \array_merge($tmp, Utils::map($errors, function ($error) use ($index) {
+                    $tmp = \array_merge($tmp, Vec\map($errors, function ($error) use ($index) {
                         return "In element #$index: $error";
                     }));
                 }
@@ -273,7 +274,7 @@ class Values
                 $newErrors = self::isValidPHPValue(isset($value[$fieldName]) ? $value[$fieldName] : null, $fields[$fieldName]->getType());
                 $errors = \array_merge(
                     $errors,
-                    Utils::map($newErrors, function ($error) use ($fieldName) {
+                    Vec\map($newErrors, function ($error) use ($fieldName) {
                         return "In field \"{$fieldName}\": {$error}";
                     })
                 );

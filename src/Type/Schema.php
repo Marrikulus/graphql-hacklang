@@ -51,7 +51,7 @@ class Schema
      *
      * @var Type[]
      */
-    private array<string, GraphQlType> $resolvedTypes = [];
+    private array<string, ?GraphQlType> $resolvedTypes = [];
 
     /**
      * @var array
@@ -196,7 +196,7 @@ class Schema
      * @api
      * @return GraphQlType[]
      */
-    public function getTypeMap():array<string, GraphQlType>
+    public function getTypeMap():array<string, ?GraphQlType>
     {
         if (!$this->fullyLoaded) {
             $this->resolvedTypes = $this->collectAllTypes();
@@ -449,6 +449,11 @@ class Schema
         foreach ($this->getTypeMap() as $name => $type)
         {
             if (\array_key_exists($name, $internalTypes))
+            {
+                continue;
+            }
+
+            if($type === null)
             {
                 continue;
             }

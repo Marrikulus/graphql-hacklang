@@ -994,7 +994,7 @@ class Executor
      *
      * @return mixed|null
      */
-    public static function defaultFieldResolver(nonnull $source, array<string,mixed> $args, mixed $context, ResolveInfo $info):mixed
+    public static function defaultFieldResolver($source, array<string,mixed> $args, mixed $context, ResolveInfo $info):mixed
     {
         $fieldName = $info->fieldName;
         $property = null;
@@ -1310,8 +1310,10 @@ class Executor
         $subFieldNodes = new \ArrayObject();
         $visitedFragmentNames = new \ArrayObject();
 
-        foreach ($fieldNodes as $fieldNode) {
-            if ($fieldNode->selectionSet !== null)
+        foreach ($fieldNodes as $fieldNode)
+        {
+            /* HH_FIXME[4062]*/
+            if ($fieldNode !== null && $fieldNode->selectionSet !== null)
             {
                 $subFieldNodes = $this->collectFields(
                     $returnType,

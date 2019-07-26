@@ -69,6 +69,8 @@ class FieldDefinition
 
     private static $def;
 
+    private (function(int):int) $complexityFn;
+
     /**
      * @return array
      */
@@ -199,17 +201,17 @@ class FieldDefinition
     {
         $this->name = $config['name'];
         $this->type = $config['type'];
-        $this->resolveFn = isset($config['resolve']) ? $config['resolve'] : null;
-        $this->mapFn = isset($config['map']) ? $config['map'] : null;
-        $this->args = isset($config['args']) ? FieldArgument::createMap($config['args']) : [];
+        $this->resolveFn = \array_key_exists('resolve', $config) ? $config['resolve'] : null;
+        $this->mapFn = \array_key_exists('map', $config) ? $config['map'] : null;
+        $this->args = \array_key_exists('args', $config) ? FieldArgument::createMap($config['args']) : [];
 
-        $this->description = isset($config['description']) ? $config['description'] : null;
-        $this->deprecationReason = isset($config['deprecationReason']) ? $config['deprecationReason'] : null;
-        $this->astNode = isset($config['astNode']) ? $config['astNode'] : null;
+        $this->description = \array_key_exists('description', $config) ? $config['description'] : null;
+        $this->deprecationReason = \array_key_exists('deprecationReason', $config) ? $config['deprecationReason'] : null;
+        $this->astNode = \array_key_exists('astNode', $config) ? $config['astNode'] : null;
 
         $this->config = $config;
 
-        $this->complexityFn = isset($config['complexity']) ? $config['complexity'] : static::DEFAULT_COMPLEXITY_FN;
+        $this->complexityFn = \array_key_exists('complexity', $config) ? $config['complexity'] : class_meth(self::class, 'defaultComplexity');
     }
 
     /**

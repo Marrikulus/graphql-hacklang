@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //partial
 namespace GraphQL;
 
 use GraphQL\Error\Error;
@@ -72,13 +71,13 @@ class GraphQL
      */
     public static function executeQuery(
         \GraphQL\Type\Schema $schema,
-        $source,
-        $rootValue = null,
-        $context = null,
-        $variableValues = null,
-        $operationName = null,
+        nonnull $source,
+        mixed $rootValue = null,
+        mixed $context = null,
+        ?array<mixed,mixed> $variableValues = null,
+        ?string $operationName = null,
         ?callable $fieldResolver = null,
-        ?array $validationRules = null
+        ?array<string, AbstractValidationRule> $validationRules = null
     )
     {
         $promiseAdapter = new SyncPromiseAdapter();
@@ -109,33 +108,47 @@ class GraphQL
     public static function promiseToExecute(
         PromiseAdapter $promiseAdapter,
         \GraphQL\Type\Schema $schema,
-        $source,
+        nonnull $source,
         mixed $rootValue = null,
         mixed $context = null,
-        $variableValues = null,
+        ?array<mixed,mixed> $variableValues = null,
         ?string $operationName = null,
         ?callable $fieldResolver = null,
-        ?array $validationRules = null
+        ?array<string, AbstractValidationRule> $validationRules = null
     )
     {
-        try {
-            if ($source instanceof DocumentNode) {
+        try
+        {
+            $documentNode = null;
+            if ($source instanceof DocumentNode)
+            {
                 $documentNode = $source;
-            } else {
-                $documentNode = Parser::parseSource(new Source($source ?? '', 'GraphQL'));
             }
+            else if($source is string)
+            {
+                $documentNode = Parser::parseSource(new Source($source, 'GraphQL'));
+            }
+            invariant($documentNode !== null, "Expected source to be string or DocumentNode got %s", gettype($source));
 
             // FIXME
-            if (!empty($validationRules)) {
-                foreach ($validationRules as $rule) {
-                    if ($rule instanceof QueryComplexity) {
+            if ($validationRules !== null && $validationRules !== [])
+            {
+                foreach ($validationRules as $k => $rule)
+                {
+                    if ($rule instanceof QueryComplexity)
+                    {
                         $rule->setRawVariableValues($variableValues);
                     }
                 }
-            } else {
+            }
+            else
+            {
                 /** @var QueryComplexity $queryComplexity */
                 $queryComplexity = DocumentValidator::getRule(QueryComplexity::class);
-                $queryComplexity->setRawVariableValues($variableValues);
+                if ($queryComplexity !== null && $queryComplexity instanceof QueryComplexity)
+                {
+                    $queryComplexity->setRawVariableValues($variableValues);
+                }
             }
 
             $validationErrors = DocumentValidator::validate($schema, $documentNode, $validationRules);
