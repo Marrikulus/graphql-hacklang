@@ -1,6 +1,7 @@
 <?hh //partial
 namespace GraphQL\Executor\Promise;
 
+
 /**
  * Provides a means for integration of async PHP platforms ([related docs](data-fetching.md#async-php))
  */
@@ -35,7 +36,7 @@ interface PromiseAdapter
      *
      * @return Promise
      */
-    public function then(Promise $promise, ?callable $onFulfilled = null, ?callable $onRejected = null);
+    public function then(Promise $promise, mixed $onFulfilled = null, mixed $onRejected = null);
 
     /**
      * Creates a Promise

@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //decl
 namespace GraphQL\Language;
 
 use GraphQL\Language\AST\ArgumentNode;
@@ -23,6 +22,7 @@ use GraphQL\Language\AST\InlineFragmentNode;
 use GraphQL\Language\AST\IntValueNode;
 use GraphQL\Language\AST\ListTypeNode;
 use GraphQL\Language\AST\NamedTypeNode;
+use GraphQL\Language\AST\NameNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\NodeKind;
 use GraphQL\Language\AST\NonNullTypeNode;
@@ -76,7 +76,7 @@ class Printer
     {
         return Visitor::visit($ast, [
             'leave' => [
-                NodeKind::NAME => function(Node $node) {
+                NodeKind::NAME => function(NameNode $node) {
                     return '' . $node->value;
                 },
                 NodeKind::VARIABLE => function($node) {
@@ -276,7 +276,7 @@ class Printer
      * Given array, print each item on its own line, wrapped in an
      * indented "{ }" block.
      */
-    public function block(?array<_> $array):string
+    public function block(?array<mixed> $array):string
     {
         return $array && $this->length($array) ? $this->indent("{\n" . $this->join($array, "\n")) . "\n}" : '{}';
     }
@@ -286,17 +286,17 @@ class Printer
         return $maybeString ? \str_replace("\n", "\n  ", $maybeString) : '';
     }
 
-    public function manyList(string $start, ?array<_> $list, string $separator, string $end):?string
+    public function manyList(string $start, ?array<mixed> $list, string $separator, string $end):?string
     {
         return $this->length($list) === 0 ? null : ($start . $this->join($list, $separator) . $end);
     }
 
-    public function length(?array<_> $maybeArray):int
+    public function length(?array<mixed> $maybeArray):int
     {
         return $maybeArray ? \count($maybeArray) : 0;
     }
 
-    public function join(?array<_> $maybeArray, @string $separator = ''):string
+    public function join(?array<mixed> $maybeArray, @string $separator = ''):string
     {
         return $maybeArray
             ? \implode(

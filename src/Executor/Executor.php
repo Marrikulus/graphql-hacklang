@@ -288,6 +288,7 @@ class Executor
         // field and its descendants will be omitted, and sibling fields will still
         // be executed. An execution which encounters errors will still result in a
         // resolved Promise.
+        /* HH_FIXME[4110]*/
         $result = $this->exeContext->promises->create(function ((function(mixed):mixed) $resolve) {
             return $resolve($this->executeOperation($this->exeContext->operation, $this->exeContext->rootValue));
         });

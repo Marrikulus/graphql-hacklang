@@ -39,7 +39,7 @@ class SyncPromiseAdapter implements PromiseAdapter
     /**
      * @inheritdoc
      */
-    public function then(Promise $promise, ?callable $onFulfilled = null, ?callable $onRejected = null)
+    public function then(Promise $promise, mixed $onFulfilled = null, mixed $onRejected = null)
     {
         /** @var SyncPromise $promise */
         $promise = $promise->adoptedPromise;

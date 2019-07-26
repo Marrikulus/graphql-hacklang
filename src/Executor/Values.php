@@ -1,5 +1,4 @@
-<?hh //strict
-//decl
+<?hh //decl
 namespace GraphQL\Executor;
 
 
@@ -45,11 +44,13 @@ class Values
     public static function getVariableValues(Schema $schema, $definitionNodes, array $inputs)
     {
         $coercedValues = [];
-        foreach ($definitionNodes as $definitionNode) {
+        foreach ($definitionNodes as $definitionNode)
+        {
             $varName = $definitionNode->variable->name->value;
             $varType = TypeInfo::typeFromAST($schema, $definitionNode->type);
 
-            if (!GraphQlType::isInputType($varType)) {
+            if (!GraphQlType::isInputType($varType))
+            {
                 throw new Error(
                     'Variable "$'.$varName.'" expected value of type ' .
                     '"' . Printer::doPrint($definitionNode->type) . '" which cannot be used as an input type.',
@@ -59,20 +60,25 @@ class Values
 
             if (!\array_key_exists($varName, $inputs)) {
                 $defaultValue = $definitionNode->defaultValue;
-                if ($defaultValue) {
+                if ($defaultValue)
+                {
                     $coercedValues[$varName] = AST::valueFromAST($defaultValue, $varType);
                 }
-                if ($varType instanceof NoNull) {
+                if ($varType instanceof NoNull)
+                {
                     throw new Error(
                         'Variable "$'.$varName .'" of required type ' .
                         '"'. Utils::printSafe($varType) . '" was not provided.',
                         [$definitionNode]
                     );
                 }
-            } else {
+            }
+            else
+            {
                 $value = $inputs[$varName];
                 $errors = self::isValidPHPValue($value, $varType);
-                if (!empty($errors)) {
+                if (!empty($errors))
+                {
                     $message = "\n" . \implode("\n", $errors);
                     throw new Error(
                         'Variable "$' . $varName . '" got invalid value ' .
@@ -112,7 +118,7 @@ class Values
         $undefined = Utils::undefined();
 
         /** @var ArgumentNode[] $argNodeMap */
-        $argNodeMap = $argNodes ? Utils::keyMap($argNodes, function (ArgumentNode $arg) {
+        $argNodeMap = $argNodes ? Utils::keyMap($argNodes, function (ArgumentNode $arg, int $key) {
             return $arg->name->value;
         }) : [];
 
