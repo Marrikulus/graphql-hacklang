@@ -12,7 +12,7 @@
         "hhvm": "^3.30.0",
         "php": ">=5.5,<8.0-DEV",
         "ext-mbstring": "*",
-        "hhvm/hhvm-autoload": "v1.8",
+        "hhvm/hhvm-autoload": "^v1.8",
         "hhvm/hsl": "v3.30.0"
     },
     "require-dev": {
