@@ -9,14 +9,14 @@
         "API"
     ],
     "require": {
-        "hhvm": "^3.30.0",
+        "hhvm": "^4.32.0",
         "php": ">=5.5,<8.0-DEV",
         "ext-mbstring": "*",
-        "hhvm/hhvm-autoload": "^v1.8",
-        "hhvm/hsl": "v3.30.0"
+        "hhvm/hhvm-autoload": "^v2.0",
+        "hhvm/hsl": "^v4.40"
     },
     "require-dev": {
-        "hhvm/hacktest": "v1.3",
+        "hhvm/hacktest": "^v2.0",
         "psr/http-message": "^1.0",
         "hack-psr/psr7-http-message-hhi": "^1.0"
     },
